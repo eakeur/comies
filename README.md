@@ -18,8 +18,9 @@ As it is intended to make this service increase their capabilities, we used [Cle
 │      ├── core
 │      │        ├── entities # structs representing real world objects that satifies the reason of this app to exist 
 │      │        ├── types # general purpose types to be used throughout the application
-│      │        └── workflows # usecases as defined here: https://martinfowler.com/bliki/UseCase.html)
-├── cmd # main files for API and workers
+│      │        ├── workflows # usecases as defined here: https://martinfowler.com/bliki/UseCase.html)
+│      │        └── workspaces # structs and interfaces that are not part of the business rules, but sure is part of the application rules             
+├── cmd # API starters, worker initializers, CLI implementations that use this app lib
 └── docs # swagger and domain documentation
 ```
 
