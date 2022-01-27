@@ -18,7 +18,7 @@ As it is intended to make this service increase their capabilities, we used [Cle
 │      ├── core
 │      │        ├── entities # structs representing real world objects that satifies the reason of this app to exist 
 │      │        ├── types # general purpose types to be used throughout the application
-│      │        └── workflows # usecases (https://martinfowler.com/bliki/UseCase.html)
+│      │        └── workflows # usecases as defined here: https://martinfowler.com/bliki/UseCase.html)
 ├── cmd # main files for API and workers
 └── docs # swagger and domain documentation
 ```
