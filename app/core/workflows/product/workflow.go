@@ -7,7 +7,6 @@ import (
 	"gomies/app/core/entities/stock"
 	"gomies/app/core/types/id"
 	"gomies/app/core/workspaces/transaction"
-	"stonehenge/app/core/types/logger"
 )
 
 var _ Workflow = workflow{}
@@ -17,25 +16,24 @@ func NewWorkflow(
 	st stock.Actions,
 	ct category.Actions,
 	tx transaction.Manager,
-	lg logger.Logger,
-	) Workflow {
+) Workflow {
 	return workflow{
 		products:     pr,
 		stocks:       st,
 		categories:   ct,
 		transactions: tx,
-		logger:       lg,
 	}
 }
 
 type Workflow interface {
-	Create(ctx context.Context, input CreateInput) (CreateOutput, error)
-	List(ctx context.Context, filter product.Filter) ([]product.Product, error)
-	Get(ctx context.Context, ext id.External) (product.Product, error)
-	Remove(ctx context.Context, ext id.External) error
-	RemoveFromStock(ctx context.Context, ext id.External) error
-	AddToStock(ctx context.Context, movement stock.Movement) (stock.Movement, error)
-	Update(ctx context.Context, prd product.Product) error
+	Create(context.Context, CreateInput) (product.Product, error)
+	List(context.Context, product.Filter) ([]product.Product, error)
+	Get(context.Context, id.External) (product.Product, error)
+	Remove(context.Context, id.External) error
+	RemoveFromStock(context.Context, id.External) error
+	AddToStock(context.Context, stock.Movement) (stock.Movement, error)
+	ListStock(context.Context, stock.Filter) ([]stock.Movement, error)
+	Update(context.Context, product.Product) error
 }
 
 type workflow struct {
@@ -43,5 +41,4 @@ type workflow struct {
 	stocks       stock.Actions
 	categories   category.Actions
 	transactions transaction.Manager
-	logger       logger.Logger
 }

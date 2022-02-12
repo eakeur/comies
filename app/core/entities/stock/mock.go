@@ -8,19 +8,19 @@ import (
 var _ Actions = ActionsMock{}
 
 type ActionsMock struct {
-	ComputeStockResult Actual
-	GetMovementsResult Actual
+	ComputeStockResult  Actual
+	GetMovementResult   Movement
 	ListMovementsResult []Movement
-	AddToStockResult Movement
-	Error error
+	AddToStockResult    Movement
+	Error               error
 }
 
 func (a ActionsMock) ComputeStock(_ context.Context, _ Filter) (Actual, error) {
 	return a.ComputeStockResult, a.Error
 }
 
-func (a ActionsMock) GetMovements(_ context.Context, _ id.External) (Actual, error) {
-	return a.GetMovementsResult, a.Error
+func (a ActionsMock) GetMovement(_ context.Context, _ id.External) (Movement, error) {
+	return a.GetMovementResult, a.Error
 }
 
 func (a ActionsMock) ListMovements(_ context.Context, _ Filter) ([]Movement, error) {
