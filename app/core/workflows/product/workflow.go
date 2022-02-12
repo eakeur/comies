@@ -5,8 +5,8 @@ import (
 	"gomies/app/core/entities/category"
 	"gomies/app/core/entities/product"
 	"gomies/app/core/entities/stock"
+	"gomies/app/core/managers/transaction"
 	"gomies/app/core/types/id"
-	"gomies/app/core/workspaces/transaction"
 )
 
 var _ Workflow = workflow{}
