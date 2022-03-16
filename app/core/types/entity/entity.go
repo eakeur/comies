@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"gomies/app/core/types/audit"
+	"gomies/app/core/types/history"
 	"gomies/app/core/types/id"
 )
 
@@ -13,8 +13,12 @@ type Entity struct {
 	// ExternalID is the unique identifier of this entity, known by the outer world
 	ExternalID id.External
 
-	audit.Audit
+	History history.History
 
 	// Active points out if the entity is being recognised. It can have different side effects according to the entity
 	Active bool
+
+	StoreID id.ID
+
+	StoreExternalID id.External
 }

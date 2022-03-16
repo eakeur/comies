@@ -13,5 +13,5 @@ var (
 
 	ErrNotFound = errors.New("the product searched does not exist or could not be found")
 
-	ErrAlreadyExist = errors.New("the product you are trying to create already exists. please refer to it or assign it another code")
+	ErrAlreadyExists = errors.New("the product you are trying to create already exists. please refer to it or assign it another code")
 )

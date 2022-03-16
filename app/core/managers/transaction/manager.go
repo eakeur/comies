@@ -2,7 +2,7 @@ package transaction
 
 import "context"
 
-// Manager is an object that encapsulates many storage accesses into one transaction
+//go:generate moq -fmt goimports -out manager_mock.go . Manager:ManagerMock
 type Manager interface {
 	// Begin starts a transaction and stores an object to it in this context
 	Begin(context.Context) context.Context
