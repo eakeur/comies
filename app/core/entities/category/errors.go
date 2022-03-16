@@ -9,5 +9,7 @@ var (
 
 	ErrNotFound = errors.New("the category searched does not exist or could not be found")
 
-	ErrAlreadyExist = errors.New("the category you are trying to create already exists.")
+	ErrAlreadyExists = errors.New("the category you are trying to create already exists")
+
+	ErrHasDependants = errors.New("the category being deleted has products depending on it")
 )

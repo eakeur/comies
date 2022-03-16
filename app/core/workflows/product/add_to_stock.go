@@ -4,6 +4,7 @@ import (
 	"context"
 	"gomies/app/core/entities/product"
 	"gomies/app/core/entities/stock"
+	"gomies/app/core/managers/session"
 	"gomies/app/core/types/fault"
 	"time"
 )
@@ -13,7 +14,16 @@ func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stoc
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
 
-	prd, err := w.products.Get(ctx, movement.ExternalID, product.Stock)
+	_, err := session.DelegateSessionProps(ctx, operation, &movement.Entity)
+	if err != nil {
+		return stock.Movement{}, fault.Wrap(err, operation)
+	}
+
+	if err := movement.Validate(); err != nil {
+		return stock.Movement{}, fault.Wrap(err, operation)
+	}
+
+	prd, err := w.products.Get(ctx, movement.TargetID, product.Stock)
 	if err != nil {
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}
@@ -24,7 +34,7 @@ func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stoc
 	}
 
 	if computation.Actual+movement.Quantity > prd.Stock.MaximumQuantity {
-		return stock.Movement{}, nil
+		return stock.Movement{}, stock.ErrStockAlreadyFull
 	}
 
 	movement, err = w.stocks.AddToStock(ctx, movement)
