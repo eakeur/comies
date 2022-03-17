@@ -10,7 +10,7 @@ import (
 func (w workflow) Remove(ctx context.Context, ext product.Key) error {
 	const operation = "Workflows.Product.Remove"
 
-	_, err := session.FromContext(ctx, operation)
+	_, err := session.DelegateSessionProps(ctx, operation, &ext.Store, nil)
 	if err != nil {
 		return fault.Wrap(err, operation)
 	}

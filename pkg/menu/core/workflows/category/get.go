@@ -10,7 +10,7 @@ import (
 func (w workflow) Get(ctx context.Context, key category.Key) (category.Category, error) {
 	const operation = "Workflows.Category.Get"
 
-	_, err := session.FromContext(ctx, operation)
+	_, err := session.DelegateSessionProps(ctx, operation, &key.Store, nil)
 	if err != nil {
 		return category.Category{}, fault.Wrap(err, operation)
 	}

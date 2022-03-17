@@ -29,6 +29,6 @@ type (
 		//
 		// Possible errors:
 		//   - fault.ErrResourceHasChildren: if there are any products in this category
-		Remove(ctx context.Context, categoryID types.External) error
+		Remove(ctx context.Context, categoryID Key) error
 	}
 )

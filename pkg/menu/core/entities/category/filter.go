@@ -11,7 +11,7 @@ type (
 
 	Key struct {
 		ID      types.External
-		StoreID types.External
 		Code    string
+		types.Store
 	}
 )

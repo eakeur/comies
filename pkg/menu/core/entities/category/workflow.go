@@ -37,5 +37,5 @@ type Workflow interface {
 	// Possible errors:
 	//   - session.ErrNoSession: if there is no session in this context
 	//   - permission.ErrNotAllowed: if the session owner is not allowed to perform this operation
-	Remove(ctx context.Context, categoryID types.External) error
+	Remove(ctx context.Context, categoryID Key) error
 }

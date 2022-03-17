@@ -13,6 +13,6 @@ type (
 	Key struct {
 		ID       types.External
 		Nickname string
-		StoreID  types.External
+		types.Store
 	}
 )

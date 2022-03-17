@@ -2,17 +2,17 @@ package category
 
 import (
 	"context"
+	"gomies/pkg/menu/core/entities/category"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/session"
-	"gomies/pkg/sdk/types"
 )
 
-func (w workflow) Remove(ctx context.Context, ext types.External) error {
+func (w workflow) Remove(ctx context.Context, ext category.Key) error {
 	const operation = "Workflows.Category.Remove"
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
 
-	_, err := session.FromContext(ctx, operation)
+	_, err := session.DelegateSessionProps(ctx, operation, &ext.Store, nil)
 	if err != nil {
 		return fault.Wrap(err, operation)
 	}
