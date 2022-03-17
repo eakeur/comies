@@ -10,7 +10,7 @@ import (
 func (w workflow) List(ctx context.Context, filter category.Filter) ([]category.Category, error) {
 	const operation = "Workflows.Category.List"
 
-	_, err := session.FromContext(ctx, operation)
+	_, err := session.DelegateSessionProps(ctx, operation, &filter.Store, nil)
 	if err != nil {
 		return []category.Category{}, fault.Wrap(err, operation)
 	}
