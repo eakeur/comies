@@ -9,7 +9,8 @@ const (
 
 type Filter struct {
 	SortBy        string
-	SortDirection SortDirection
 	RangeStart    int
 	RangeEnd      int
+	SortDirection SortDirection
+	Store
 }
