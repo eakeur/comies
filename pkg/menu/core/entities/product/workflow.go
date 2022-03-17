@@ -33,7 +33,7 @@ type Workflow interface {
 	Remove(ctx context.Context, key Key) error
 
 	// RemoveFromStock deletes a movement
-	RemoveFromStock(ctx context.Context, movementID types.External) error
+	RemoveFromStock(ctx context.Context, productID types.External, movementID types.External) error
 
 	// AddToStock adds a stock movement to the stock of a specific product
 	//
@@ -41,8 +41,8 @@ type Workflow interface {
 	//   - fault.ErrNotFound: if the product does not exist
 	//   - stocking.ErrStockAlreadyFull: if the stock is already full
 	//   - stocking.ErrMustHaveTargetID: if the targetID for the movement was not set
-	AddToStock(ctx context.Context, mov stock.Movement) (stock.Movement, error)
+	AddToStock(ctx context.Context, productID types.External, mov stock.Movement) (stock.Movement, error)
 
 	// ListStock retrieves all movements for a specific target and filter
-	ListStock(ctx context.Context, stockFilter stock.Filter) ([]stock.Movement, error)
+	ListStock(ctx context.Context, productID types.External, stockFilter stock.Filter) ([]stock.Movement, error)
 }

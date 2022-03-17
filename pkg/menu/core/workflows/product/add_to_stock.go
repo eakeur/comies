@@ -5,11 +5,12 @@ import (
 	"gomies/pkg/menu/core/entities/product"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/session"
+	"gomies/pkg/sdk/types"
 	"gomies/pkg/stocking/core/entities/stock"
 	"time"
 )
 
-func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stock.Movement, error) {
+func (w workflow) AddToStock(ctx context.Context, productID types.External, movement stock.Movement) (stock.Movement, error) {
 	const operation = "Workflows.Product.AddToStock"
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
@@ -19,6 +20,7 @@ func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stoc
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}
 
+	movement.TargetID = productID
 	if err := movement.Validate(); err != nil {
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}
@@ -28,7 +30,7 @@ func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stoc
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}
 
-	computation, err := w.stocks.ComputeStock(ctx, stock.Filter{TargetID: movement.TargetID, FinalDate: time.Now()})
+	computation, err := w.stocks.ComputeStock(ctx, productID, stock.Filter{FinalDate: time.Now()})
 	if err != nil {
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}
@@ -37,7 +39,7 @@ func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stoc
 		return stock.Movement{}, stock.ErrStockAlreadyFull
 	}
 
-	movement, err = w.stocks.AddToStock(ctx, movement)
+	movement, err = w.stocks.AddToStock(ctx, productID, movement)
 	if err != nil {
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}

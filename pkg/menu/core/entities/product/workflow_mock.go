@@ -20,7 +20,7 @@ var _ Workflow = &WorkflowMock{}
 //
 // 		// make and configure a mocked Workflow
 // 		mockedWorkflow := &WorkflowMock{
-// 			AddToStockFunc: func(ctx context.Context, mov stock.Movement) (stock.Movement, error) {
+// 			AddToStockFunc: func(ctx context.Context, productID types.External, mov stock.Movement) (stock.Movement, error) {
 // 				panic("mock out the AddToStock method")
 // 			},
 // 			GetFunc: func(ctx context.Context, key Key) (Product, error) {
@@ -29,13 +29,13 @@ var _ Workflow = &WorkflowMock{}
 // 			ListFunc: func(ctx context.Context, productFilter Filter) ([]Product, error) {
 // 				panic("mock out the List method")
 // 			},
-// 			ListStockFunc: func(ctx context.Context, stockFilter stock.Filter) ([]stock.Movement, error) {
+// 			ListStockFunc: func(ctx context.Context, productID types.External, stockFilter stock.Filter) ([]stock.Movement, error) {
 // 				panic("mock out the ListStock method")
 // 			},
 // 			RemoveFunc: func(ctx context.Context, key Key) error {
 // 				panic("mock out the Remove method")
 // 			},
-// 			RemoveFromStockFunc: func(ctx context.Context, movementID types.External) error {
+// 			RemoveFromStockFunc: func(ctx context.Context, productID types.External, movementID types.External) error {
 // 				panic("mock out the RemoveFromStock method")
 // 			},
 // 			SaveFunc: func(ctx context.Context, prd Product, flag ...types.WritingFlag) (Product, error) {
@@ -49,7 +49,7 @@ var _ Workflow = &WorkflowMock{}
 // 	}
 type WorkflowMock struct {
 	// AddToStockFunc mocks the AddToStock method.
-	AddToStockFunc func(ctx context.Context, mov stock.Movement) (stock.Movement, error)
+	AddToStockFunc func(ctx context.Context, productID types.External, mov stock.Movement) (stock.Movement, error)
 
 	// GetFunc mocks the Get method.
 	GetFunc func(ctx context.Context, key Key) (Product, error)
@@ -58,13 +58,13 @@ type WorkflowMock struct {
 	ListFunc func(ctx context.Context, productFilter Filter) ([]Product, error)
 
 	// ListStockFunc mocks the ListStock method.
-	ListStockFunc func(ctx context.Context, stockFilter stock.Filter) ([]stock.Movement, error)
+	ListStockFunc func(ctx context.Context, productID types.External, stockFilter stock.Filter) ([]stock.Movement, error)
 
 	// RemoveFunc mocks the Remove method.
 	RemoveFunc func(ctx context.Context, key Key) error
 
 	// RemoveFromStockFunc mocks the RemoveFromStock method.
-	RemoveFromStockFunc func(ctx context.Context, movementID types.External) error
+	RemoveFromStockFunc func(ctx context.Context, productID types.External, movementID types.External) error
 
 	// SaveFunc mocks the Save method.
 	SaveFunc func(ctx context.Context, prd Product, flag ...types.WritingFlag) (Product, error)
@@ -75,6 +75,8 @@ type WorkflowMock struct {
 		AddToStock []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
+			// ProductID is the productID argument value.
+			ProductID types.External
 			// Mov is the mov argument value.
 			Mov stock.Movement
 		}
@@ -96,6 +98,8 @@ type WorkflowMock struct {
 		ListStock []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
+			// ProductID is the productID argument value.
+			ProductID types.External
 			// StockFilter is the stockFilter argument value.
 			StockFilter stock.Filter
 		}
@@ -110,6 +114,8 @@ type WorkflowMock struct {
 		RemoveFromStock []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
+			// ProductID is the productID argument value.
+			ProductID types.External
 			// MovementID is the movementID argument value.
 			MovementID types.External
 		}
@@ -133,33 +139,37 @@ type WorkflowMock struct {
 }
 
 // AddToStock calls AddToStockFunc.
-func (mock *WorkflowMock) AddToStock(ctx context.Context, mov stock.Movement) (stock.Movement, error) {
+func (mock *WorkflowMock) AddToStock(ctx context.Context, productID types.External, mov stock.Movement) (stock.Movement, error) {
 	if mock.AddToStockFunc == nil {
 		panic("WorkflowMock.AddToStockFunc: method is nil but Workflow.AddToStock was just called")
 	}
 	callInfo := struct {
-		Ctx context.Context
-		Mov stock.Movement
+		Ctx       context.Context
+		ProductID types.External
+		Mov       stock.Movement
 	}{
-		Ctx: ctx,
-		Mov: mov,
+		Ctx:       ctx,
+		ProductID: productID,
+		Mov:       mov,
 	}
 	mock.lockAddToStock.Lock()
 	mock.calls.AddToStock = append(mock.calls.AddToStock, callInfo)
 	mock.lockAddToStock.Unlock()
-	return mock.AddToStockFunc(ctx, mov)
+	return mock.AddToStockFunc(ctx, productID, mov)
 }
 
 // AddToStockCalls gets all the calls that were made to AddToStock.
 // Check the length with:
 //     len(mockedWorkflow.AddToStockCalls())
 func (mock *WorkflowMock) AddToStockCalls() []struct {
-	Ctx context.Context
-	Mov stock.Movement
+	Ctx       context.Context
+	ProductID types.External
+	Mov       stock.Movement
 } {
 	var calls []struct {
-		Ctx context.Context
-		Mov stock.Movement
+		Ctx       context.Context
+		ProductID types.External
+		Mov       stock.Movement
 	}
 	mock.lockAddToStock.RLock()
 	calls = mock.calls.AddToStock
@@ -238,21 +248,23 @@ func (mock *WorkflowMock) ListCalls() []struct {
 }
 
 // ListStock calls ListStockFunc.
-func (mock *WorkflowMock) ListStock(ctx context.Context, stockFilter stock.Filter) ([]stock.Movement, error) {
+func (mock *WorkflowMock) ListStock(ctx context.Context, productID types.External, stockFilter stock.Filter) ([]stock.Movement, error) {
 	if mock.ListStockFunc == nil {
 		panic("WorkflowMock.ListStockFunc: method is nil but Workflow.ListStock was just called")
 	}
 	callInfo := struct {
 		Ctx         context.Context
+		ProductID   types.External
 		StockFilter stock.Filter
 	}{
 		Ctx:         ctx,
+		ProductID:   productID,
 		StockFilter: stockFilter,
 	}
 	mock.lockListStock.Lock()
 	mock.calls.ListStock = append(mock.calls.ListStock, callInfo)
 	mock.lockListStock.Unlock()
-	return mock.ListStockFunc(ctx, stockFilter)
+	return mock.ListStockFunc(ctx, productID, stockFilter)
 }
 
 // ListStockCalls gets all the calls that were made to ListStock.
@@ -260,10 +272,12 @@ func (mock *WorkflowMock) ListStock(ctx context.Context, stockFilter stock.Filte
 //     len(mockedWorkflow.ListStockCalls())
 func (mock *WorkflowMock) ListStockCalls() []struct {
 	Ctx         context.Context
+	ProductID   types.External
 	StockFilter stock.Filter
 } {
 	var calls []struct {
 		Ctx         context.Context
+		ProductID   types.External
 		StockFilter stock.Filter
 	}
 	mock.lockListStock.RLock()
@@ -308,21 +322,23 @@ func (mock *WorkflowMock) RemoveCalls() []struct {
 }
 
 // RemoveFromStock calls RemoveFromStockFunc.
-func (mock *WorkflowMock) RemoveFromStock(ctx context.Context, movementID types.External) error {
+func (mock *WorkflowMock) RemoveFromStock(ctx context.Context, productID types.External, movementID types.External) error {
 	if mock.RemoveFromStockFunc == nil {
 		panic("WorkflowMock.RemoveFromStockFunc: method is nil but Workflow.RemoveFromStock was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
+		ProductID  types.External
 		MovementID types.External
 	}{
 		Ctx:        ctx,
+		ProductID:  productID,
 		MovementID: movementID,
 	}
 	mock.lockRemoveFromStock.Lock()
 	mock.calls.RemoveFromStock = append(mock.calls.RemoveFromStock, callInfo)
 	mock.lockRemoveFromStock.Unlock()
-	return mock.RemoveFromStockFunc(ctx, movementID)
+	return mock.RemoveFromStockFunc(ctx, productID, movementID)
 }
 
 // RemoveFromStockCalls gets all the calls that were made to RemoveFromStock.
@@ -330,10 +346,12 @@ func (mock *WorkflowMock) RemoveFromStock(ctx context.Context, movementID types.
 //     len(mockedWorkflow.RemoveFromStockCalls())
 func (mock *WorkflowMock) RemoveFromStockCalls() []struct {
 	Ctx        context.Context
+	ProductID  types.External
 	MovementID types.External
 } {
 	var calls []struct {
 		Ctx        context.Context
+		ProductID  types.External
 		MovementID types.External
 	}
 	mock.lockRemoveFromStock.RLock()
