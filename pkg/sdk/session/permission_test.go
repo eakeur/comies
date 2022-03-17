@@ -1,6 +1,7 @@
-package types
+package session
 
 import (
+	"gomies/pkg/sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,27 +12,28 @@ func TestPermissions_Allow(t *testing.T) {
 
 	type test struct {
 		name      string
-		perm      Permissions
+		perm      types.Permissions
 		operation string
-		wantErr   error
+		want      bool
 	}
 
 	cases := []test{
 		{
-			name:      "should return nil for authorized",
+			name:      "should return true for authorized",
 			operation: "Workflows.Product.Delete",
 			perm:      "Workflows.Product.Add;Workflows.Product.Delete",
+			want:      true,
 		},
 		{
 			name:      "should return err for unauthorized",
 			operation: "Workflows.Product.Add",
-			wantErr:   ErrNotAllowed,
 			perm:      "Workflows.Product.Delete",
 		},
 		{
-			name:      "should return nil for wildcard",
+			name:      "should return true for wildcard",
 			operation: "Workflows.Product.Add",
 			perm:      "*",
+			want:      true,
 		},
 	}
 
@@ -40,7 +42,8 @@ func TestPermissions_Allow(t *testing.T) {
 
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			assert.ErrorIs(t, tc.perm.CheckAllowance(tc.operation), tc.wantErr)
+
+			assert.Equal(t, Session{Permissions: tc.perm}.isAllowed(tc.operation), tc.want)
 		})
 	}
 }

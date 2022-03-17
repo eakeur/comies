@@ -14,7 +14,7 @@ func (w workflow) AddToStock(ctx context.Context, movement stock.Movement) (stoc
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
 
-	_, err := session.DelegateSessionProps(ctx, operation, &movement.Entity)
+	_, err := session.DelegateSessionProps(ctx, operation, nil, &movement.History)
 	if err != nil {
 		return stock.Movement{}, fault.Wrap(err, operation)
 	}

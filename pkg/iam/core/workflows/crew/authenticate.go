@@ -2,12 +2,13 @@ package crew
 
 import (
 	"context"
-	"golang.org/x/crypto/bcrypt"
 	"gomies/pkg/iam/core/entities/crew"
 	"gomies/pkg/iam/core/entities/store"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/session"
 	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (w workflow) Authenticate(ctx context.Context, auth crew.AuthRequest) (session.Session, error) {
@@ -31,12 +32,11 @@ func (w workflow) Authenticate(ctx context.Context, auth crew.AuthRequest) (sess
 	}
 
 	ctx, ses, err := w.sessions.Create(ctx, session.Session{
-		OperatorID:      op.ExternalID,
-		StoreExternalID: op.StoreExternalID,
-		StoreInternalID: op.StoreID,
-		OperatorName:    op.FirstName + " " + op.LastName,
-		Permissions:     op.Permissions,
-		Preferences:     pref,
+		OperatorID:   op.ExternalID,
+		StoreID:      op.StoreExternalID,
+		OperatorName: op.FirstName + " " + op.LastName,
+		Permissions:  op.Permissions,
+		Preferences:  pref,
 	})
 
 	return ses, nil

@@ -13,7 +13,7 @@ func (w workflow) Save(ctx context.Context, input crew.Member, flag ...types.Wri
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
 
-	_, err := session.DelegateSessionProps(ctx, operation, &input.Entity)
+	_, err := session.DelegateSessionProps(ctx, operation, nil, &input.History)
 	if err != nil {
 		return crew.Member{}, fault.Wrap(err, operation)
 	}

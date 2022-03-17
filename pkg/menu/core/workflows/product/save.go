@@ -14,7 +14,7 @@ func (w workflow) Save(ctx context.Context, input product.Product, flag ...types
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
 
-	_, err := session.DelegateSessionProps(ctx, operation, &input.Entity)
+	_, err := session.DelegateSessionProps(ctx, operation, &input.Store, &input.History)
 	if err != nil {
 		return product.Product{}, fault.Wrap(err, operation)
 	}

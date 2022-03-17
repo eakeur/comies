@@ -13,7 +13,7 @@ func (w workflow) Save(ctx context.Context, ct category.Category, flag ...types.
 	ctx = w.transactions.Begin(ctx)
 	defer w.transactions.End(ctx)
 
-	_, err := session.DelegateSessionProps(ctx, operation, &ct.Entity)
+	_, err := session.DelegateSessionProps(ctx, operation, &ct.Store, &ct.History)
 	if err != nil {
 		return category.Category{}, fault.Wrap(err, operation)
 	}
