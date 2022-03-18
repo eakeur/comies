@@ -5,35 +5,36 @@ import (
 	"time"
 )
 
-// MovementType is an indicator pointing out if the movement is an input our output
-type MovementType int
-
 const (
-	Input  MovementType = iota
-	Output MovementType = iota
+	InputMovement  MovementType = iota
+	OutputMovement MovementType = iota
 )
 
-type Movement struct {
-	types.Entity
+type (
 
-	// TargetID is an identifier for the object this stocks references to
-	TargetID types.External
+	Movement struct {
+		types.Entity
 
-	// Type points out if this movement is input or output
-	Type MovementType
+		// TargetID is an identifier for the object this stocks references to
+		TargetID types.UID
 
-	// Date is when the object got into the stock effectively
-	Date time.Time
+		// Type points out if this movement is input or output
+		Type MovementType
 
-	// Quantity is the amount being inserted or removed from this stock
-	Quantity types.Quantity
+		// Date is when the object got into the stock effectively
+		Date time.Time
 
-	// AdditionalData is a general-purpose space to store additional data about this entry
-	AdditionalData string
-}
+		// Quantity is the amount being inserted or removed from this stock
+		Quantity types.Quantity
+
+		// AdditionalData is a general-purpose space to store additional data about this entry
+		AdditionalData string
+	}
+
+)
 
 func (m Movement) Value() types.Quantity {
-	if m.Type == Output {
+	if m.Type == OutputMovement {
 		return m.Quantity * -1
 	}
 
@@ -42,9 +43,11 @@ func (m Movement) Value() types.Quantity {
 }
 
 func (m Movement) Validate() error {
-	if m.TargetID == types.Nil {
-		return ErrMustHaveTargetID
+	if m.TargetID.Empty() {
+		return ErrMissingResourceID
 	}
 
 	return nil
 }
+
+

@@ -9,12 +9,12 @@ import (
 
 type (
 	ManagersMocks struct {
-		Sessions session.Manager
+		Sessions     session.Manager
 		Transactions transaction.Manager
 	}
 )
 
-func WorkflowContext(operatorID, storeID types.External) context.Context {
+func WorkflowContext(operatorID, storeID types.UID) context.Context {
 	return context.WithValue(
 		context.Background(),
 		session.ContextKey,
@@ -32,8 +32,8 @@ func WorkflowContext(operatorID, storeID types.External) context.Context {
 func Managers() ManagersMocks {
 	return ManagersMocks{
 		Transactions: &transaction.ManagerMock{
-			BeginFunc: func(contextMoqParam context.Context) context.Context { return contextMoqParam },
-			CommitFunc: func(contextMoqParam context.Context) {},
+			BeginFunc:    func(contextMoqParam context.Context) context.Context { return contextMoqParam },
+			CommitFunc:   func(contextMoqParam context.Context) {},
 			EndFunc:      func(contextMoqParam context.Context) {},
 			RollbackFunc: func(contextMoqParam context.Context) {},
 		},
@@ -43,8 +43,8 @@ func Managers() ManagersMocks {
 			},
 			RetrieveFunc: func(ctx context.Context, digest string, updateExpiration bool) (context.Context, session.Session, error) {
 				return ctx, session.Session{
-					OperatorID:   types.ExternalFrom("0b3d0d55-4610-4516-96ec-8667b519599d"),
-					StoreID:      types.ExternalFrom("0b3d0d55-4610-4516-96ec-8667b519599a"),
+					OperatorID:   types.UIDFrom("0b3d0d55-4610-4516-96ec-8667b519599d"),
+					StoreID:      types.UIDFrom("0b3d0d55-4610-4516-96ec-8667b519599a"),
 					OperatorName: "Tester Smith",
 					Permissions:  "*",
 					Digest:       "ABCDEFGHIJKLMNOPQRSTUVWXYZ",

@@ -3,7 +3,11 @@ package stock
 import "errors"
 
 var (
-	ErrStockAlreadyFull = errors.New("the stock is already full")
+	ErrMissingResourceID = errors.New("the resource id informed is empty or invalid")
 
-	ErrMustHaveTargetID = errors.New("the computation filter must specify a target id")
+	ErrInvalidPeriod = errors.New("the date period informed is invalid")
+
+	ErrStockFull = errors.New("the stock has already achieved the maximum value")
+
+	ErrStockEmpty = errors.New("the stock has already achieved the minimum value")
 )

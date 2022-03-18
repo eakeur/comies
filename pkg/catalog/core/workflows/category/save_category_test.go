@@ -4,18 +4,14 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"gomies/pkg/catalog/core/entities/category"
-	"gomies/pkg/sdk/tests"
 	"gomies/pkg/sdk/types"
 	"testing"
 )
 
 func TestWorkflow_SaveCategory(t *testing.T) {
-	const operation = "Workflows.Category.SaveCategory"
 	t.Parallel()
 
-	ctx := tests.WorkflowContext(idExample1, idExample2)
-	managers := tests.Managers()
-
+	ctx := context.Background()
 	type (
 		args struct {
 			category category.Category
@@ -44,15 +40,8 @@ func TestWorkflow_SaveCategory(t *testing.T) {
 				},
 			},
 			want: category.Category{
-				Entity: types.Entity{
-					History: types.History{
-						By:        idExample1,
-						Operation: operation,
-					},
-				},
-				Code:  "PRD",
-				Name:  "Product",
-				Store: types.Store{StoreID: idExample2},
+				Code: "PRD",
+				Name: "Product",
 			},
 			opts: opts{
 				categories: &category.ActionsMock{
@@ -104,7 +93,7 @@ func TestWorkflow_SaveCategory(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.categories, managers.Transactions)
+			wf := NewWorkflow(c.opts.categories)
 			ingredient, err := wf.SaveCategory(ctx, c.args.category)
 
 			assert.ErrorIs(t, err, c.wantErr)

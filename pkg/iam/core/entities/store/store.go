@@ -11,7 +11,7 @@ type Store struct {
 	Nickname         string
 	ResponsibleName  string
 	ParentID         types.ID
-	ParentExternalID types.External
+	ParentExternalID types.UID
 	Preferences      types.Preferences
 	Document         types.Document
 	Addresses        []contacting.Address

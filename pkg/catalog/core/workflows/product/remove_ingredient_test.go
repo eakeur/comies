@@ -4,23 +4,19 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"gomies/pkg/catalog/core/entities/product"
-	"gomies/pkg/sdk/tests"
 	"gomies/pkg/sdk/types"
 	"testing"
 )
 
 func TestWorkflow_RemoveIngredient(t *testing.T) {
-
-	const operation = "Workflows.Product.RemoveIngredient"
 	t.Parallel()
 
-	ctx := tests.WorkflowContext(idExample1, idExample2)
-	managers := tests.Managers()
+	ctx := context.Background()
 
 	type (
 		args struct {
 			key product.Key
-			id  types.External
+			id  types.UID
 		}
 
 		opts struct {
@@ -31,7 +27,6 @@ func TestWorkflow_RemoveIngredient(t *testing.T) {
 			name    string
 			args    args
 			opts    opts
-			wantKey product.Key
 			wantErr error
 		}
 	)
@@ -42,10 +37,9 @@ func TestWorkflow_RemoveIngredient(t *testing.T) {
 			args: args{
 				key: product.Key{ID: idExample1},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			opts: opts{
 				products: &product.ActionsMock{
-					RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, ingredientID types.External) error {
+					RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, ingredientID types.UID) error {
 						return nil
 					},
 				},
@@ -59,14 +53,10 @@ func TestWorkflow_RemoveIngredient(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, nil, nil, managers.Transactions)
+			wf := NewWorkflow(c.opts.products, nil, nil)
 			err := wf.RemoveIngredient(ctx, c.args.key, c.args.id)
 
 			assert.ErrorIs(t, err, c.wantErr)
-
-			if err == nil && c.wantErr == nil {
-				assert.Equal(t, c.wantKey, c.opts.products.RemoveIngredientCalls()[0].ProductKey)
-			}
 
 		})
 	}

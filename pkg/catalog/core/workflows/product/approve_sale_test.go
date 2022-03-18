@@ -4,18 +4,15 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"gomies/pkg/catalog/core/entities/product"
-	"gomies/pkg/sdk/tests"
 	"gomies/pkg/sdk/types"
 	"gomies/pkg/stocking/core/entities/stock"
 	"testing"
 )
 
 func TestWorkflow_ApproveSale(t *testing.T) {
-	const operation = "Workflows.Product.ApproveSale"
 	t.Parallel()
 
-	ctx := tests.WorkflowContext(idExample1, idExample2)
-	managers := tests.Managers()
+	ctx := context.Background()
 
 	type (
 		args struct {
@@ -24,14 +21,13 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 
 		opts struct {
 			products *product.ActionsMock
-			stocks   *stock.ActionsMock
+			stocks   *stock.WorkflowMock
 		}
 
 		test struct {
 			name    string
 			args    args
 			opts    opts
-			wantKey product.Key
 			wantErr error
 		}
 	)
@@ -46,7 +42,6 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 					Price:    1000,
 				},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			opts: opts{
 				products: &product.ActionsMock{
 					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
@@ -57,14 +52,9 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 						}, nil
 					},
 				},
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, target types.External, stockFilter stock.Filter) (stock.Actual, error) {
-						return stock.Actual{
-							TargetID:    target,
-							InitialDate: stockFilter.InitialDate,
-							FinalDate:   stockFilter.FinalDate,
-							Actual:      50,
-						}, nil
+				stocks: &stock.WorkflowMock{
+					ComputeFunc: func(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
+						return 50, nil
 					},
 				},
 			},
@@ -78,7 +68,6 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 					Price:    1000,
 				},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			opts: opts{
 				products: &product.ActionsMock{
 					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
@@ -94,14 +83,9 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 						}, nil
 					},
 				},
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, target types.External, stockFilter stock.Filter) (stock.Actual, error) {
-						return stock.Actual{
-							TargetID:    target,
-							InitialDate: stockFilter.InitialDate,
-							FinalDate:   stockFilter.FinalDate,
-							Actual:      50,
-						}, nil
+				stocks: &stock.WorkflowMock{
+					ComputeSomeFunc: func(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error) {
+						return []types.Quantity{50, 50, 50, 50}, nil
 					},
 				},
 			},
@@ -115,7 +99,6 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 					Price:    1000,
 				},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			wantErr: product.ErrInvalidSalePrice,
 			opts: opts{
 				products: &product.ActionsMock{
@@ -137,7 +120,6 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 					Price:    1500,
 				},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			wantErr: product.ErrInvalidSaleQuantity,
 			opts: opts{
 				products: &product.ActionsMock{
@@ -159,7 +141,6 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 					Price:    1000,
 				},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			wantErr: product.ErrNotEnoughStocked,
 			opts: opts{
 				products: &product.ActionsMock{
@@ -176,14 +157,9 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 						}, nil
 					},
 				},
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, target types.External, stockFilter stock.Filter) (stock.Actual, error) {
-						return stock.Actual{
-							TargetID:    target,
-							InitialDate: stockFilter.InitialDate,
-							FinalDate:   stockFilter.FinalDate,
-							Actual:      50,
-						}, nil
+				stocks: &stock.WorkflowMock{
+					ComputeSomeFunc: func(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error) {
+						return []types.Quantity{50, 50, 50, 50}, nil
 					},
 				},
 			},
@@ -196,14 +172,10 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, c.opts.stocks, nil, managers.Transactions)
+			wf := NewWorkflow(c.opts.products, nil, c.opts.stocks)
 			err := wf.ApproveSale(ctx, c.args.req)
 
 			assert.ErrorIs(t, err, c.wantErr)
-
-			if err == nil && c.wantErr == nil {
-				assert.Equal(t, c.wantKey, c.opts.products.GetProductSaleInfoCalls()[0].Key)
-			}
 
 		})
 	}

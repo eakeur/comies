@@ -4,7 +4,6 @@ import (
 	"context"
 	"gomies/pkg/catalog/core/entities/category"
 	"gomies/pkg/catalog/core/entities/product"
-	"gomies/pkg/sdk/transaction"
 	"gomies/pkg/sdk/types"
 	"gomies/pkg/stocking/core/entities/stock"
 )
@@ -35,17 +34,6 @@ type Workflow interface {
 	// RemoveProduct deletes a product or deactivates it if there is some children
 	RemoveProduct(ctx context.Context, key product.Key) error
 
-	// RemoveFromStock deletes a movement
-	RemoveFromStock(ctx context.Context, productID product.Key, movementID types.External) error
-
-	// AddToStock adds a stock movement to the stock of a specific product
-	//
-	// Possible errors
-	//   - fault.ErrNotFound: if the product does not exist
-	//   - stocking.ErrStockAlreadyFull: if the stock is already full
-	//   - stocking.ErrMustHaveTargetID: if the targetID for the movement was not set
-	AddToStock(ctx context.Context, productID product.Key, mov stock.Movement) (product.StockAdditionResult, error)
-
 	// ApproveSale checks if a product can be sold with such parameters
 	//
 	// Possible errors
@@ -59,28 +47,25 @@ type Workflow interface {
 
 	AddIngredient(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error)
 
-	RemoveIngredient(ctx context.Context, productKey product.Key, id types.External) error
+	RemoveIngredient(ctx context.Context, productKey product.Key, id types.UID) error
 }
 
 var _ Workflow = workflow{}
 
 func NewWorkflow(
 	products product.Actions,
-	stocks stock.Actions,
 	categories category.Actions,
-	transaction transaction.Manager,
+	stocks stock.Workflow,
 ) Workflow {
 	return workflow{
-		products:     products,
-		stocks:       stocks,
-		categories:   categories,
-		transactions: transaction,
+		products:   products,
+		stocks:     stocks,
+		categories: categories,
 	}
 }
 
 type workflow struct {
-	products     product.Actions
-	stocks       stock.Actions
-	categories   category.Actions
-	transactions transaction.Manager
+	products   product.Actions
+	categories category.Actions
+	stocks     stock.Workflow
 }

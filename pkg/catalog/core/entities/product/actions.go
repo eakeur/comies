@@ -50,7 +50,7 @@ type Actions interface {
 	SaveIngredients(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error)
 
 	// RemoveIngredient removes all ingredients of a given product
-	RemoveIngredient(ctx context.Context, productKey Key, ingredientID types.External) error
+	RemoveIngredient(ctx context.Context, productKey Key, ingredientID types.UID) error
 
 	// RemoveAllIngredients removes all ingredients of a given product
 	RemoveAllIngredients(ctx context.Context, productKey Key) error

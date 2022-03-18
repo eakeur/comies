@@ -19,34 +19,34 @@ var _ Actions = &ActionsMock{}
 //
 // 		// make and configure a mocked Actions
 // 		mockedActions := &ActionsMock{
-// 			GetAddressFunc: func(ctx context.Context, target types.External, addressID types.External) (Address, error) {
+// 			GetAddressFunc: func(ctx context.Context, target types.UID, addressID types.UID) (Address, error) {
 // 				panic("mock out the GetAddress method")
 // 			},
-// 			GetPhoneFunc: func(ctx context.Context, target types.External, id types.External) (Phone, error) {
+// 			GetPhoneFunc: func(ctx context.Context, target types.UID, id types.UID) (Phone, error) {
 // 				panic("mock out the GetPhone method")
 // 			},
-// 			ListAddressesFunc: func(ctx context.Context, target types.External) ([]Address, error) {
+// 			ListAddressesFunc: func(ctx context.Context, target types.UID) ([]Address, error) {
 // 				panic("mock out the ListAddresses method")
 // 			},
-// 			ListPhonesFunc: func(ctx context.Context, target types.External) ([]Phone, error) {
+// 			ListPhonesFunc: func(ctx context.Context, target types.UID) ([]Phone, error) {
 // 				panic("mock out the ListPhones method")
 // 			},
-// 			RemoveAddressFunc: func(ctx context.Context, target types.External, id types.External) error {
+// 			RemoveAddressFunc: func(ctx context.Context, target types.UID, id types.UID) error {
 // 				panic("mock out the RemoveAddress method")
 // 			},
-// 			RemoveAllAddressesFunc: func(ctx context.Context, target types.External) error {
+// 			RemoveAllAddressesFunc: func(ctx context.Context, target types.UID) error {
 // 				panic("mock out the RemoveAllAddresses method")
 // 			},
-// 			RemoveAllPhonesFunc: func(ctx context.Context, target types.External) error {
+// 			RemoveAllPhonesFunc: func(ctx context.Context, target types.UID) error {
 // 				panic("mock out the RemoveAllPhones method")
 // 			},
-// 			RemovePhoneFunc: func(ctx context.Context, target types.External, id types.External) error {
+// 			RemovePhoneFunc: func(ctx context.Context, target types.UID, id types.UID) error {
 // 				panic("mock out the RemovePhone method")
 // 			},
-// 			SaveAddressesFunc: func(ctx context.Context, target types.External, addresses ...Address) ([]Address, error) {
+// 			SaveAddressesFunc: func(ctx context.Context, target types.UID, addresses ...Address) ([]Address, error) {
 // 				panic("mock out the SaveAddresses method")
 // 			},
-// 			SavePhonesFunc: func(ctx context.Context, target types.External, phones ...Address) ([]Phone, error) {
+// 			SavePhonesFunc: func(ctx context.Context, target types.UID, phones ...Address) ([]Phone, error) {
 // 				panic("mock out the SavePhones method")
 // 			},
 // 		}
@@ -57,34 +57,34 @@ var _ Actions = &ActionsMock{}
 // 	}
 type ActionsMock struct {
 	// GetAddressFunc mocks the GetAddress method.
-	GetAddressFunc func(ctx context.Context, target types.External, addressID types.External) (Address, error)
+	GetAddressFunc func(ctx context.Context, target types.UID, addressID types.UID) (Address, error)
 
 	// GetPhoneFunc mocks the GetPhone method.
-	GetPhoneFunc func(ctx context.Context, target types.External, id types.External) (Phone, error)
+	GetPhoneFunc func(ctx context.Context, target types.UID, id types.UID) (Phone, error)
 
 	// ListAddressesFunc mocks the ListAddresses method.
-	ListAddressesFunc func(ctx context.Context, target types.External) ([]Address, error)
+	ListAddressesFunc func(ctx context.Context, target types.UID) ([]Address, error)
 
 	// ListPhonesFunc mocks the ListPhones method.
-	ListPhonesFunc func(ctx context.Context, target types.External) ([]Phone, error)
+	ListPhonesFunc func(ctx context.Context, target types.UID) ([]Phone, error)
 
 	// RemoveAddressFunc mocks the RemoveAddress method.
-	RemoveAddressFunc func(ctx context.Context, target types.External, id types.External) error
+	RemoveAddressFunc func(ctx context.Context, target types.UID, id types.UID) error
 
 	// RemoveAllAddressesFunc mocks the RemoveAllAddresses method.
-	RemoveAllAddressesFunc func(ctx context.Context, target types.External) error
+	RemoveAllAddressesFunc func(ctx context.Context, target types.UID) error
 
 	// RemoveAllPhonesFunc mocks the RemoveAllPhones method.
-	RemoveAllPhonesFunc func(ctx context.Context, target types.External) error
+	RemoveAllPhonesFunc func(ctx context.Context, target types.UID) error
 
 	// RemovePhoneFunc mocks the RemovePhone method.
-	RemovePhoneFunc func(ctx context.Context, target types.External, id types.External) error
+	RemovePhoneFunc func(ctx context.Context, target types.UID, id types.UID) error
 
 	// SaveAddressesFunc mocks the SaveAddresses method.
-	SaveAddressesFunc func(ctx context.Context, target types.External, addresses ...Address) ([]Address, error)
+	SaveAddressesFunc func(ctx context.Context, target types.UID, addresses ...Address) ([]Address, error)
 
 	// SavePhonesFunc mocks the SavePhones method.
-	SavePhonesFunc func(ctx context.Context, target types.External, phones ...Address) ([]Phone, error)
+	SavePhonesFunc func(ctx context.Context, target types.UID, phones ...Address) ([]Phone, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -93,71 +93,71 @@ type ActionsMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 			// AddressID is the addressID argument value.
-			AddressID types.External
+			AddressID types.UID
 		}
 		// GetPhone holds details about calls to the GetPhone method.
 		GetPhone []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 			// ID is the id argument value.
-			ID types.External
+			ID types.UID
 		}
 		// ListAddresses holds details about calls to the ListAddresses method.
 		ListAddresses []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 		}
 		// ListPhones holds details about calls to the ListPhones method.
 		ListPhones []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 		}
 		// RemoveAddress holds details about calls to the RemoveAddress method.
 		RemoveAddress []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 			// ID is the id argument value.
-			ID types.External
+			ID types.UID
 		}
 		// RemoveAllAddresses holds details about calls to the RemoveAllAddresses method.
 		RemoveAllAddresses []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 		}
 		// RemoveAllPhones holds details about calls to the RemoveAllPhones method.
 		RemoveAllPhones []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 		}
 		// RemovePhone holds details about calls to the RemovePhone method.
 		RemovePhone []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 			// ID is the id argument value.
-			ID types.External
+			ID types.UID
 		}
 		// SaveAddresses holds details about calls to the SaveAddresses method.
 		SaveAddresses []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 			// Addresses is the addresses argument value.
 			Addresses []Address
 		}
@@ -166,7 +166,7 @@ type ActionsMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Target is the target argument value.
-			Target types.External
+			Target types.UID
 			// Phones is the phones argument value.
 			Phones []Address
 		}
@@ -184,14 +184,14 @@ type ActionsMock struct {
 }
 
 // GetAddress calls GetAddressFunc.
-func (mock *ActionsMock) GetAddress(ctx context.Context, target types.External, addressID types.External) (Address, error) {
+func (mock *ActionsMock) GetAddress(ctx context.Context, target types.UID, addressID types.UID) (Address, error) {
 	if mock.GetAddressFunc == nil {
 		panic("ActionsMock.GetAddressFunc: method is nil but Actions.GetAddress was just called")
 	}
 	callInfo := struct {
 		Ctx       context.Context
-		Target    types.External
-		AddressID types.External
+		Target    types.UID
+		AddressID types.UID
 	}{
 		Ctx:       ctx,
 		Target:    target,
@@ -208,13 +208,13 @@ func (mock *ActionsMock) GetAddress(ctx context.Context, target types.External, 
 //     len(mockedActions.GetAddressCalls())
 func (mock *ActionsMock) GetAddressCalls() []struct {
 	Ctx       context.Context
-	Target    types.External
-	AddressID types.External
+	Target    types.UID
+	AddressID types.UID
 } {
 	var calls []struct {
 		Ctx       context.Context
-		Target    types.External
-		AddressID types.External
+		Target    types.UID
+		AddressID types.UID
 	}
 	mock.lockGetAddress.RLock()
 	calls = mock.calls.GetAddress
@@ -223,14 +223,14 @@ func (mock *ActionsMock) GetAddressCalls() []struct {
 }
 
 // GetPhone calls GetPhoneFunc.
-func (mock *ActionsMock) GetPhone(ctx context.Context, target types.External, id types.External) (Phone, error) {
+func (mock *ActionsMock) GetPhone(ctx context.Context, target types.UID, id types.UID) (Phone, error) {
 	if mock.GetPhoneFunc == nil {
 		panic("ActionsMock.GetPhoneFunc: method is nil but Actions.GetPhone was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
-		ID     types.External
+		Target types.UID
+		ID     types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -247,13 +247,13 @@ func (mock *ActionsMock) GetPhone(ctx context.Context, target types.External, id
 //     len(mockedActions.GetPhoneCalls())
 func (mock *ActionsMock) GetPhoneCalls() []struct {
 	Ctx    context.Context
-	Target types.External
-	ID     types.External
+	Target types.UID
+	ID     types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
-		ID     types.External
+		Target types.UID
+		ID     types.UID
 	}
 	mock.lockGetPhone.RLock()
 	calls = mock.calls.GetPhone
@@ -262,13 +262,13 @@ func (mock *ActionsMock) GetPhoneCalls() []struct {
 }
 
 // ListAddresses calls ListAddressesFunc.
-func (mock *ActionsMock) ListAddresses(ctx context.Context, target types.External) ([]Address, error) {
+func (mock *ActionsMock) ListAddresses(ctx context.Context, target types.UID) ([]Address, error) {
 	if mock.ListAddressesFunc == nil {
 		panic("ActionsMock.ListAddressesFunc: method is nil but Actions.ListAddresses was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -284,11 +284,11 @@ func (mock *ActionsMock) ListAddresses(ctx context.Context, target types.Externa
 //     len(mockedActions.ListAddressesCalls())
 func (mock *ActionsMock) ListAddressesCalls() []struct {
 	Ctx    context.Context
-	Target types.External
+	Target types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}
 	mock.lockListAddresses.RLock()
 	calls = mock.calls.ListAddresses
@@ -297,13 +297,13 @@ func (mock *ActionsMock) ListAddressesCalls() []struct {
 }
 
 // ListPhones calls ListPhonesFunc.
-func (mock *ActionsMock) ListPhones(ctx context.Context, target types.External) ([]Phone, error) {
+func (mock *ActionsMock) ListPhones(ctx context.Context, target types.UID) ([]Phone, error) {
 	if mock.ListPhonesFunc == nil {
 		panic("ActionsMock.ListPhonesFunc: method is nil but Actions.ListPhones was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -319,11 +319,11 @@ func (mock *ActionsMock) ListPhones(ctx context.Context, target types.External) 
 //     len(mockedActions.ListPhonesCalls())
 func (mock *ActionsMock) ListPhonesCalls() []struct {
 	Ctx    context.Context
-	Target types.External
+	Target types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}
 	mock.lockListPhones.RLock()
 	calls = mock.calls.ListPhones
@@ -332,14 +332,14 @@ func (mock *ActionsMock) ListPhonesCalls() []struct {
 }
 
 // RemoveAddress calls RemoveAddressFunc.
-func (mock *ActionsMock) RemoveAddress(ctx context.Context, target types.External, id types.External) error {
+func (mock *ActionsMock) RemoveAddress(ctx context.Context, target types.UID, id types.UID) error {
 	if mock.RemoveAddressFunc == nil {
 		panic("ActionsMock.RemoveAddressFunc: method is nil but Actions.RemoveAddress was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
-		ID     types.External
+		Target types.UID
+		ID     types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -356,13 +356,13 @@ func (mock *ActionsMock) RemoveAddress(ctx context.Context, target types.Externa
 //     len(mockedActions.RemoveAddressCalls())
 func (mock *ActionsMock) RemoveAddressCalls() []struct {
 	Ctx    context.Context
-	Target types.External
-	ID     types.External
+	Target types.UID
+	ID     types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
-		ID     types.External
+		Target types.UID
+		ID     types.UID
 	}
 	mock.lockRemoveAddress.RLock()
 	calls = mock.calls.RemoveAddress
@@ -371,13 +371,13 @@ func (mock *ActionsMock) RemoveAddressCalls() []struct {
 }
 
 // RemoveAllAddresses calls RemoveAllAddressesFunc.
-func (mock *ActionsMock) RemoveAllAddresses(ctx context.Context, target types.External) error {
+func (mock *ActionsMock) RemoveAllAddresses(ctx context.Context, target types.UID) error {
 	if mock.RemoveAllAddressesFunc == nil {
 		panic("ActionsMock.RemoveAllAddressesFunc: method is nil but Actions.RemoveAllAddresses was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -393,11 +393,11 @@ func (mock *ActionsMock) RemoveAllAddresses(ctx context.Context, target types.Ex
 //     len(mockedActions.RemoveAllAddressesCalls())
 func (mock *ActionsMock) RemoveAllAddressesCalls() []struct {
 	Ctx    context.Context
-	Target types.External
+	Target types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}
 	mock.lockRemoveAllAddresses.RLock()
 	calls = mock.calls.RemoveAllAddresses
@@ -406,13 +406,13 @@ func (mock *ActionsMock) RemoveAllAddressesCalls() []struct {
 }
 
 // RemoveAllPhones calls RemoveAllPhonesFunc.
-func (mock *ActionsMock) RemoveAllPhones(ctx context.Context, target types.External) error {
+func (mock *ActionsMock) RemoveAllPhones(ctx context.Context, target types.UID) error {
 	if mock.RemoveAllPhonesFunc == nil {
 		panic("ActionsMock.RemoveAllPhonesFunc: method is nil but Actions.RemoveAllPhones was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -428,11 +428,11 @@ func (mock *ActionsMock) RemoveAllPhones(ctx context.Context, target types.Exter
 //     len(mockedActions.RemoveAllPhonesCalls())
 func (mock *ActionsMock) RemoveAllPhonesCalls() []struct {
 	Ctx    context.Context
-	Target types.External
+	Target types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 	}
 	mock.lockRemoveAllPhones.RLock()
 	calls = mock.calls.RemoveAllPhones
@@ -441,14 +441,14 @@ func (mock *ActionsMock) RemoveAllPhonesCalls() []struct {
 }
 
 // RemovePhone calls RemovePhoneFunc.
-func (mock *ActionsMock) RemovePhone(ctx context.Context, target types.External, id types.External) error {
+func (mock *ActionsMock) RemovePhone(ctx context.Context, target types.UID, id types.UID) error {
 	if mock.RemovePhoneFunc == nil {
 		panic("ActionsMock.RemovePhoneFunc: method is nil but Actions.RemovePhone was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
-		ID     types.External
+		Target types.UID
+		ID     types.UID
 	}{
 		Ctx:    ctx,
 		Target: target,
@@ -465,13 +465,13 @@ func (mock *ActionsMock) RemovePhone(ctx context.Context, target types.External,
 //     len(mockedActions.RemovePhoneCalls())
 func (mock *ActionsMock) RemovePhoneCalls() []struct {
 	Ctx    context.Context
-	Target types.External
-	ID     types.External
+	Target types.UID
+	ID     types.UID
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
-		ID     types.External
+		Target types.UID
+		ID     types.UID
 	}
 	mock.lockRemovePhone.RLock()
 	calls = mock.calls.RemovePhone
@@ -480,13 +480,13 @@ func (mock *ActionsMock) RemovePhoneCalls() []struct {
 }
 
 // SaveAddresses calls SaveAddressesFunc.
-func (mock *ActionsMock) SaveAddresses(ctx context.Context, target types.External, addresses ...Address) ([]Address, error) {
+func (mock *ActionsMock) SaveAddresses(ctx context.Context, target types.UID, addresses ...Address) ([]Address, error) {
 	if mock.SaveAddressesFunc == nil {
 		panic("ActionsMock.SaveAddressesFunc: method is nil but Actions.SaveAddresses was just called")
 	}
 	callInfo := struct {
 		Ctx       context.Context
-		Target    types.External
+		Target    types.UID
 		Addresses []Address
 	}{
 		Ctx:       ctx,
@@ -504,12 +504,12 @@ func (mock *ActionsMock) SaveAddresses(ctx context.Context, target types.Externa
 //     len(mockedActions.SaveAddressesCalls())
 func (mock *ActionsMock) SaveAddressesCalls() []struct {
 	Ctx       context.Context
-	Target    types.External
+	Target    types.UID
 	Addresses []Address
 } {
 	var calls []struct {
 		Ctx       context.Context
-		Target    types.External
+		Target    types.UID
 		Addresses []Address
 	}
 	mock.lockSaveAddresses.RLock()
@@ -519,13 +519,13 @@ func (mock *ActionsMock) SaveAddressesCalls() []struct {
 }
 
 // SavePhones calls SavePhonesFunc.
-func (mock *ActionsMock) SavePhones(ctx context.Context, target types.External, phones ...Address) ([]Phone, error) {
+func (mock *ActionsMock) SavePhones(ctx context.Context, target types.UID, phones ...Address) ([]Phone, error) {
 	if mock.SavePhonesFunc == nil {
 		panic("ActionsMock.SavePhonesFunc: method is nil but Actions.SavePhones was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 		Phones []Address
 	}{
 		Ctx:    ctx,
@@ -543,12 +543,12 @@ func (mock *ActionsMock) SavePhones(ctx context.Context, target types.External, 
 //     len(mockedActions.SavePhonesCalls())
 func (mock *ActionsMock) SavePhonesCalls() []struct {
 	Ctx    context.Context
-	Target types.External
+	Target types.UID
 	Phones []Address
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
+		Target types.UID
 		Phones []Address
 	}
 	mock.lockSavePhones.RLock()

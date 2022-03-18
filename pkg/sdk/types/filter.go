@@ -12,5 +12,4 @@ type Filter struct {
 	RangeStart    int
 	RangeEnd      int
 	SortDirection SortDirection
-	Store
 }

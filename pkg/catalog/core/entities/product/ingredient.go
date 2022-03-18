@@ -7,9 +7,9 @@ type (
 		types.Entity
 		Quantity             types.Quantity
 		ProductID            types.ID
-		ProductExternalID    types.External
+		ProductExternalID    types.UID
 		IngredientID         types.ID
-		IngredientExternalID types.External
+		IngredientExternalID types.UID
 		types.Store
 	}
 )

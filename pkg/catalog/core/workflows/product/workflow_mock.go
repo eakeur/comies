@@ -7,7 +7,6 @@ import (
 	"context"
 	"gomies/pkg/catalog/core/entities/product"
 	"gomies/pkg/sdk/types"
-	"gomies/pkg/stocking/core/entities/stock"
 	"sync"
 )
 
@@ -24,9 +23,6 @@ var _ Workflow = &WorkflowMock{}
 // 			AddIngredientFunc: func(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error) {
 // 				panic("mock out the AddIngredient method")
 // 			},
-// 			AddToStockFunc: func(ctx context.Context, productID product.Key, mov stock.Movement) (product.StockAdditionResult, error) {
-// 				panic("mock out the AddToStock method")
-// 			},
 // 			ApproveSaleFunc: func(ctx context.Context, req product.ApproveSaleRequest) error {
 // 				panic("mock out the ApproveSale method")
 // 			},
@@ -36,10 +32,7 @@ var _ Workflow = &WorkflowMock{}
 // 			ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, error) {
 // 				panic("mock out the ListProducts method")
 // 			},
-// 			RemoveFromStockFunc: func(ctx context.Context, productID product.Key, movementID types.External) error {
-// 				panic("mock out the RemoveFromStock method")
-// 			},
-// 			RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, id types.External) error {
+// 			RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, id types.UID) error {
 // 				panic("mock out the RemoveIngredient method")
 // 			},
 // 			RemoveProductFunc: func(ctx context.Context, key product.Key) error {
@@ -58,9 +51,6 @@ type WorkflowMock struct {
 	// AddIngredientFunc mocks the AddIngredient method.
 	AddIngredientFunc func(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error)
 
-	// AddToStockFunc mocks the AddToStock method.
-	AddToStockFunc func(ctx context.Context, productID product.Key, mov stock.Movement) (product.StockAdditionResult, error)
-
 	// ApproveSaleFunc mocks the ApproveSale method.
 	ApproveSaleFunc func(ctx context.Context, req product.ApproveSaleRequest) error
 
@@ -70,11 +60,8 @@ type WorkflowMock struct {
 	// ListProductsFunc mocks the ListProducts method.
 	ListProductsFunc func(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
 
-	// RemoveFromStockFunc mocks the RemoveFromStock method.
-	RemoveFromStockFunc func(ctx context.Context, productID product.Key, movementID types.External) error
-
 	// RemoveIngredientFunc mocks the RemoveIngredient method.
-	RemoveIngredientFunc func(ctx context.Context, productKey product.Key, id types.External) error
+	RemoveIngredientFunc func(ctx context.Context, productKey product.Key, id types.UID) error
 
 	// RemoveProductFunc mocks the RemoveProduct method.
 	RemoveProductFunc func(ctx context.Context, key product.Key) error
@@ -92,15 +79,6 @@ type WorkflowMock struct {
 			ProductKey product.Key
 			// Ingredient is the ingredient argument value.
 			Ingredient product.Ingredient
-		}
-		// AddToStock holds details about calls to the AddToStock method.
-		AddToStock []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ProductID is the productID argument value.
-			ProductID product.Key
-			// Mov is the mov argument value.
-			Mov stock.Movement
 		}
 		// ApproveSale holds details about calls to the ApproveSale method.
 		ApproveSale []struct {
@@ -123,15 +101,6 @@ type WorkflowMock struct {
 			// ProductFilter is the productFilter argument value.
 			ProductFilter product.Filter
 		}
-		// RemoveFromStock holds details about calls to the RemoveFromStock method.
-		RemoveFromStock []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ProductID is the productID argument value.
-			ProductID product.Key
-			// MovementID is the movementID argument value.
-			MovementID types.External
-		}
 		// RemoveIngredient holds details about calls to the RemoveIngredient method.
 		RemoveIngredient []struct {
 			// Ctx is the ctx argument value.
@@ -139,7 +108,7 @@ type WorkflowMock struct {
 			// ProductKey is the productKey argument value.
 			ProductKey product.Key
 			// ID is the id argument value.
-			ID types.External
+			ID types.UID
 		}
 		// RemoveProduct holds details about calls to the RemoveProduct method.
 		RemoveProduct []struct {
@@ -159,11 +128,9 @@ type WorkflowMock struct {
 		}
 	}
 	lockAddIngredient    sync.RWMutex
-	lockAddToStock       sync.RWMutex
 	lockApproveSale      sync.RWMutex
 	lockGetProduct       sync.RWMutex
 	lockListProducts     sync.RWMutex
-	lockRemoveFromStock  sync.RWMutex
 	lockRemoveIngredient sync.RWMutex
 	lockRemoveProduct    sync.RWMutex
 	lockSaveProduct      sync.RWMutex
@@ -205,45 +172,6 @@ func (mock *WorkflowMock) AddIngredientCalls() []struct {
 	mock.lockAddIngredient.RLock()
 	calls = mock.calls.AddIngredient
 	mock.lockAddIngredient.RUnlock()
-	return calls
-}
-
-// AddToStock calls AddToStockFunc.
-func (mock *WorkflowMock) AddToStock(ctx context.Context, productID product.Key, mov stock.Movement) (product.StockAdditionResult, error) {
-	if mock.AddToStockFunc == nil {
-		panic("WorkflowMock.AddToStockFunc: method is nil but Workflow.AddToStock was just called")
-	}
-	callInfo := struct {
-		Ctx       context.Context
-		ProductID product.Key
-		Mov       stock.Movement
-	}{
-		Ctx:       ctx,
-		ProductID: productID,
-		Mov:       mov,
-	}
-	mock.lockAddToStock.Lock()
-	mock.calls.AddToStock = append(mock.calls.AddToStock, callInfo)
-	mock.lockAddToStock.Unlock()
-	return mock.AddToStockFunc(ctx, productID, mov)
-}
-
-// AddToStockCalls gets all the calls that were made to AddToStock.
-// Check the length with:
-//     len(mockedWorkflow.AddToStockCalls())
-func (mock *WorkflowMock) AddToStockCalls() []struct {
-	Ctx       context.Context
-	ProductID product.Key
-	Mov       stock.Movement
-} {
-	var calls []struct {
-		Ctx       context.Context
-		ProductID product.Key
-		Mov       stock.Movement
-	}
-	mock.lockAddToStock.RLock()
-	calls = mock.calls.AddToStock
-	mock.lockAddToStock.RUnlock()
 	return calls
 }
 
@@ -352,54 +280,15 @@ func (mock *WorkflowMock) ListProductsCalls() []struct {
 	return calls
 }
 
-// RemoveFromStock calls RemoveFromStockFunc.
-func (mock *WorkflowMock) RemoveFromStock(ctx context.Context, productID product.Key, movementID types.External) error {
-	if mock.RemoveFromStockFunc == nil {
-		panic("WorkflowMock.RemoveFromStockFunc: method is nil but Workflow.RemoveFromStock was just called")
-	}
-	callInfo := struct {
-		Ctx        context.Context
-		ProductID  product.Key
-		MovementID types.External
-	}{
-		Ctx:        ctx,
-		ProductID:  productID,
-		MovementID: movementID,
-	}
-	mock.lockRemoveFromStock.Lock()
-	mock.calls.RemoveFromStock = append(mock.calls.RemoveFromStock, callInfo)
-	mock.lockRemoveFromStock.Unlock()
-	return mock.RemoveFromStockFunc(ctx, productID, movementID)
-}
-
-// RemoveFromStockCalls gets all the calls that were made to RemoveFromStock.
-// Check the length with:
-//     len(mockedWorkflow.RemoveFromStockCalls())
-func (mock *WorkflowMock) RemoveFromStockCalls() []struct {
-	Ctx        context.Context
-	ProductID  product.Key
-	MovementID types.External
-} {
-	var calls []struct {
-		Ctx        context.Context
-		ProductID  product.Key
-		MovementID types.External
-	}
-	mock.lockRemoveFromStock.RLock()
-	calls = mock.calls.RemoveFromStock
-	mock.lockRemoveFromStock.RUnlock()
-	return calls
-}
-
 // RemoveIngredient calls RemoveIngredientFunc.
-func (mock *WorkflowMock) RemoveIngredient(ctx context.Context, productKey product.Key, id types.External) error {
+func (mock *WorkflowMock) RemoveIngredient(ctx context.Context, productKey product.Key, id types.UID) error {
 	if mock.RemoveIngredientFunc == nil {
 		panic("WorkflowMock.RemoveIngredientFunc: method is nil but Workflow.RemoveIngredient was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
 		ProductKey product.Key
-		ID         types.External
+		ID         types.UID
 	}{
 		Ctx:        ctx,
 		ProductKey: productKey,
@@ -417,12 +306,12 @@ func (mock *WorkflowMock) RemoveIngredient(ctx context.Context, productKey produ
 func (mock *WorkflowMock) RemoveIngredientCalls() []struct {
 	Ctx        context.Context
 	ProductKey product.Key
-	ID         types.External
+	ID         types.UID
 } {
 	var calls []struct {
 		Ctx        context.Context
 		ProductKey product.Key
-		ID         types.External
+		ID         types.UID
 	}
 	mock.lockRemoveIngredient.RLock()
 	calls = mock.calls.RemoveIngredient

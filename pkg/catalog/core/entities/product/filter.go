@@ -7,13 +7,12 @@ type (
 		Code       string
 		Name       string
 		Type       Type
-		CategoryID types.External
+		CategoryID types.UID
 		types.Filter
 	}
 
 	Key struct {
-		ID   types.External
+		ID   types.UID
 		Code string
-		types.Store
 	}
 )

@@ -5,22 +5,21 @@ import (
 	"gomies/pkg/sdk/types"
 )
 
-//go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock
-
-type Actions interface {
+//go:generate moq -fmt goimports -out workflow_mock.go . Workflow:WorkflowMock
+type Workflow interface {
 	// Compute calculates the quantity stored of a specific resource
 	//
 	// Possible errors:
 	//   - ErrMissingResourceID: if the resourceID is invalid
 	Compute(ctx context.Context, filter Filter) (types.Quantity, error)
 
-	// ComputeSome calculates the quantity stored of all resources parameterized
+	// ComputeSome calculates all quantities for the resources specified by the resourcesIDs array
 	//
 	// Possible errors:
 	//   - ErrMissingResourceID: if the resourceID is invalid
-	ComputeSome(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error)
+	ComputeSome(ctx context.Context, filter Filter, resourcesIDs ...types.UID) ([]types.Quantity, error)
 
-	// ListMovements retrieves movements of the resource identified with the resourceID
+	// ListMovements retrieves movements (archived and not) of the resource identified with the resourceID
 	// filtering also by the properties set in the filter property
 	//
 	// Possible errors:
@@ -32,25 +31,21 @@ type Actions interface {
 	//
 	// Possible errors:
 	//   - ErrMissingResourceID: if the resourceID is invalid
-	SaveMovements(ctx context.Context, movement ...Movement) ([]Movement, error)
+	SaveMovements(ctx context.Context, config Config, resourceID types.UID, movements ...Movement) (AdditionResult, error)
 
 	// RemoveMovement deletes a movement from the stock of a given resource identified
-	// by the parameterized resourceID.
+	// by the parameterized resourceID. If the movementID is empty, it removes all movements
+	// from the resource's stock
 	//
 	// Possible errors:
 	//   - ErrMissingResourceID: if the resourceID is invalid
 	RemoveMovement(ctx context.Context, resourceID types.UID, movementID types.UID) error
 
-	// RemoveAllMovements deletes all movements from the stock of a given resource identified
-	// by the parameterized resourceID.
+	// ClosePeriod archives all movements from a given resource and period, blocking them from being deleted
+	// and being counted on compute functions
 	//
 	// Possible errors:
 	//   - ErrMissingResourceID: if the resourceID is invalid
-	RemoveAllMovements(ctx context.Context, resourceID types.UID) error
-
-	// ArchiveMovements moves all movements in a given period into a specific storage for consulting purposes only
-	//
-	// Possible errors:
-	//   - ErrMissingResourceID: if the resourceID is invalid
-	ArchiveMovements(ctx context.Context, filter Filter) error
+	//   - ErrInvalidPeriod: if the dates are invalid or are not in a valid period
+	ClosePeriod(ctx context.Context, filter Filter) error
 }

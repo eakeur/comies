@@ -5,17 +5,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gomies/pkg/catalog/core/entities/category"
 	"gomies/pkg/catalog/core/entities/product"
-	"gomies/pkg/sdk/tests"
 	"gomies/pkg/sdk/types"
 	"testing"
 )
 
 func TestWorkflow_SaveProduct(t *testing.T) {
-	const operation = "Workflows.Product.SaveProduct"
 	t.Parallel()
 
-	ctx := tests.WorkflowContext(idExample1, idExample2)
-	managers := tests.Managers()
+	ctx := context.Background()
 
 	type (
 		args struct {
@@ -54,12 +51,6 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 				},
 			},
 			want: product.Product{
-				Entity: types.Entity{
-					History: types.History{
-						By:        idExample1,
-						Operation: operation,
-					},
-				},
 				Code: "PRD",
 				Name: "Product",
 				Type: product.OutputType,
@@ -70,7 +61,6 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 					SalePrice:   2,
 					MinimumSale: 2,
 				},
-				Store: types.Store{StoreID: idExample2},
 			},
 			opts: opts{
 				products: &product.ActionsMock{
@@ -103,12 +93,6 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 				},
 			},
 			want: product.Product{
-				Entity: types.Entity{
-					History: types.History{
-						By:        idExample1,
-						Operation: operation,
-					},
-				},
 				Code:               "PRD",
 				Name:               "Product",
 				CategoryID:         2,
@@ -121,7 +105,6 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 					SalePrice:   2,
 					MinimumSale: 2,
 				},
-				Store: types.Store{StoreID: idExample2},
 			},
 			opts: opts{
 				products: &product.ActionsMock{
@@ -149,19 +132,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 				},
 			},
 			want: product.Product{
-				Entity: types.Entity{
-					History: types.History{
-						By:        idExample1,
-						Operation: operation,
-					},
-				},
 				Code: "PRD",
 				Name: "Product",
 				Type: product.InputType,
 				Stock: product.Stock{
 					CostPrice: 1,
 				},
-				Store: types.Store{StoreID: idExample2},
 			},
 			opts: opts{
 				products: &product.ActionsMock{
@@ -302,7 +278,7 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, nil, c.opts.categories, managers.Transactions)
+			wf := NewWorkflow(c.opts.products, c.opts.categories, nil)
 			ingredient, err := wf.SaveProduct(ctx, c.args.product)
 
 			assert.ErrorIs(t, err, c.wantErr)

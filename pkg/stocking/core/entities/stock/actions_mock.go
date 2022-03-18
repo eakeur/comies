@@ -19,20 +19,26 @@ var _ Actions = &ActionsMock{}
 //
 // 		// make and configure a mocked Actions
 // 		mockedActions := &ActionsMock{
-// 			AddToStockFunc: func(ctx context.Context, target types.External, mov Movement) (Movement, error) {
-// 				panic("mock out the AddToStock method")
+// 			ArchiveMovementsFunc: func(ctx context.Context, filter Filter) error {
+// 				panic("mock out the ArchiveMovements method")
 // 			},
-// 			ComputeStockFunc: func(ctx context.Context, target types.External, stockFilter Filter) (Actual, error) {
-// 				panic("mock out the ComputeStock method")
+// 			ComputeFunc: func(ctx context.Context, filter Filter) (types.Quantity, error) {
+// 				panic("mock out the Compute method")
 // 			},
-// 			GetMovementFunc: func(ctx context.Context, target types.External, movementID types.External) (Movement, error) {
-// 				panic("mock out the GetMovement method")
+// 			ComputeSomeFunc: func(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error) {
+// 				panic("mock out the ComputeSome method")
 // 			},
-// 			ListMovementsFunc: func(ctx context.Context, target types.External, stockFilter Filter) ([]Movement, error) {
+// 			ListMovementsFunc: func(ctx context.Context, filter Filter) ([]Movement, error) {
 // 				panic("mock out the ListMovements method")
 // 			},
-// 			RemoveFromStockFunc: func(ctx context.Context, target types.External, movementID types.External) error {
-// 				panic("mock out the RemoveFromStock method")
+// 			RemoveAllMovementsFunc: func(ctx context.Context, resourceID types.UID) error {
+// 				panic("mock out the RemoveAllMovements method")
+// 			},
+// 			RemoveMovementFunc: func(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+// 				panic("mock out the RemoveMovement method")
+// 			},
+// 			SaveMovementsFunc: func(ctx context.Context, movement ...Movement) ([]Movement, error) {
+// 				panic("mock out the SaveMovements method")
 // 			},
 // 		}
 //
@@ -41,225 +47,229 @@ var _ Actions = &ActionsMock{}
 //
 // 	}
 type ActionsMock struct {
-	// AddToStockFunc mocks the AddToStock method.
-	AddToStockFunc func(ctx context.Context, target types.External, mov Movement) (Movement, error)
+	// ArchiveMovementsFunc mocks the ArchiveMovements method.
+	ArchiveMovementsFunc func(ctx context.Context, filter Filter) error
 
-	// ComputeStockFunc mocks the ComputeStock method.
-	ComputeStockFunc func(ctx context.Context, target types.External, stockFilter Filter) (Actual, error)
+	// ComputeFunc mocks the Compute method.
+	ComputeFunc func(ctx context.Context, filter Filter) (types.Quantity, error)
 
-	// GetMovementFunc mocks the GetMovement method.
-	GetMovementFunc func(ctx context.Context, target types.External, movementID types.External) (Movement, error)
+	// ComputeSomeFunc mocks the ComputeSome method.
+	ComputeSomeFunc func(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error)
 
 	// ListMovementsFunc mocks the ListMovements method.
-	ListMovementsFunc func(ctx context.Context, target types.External, stockFilter Filter) ([]Movement, error)
+	ListMovementsFunc func(ctx context.Context, filter Filter) ([]Movement, error)
 
-	// RemoveFromStockFunc mocks the RemoveFromStock method.
-	RemoveFromStockFunc func(ctx context.Context, target types.External, movementID types.External) error
+	// RemoveAllMovementsFunc mocks the RemoveAllMovements method.
+	RemoveAllMovementsFunc func(ctx context.Context, resourceID types.UID) error
+
+	// RemoveMovementFunc mocks the RemoveMovement method.
+	RemoveMovementFunc func(ctx context.Context, resourceID types.UID, movementID types.UID) error
+
+	// SaveMovementsFunc mocks the SaveMovements method.
+	SaveMovementsFunc func(ctx context.Context, movement ...Movement) ([]Movement, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// AddToStock holds details about calls to the AddToStock method.
-		AddToStock []struct {
+		// ArchiveMovements holds details about calls to the ArchiveMovements method.
+		ArchiveMovements []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Target is the target argument value.
-			Target types.External
-			// Mov is the mov argument value.
-			Mov Movement
+			// Filter is the filter argument value.
+			Filter Filter
 		}
-		// ComputeStock holds details about calls to the ComputeStock method.
-		ComputeStock []struct {
+		// Compute holds details about calls to the Compute method.
+		Compute []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Target is the target argument value.
-			Target types.External
-			// StockFilter is the stockFilter argument value.
-			StockFilter Filter
+			// Filter is the filter argument value.
+			Filter Filter
 		}
-		// GetMovement holds details about calls to the GetMovement method.
-		GetMovement []struct {
+		// ComputeSome holds details about calls to the ComputeSome method.
+		ComputeSome []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Target is the target argument value.
-			Target types.External
-			// MovementID is the movementID argument value.
-			MovementID types.External
+			// Filter is the filter argument value.
+			Filter Filter
+			// ResourceID is the resourceID argument value.
+			ResourceID []types.UID
 		}
 		// ListMovements holds details about calls to the ListMovements method.
 		ListMovements []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Target is the target argument value.
-			Target types.External
-			// StockFilter is the stockFilter argument value.
-			StockFilter Filter
+			// Filter is the filter argument value.
+			Filter Filter
 		}
-		// RemoveFromStock holds details about calls to the RemoveFromStock method.
-		RemoveFromStock []struct {
+		// RemoveAllMovements holds details about calls to the RemoveAllMovements method.
+		RemoveAllMovements []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Target is the target argument value.
-			Target types.External
+			// ResourceID is the resourceID argument value.
+			ResourceID types.UID
+		}
+		// RemoveMovement holds details about calls to the RemoveMovement method.
+		RemoveMovement []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// ResourceID is the resourceID argument value.
+			ResourceID types.UID
 			// MovementID is the movementID argument value.
-			MovementID types.External
+			MovementID types.UID
+		}
+		// SaveMovements holds details about calls to the SaveMovements method.
+		SaveMovements []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Movement is the movement argument value.
+			Movement []Movement
 		}
 	}
-	lockAddToStock      sync.RWMutex
-	lockComputeStock    sync.RWMutex
-	lockGetMovement     sync.RWMutex
-	lockListMovements   sync.RWMutex
-	lockRemoveFromStock sync.RWMutex
+	lockArchiveMovements   sync.RWMutex
+	lockCompute            sync.RWMutex
+	lockComputeSome        sync.RWMutex
+	lockListMovements      sync.RWMutex
+	lockRemoveAllMovements sync.RWMutex
+	lockRemoveMovement     sync.RWMutex
+	lockSaveMovements      sync.RWMutex
 }
 
-// AddToStock calls AddToStockFunc.
-func (mock *ActionsMock) AddToStock(ctx context.Context, target types.External, mov Movement) (Movement, error) {
-	if mock.AddToStockFunc == nil {
-		panic("ActionsMock.AddToStockFunc: method is nil but Actions.AddToStock was just called")
+// ArchiveMovements calls ArchiveMovementsFunc.
+func (mock *ActionsMock) ArchiveMovements(ctx context.Context, filter Filter) error {
+	if mock.ArchiveMovementsFunc == nil {
+		panic("ActionsMock.ArchiveMovementsFunc: method is nil but Actions.ArchiveMovements was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
-		Target types.External
-		Mov    Movement
+		Filter Filter
 	}{
 		Ctx:    ctx,
-		Target: target,
-		Mov:    mov,
+		Filter: filter,
 	}
-	mock.lockAddToStock.Lock()
-	mock.calls.AddToStock = append(mock.calls.AddToStock, callInfo)
-	mock.lockAddToStock.Unlock()
-	return mock.AddToStockFunc(ctx, target, mov)
+	mock.lockArchiveMovements.Lock()
+	mock.calls.ArchiveMovements = append(mock.calls.ArchiveMovements, callInfo)
+	mock.lockArchiveMovements.Unlock()
+	return mock.ArchiveMovementsFunc(ctx, filter)
 }
 
-// AddToStockCalls gets all the calls that were made to AddToStock.
+// ArchiveMovementsCalls gets all the calls that were made to ArchiveMovements.
 // Check the length with:
-//     len(mockedActions.AddToStockCalls())
-func (mock *ActionsMock) AddToStockCalls() []struct {
+//     len(mockedActions.ArchiveMovementsCalls())
+func (mock *ActionsMock) ArchiveMovementsCalls() []struct {
 	Ctx    context.Context
-	Target types.External
-	Mov    Movement
+	Filter Filter
 } {
 	var calls []struct {
 		Ctx    context.Context
-		Target types.External
-		Mov    Movement
+		Filter Filter
 	}
-	mock.lockAddToStock.RLock()
-	calls = mock.calls.AddToStock
-	mock.lockAddToStock.RUnlock()
+	mock.lockArchiveMovements.RLock()
+	calls = mock.calls.ArchiveMovements
+	mock.lockArchiveMovements.RUnlock()
 	return calls
 }
 
-// ComputeStock calls ComputeStockFunc.
-func (mock *ActionsMock) ComputeStock(ctx context.Context, target types.External, stockFilter Filter) (Actual, error) {
-	if mock.ComputeStockFunc == nil {
-		panic("ActionsMock.ComputeStockFunc: method is nil but Actions.ComputeStock was just called")
+// Compute calls ComputeFunc.
+func (mock *ActionsMock) Compute(ctx context.Context, filter Filter) (types.Quantity, error) {
+	if mock.ComputeFunc == nil {
+		panic("ActionsMock.ComputeFunc: method is nil but Actions.Compute was just called")
 	}
 	callInfo := struct {
-		Ctx         context.Context
-		Target      types.External
-		StockFilter Filter
+		Ctx    context.Context
+		Filter Filter
 	}{
-		Ctx:         ctx,
-		Target:      target,
-		StockFilter: stockFilter,
+		Ctx:    ctx,
+		Filter: filter,
 	}
-	mock.lockComputeStock.Lock()
-	mock.calls.ComputeStock = append(mock.calls.ComputeStock, callInfo)
-	mock.lockComputeStock.Unlock()
-	return mock.ComputeStockFunc(ctx, target, stockFilter)
+	mock.lockCompute.Lock()
+	mock.calls.Compute = append(mock.calls.Compute, callInfo)
+	mock.lockCompute.Unlock()
+	return mock.ComputeFunc(ctx, filter)
 }
 
-// ComputeStockCalls gets all the calls that were made to ComputeStock.
+// ComputeCalls gets all the calls that were made to Compute.
 // Check the length with:
-//     len(mockedActions.ComputeStockCalls())
-func (mock *ActionsMock) ComputeStockCalls() []struct {
-	Ctx         context.Context
-	Target      types.External
-	StockFilter Filter
+//     len(mockedActions.ComputeCalls())
+func (mock *ActionsMock) ComputeCalls() []struct {
+	Ctx    context.Context
+	Filter Filter
 } {
 	var calls []struct {
-		Ctx         context.Context
-		Target      types.External
-		StockFilter Filter
+		Ctx    context.Context
+		Filter Filter
 	}
-	mock.lockComputeStock.RLock()
-	calls = mock.calls.ComputeStock
-	mock.lockComputeStock.RUnlock()
+	mock.lockCompute.RLock()
+	calls = mock.calls.Compute
+	mock.lockCompute.RUnlock()
 	return calls
 }
 
-// GetMovement calls GetMovementFunc.
-func (mock *ActionsMock) GetMovement(ctx context.Context, target types.External, movementID types.External) (Movement, error) {
-	if mock.GetMovementFunc == nil {
-		panic("ActionsMock.GetMovementFunc: method is nil but Actions.GetMovement was just called")
+// ComputeSome calls ComputeSomeFunc.
+func (mock *ActionsMock) ComputeSome(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error) {
+	if mock.ComputeSomeFunc == nil {
+		panic("ActionsMock.ComputeSomeFunc: method is nil but Actions.ComputeSome was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
-		Target     types.External
-		MovementID types.External
+		Filter     Filter
+		ResourceID []types.UID
 	}{
 		Ctx:        ctx,
-		Target:     target,
-		MovementID: movementID,
+		Filter:     filter,
+		ResourceID: resourceID,
 	}
-	mock.lockGetMovement.Lock()
-	mock.calls.GetMovement = append(mock.calls.GetMovement, callInfo)
-	mock.lockGetMovement.Unlock()
-	return mock.GetMovementFunc(ctx, target, movementID)
+	mock.lockComputeSome.Lock()
+	mock.calls.ComputeSome = append(mock.calls.ComputeSome, callInfo)
+	mock.lockComputeSome.Unlock()
+	return mock.ComputeSomeFunc(ctx, filter, resourceID...)
 }
 
-// GetMovementCalls gets all the calls that were made to GetMovement.
+// ComputeSomeCalls gets all the calls that were made to ComputeSome.
 // Check the length with:
-//     len(mockedActions.GetMovementCalls())
-func (mock *ActionsMock) GetMovementCalls() []struct {
+//     len(mockedActions.ComputeSomeCalls())
+func (mock *ActionsMock) ComputeSomeCalls() []struct {
 	Ctx        context.Context
-	Target     types.External
-	MovementID types.External
+	Filter     Filter
+	ResourceID []types.UID
 } {
 	var calls []struct {
 		Ctx        context.Context
-		Target     types.External
-		MovementID types.External
+		Filter     Filter
+		ResourceID []types.UID
 	}
-	mock.lockGetMovement.RLock()
-	calls = mock.calls.GetMovement
-	mock.lockGetMovement.RUnlock()
+	mock.lockComputeSome.RLock()
+	calls = mock.calls.ComputeSome
+	mock.lockComputeSome.RUnlock()
 	return calls
 }
 
 // ListMovements calls ListMovementsFunc.
-func (mock *ActionsMock) ListMovements(ctx context.Context, target types.External, stockFilter Filter) ([]Movement, error) {
+func (mock *ActionsMock) ListMovements(ctx context.Context, filter Filter) ([]Movement, error) {
 	if mock.ListMovementsFunc == nil {
 		panic("ActionsMock.ListMovementsFunc: method is nil but Actions.ListMovements was just called")
 	}
 	callInfo := struct {
-		Ctx         context.Context
-		Target      types.External
-		StockFilter Filter
+		Ctx    context.Context
+		Filter Filter
 	}{
-		Ctx:         ctx,
-		Target:      target,
-		StockFilter: stockFilter,
+		Ctx:    ctx,
+		Filter: filter,
 	}
 	mock.lockListMovements.Lock()
 	mock.calls.ListMovements = append(mock.calls.ListMovements, callInfo)
 	mock.lockListMovements.Unlock()
-	return mock.ListMovementsFunc(ctx, target, stockFilter)
+	return mock.ListMovementsFunc(ctx, filter)
 }
 
 // ListMovementsCalls gets all the calls that were made to ListMovements.
 // Check the length with:
 //     len(mockedActions.ListMovementsCalls())
 func (mock *ActionsMock) ListMovementsCalls() []struct {
-	Ctx         context.Context
-	Target      types.External
-	StockFilter Filter
+	Ctx    context.Context
+	Filter Filter
 } {
 	var calls []struct {
-		Ctx         context.Context
-		Target      types.External
-		StockFilter Filter
+		Ctx    context.Context
+		Filter Filter
 	}
 	mock.lockListMovements.RLock()
 	calls = mock.calls.ListMovements
@@ -267,41 +277,111 @@ func (mock *ActionsMock) ListMovementsCalls() []struct {
 	return calls
 }
 
-// RemoveFromStock calls RemoveFromStockFunc.
-func (mock *ActionsMock) RemoveFromStock(ctx context.Context, target types.External, movementID types.External) error {
-	if mock.RemoveFromStockFunc == nil {
-		panic("ActionsMock.RemoveFromStockFunc: method is nil but Actions.RemoveFromStock was just called")
+// RemoveAllMovements calls RemoveAllMovementsFunc.
+func (mock *ActionsMock) RemoveAllMovements(ctx context.Context, resourceID types.UID) error {
+	if mock.RemoveAllMovementsFunc == nil {
+		panic("ActionsMock.RemoveAllMovementsFunc: method is nil but Actions.RemoveAllMovements was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
-		Target     types.External
-		MovementID types.External
+		ResourceID types.UID
 	}{
 		Ctx:        ctx,
-		Target:     target,
-		MovementID: movementID,
+		ResourceID: resourceID,
 	}
-	mock.lockRemoveFromStock.Lock()
-	mock.calls.RemoveFromStock = append(mock.calls.RemoveFromStock, callInfo)
-	mock.lockRemoveFromStock.Unlock()
-	return mock.RemoveFromStockFunc(ctx, target, movementID)
+	mock.lockRemoveAllMovements.Lock()
+	mock.calls.RemoveAllMovements = append(mock.calls.RemoveAllMovements, callInfo)
+	mock.lockRemoveAllMovements.Unlock()
+	return mock.RemoveAllMovementsFunc(ctx, resourceID)
 }
 
-// RemoveFromStockCalls gets all the calls that were made to RemoveFromStock.
+// RemoveAllMovementsCalls gets all the calls that were made to RemoveAllMovements.
 // Check the length with:
-//     len(mockedActions.RemoveFromStockCalls())
-func (mock *ActionsMock) RemoveFromStockCalls() []struct {
+//     len(mockedActions.RemoveAllMovementsCalls())
+func (mock *ActionsMock) RemoveAllMovementsCalls() []struct {
 	Ctx        context.Context
-	Target     types.External
-	MovementID types.External
+	ResourceID types.UID
 } {
 	var calls []struct {
 		Ctx        context.Context
-		Target     types.External
-		MovementID types.External
+		ResourceID types.UID
 	}
-	mock.lockRemoveFromStock.RLock()
-	calls = mock.calls.RemoveFromStock
-	mock.lockRemoveFromStock.RUnlock()
+	mock.lockRemoveAllMovements.RLock()
+	calls = mock.calls.RemoveAllMovements
+	mock.lockRemoveAllMovements.RUnlock()
+	return calls
+}
+
+// RemoveMovement calls RemoveMovementFunc.
+func (mock *ActionsMock) RemoveMovement(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+	if mock.RemoveMovementFunc == nil {
+		panic("ActionsMock.RemoveMovementFunc: method is nil but Actions.RemoveMovement was just called")
+	}
+	callInfo := struct {
+		Ctx        context.Context
+		ResourceID types.UID
+		MovementID types.UID
+	}{
+		Ctx:        ctx,
+		ResourceID: resourceID,
+		MovementID: movementID,
+	}
+	mock.lockRemoveMovement.Lock()
+	mock.calls.RemoveMovement = append(mock.calls.RemoveMovement, callInfo)
+	mock.lockRemoveMovement.Unlock()
+	return mock.RemoveMovementFunc(ctx, resourceID, movementID)
+}
+
+// RemoveMovementCalls gets all the calls that were made to RemoveMovement.
+// Check the length with:
+//     len(mockedActions.RemoveMovementCalls())
+func (mock *ActionsMock) RemoveMovementCalls() []struct {
+	Ctx        context.Context
+	ResourceID types.UID
+	MovementID types.UID
+} {
+	var calls []struct {
+		Ctx        context.Context
+		ResourceID types.UID
+		MovementID types.UID
+	}
+	mock.lockRemoveMovement.RLock()
+	calls = mock.calls.RemoveMovement
+	mock.lockRemoveMovement.RUnlock()
+	return calls
+}
+
+// SaveMovements calls SaveMovementsFunc.
+func (mock *ActionsMock) SaveMovements(ctx context.Context, movement ...Movement) ([]Movement, error) {
+	if mock.SaveMovementsFunc == nil {
+		panic("ActionsMock.SaveMovementsFunc: method is nil but Actions.SaveMovements was just called")
+	}
+	callInfo := struct {
+		Ctx      context.Context
+		Movement []Movement
+	}{
+		Ctx:      ctx,
+		Movement: movement,
+	}
+	mock.lockSaveMovements.Lock()
+	mock.calls.SaveMovements = append(mock.calls.SaveMovements, callInfo)
+	mock.lockSaveMovements.Unlock()
+	return mock.SaveMovementsFunc(ctx, movement...)
+}
+
+// SaveMovementsCalls gets all the calls that were made to SaveMovements.
+// Check the length with:
+//     len(mockedActions.SaveMovementsCalls())
+func (mock *ActionsMock) SaveMovementsCalls() []struct {
+	Ctx      context.Context
+	Movement []Movement
+} {
+	var calls []struct {
+		Ctx      context.Context
+		Movement []Movement
+	}
+	mock.lockSaveMovements.RLock()
+	calls = mock.calls.SaveMovements
+	mock.lockSaveMovements.RUnlock()
 	return calls
 }

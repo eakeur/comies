@@ -4,18 +4,13 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"gomies/pkg/catalog/core/entities/product"
-	"gomies/pkg/sdk/tests"
-	"gomies/pkg/sdk/types"
 	"testing"
 )
 
 func TestWorkflow_RemoveProduct(t *testing.T) {
-
-	const operation = "Workflows.Product.RemoveProduct"
 	t.Parallel()
 
-	ctx := tests.WorkflowContext(idExample1, idExample2)
-	managers := tests.Managers()
+	ctx := context.Background()
 
 	type (
 		args struct {
@@ -30,7 +25,6 @@ func TestWorkflow_RemoveProduct(t *testing.T) {
 			name    string
 			args    args
 			opts    opts
-			wantKey product.Key
 			wantErr error
 		}
 	)
@@ -41,7 +35,6 @@ func TestWorkflow_RemoveProduct(t *testing.T) {
 			args: args{
 				key: product.Key{ID: idExample1},
 			},
-			wantKey: product.Key{ID: idExample1, Store: types.Store{StoreID: idExample2}},
 			opts: opts{
 				products: &product.ActionsMock{
 					RemoveFunc: func(ctx context.Context, key product.Key) error {
@@ -58,14 +51,10 @@ func TestWorkflow_RemoveProduct(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, nil, nil, managers.Transactions)
+			wf := NewWorkflow(c.opts.products, nil, nil)
 			err := wf.RemoveProduct(ctx, c.args.key)
 
 			assert.ErrorIs(t, err, c.wantErr)
-
-			if err == nil && c.wantErr == nil {
-				assert.Equal(t, c.wantKey, c.opts.products.RemoveCalls()[0].Key)
-			}
 
 		})
 	}

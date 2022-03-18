@@ -9,15 +9,15 @@ import (
 const ContextKey types.ContextKey = "session-context-key"
 
 type Session struct {
-	OperatorID   types.External
-	StoreID      types.External
+	OperatorID   types.UID
+	StoreID      types.UID
 	OperatorName string
 	Preferences  types.Preferences
 	Permissions  types.Permissions
 	Digest       string
 }
 
-func (s Session) Delegate(operation string, entity *types.Store, history *types.History)  {
+func (s Session) Delegate(operation string, entity *types.Store, history *types.History) {
 	if entity != nil && entity.StoreID.Empty() {
 		entity.StoreID = s.StoreID
 	}

@@ -10,7 +10,7 @@ type (
 	}
 
 	Key struct {
-		ID   types.External
+		ID   types.UID
 		Code string
 		types.Store
 	}

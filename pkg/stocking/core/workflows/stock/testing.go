@@ -1,4 +1,4 @@
-package product
+package stock
 
 import (
 	"gomies/pkg/sdk/types"

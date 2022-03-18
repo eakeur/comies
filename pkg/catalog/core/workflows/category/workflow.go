@@ -3,7 +3,6 @@ package category
 import (
 	"context"
 	"gomies/pkg/catalog/core/entities/category"
-	"gomies/pkg/sdk/transaction"
 	"gomies/pkg/sdk/types"
 )
 
@@ -47,15 +46,12 @@ var _ Workflow = workflow{}
 
 func NewWorkflow(
 	categories category.Actions,
-	transaction transaction.Manager,
 ) Workflow {
 	return workflow{
-		categories:   categories,
-		transactions: transaction,
+		categories: categories,
 	}
 }
 
 type workflow struct {
-	categories   category.Actions
-	transactions transaction.Manager
+	categories category.Actions
 }

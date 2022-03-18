@@ -18,7 +18,7 @@ type (
 		LastSeen        time.Time
 		Permissions     types.Permissions
 		StoreID         types.ID
-		StoreExternalID types.External
+		StoreExternalID types.UID
 	}
 
 	MemberType int

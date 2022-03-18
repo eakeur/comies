@@ -4,18 +4,12 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 	"gomies/pkg/catalog/core/entities/category"
-	"gomies/pkg/sdk/tests"
-	"gomies/pkg/sdk/types"
 	"testing"
 )
 
 func TestWorkflow_ListCategories(t *testing.T) {
-
-	const operation = "Workflows.Category.ListCategories"
 	t.Parallel()
-
-	ctx := tests.WorkflowContext(idExample1, idExample2)
-	managers := tests.Managers()
+	ctx := context.Background()
 
 	type (
 		args struct {
@@ -27,12 +21,11 @@ func TestWorkflow_ListCategories(t *testing.T) {
 		}
 
 		test struct {
-			name       string
-			args       args
-			opts       opts
-			want       []category.Category
-			wantFilter category.Filter
-			wantErr    error
+			name    string
+			args    args
+			opts    opts
+			want    []category.Category
+			wantErr error
 		}
 	)
 
@@ -42,7 +35,6 @@ func TestWorkflow_ListCategories(t *testing.T) {
 			want: []category.Category{
 				{}, {},
 			},
-			wantFilter: category.Filter{Filter: types.Filter{Store: types.Store{StoreID: idExample2}}},
 			opts: opts{
 				categories: &category.ActionsMock{
 					ListFunc: func(ctx context.Context, productFilter category.Filter) ([]category.Category, error) {
@@ -61,16 +53,11 @@ func TestWorkflow_ListCategories(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.categories, managers.Transactions)
+			wf := NewWorkflow(c.opts.categories)
 			got, err := wf.ListCategories(ctx, c.args.filter)
 
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, got)
-
-			if err == nil && c.wantErr == nil {
-				assert.Equal(t, c.wantFilter, c.opts.categories.ListCalls()[0].CategoryFilter)
-			}
-
 		})
 	}
 }

@@ -16,7 +16,7 @@ type (
 		CategoryID types.ID
 
 		// CategoryExternalID is the external identifier of the category this product belongs to
-		CategoryExternalID types.External
+		CategoryExternalID types.UID
 
 		Type Type
 

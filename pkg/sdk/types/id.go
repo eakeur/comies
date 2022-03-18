@@ -3,24 +3,24 @@ package types
 import "github.com/google/uuid"
 
 type (
-	ID       int64
-	External uuid.UUID
+	ID  int64
+	UID uuid.UUID
 )
 
-var Nil = External(uuid.Nil)
+var Nil = UID(uuid.Nil)
 
-func ExternalFrom(input string) External {
+func UIDFrom(input string) UID {
 	id, err := uuid.Parse(input)
 	if err != nil {
 		return Nil
 	}
-	return External(id)
+	return UID(id)
 }
 
-func NewExternal() External {
-	return External(uuid.New())
+func NewUID() UID {
+	return UID(uuid.New())
 }
 
-func (e External) Empty() bool {
-	return e == External{} || e == Nil
+func (e UID) Empty() bool {
+	return e == UID{} || e == Nil
 }
