@@ -32,6 +32,15 @@ type Movement struct {
 	AdditionalData string
 }
 
+func (m Movement) Value() types.Quantity {
+	if m.Type == Output {
+		return m.Quantity * -1
+	}
+
+	return m.Quantity
+
+}
+
 func (m Movement) Validate() error {
 	if m.TargetID == types.Nil {
 		return ErrMustHaveTargetID

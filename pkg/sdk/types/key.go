@@ -1,3 +1,6 @@
 package types
 
-type ContextKey = string
+type Key struct {
+	ID External
+	Store
+}

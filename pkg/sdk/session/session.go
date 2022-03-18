@@ -17,6 +17,17 @@ type Session struct {
 	Digest       string
 }
 
+func (s Session) Delegate(operation string, entity *types.Store, history *types.History)  {
+	if entity != nil && entity.StoreID.Empty() {
+		entity.StoreID = s.StoreID
+	}
+
+	if history != nil {
+		history.By = s.OperatorID
+		history.Operation = operation
+	}
+}
+
 func (s Session) WithContext(ctx context.Context) context.Context {
 	return context.WithValue(ctx, ContextKey, s)
 }
