@@ -6,17 +6,17 @@ import (
 	"gomies/pkg/sdk/types"
 	"gomies/pkg/stocking/core/entities/stock"
 	"testing"
+	"time"
 )
 
-func TestWorkflow_RemoveMovement(t *testing.T) {
+func TestWorkflow_ClosePeriod(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
 
 	type (
 		args struct {
-			resourceID types.UID
-			movementID types.UID
+			filter stock.Filter
 		}
 
 		opts struct {
@@ -33,29 +33,33 @@ func TestWorkflow_RemoveMovement(t *testing.T) {
 
 	cases := []test{
 		{
-			name: "should remove movement successfully",
+			name: "should close period successfully",
 			args: args{
-				resourceID: idExample1,
-				movementID: idExample2,
+				filter: stock.Filter{
+					ResourceID: idExample1,
+					FinalDate:  time.Now(),
+				},
 			},
 			opts: opts{
 				stocks: &stock.ActionsMock{
-					RemoveMovementFunc: func(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+					ArchiveMovementsFunc: func(ctx context.Context, filter stock.Filter) error {
 						return nil
 					},
 				},
 			},
 		},
 		{
-			name: "should fail because movementID is invalid",
+			name: "should fail because resourceID is invalid",
 			args: args{
-				resourceID: idExample1,
-				movementID: types.UID{},
+				filter: stock.Filter{
+					ResourceID: types.UID{},
+					FinalDate:  time.Now(),
+				},
 			},
 			wantErr: stock.ErrMissingResourceID,
 			opts: opts{
 				stocks: &stock.ActionsMock{
-					RemoveMovementFunc: func(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+					ArchiveMovementsFunc: func(ctx context.Context, filter stock.Filter) error {
 						return nil
 					},
 				},
@@ -70,7 +74,7 @@ func TestWorkflow_RemoveMovement(t *testing.T) {
 			t.Parallel()
 
 			wf := NewWorkflow(c.opts.stocks)
-			err := wf.RemoveMovement(ctx, c.args.resourceID, c.args.movementID)
+			err := wf.ClosePeriod(ctx, c.args.filter)
 			assert.ErrorIs(t, err, c.wantErr)
 
 		})

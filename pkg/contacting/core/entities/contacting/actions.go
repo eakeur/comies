@@ -21,11 +21,8 @@ type Actions interface {
 	// SaveAddresses adds a new address or updates an existing one
 	SaveAddresses(ctx context.Context, target types.UID, addresses ...Address) ([]Address, error)
 
-	// RemoveAddress deletes an address with the given id
-	RemoveAddress(ctx context.Context, target types.UID, id types.UID) error
-
-	// RemoveAllAddresses deletes all addresses for the target id
-	RemoveAllAddresses(ctx context.Context, target types.UID) error
+	// RemoveAddresses deletes an address with the given id or all addresses of a given target if no id is specified
+	RemoveAddresses(ctx context.Context, target types.UID, ids ...types.UID) error
 
 	// ListPhones retrieves all the phones of a specific target id
 	ListPhones(ctx context.Context, target types.UID) ([]Phone, error)
@@ -40,11 +37,8 @@ type Actions interface {
 	//
 	// Possible errors:
 	//   - fault.ErrAlreadyExists: if the phone already exists for a given target
-	SavePhones(ctx context.Context, target types.UID, phones ...Address) ([]Phone, error)
+	SavePhones(ctx context.Context, target types.UID, phones ...Phone) ([]Phone, error)
 
-	// RemovePhone deletes a phone with the given id
-	RemovePhone(ctx context.Context, target types.UID, id types.UID) error
-
-	// RemoveAllPhones deletes all phones for a specific target
-	RemoveAllPhones(ctx context.Context, target types.UID) error
+	// RemovePhones deletes a phone with the given id or all phones of a given target if no id is specified
+	RemovePhones(ctx context.Context, target types.UID, ids ...types.UID) error
 }

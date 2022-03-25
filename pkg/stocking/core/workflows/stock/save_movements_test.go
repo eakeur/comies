@@ -3,7 +3,6 @@ package stock
 import (
 	"context"
 	"github.com/stretchr/testify/assert"
-	"gomies/pkg/catalog/core/entities/product"
 	"gomies/pkg/sdk/types"
 	"gomies/pkg/stocking/core/entities/stock"
 	"testing"
@@ -22,8 +21,7 @@ func TestWorkflow_AddToStock(t *testing.T) {
 		}
 
 		opts struct {
-			products *product.ActionsMock
-			stocks   *stock.ActionsMock
+			stocks *stock.ActionsMock
 		}
 
 		test struct {
