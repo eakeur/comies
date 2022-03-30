@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 	"gomies/pkg/sdk/types"
-	"strings"
 )
 
 const ContextKey types.ContextKey = "session-context-key"
@@ -17,9 +16,9 @@ type Session struct {
 	Digest       string
 }
 
-func (s Session) Delegate(operation string, entity *types.Store, history *types.History) {
-	if entity != nil && entity.StoreID.Empty() {
-		entity.StoreID = s.StoreID
+func (s Session) Delegate(operation string, store *types.Store, history *types.History) {
+	if store != nil && store.StoreID.Empty() {
+		store.StoreID = s.StoreID
 	}
 
 	if history != nil {
@@ -32,14 +31,16 @@ func (s Session) WithContext(ctx context.Context) context.Context {
 	return context.WithValue(ctx, ContextKey, s)
 }
 
-func (s Session) isAllowed(operation string) bool {
-	if s.Permissions == "*" {
-		return true
+// FromContext fetches a session from the context and verifies if it is allowed to execute
+// the given operation
+//
+// Possible errors:
+//   - ErrNoSession: if there is no session in this context
+func FromContext(ctx context.Context) (Session, error) {
+	session, ok := ctx.Value(ContextKey).(Session)
+	if !ok {
+		return Session{}, ErrNoSession
 	}
 
-	if !strings.Contains(string(s.Permissions), operation) {
-		return false
-	}
-
-	return true
+	return session, nil
 }
