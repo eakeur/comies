@@ -4,23 +4,13 @@ import "github.com/google/uuid"
 
 type (
 	ID  int64
-	UID uuid.UUID
+	UID string
 )
 
-var Nil = UID(uuid.Nil)
-
-func UIDFrom(input string) UID {
-	id, err := uuid.Parse(input)
-	if err != nil {
-		return Nil
-	}
-	return UID(id)
-}
-
 func NewUID() UID {
-	return UID(uuid.New())
+	return UID(uuid.NewString())
 }
 
 func (e UID) Empty() bool {
-	return e == UID{} || e == Nil
+	return e == ""
 }

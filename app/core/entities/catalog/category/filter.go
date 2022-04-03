@@ -1,12 +1,15 @@
 package category
 
-import "gomies/pkg/sdk/types"
+import (
+	"gomies/pkg/sdk/listing"
+	"gomies/pkg/sdk/types"
+)
 
 type (
 	Filter struct {
 		Code string
 		Name string
-		types.Filter
+		listing.Filter
 	}
 
 	Key struct {

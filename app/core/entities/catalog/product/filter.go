@@ -1,6 +1,9 @@
 package product
 
-import "gomies/pkg/sdk/types"
+import (
+	"gomies/pkg/sdk/listing"
+	"gomies/pkg/sdk/types"
+)
 
 type (
 	Filter struct {
@@ -8,7 +11,7 @@ type (
 		Name       string
 		Type       Type
 		CategoryID types.UID
-		types.Filter
+		listing.Filter
 	}
 
 	Key struct {

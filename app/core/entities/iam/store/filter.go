@@ -1,11 +1,14 @@
 package store
 
-import "gomies/pkg/sdk/types"
+import (
+	"gomies/pkg/sdk/listing"
+	"gomies/pkg/sdk/types"
+)
 
 type (
 	Filter struct {
 		ParentExternalID types.UID
-		types.Filter
+		listing.Filter
 	}
 
 	Key struct {

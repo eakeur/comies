@@ -1,13 +1,14 @@
 package crew
 
 import (
+	"gomies/pkg/sdk/listing"
 	"gomies/pkg/sdk/types"
 )
 
 type (
 	Filter struct {
 		Name string
-		types.Filter
+		listing.Filter
 	}
 
 	Key struct {

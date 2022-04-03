@@ -1,6 +1,7 @@
 package stock
 
 import (
+	"gomies/pkg/sdk/listing"
 	"gomies/pkg/sdk/types"
 	"time"
 )
@@ -10,7 +11,7 @@ type (
 		ResourceID  types.UID
 		InitialDate time.Time
 		FinalDate   time.Time
-		types.Filter
+		listing.Filter
 	}
 )
 
