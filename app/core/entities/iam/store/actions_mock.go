@@ -19,23 +19,26 @@ var _ Actions = &ActionsMock{}
 //
 // 		// make and configure a mocked Actions
 // 		mockedActions := &ActionsMock{
-// 			GetFunc: func(ctx context.Context, storeID Key) (Store, error) {
-// 				panic("mock out the Get method")
+// 			CreateStoreFunc: func(ctx context.Context, st Store) (Store, error) {
+// 				panic("mock out the CreateStore method")
 // 			},
-// 			ListFunc: func(ctx context.Context, storeFilter Filter) ([]Store, error) {
-// 				panic("mock out the List method")
+// 			GetStoreFunc: func(ctx context.Context, storeID Key) (Store, error) {
+// 				panic("mock out the GetStore method")
 // 			},
 // 			ListPreferencesFunc: func(ctx context.Context, storeKey Key, modules ...string) (types.Preferences, error) {
 // 				panic("mock out the ListPreferences method")
 // 			},
-// 			RemoveFunc: func(ctx context.Context, key Key) error {
-// 				panic("mock out the Remove method")
+// 			ListStoreFunc: func(ctx context.Context, storeFilter Filter) ([]Store, error) {
+// 				panic("mock out the ListStore method")
 // 			},
-// 			SaveFunc: func(ctx context.Context, st Store) (Store, error) {
-// 				panic("mock out the Save method")
+// 			RemoveStoreFunc: func(ctx context.Context, key Key) error {
+// 				panic("mock out the RemoveStore method")
 // 			},
 // 			SavePreferencesFunc: func(ctx context.Context, storeKey Key, pref types.Preferences) (types.Preferences, error) {
 // 				panic("mock out the SavePreferences method")
+// 			},
+// 			UpdateStoreFunc: func(ctx context.Context, st Store) error {
+// 				panic("mock out the UpdateStore method")
 // 			},
 // 		}
 //
@@ -44,39 +47,42 @@ var _ Actions = &ActionsMock{}
 //
 // 	}
 type ActionsMock struct {
-	// GetFunc mocks the Get method.
-	GetFunc func(ctx context.Context, storeID Key) (Store, error)
+	// CreateStoreFunc mocks the CreateStore method.
+	CreateStoreFunc func(ctx context.Context, st Store) (Store, error)
 
-	// ListFunc mocks the List method.
-	ListFunc func(ctx context.Context, storeFilter Filter) ([]Store, error)
+	// GetStoreFunc mocks the GetStore method.
+	GetStoreFunc func(ctx context.Context, storeID Key) (Store, error)
 
 	// ListPreferencesFunc mocks the ListPreferences method.
 	ListPreferencesFunc func(ctx context.Context, storeKey Key, modules ...string) (types.Preferences, error)
 
-	// RemoveFunc mocks the Remove method.
-	RemoveFunc func(ctx context.Context, key Key) error
+	// ListStoreFunc mocks the ListStore method.
+	ListStoreFunc func(ctx context.Context, storeFilter Filter) ([]Store, error)
 
-	// SaveFunc mocks the Save method.
-	SaveFunc func(ctx context.Context, st Store) (Store, error)
+	// RemoveStoreFunc mocks the RemoveStore method.
+	RemoveStoreFunc func(ctx context.Context, key Key) error
 
 	// SavePreferencesFunc mocks the SavePreferences method.
 	SavePreferencesFunc func(ctx context.Context, storeKey Key, pref types.Preferences) (types.Preferences, error)
 
+	// UpdateStoreFunc mocks the UpdateStore method.
+	UpdateStoreFunc func(ctx context.Context, st Store) error
+
 	// calls tracks calls to the methods.
 	calls struct {
-		// Get holds details about calls to the Get method.
-		Get []struct {
+		// CreateStore holds details about calls to the CreateStore method.
+		CreateStore []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// St is the st argument value.
+			St Store
+		}
+		// GetStore holds details about calls to the GetStore method.
+		GetStore []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// StoreID is the storeID argument value.
 			StoreID Key
-		}
-		// List holds details about calls to the List method.
-		List []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// StoreFilter is the storeFilter argument value.
-			StoreFilter Filter
 		}
 		// ListPreferences holds details about calls to the ListPreferences method.
 		ListPreferences []struct {
@@ -87,19 +93,19 @@ type ActionsMock struct {
 			// Modules is the modules argument value.
 			Modules []string
 		}
-		// Remove holds details about calls to the Remove method.
-		Remove []struct {
+		// ListStore holds details about calls to the ListStore method.
+		ListStore []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// StoreFilter is the storeFilter argument value.
+			StoreFilter Filter
+		}
+		// RemoveStore holds details about calls to the RemoveStore method.
+		RemoveStore []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Key is the key argument value.
 			Key Key
-		}
-		// Save holds details about calls to the Save method.
-		Save []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// St is the st argument value.
-			St Store
 		}
 		// SavePreferences holds details about calls to the SavePreferences method.
 		SavePreferences []struct {
@@ -110,19 +116,62 @@ type ActionsMock struct {
 			// Pref is the pref argument value.
 			Pref types.Preferences
 		}
+		// UpdateStore holds details about calls to the UpdateStore method.
+		UpdateStore []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// St is the st argument value.
+			St Store
+		}
 	}
-	lockGet             sync.RWMutex
-	lockList            sync.RWMutex
+	lockCreateStore     sync.RWMutex
+	lockGetStore        sync.RWMutex
 	lockListPreferences sync.RWMutex
-	lockRemove          sync.RWMutex
-	lockSave            sync.RWMutex
+	lockListStore       sync.RWMutex
+	lockRemoveStore     sync.RWMutex
 	lockSavePreferences sync.RWMutex
+	lockUpdateStore     sync.RWMutex
 }
 
-// Get calls GetFunc.
-func (mock *ActionsMock) Get(ctx context.Context, storeID Key) (Store, error) {
-	if mock.GetFunc == nil {
-		panic("ActionsMock.GetFunc: method is nil but Actions.Get was just called")
+// CreateStore calls CreateStoreFunc.
+func (mock *ActionsMock) CreateStore(ctx context.Context, st Store) (Store, error) {
+	if mock.CreateStoreFunc == nil {
+		panic("ActionsMock.CreateStoreFunc: method is nil but Actions.CreateStore was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		St  Store
+	}{
+		Ctx: ctx,
+		St:  st,
+	}
+	mock.lockCreateStore.Lock()
+	mock.calls.CreateStore = append(mock.calls.CreateStore, callInfo)
+	mock.lockCreateStore.Unlock()
+	return mock.CreateStoreFunc(ctx, st)
+}
+
+// CreateStoreCalls gets all the calls that were made to CreateStore.
+// Check the length with:
+//     len(mockedActions.CreateStoreCalls())
+func (mock *ActionsMock) CreateStoreCalls() []struct {
+	Ctx context.Context
+	St  Store
+} {
+	var calls []struct {
+		Ctx context.Context
+		St  Store
+	}
+	mock.lockCreateStore.RLock()
+	calls = mock.calls.CreateStore
+	mock.lockCreateStore.RUnlock()
+	return calls
+}
+
+// GetStore calls GetStoreFunc.
+func (mock *ActionsMock) GetStore(ctx context.Context, storeID Key) (Store, error) {
+	if mock.GetStoreFunc == nil {
+		panic("ActionsMock.GetStoreFunc: method is nil but Actions.GetStore was just called")
 	}
 	callInfo := struct {
 		Ctx     context.Context
@@ -131,16 +180,16 @@ func (mock *ActionsMock) Get(ctx context.Context, storeID Key) (Store, error) {
 		Ctx:     ctx,
 		StoreID: storeID,
 	}
-	mock.lockGet.Lock()
-	mock.calls.Get = append(mock.calls.Get, callInfo)
-	mock.lockGet.Unlock()
-	return mock.GetFunc(ctx, storeID)
+	mock.lockGetStore.Lock()
+	mock.calls.GetStore = append(mock.calls.GetStore, callInfo)
+	mock.lockGetStore.Unlock()
+	return mock.GetStoreFunc(ctx, storeID)
 }
 
-// GetCalls gets all the calls that were made to Get.
+// GetStoreCalls gets all the calls that were made to GetStore.
 // Check the length with:
-//     len(mockedActions.GetCalls())
-func (mock *ActionsMock) GetCalls() []struct {
+//     len(mockedActions.GetStoreCalls())
+func (mock *ActionsMock) GetStoreCalls() []struct {
 	Ctx     context.Context
 	StoreID Key
 } {
@@ -148,44 +197,9 @@ func (mock *ActionsMock) GetCalls() []struct {
 		Ctx     context.Context
 		StoreID Key
 	}
-	mock.lockGet.RLock()
-	calls = mock.calls.Get
-	mock.lockGet.RUnlock()
-	return calls
-}
-
-// List calls ListFunc.
-func (mock *ActionsMock) List(ctx context.Context, storeFilter Filter) ([]Store, error) {
-	if mock.ListFunc == nil {
-		panic("ActionsMock.ListFunc: method is nil but Actions.List was just called")
-	}
-	callInfo := struct {
-		Ctx         context.Context
-		StoreFilter Filter
-	}{
-		Ctx:         ctx,
-		StoreFilter: storeFilter,
-	}
-	mock.lockList.Lock()
-	mock.calls.List = append(mock.calls.List, callInfo)
-	mock.lockList.Unlock()
-	return mock.ListFunc(ctx, storeFilter)
-}
-
-// ListCalls gets all the calls that were made to List.
-// Check the length with:
-//     len(mockedActions.ListCalls())
-func (mock *ActionsMock) ListCalls() []struct {
-	Ctx         context.Context
-	StoreFilter Filter
-} {
-	var calls []struct {
-		Ctx         context.Context
-		StoreFilter Filter
-	}
-	mock.lockList.RLock()
-	calls = mock.calls.List
-	mock.lockList.RUnlock()
+	mock.lockGetStore.RLock()
+	calls = mock.calls.GetStore
+	mock.lockGetStore.RUnlock()
 	return calls
 }
 
@@ -228,10 +242,45 @@ func (mock *ActionsMock) ListPreferencesCalls() []struct {
 	return calls
 }
 
-// Remove calls RemoveFunc.
-func (mock *ActionsMock) Remove(ctx context.Context, key Key) error {
-	if mock.RemoveFunc == nil {
-		panic("ActionsMock.RemoveFunc: method is nil but Actions.Remove was just called")
+// ListStore calls ListStoreFunc.
+func (mock *ActionsMock) ListStore(ctx context.Context, storeFilter Filter) ([]Store, error) {
+	if mock.ListStoreFunc == nil {
+		panic("ActionsMock.ListStoreFunc: method is nil but Actions.ListStore was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		StoreFilter Filter
+	}{
+		Ctx:         ctx,
+		StoreFilter: storeFilter,
+	}
+	mock.lockListStore.Lock()
+	mock.calls.ListStore = append(mock.calls.ListStore, callInfo)
+	mock.lockListStore.Unlock()
+	return mock.ListStoreFunc(ctx, storeFilter)
+}
+
+// ListStoreCalls gets all the calls that were made to ListStore.
+// Check the length with:
+//     len(mockedActions.ListStoreCalls())
+func (mock *ActionsMock) ListStoreCalls() []struct {
+	Ctx         context.Context
+	StoreFilter Filter
+} {
+	var calls []struct {
+		Ctx         context.Context
+		StoreFilter Filter
+	}
+	mock.lockListStore.RLock()
+	calls = mock.calls.ListStore
+	mock.lockListStore.RUnlock()
+	return calls
+}
+
+// RemoveStore calls RemoveStoreFunc.
+func (mock *ActionsMock) RemoveStore(ctx context.Context, key Key) error {
+	if mock.RemoveStoreFunc == nil {
+		panic("ActionsMock.RemoveStoreFunc: method is nil but Actions.RemoveStore was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -240,16 +289,16 @@ func (mock *ActionsMock) Remove(ctx context.Context, key Key) error {
 		Ctx: ctx,
 		Key: key,
 	}
-	mock.lockRemove.Lock()
-	mock.calls.Remove = append(mock.calls.Remove, callInfo)
-	mock.lockRemove.Unlock()
-	return mock.RemoveFunc(ctx, key)
+	mock.lockRemoveStore.Lock()
+	mock.calls.RemoveStore = append(mock.calls.RemoveStore, callInfo)
+	mock.lockRemoveStore.Unlock()
+	return mock.RemoveStoreFunc(ctx, key)
 }
 
-// RemoveCalls gets all the calls that were made to Remove.
+// RemoveStoreCalls gets all the calls that were made to RemoveStore.
 // Check the length with:
-//     len(mockedActions.RemoveCalls())
-func (mock *ActionsMock) RemoveCalls() []struct {
+//     len(mockedActions.RemoveStoreCalls())
+func (mock *ActionsMock) RemoveStoreCalls() []struct {
 	Ctx context.Context
 	Key Key
 } {
@@ -257,44 +306,9 @@ func (mock *ActionsMock) RemoveCalls() []struct {
 		Ctx context.Context
 		Key Key
 	}
-	mock.lockRemove.RLock()
-	calls = mock.calls.Remove
-	mock.lockRemove.RUnlock()
-	return calls
-}
-
-// Save calls SaveFunc.
-func (mock *ActionsMock) Save(ctx context.Context, st Store) (Store, error) {
-	if mock.SaveFunc == nil {
-		panic("ActionsMock.SaveFunc: method is nil but Actions.Save was just called")
-	}
-	callInfo := struct {
-		Ctx context.Context
-		St  Store
-	}{
-		Ctx: ctx,
-		St:  st,
-	}
-	mock.lockSave.Lock()
-	mock.calls.Save = append(mock.calls.Save, callInfo)
-	mock.lockSave.Unlock()
-	return mock.SaveFunc(ctx, st)
-}
-
-// SaveCalls gets all the calls that were made to Save.
-// Check the length with:
-//     len(mockedActions.SaveCalls())
-func (mock *ActionsMock) SaveCalls() []struct {
-	Ctx context.Context
-	St  Store
-} {
-	var calls []struct {
-		Ctx context.Context
-		St  Store
-	}
-	mock.lockSave.RLock()
-	calls = mock.calls.Save
-	mock.lockSave.RUnlock()
+	mock.lockRemoveStore.RLock()
+	calls = mock.calls.RemoveStore
+	mock.lockRemoveStore.RUnlock()
 	return calls
 }
 
@@ -334,5 +348,40 @@ func (mock *ActionsMock) SavePreferencesCalls() []struct {
 	mock.lockSavePreferences.RLock()
 	calls = mock.calls.SavePreferences
 	mock.lockSavePreferences.RUnlock()
+	return calls
+}
+
+// UpdateStore calls UpdateStoreFunc.
+func (mock *ActionsMock) UpdateStore(ctx context.Context, st Store) error {
+	if mock.UpdateStoreFunc == nil {
+		panic("ActionsMock.UpdateStoreFunc: method is nil but Actions.UpdateStore was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		St  Store
+	}{
+		Ctx: ctx,
+		St:  st,
+	}
+	mock.lockUpdateStore.Lock()
+	mock.calls.UpdateStore = append(mock.calls.UpdateStore, callInfo)
+	mock.lockUpdateStore.Unlock()
+	return mock.UpdateStoreFunc(ctx, st)
+}
+
+// UpdateStoreCalls gets all the calls that were made to UpdateStore.
+// Check the length with:
+//     len(mockedActions.UpdateStoreCalls())
+func (mock *ActionsMock) UpdateStoreCalls() []struct {
+	Ctx context.Context
+	St  Store
+} {
+	var calls []struct {
+		Ctx context.Context
+		St  Store
+	}
+	mock.lockUpdateStore.RLock()
+	calls = mock.calls.UpdateStore
+	mock.lockUpdateStore.RUnlock()
 	return calls
 }

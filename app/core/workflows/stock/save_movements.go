@@ -31,7 +31,7 @@ func (w workflow) SaveMovements(ctx context.Context, config stock.Config, resour
 		}
 	}
 
-	movements, err = w.stocks.SaveMovements(ctx, movements...)
+	_, err = w.stocks.SaveMovements(ctx, movements...)
 	if err != nil {
 		return stock.AdditionResult{}, fault.Wrap(err, operation)
 	}

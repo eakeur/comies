@@ -2,13 +2,14 @@ package crew
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/iam/crew"
 	"gomies/app/core/entities/iam/store"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/session"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_Authenticate(t *testing.T) {
@@ -24,7 +25,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 		}
 
 		args struct {
-			auth crew.AuthRequest
+			auth AuthRequest
 		}
 
 		test struct {
@@ -40,7 +41,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 		{
 			name: "should return authenticated session",
 			args: args{
-				auth: crew.AuthRequest{
+				auth: AuthRequest{
 					Nickname:       "tovelo@comies",
 					Password:       "1922Eakeur!(@@",
 					PersistSession: false,
@@ -64,7 +65,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 					},
 				},
 				crew: &crew.ActionsMock{
-					GetWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
+					GetMemberWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
 						return crew.Member{
 							Entity: types.Entity{
 								ExternalID: fakeID,
@@ -85,7 +86,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 		{
 			name: "should return error for not found member",
 			args: args{
-				auth: crew.AuthRequest{
+				auth: AuthRequest{
 					Nickname:       "tovelo@comies",
 					Password:       "1922Eakeur!(@@",
 					PersistSession: false,
@@ -104,7 +105,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 					},
 				},
 				crew: &crew.ActionsMock{
-					GetWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
+					GetMemberWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
 						return crew.Member{}, fault.ErrNotFound
 					},
 				},
@@ -113,7 +114,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 		{
 			name: "should return error for wrong password",
 			args: args{
-				auth: crew.AuthRequest{
+				auth: AuthRequest{
 					Nickname:       "tovelo@comies",
 					Password:       "OrWeWillRunAway",
 					PersistSession: false,
@@ -132,7 +133,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 					},
 				},
 				crew: &crew.ActionsMock{
-					GetWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
+					GetMemberWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
 						return crew.Member{
 							Password: types.MustCreatePassword("1922Eakeur!(@@"),
 						}, nil
@@ -143,7 +144,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 		{
 			name: "should return error for invalid nickname",
 			args: args{
-				auth: crew.AuthRequest{
+				auth: AuthRequest{
 					Nickname:       "tovelo",
 					Password:       "1922Eakeur!(@@",
 					PersistSession: false,
@@ -162,7 +163,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 					},
 				},
 				crew: &crew.ActionsMock{
-					GetWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
+					GetMemberWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (crew.Member, error) {
 						return crew.Member{
 							Password: types.MustCreatePassword("1922Eakeur!(@@"),
 						}, nil
@@ -176,7 +177,7 @@ func TestWorkflow_Authenticate(t *testing.T) {
 		c := c
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
-			ses, err := NewWorkflow(c.fields.stores, c.fields.crew, c.fields.sessions).Authenticate(context.Background(), c.args.auth)
+			ses, err := NewWorkflow(c.fields.stores, c.fields.crew, c.fields.sessions).AuthenticateMember(context.Background(), c.args.auth)
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, ses)
 

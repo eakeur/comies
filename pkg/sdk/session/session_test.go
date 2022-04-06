@@ -32,7 +32,7 @@ func TestSession_Delegate(t *testing.T) {
 		{
 			name: "should fill all fields",
 			args: args{
-				operation: "Workflows.Product.Save",
+				operation: "Workflows.Product.CreateProduct",
 				store:     &types.Store{},
 				history:   &types.History{},
 			},
@@ -41,12 +41,12 @@ func TestSession_Delegate(t *testing.T) {
 				StoreID:    fakeID,
 			},
 			wantStore:   types.Store{StoreID: fakeID},
-			wantHistory: types.History{Operation: "Workflows.Product.Save", By: fakeID},
+			wantHistory: types.History{Operation: "Workflows.Product.CreateProduct", By: fakeID},
 		},
 		{
 			name: "should fill store fields only",
 			args: args{
-				operation: "Workflows.Product.Save",
+				operation: "Workflows.Product.CreateProduct",
 				store:     &types.Store{},
 				history:   nil,
 			},

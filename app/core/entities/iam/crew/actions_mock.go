@@ -5,7 +5,6 @@ package crew
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
 	"sync"
 )
 
@@ -19,20 +18,23 @@ var _ Actions = &ActionsMock{}
 //
 // 		// make and configure a mocked Actions
 // 		mockedActions := &ActionsMock{
-// 			GetFunc: func(ctx context.Context, key Key) (Member, error) {
-// 				panic("mock out the Get method")
+// 			CreateMemberFunc: func(ctx context.Context, op Member) (Member, error) {
+// 				panic("mock out the CreateMember method")
 // 			},
-// 			GetWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (Member, error) {
-// 				panic("mock out the GetWithNicknames method")
+// 			GetMemberFunc: func(ctx context.Context, key Key) (Member, error) {
+// 				panic("mock out the GetMember method")
 // 			},
-// 			ListFunc: func(ctx context.Context, operatorFilter Filter) ([]Member, error) {
-// 				panic("mock out the List method")
+// 			GetMemberWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (Member, error) {
+// 				panic("mock out the GetMemberWithNicknames method")
 // 			},
-// 			RemoveFunc: func(ctx context.Context, key Key) error {
-// 				panic("mock out the Remove method")
+// 			ListMembersFunc: func(ctx context.Context, operatorFilter Filter) ([]Member, error) {
+// 				panic("mock out the ListMembers method")
 // 			},
-// 			SaveFunc: func(ctx context.Context, op Member, flag ...types.WritingFlag) (Member, error) {
-// 				panic("mock out the Save method")
+// 			RemoveMemberFunc: func(ctx context.Context, key Key) error {
+// 				panic("mock out the RemoveMember method")
+// 			},
+// 			UpdateMemberFunc: func(ctx context.Context, op Member) error {
+// 				panic("mock out the UpdateMember method")
 // 			},
 // 		}
 //
@@ -41,32 +43,42 @@ var _ Actions = &ActionsMock{}
 //
 // 	}
 type ActionsMock struct {
-	// GetFunc mocks the Get method.
-	GetFunc func(ctx context.Context, key Key) (Member, error)
+	// CreateMemberFunc mocks the CreateMember method.
+	CreateMemberFunc func(ctx context.Context, op Member) (Member, error)
 
-	// GetWithNicknamesFunc mocks the GetWithNicknames method.
-	GetWithNicknamesFunc func(ctx context.Context, operatorNickname string, storeNickname string) (Member, error)
+	// GetMemberFunc mocks the GetMember method.
+	GetMemberFunc func(ctx context.Context, key Key) (Member, error)
 
-	// ListFunc mocks the List method.
-	ListFunc func(ctx context.Context, operatorFilter Filter) ([]Member, error)
+	// GetMemberWithNicknamesFunc mocks the GetMemberWithNicknames method.
+	GetMemberWithNicknamesFunc func(ctx context.Context, operatorNickname string, storeNickname string) (Member, error)
 
-	// RemoveFunc mocks the Remove method.
-	RemoveFunc func(ctx context.Context, key Key) error
+	// ListMembersFunc mocks the ListMembers method.
+	ListMembersFunc func(ctx context.Context, operatorFilter Filter) ([]Member, error)
 
-	// SaveFunc mocks the Save method.
-	SaveFunc func(ctx context.Context, op Member, flag ...types.WritingFlag) (Member, error)
+	// RemoveMemberFunc mocks the RemoveMember method.
+	RemoveMemberFunc func(ctx context.Context, key Key) error
+
+	// UpdateMemberFunc mocks the UpdateMember method.
+	UpdateMemberFunc func(ctx context.Context, op Member) error
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Get holds details about calls to the Get method.
-		Get []struct {
+		// CreateMember holds details about calls to the CreateMember method.
+		CreateMember []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Op is the op argument value.
+			Op Member
+		}
+		// GetMember holds details about calls to the GetMember method.
+		GetMember []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Key is the key argument value.
 			Key Key
 		}
-		// GetWithNicknames holds details about calls to the GetWithNicknames method.
-		GetWithNicknames []struct {
+		// GetMemberWithNicknames holds details about calls to the GetMemberWithNicknames method.
+		GetMemberWithNicknames []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// OperatorNickname is the operatorNickname argument value.
@@ -74,41 +86,75 @@ type ActionsMock struct {
 			// StoreNickname is the storeNickname argument value.
 			StoreNickname string
 		}
-		// List holds details about calls to the List method.
-		List []struct {
+		// ListMembers holds details about calls to the ListMembers method.
+		ListMembers []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// OperatorFilter is the operatorFilter argument value.
 			OperatorFilter Filter
 		}
-		// Remove holds details about calls to the Remove method.
-		Remove []struct {
+		// RemoveMember holds details about calls to the RemoveMember method.
+		RemoveMember []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Key is the key argument value.
 			Key Key
 		}
-		// Save holds details about calls to the Save method.
-		Save []struct {
+		// UpdateMember holds details about calls to the UpdateMember method.
+		UpdateMember []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Op is the op argument value.
 			Op Member
-			// Flag is the flag argument value.
-			Flag []types.WritingFlag
 		}
 	}
-	lockGet              sync.RWMutex
-	lockGetWithNicknames sync.RWMutex
-	lockList             sync.RWMutex
-	lockRemove           sync.RWMutex
-	lockSave             sync.RWMutex
+	lockCreateMember           sync.RWMutex
+	lockGetMember              sync.RWMutex
+	lockGetMemberWithNicknames sync.RWMutex
+	lockListMembers            sync.RWMutex
+	lockRemoveMember           sync.RWMutex
+	lockUpdateMember           sync.RWMutex
 }
 
-// Get calls GetFunc.
-func (mock *ActionsMock) Get(ctx context.Context, key Key) (Member, error) {
-	if mock.GetFunc == nil {
-		panic("ActionsMock.GetFunc: method is nil but Actions.Get was just called")
+// CreateMember calls CreateMemberFunc.
+func (mock *ActionsMock) CreateMember(ctx context.Context, op Member) (Member, error) {
+	if mock.CreateMemberFunc == nil {
+		panic("ActionsMock.CreateMemberFunc: method is nil but Actions.CreateMember was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Op  Member
+	}{
+		Ctx: ctx,
+		Op:  op,
+	}
+	mock.lockCreateMember.Lock()
+	mock.calls.CreateMember = append(mock.calls.CreateMember, callInfo)
+	mock.lockCreateMember.Unlock()
+	return mock.CreateMemberFunc(ctx, op)
+}
+
+// CreateMemberCalls gets all the calls that were made to CreateMember.
+// Check the length with:
+//     len(mockedActions.CreateMemberCalls())
+func (mock *ActionsMock) CreateMemberCalls() []struct {
+	Ctx context.Context
+	Op  Member
+} {
+	var calls []struct {
+		Ctx context.Context
+		Op  Member
+	}
+	mock.lockCreateMember.RLock()
+	calls = mock.calls.CreateMember
+	mock.lockCreateMember.RUnlock()
+	return calls
+}
+
+// GetMember calls GetMemberFunc.
+func (mock *ActionsMock) GetMember(ctx context.Context, key Key) (Member, error) {
+	if mock.GetMemberFunc == nil {
+		panic("ActionsMock.GetMemberFunc: method is nil but Actions.GetMember was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -117,16 +163,16 @@ func (mock *ActionsMock) Get(ctx context.Context, key Key) (Member, error) {
 		Ctx: ctx,
 		Key: key,
 	}
-	mock.lockGet.Lock()
-	mock.calls.Get = append(mock.calls.Get, callInfo)
-	mock.lockGet.Unlock()
-	return mock.GetFunc(ctx, key)
+	mock.lockGetMember.Lock()
+	mock.calls.GetMember = append(mock.calls.GetMember, callInfo)
+	mock.lockGetMember.Unlock()
+	return mock.GetMemberFunc(ctx, key)
 }
 
-// GetCalls gets all the calls that were made to Get.
+// GetMemberCalls gets all the calls that were made to GetMember.
 // Check the length with:
-//     len(mockedActions.GetCalls())
-func (mock *ActionsMock) GetCalls() []struct {
+//     len(mockedActions.GetMemberCalls())
+func (mock *ActionsMock) GetMemberCalls() []struct {
 	Ctx context.Context
 	Key Key
 } {
@@ -134,16 +180,16 @@ func (mock *ActionsMock) GetCalls() []struct {
 		Ctx context.Context
 		Key Key
 	}
-	mock.lockGet.RLock()
-	calls = mock.calls.Get
-	mock.lockGet.RUnlock()
+	mock.lockGetMember.RLock()
+	calls = mock.calls.GetMember
+	mock.lockGetMember.RUnlock()
 	return calls
 }
 
-// GetWithNicknames calls GetWithNicknamesFunc.
-func (mock *ActionsMock) GetWithNicknames(ctx context.Context, operatorNickname string, storeNickname string) (Member, error) {
-	if mock.GetWithNicknamesFunc == nil {
-		panic("ActionsMock.GetWithNicknamesFunc: method is nil but Actions.GetWithNicknames was just called")
+// GetMemberWithNicknames calls GetMemberWithNicknamesFunc.
+func (mock *ActionsMock) GetMemberWithNicknames(ctx context.Context, operatorNickname string, storeNickname string) (Member, error) {
+	if mock.GetMemberWithNicknamesFunc == nil {
+		panic("ActionsMock.GetMemberWithNicknamesFunc: method is nil but Actions.GetMemberWithNicknames was just called")
 	}
 	callInfo := struct {
 		Ctx              context.Context
@@ -154,16 +200,16 @@ func (mock *ActionsMock) GetWithNicknames(ctx context.Context, operatorNickname 
 		OperatorNickname: operatorNickname,
 		StoreNickname:    storeNickname,
 	}
-	mock.lockGetWithNicknames.Lock()
-	mock.calls.GetWithNicknames = append(mock.calls.GetWithNicknames, callInfo)
-	mock.lockGetWithNicknames.Unlock()
-	return mock.GetWithNicknamesFunc(ctx, operatorNickname, storeNickname)
+	mock.lockGetMemberWithNicknames.Lock()
+	mock.calls.GetMemberWithNicknames = append(mock.calls.GetMemberWithNicknames, callInfo)
+	mock.lockGetMemberWithNicknames.Unlock()
+	return mock.GetMemberWithNicknamesFunc(ctx, operatorNickname, storeNickname)
 }
 
-// GetWithNicknamesCalls gets all the calls that were made to GetWithNicknames.
+// GetMemberWithNicknamesCalls gets all the calls that were made to GetMemberWithNicknames.
 // Check the length with:
-//     len(mockedActions.GetWithNicknamesCalls())
-func (mock *ActionsMock) GetWithNicknamesCalls() []struct {
+//     len(mockedActions.GetMemberWithNicknamesCalls())
+func (mock *ActionsMock) GetMemberWithNicknamesCalls() []struct {
 	Ctx              context.Context
 	OperatorNickname string
 	StoreNickname    string
@@ -173,16 +219,16 @@ func (mock *ActionsMock) GetWithNicknamesCalls() []struct {
 		OperatorNickname string
 		StoreNickname    string
 	}
-	mock.lockGetWithNicknames.RLock()
-	calls = mock.calls.GetWithNicknames
-	mock.lockGetWithNicknames.RUnlock()
+	mock.lockGetMemberWithNicknames.RLock()
+	calls = mock.calls.GetMemberWithNicknames
+	mock.lockGetMemberWithNicknames.RUnlock()
 	return calls
 }
 
-// List calls ListFunc.
-func (mock *ActionsMock) List(ctx context.Context, operatorFilter Filter) ([]Member, error) {
-	if mock.ListFunc == nil {
-		panic("ActionsMock.ListFunc: method is nil but Actions.List was just called")
+// ListMembers calls ListMembersFunc.
+func (mock *ActionsMock) ListMembers(ctx context.Context, operatorFilter Filter) ([]Member, error) {
+	if mock.ListMembersFunc == nil {
+		panic("ActionsMock.ListMembersFunc: method is nil but Actions.ListMembers was just called")
 	}
 	callInfo := struct {
 		Ctx            context.Context
@@ -191,16 +237,16 @@ func (mock *ActionsMock) List(ctx context.Context, operatorFilter Filter) ([]Mem
 		Ctx:            ctx,
 		OperatorFilter: operatorFilter,
 	}
-	mock.lockList.Lock()
-	mock.calls.List = append(mock.calls.List, callInfo)
-	mock.lockList.Unlock()
-	return mock.ListFunc(ctx, operatorFilter)
+	mock.lockListMembers.Lock()
+	mock.calls.ListMembers = append(mock.calls.ListMembers, callInfo)
+	mock.lockListMembers.Unlock()
+	return mock.ListMembersFunc(ctx, operatorFilter)
 }
 
-// ListCalls gets all the calls that were made to List.
+// ListMembersCalls gets all the calls that were made to ListMembers.
 // Check the length with:
-//     len(mockedActions.ListCalls())
-func (mock *ActionsMock) ListCalls() []struct {
+//     len(mockedActions.ListMembersCalls())
+func (mock *ActionsMock) ListMembersCalls() []struct {
 	Ctx            context.Context
 	OperatorFilter Filter
 } {
@@ -208,16 +254,16 @@ func (mock *ActionsMock) ListCalls() []struct {
 		Ctx            context.Context
 		OperatorFilter Filter
 	}
-	mock.lockList.RLock()
-	calls = mock.calls.List
-	mock.lockList.RUnlock()
+	mock.lockListMembers.RLock()
+	calls = mock.calls.ListMembers
+	mock.lockListMembers.RUnlock()
 	return calls
 }
 
-// Remove calls RemoveFunc.
-func (mock *ActionsMock) Remove(ctx context.Context, key Key) error {
-	if mock.RemoveFunc == nil {
-		panic("ActionsMock.RemoveFunc: method is nil but Actions.Remove was just called")
+// RemoveMember calls RemoveMemberFunc.
+func (mock *ActionsMock) RemoveMember(ctx context.Context, key Key) error {
+	if mock.RemoveMemberFunc == nil {
+		panic("ActionsMock.RemoveMemberFunc: method is nil but Actions.RemoveMember was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -226,16 +272,16 @@ func (mock *ActionsMock) Remove(ctx context.Context, key Key) error {
 		Ctx: ctx,
 		Key: key,
 	}
-	mock.lockRemove.Lock()
-	mock.calls.Remove = append(mock.calls.Remove, callInfo)
-	mock.lockRemove.Unlock()
-	return mock.RemoveFunc(ctx, key)
+	mock.lockRemoveMember.Lock()
+	mock.calls.RemoveMember = append(mock.calls.RemoveMember, callInfo)
+	mock.lockRemoveMember.Unlock()
+	return mock.RemoveMemberFunc(ctx, key)
 }
 
-// RemoveCalls gets all the calls that were made to Remove.
+// RemoveMemberCalls gets all the calls that were made to RemoveMember.
 // Check the length with:
-//     len(mockedActions.RemoveCalls())
-func (mock *ActionsMock) RemoveCalls() []struct {
+//     len(mockedActions.RemoveMemberCalls())
+func (mock *ActionsMock) RemoveMemberCalls() []struct {
 	Ctx context.Context
 	Key Key
 } {
@@ -243,47 +289,43 @@ func (mock *ActionsMock) RemoveCalls() []struct {
 		Ctx context.Context
 		Key Key
 	}
-	mock.lockRemove.RLock()
-	calls = mock.calls.Remove
-	mock.lockRemove.RUnlock()
+	mock.lockRemoveMember.RLock()
+	calls = mock.calls.RemoveMember
+	mock.lockRemoveMember.RUnlock()
 	return calls
 }
 
-// Save calls SaveFunc.
-func (mock *ActionsMock) Save(ctx context.Context, op Member, flag ...types.WritingFlag) (Member, error) {
-	if mock.SaveFunc == nil {
-		panic("ActionsMock.SaveFunc: method is nil but Actions.Save was just called")
+// UpdateMember calls UpdateMemberFunc.
+func (mock *ActionsMock) UpdateMember(ctx context.Context, op Member) error {
+	if mock.UpdateMemberFunc == nil {
+		panic("ActionsMock.UpdateMemberFunc: method is nil but Actions.UpdateMember was just called")
 	}
 	callInfo := struct {
-		Ctx  context.Context
-		Op   Member
-		Flag []types.WritingFlag
+		Ctx context.Context
+		Op  Member
 	}{
-		Ctx:  ctx,
-		Op:   op,
-		Flag: flag,
+		Ctx: ctx,
+		Op:  op,
 	}
-	mock.lockSave.Lock()
-	mock.calls.Save = append(mock.calls.Save, callInfo)
-	mock.lockSave.Unlock()
-	return mock.SaveFunc(ctx, op, flag...)
+	mock.lockUpdateMember.Lock()
+	mock.calls.UpdateMember = append(mock.calls.UpdateMember, callInfo)
+	mock.lockUpdateMember.Unlock()
+	return mock.UpdateMemberFunc(ctx, op)
 }
 
-// SaveCalls gets all the calls that were made to Save.
+// UpdateMemberCalls gets all the calls that were made to UpdateMember.
 // Check the length with:
-//     len(mockedActions.SaveCalls())
-func (mock *ActionsMock) SaveCalls() []struct {
-	Ctx  context.Context
-	Op   Member
-	Flag []types.WritingFlag
+//     len(mockedActions.UpdateMemberCalls())
+func (mock *ActionsMock) UpdateMemberCalls() []struct {
+	Ctx context.Context
+	Op  Member
 } {
 	var calls []struct {
-		Ctx  context.Context
-		Op   Member
-		Flag []types.WritingFlag
+		Ctx context.Context
+		Op  Member
 	}
-	mock.lockSave.RLock()
-	calls = mock.calls.Save
-	mock.lockSave.RUnlock()
+	mock.lockUpdateMember.RLock()
+	calls = mock.calls.UpdateMember
+	mock.lockUpdateMember.RUnlock()
 	return calls
 }

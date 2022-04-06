@@ -9,15 +9,15 @@ import (
 	"strings"
 )
 
-func (w workflow) Authenticate(ctx context.Context, auth crew.AuthRequest) (session.Session, error) {
-	const operation = "Workflows.Crew.Authenticate"
+func (w workflow) AuthenticateMember(ctx context.Context, auth AuthRequest) (session.Session, error) {
+	const operation = "Workflows.Crew.AuthenticateMember"
 
 	operatorNick, storeNick := split(auth.Nickname)
 	if operatorNick == "" || storeNick == "" {
 		return session.Session{}, crew.ErrInvalidAuthArguments
 	}
 
-	op, err := w.crew.GetWithNicknames(ctx, operatorNick, storeNick)
+	op, err := w.crew.GetMemberWithNicknames(ctx, operatorNick, storeNick)
 	if err != nil {
 		return session.Session{}, fault.Wrap(err, operation)
 	}
@@ -31,13 +31,16 @@ func (w workflow) Authenticate(ctx context.Context, auth crew.AuthRequest) (sess
 		return session.Session{}, fault.Wrap(err, operation)
 	}
 
-	ctx, ses, err := w.sessions.Create(ctx, session.Session{
+	_, ses, err := w.sessions.Create(ctx, session.Session{
 		OperatorID:   op.ExternalID,
 		StoreID:      op.Store.StoreID,
 		OperatorName: op.Name,
 		Permissions:  op.Permissions,
 		Preferences:  pref,
 	})
+	if err != nil {
+		return session.Session{}, fault.Wrap(err, operation)
+	}
 
 	return ses, nil
 }

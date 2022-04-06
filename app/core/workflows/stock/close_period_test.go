@@ -2,17 +2,19 @@ package stock
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/stocking/stock"
 	"gomies/pkg/sdk/types"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ClosePeriod(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -36,7 +38,7 @@ func TestWorkflow_ClosePeriod(t *testing.T) {
 			name: "should close period successfully",
 			args: args{
 				filter: stock.Filter{
-					ResourceID: idExample1,
+					ResourceID: fakeID,
 					FinalDate:  time.Now(),
 				},
 			},
@@ -52,7 +54,7 @@ func TestWorkflow_ClosePeriod(t *testing.T) {
 			name: "should fail because resourceID is invalid",
 			args: args{
 				filter: stock.Filter{
-					ResourceID: types.UID{},
+					ResourceID: "",
 					FinalDate:  time.Now(),
 				},
 			},

@@ -5,11 +5,10 @@ import (
 	"gomies/app/core/entities/catalog/category"
 	"gomies/app/core/entities/catalog/product"
 	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
 )
 
-func (w workflow) SaveProduct(ctx context.Context, input product.Product, flag ...types.WritingFlag) (product.Product, error) {
-	const operation = "Workflows.Product.SaveProduct"
+func (w workflow) CreateProduct(ctx context.Context, input product.Product) (product.Product, error) {
+	const operation = "Workflows.Product.CreateProduct"
 
 	if err := input.Validate(); err != nil {
 		return product.Product{}, fault.Wrap(err, operation)
@@ -17,7 +16,7 @@ func (w workflow) SaveProduct(ctx context.Context, input product.Product, flag .
 
 	// If there is a category external ID assigned to the input, retrieves its internal ID
 	if !input.CategoryExternalID.Empty() {
-		c, err := w.categories.Get(ctx, category.Key{ID: input.CategoryExternalID})
+		c, err := w.categories.GetCategory(ctx, category.Key{ID: input.CategoryExternalID})
 		if err != nil {
 			return product.Product{}, fault.Wrap(err, operation)
 		}
@@ -26,7 +25,7 @@ func (w workflow) SaveProduct(ctx context.Context, input product.Product, flag .
 		input.CategoryID = 0
 	}
 
-	input, err := w.products.Save(ctx, input, flag...)
+	input, err := w.products.CreateProduct(ctx, input)
 	if err != nil {
 		return product.Product{}, fault.Wrap(err, operation)
 	}

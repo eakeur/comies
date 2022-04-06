@@ -2,39 +2,43 @@ package crew
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/iam/crew"
-	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestWorkflow_Remove(t *testing.T) {
+func TestWorkflow_UpdateMember(t *testing.T) {
 	t.Parallel()
+
+	ctx := context.Background()
 
 	type (
 		args struct {
-			key crew.Key
+			member crew.Member
 		}
 
-		fields struct {
+		opts struct {
 			crew *crew.ActionsMock
 		}
 
 		test struct {
 			name    string
 			args    args
-			fields  fields
+			opts    opts
 			wantErr error
 		}
 	)
 
 	cases := []test{
 		{
-			name: "should return member found",
-			args: args{key: crew.Key{ID: types.NewUID()}},
-			fields: fields{
+			name: "should return nil for successful update",
+			args: args{
+				member: crew.Member{},
+			},
+			opts: opts{
 				crew: &crew.ActionsMock{
-					RemoveFunc: func(ctx context.Context, key crew.Key) error {
+					UpdateMemberFunc: func(ctx context.Context, op crew.Member) error {
 						return nil
 					},
 				},
@@ -48,9 +52,12 @@ func TestWorkflow_Remove(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := workflow{crew: c.fields.crew}.Remove(context.Background(), c.args.key)
+			wf := workflow{
+				crew: c.opts.crew,
+			}
+			err := wf.UpdateMember(ctx, c.args.member)
 			assert.ErrorIs(t, err, c.wantErr)
-
 		})
 	}
+
 }

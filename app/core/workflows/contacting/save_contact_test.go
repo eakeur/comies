@@ -2,16 +2,18 @@ package contacting
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/contacting"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_SaveProduct(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -36,7 +38,7 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			name: "should return created contact",
 			args: args{
 				contact: contacting.Contact{
-					TargetID: idExample1,
+					TargetID: fakeID,
 					Phones: []contacting.Phone{
 						{}, {}, {}, {}, {}, {}, {}, {}, {}, {},
 					},
@@ -46,7 +48,7 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 				},
 			},
 			want: contacting.Contact{
-				TargetID: idExample1,
+				TargetID: fakeID,
 				Phones: []contacting.Phone{
 					{}, {}, {}, {}, {}, {}, {}, {}, {}, {},
 				},

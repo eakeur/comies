@@ -43,8 +43,8 @@ func Managers() ManagersMocks {
 			},
 			RetrieveFunc: func(ctx context.Context, digest string, updateExpiration bool) (context.Context, session.Session, error) {
 				return ctx, session.Session{
-					OperatorID:   types.UIDFrom("0b3d0d55-4610-4516-96ec-8667b519599d"),
-					StoreID:      types.UIDFrom("0b3d0d55-4610-4516-96ec-8667b519599a"),
+					OperatorID:   "0b3d0d55-4610-4516-96ec-8667b519599d",
+					StoreID:      "0b3d0d55-4610-4516-96ec-8667b519599a",
 					OperatorName: "Tester Smith",
 					Permissions:  "*",
 					Digest:       "ABCDEFGHIJKLMNOPQRSTUVWXYZ",

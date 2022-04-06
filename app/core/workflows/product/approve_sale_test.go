@@ -2,17 +2,18 @@ package product
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/product"
-	"gomies/app/core/entities/stocking/stock"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ApproveSale(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -21,7 +22,7 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 
 		opts struct {
 			products *product.ActionsMock
-			stocks   *stock.WorkflowMock
+			stocks   *StockServiceMock
 		}
 
 		test struct {
@@ -37,7 +38,7 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 			name: "should return nil for approved sale",
 			args: args{
 				req: product.ApproveSaleRequest{
-					Key:      product.Key{ID: idExample1},
+					Key:      product.Key{ID: fakeID},
 					Quantity: 10,
 					Price:    1000,
 				},
@@ -52,8 +53,8 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 						}, nil
 					},
 				},
-				stocks: &stock.WorkflowMock{
-					ComputeFunc: func(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
+				stocks: &StockServiceMock{
+					ComputeFunc: func(ctx context.Context, productID types.UID) (types.Quantity, error) {
 						return 50, nil
 					},
 				},
@@ -63,7 +64,7 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 			name: "should return nil for approved sale with ingredients",
 			args: args{
 				req: product.ApproveSaleRequest{
-					Key:      product.Key{ID: idExample1},
+					Key:      product.Key{ID: fakeID},
 					Quantity: 10,
 					Price:    1000,
 				},
@@ -83,8 +84,8 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 						}, nil
 					},
 				},
-				stocks: &stock.WorkflowMock{
-					ComputeSomeFunc: func(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error) {
+				stocks: &StockServiceMock{
+					ComputeSomeFunc: func(ctx context.Context, productsIDs ...types.UID) ([]types.Quantity, error) {
 						return []types.Quantity{50, 50, 50, 50}, nil
 					},
 				},
@@ -94,7 +95,7 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 			name: "should return error for price not allowed",
 			args: args{
 				req: product.ApproveSaleRequest{
-					Key:      product.Key{ID: idExample1},
+					Key:      product.Key{ID: fakeID},
 					Quantity: 10,
 					Price:    1000,
 				},
@@ -115,7 +116,7 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 			name: "should return error for quantity not allowed",
 			args: args{
 				req: product.ApproveSaleRequest{
-					Key:      product.Key{ID: idExample1},
+					Key:      product.Key{ID: fakeID},
 					Quantity: 1,
 					Price:    1500,
 				},
@@ -136,7 +137,7 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 			name: "should return error for insufficient ingredients",
 			args: args{
 				req: product.ApproveSaleRequest{
-					Key:      product.Key{ID: idExample1},
+					Key:      product.Key{ID: fakeID},
 					Quantity: 10,
 					Price:    1000,
 				},
@@ -157,8 +158,8 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 						}, nil
 					},
 				},
-				stocks: &stock.WorkflowMock{
-					ComputeSomeFunc: func(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error) {
+				stocks: &StockServiceMock{
+					ComputeSomeFunc: func(ctx context.Context, productsIDs ...types.UID) ([]types.Quantity, error) {
 						return []types.Quantity{50, 50, 50, 50}, nil
 					},
 				},
@@ -172,7 +173,10 @@ func TestWorkflow_ApproveSale(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, nil, c.opts.stocks)
+			wf := workflow{
+				products: c.opts.products,
+				stocks:   c.opts.stocks,
+			}
 			err := wf.ApproveSale(ctx, c.args.req)
 
 			assert.ErrorIs(t, err, c.wantErr)

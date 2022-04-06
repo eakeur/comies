@@ -6,8 +6,8 @@ import (
 	"gomies/pkg/sdk/fault"
 )
 
-func (w workflow) AddIngredient(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error) {
-	const operation = "Workflows.Product.AddIngredient"
+func (w workflow) CreateIngredient(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error) {
+	const operation = "Workflows.Product.CreateIngredient"
 
 	if err := ingredient.Validate(); err != nil {
 		return product.Ingredient{}, fault.Wrap(err, operation)

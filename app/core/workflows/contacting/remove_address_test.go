@@ -2,16 +2,18 @@ package contacting
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/contacting"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_RemoveAddressTest(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -35,8 +37,8 @@ func TestWorkflow_RemoveAddressTest(t *testing.T) {
 		{
 			name: "should return nil error",
 			args: args{
-				targetID: idExample1,
-				phoneID:  idExample2,
+				targetID: fakeID,
+				phoneID:  fakeID,
 			},
 			opts: opts{
 				contacts: &contacting.ActionsMock{

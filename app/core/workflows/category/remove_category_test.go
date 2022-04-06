@@ -2,15 +2,18 @@ package category
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/category"
+	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_RemoveCategory(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -33,11 +36,11 @@ func TestWorkflow_RemoveCategory(t *testing.T) {
 		{
 			name: "should return category",
 			args: args{
-				key: category.Key{ID: idExample1},
+				key: category.Key{ID: fakeID},
 			},
 			opts: opts{
 				categories: &category.ActionsMock{
-					RemoveFunc: func(ctx context.Context, key category.Key) error {
+					RemoveCategoryFunc: func(ctx context.Context, key category.Key) error {
 						return nil
 					},
 				},

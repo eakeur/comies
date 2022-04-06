@@ -2,9 +2,10 @@ package crew
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/iam/crew"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_List(t *testing.T) {
@@ -37,7 +38,7 @@ func TestWorkflow_List(t *testing.T) {
 			want: []crew.Member{},
 			fields: fields{
 				crew: &crew.ActionsMock{
-					ListFunc: func(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, error) {
+					ListMembersFunc: func(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, error) {
 						return []crew.Member{}, nil
 					},
 				},
@@ -51,7 +52,7 @@ func TestWorkflow_List(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			list, err := workflow{crew: c.fields.crew}.List(context.Background(), c.args.filter)
+			list, err := workflow{crew: c.fields.crew}.ListMembers(context.Background(), c.args.filter)
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, list)
 

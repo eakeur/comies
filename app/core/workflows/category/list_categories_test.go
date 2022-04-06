@@ -2,9 +2,10 @@ package category
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/category"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ListCategories(t *testing.T) {
@@ -37,7 +38,7 @@ func TestWorkflow_ListCategories(t *testing.T) {
 			},
 			opts: opts{
 				categories: &category.ActionsMock{
-					ListFunc: func(ctx context.Context, productFilter category.Filter) ([]category.Category, error) {
+					ListCategoriesFunc: func(ctx context.Context, productFilter category.Filter) ([]category.Category, error) {
 						return []category.Category{
 							{}, {},
 						}, nil

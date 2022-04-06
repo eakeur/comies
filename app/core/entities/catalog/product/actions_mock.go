@@ -19,8 +19,8 @@ var _ Actions = &ActionsMock{}
 //
 // 		// make and configure a mocked Actions
 // 		mockedActions := &ActionsMock{
-// 			GetFunc: func(ctx context.Context, key Key) (Product, error) {
-// 				panic("mock out the Get method")
+// 			CreateProductFunc: func(ctx context.Context, prd Product) (Product, error) {
+// 				panic("mock out the CreateProduct method")
 // 			},
 // 			GetProductSaleInfoFunc: func(ctx context.Context, key Key) (Sale, error) {
 // 				panic("mock out the GetProductSaleInfo method")
@@ -28,14 +28,14 @@ var _ Actions = &ActionsMock{}
 // 			GetProductStockInfoFunc: func(ctx context.Context, key Key) (Stock, error) {
 // 				panic("mock out the GetProductStockInfo method")
 // 			},
-// 			ListFunc: func(ctx context.Context, productFilter Filter) ([]Product, error) {
-// 				panic("mock out the List method")
+// 			GetProductsFunc: func(ctx context.Context, key Key) (Product, error) {
+// 				panic("mock out the GetProducts method")
 // 			},
 // 			ListIngredientsFunc: func(ctx context.Context, productKey Key) ([]Ingredient, error) {
 // 				panic("mock out the ListIngredients method")
 // 			},
-// 			RemoveFunc: func(ctx context.Context, key Key) error {
-// 				panic("mock out the Remove method")
+// 			ListProductsFunc: func(ctx context.Context, productFilter Filter) ([]Product, error) {
+// 				panic("mock out the ListProducts method")
 // 			},
 // 			RemoveAllIngredientsFunc: func(ctx context.Context, productKey Key) error {
 // 				panic("mock out the RemoveAllIngredients method")
@@ -43,11 +43,14 @@ var _ Actions = &ActionsMock{}
 // 			RemoveIngredientFunc: func(ctx context.Context, productKey Key, ingredientID types.UID) error {
 // 				panic("mock out the RemoveIngredient method")
 // 			},
-// 			SaveFunc: func(ctx context.Context, prd Product, flag ...types.WritingFlag) (Product, error) {
-// 				panic("mock out the Save method")
+// 			RemoveProductFunc: func(ctx context.Context, key Key) error {
+// 				panic("mock out the RemoveProduct method")
 // 			},
 // 			SaveIngredientsFunc: func(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error) {
 // 				panic("mock out the SaveIngredients method")
+// 			},
+// 			UpdateProductFunc: func(ctx context.Context, prd Product) error {
+// 				panic("mock out the UpdateProduct method")
 // 			},
 // 		}
 //
@@ -56,8 +59,8 @@ var _ Actions = &ActionsMock{}
 //
 // 	}
 type ActionsMock struct {
-	// GetFunc mocks the Get method.
-	GetFunc func(ctx context.Context, key Key) (Product, error)
+	// CreateProductFunc mocks the CreateProduct method.
+	CreateProductFunc func(ctx context.Context, prd Product) (Product, error)
 
 	// GetProductSaleInfoFunc mocks the GetProductSaleInfo method.
 	GetProductSaleInfoFunc func(ctx context.Context, key Key) (Sale, error)
@@ -65,14 +68,14 @@ type ActionsMock struct {
 	// GetProductStockInfoFunc mocks the GetProductStockInfo method.
 	GetProductStockInfoFunc func(ctx context.Context, key Key) (Stock, error)
 
-	// ListFunc mocks the List method.
-	ListFunc func(ctx context.Context, productFilter Filter) ([]Product, error)
+	// GetProductsFunc mocks the GetProducts method.
+	GetProductsFunc func(ctx context.Context, key Key) (Product, error)
 
 	// ListIngredientsFunc mocks the ListIngredients method.
 	ListIngredientsFunc func(ctx context.Context, productKey Key) ([]Ingredient, error)
 
-	// RemoveFunc mocks the Remove method.
-	RemoveFunc func(ctx context.Context, key Key) error
+	// ListProductsFunc mocks the ListProducts method.
+	ListProductsFunc func(ctx context.Context, productFilter Filter) ([]Product, error)
 
 	// RemoveAllIngredientsFunc mocks the RemoveAllIngredients method.
 	RemoveAllIngredientsFunc func(ctx context.Context, productKey Key) error
@@ -80,20 +83,23 @@ type ActionsMock struct {
 	// RemoveIngredientFunc mocks the RemoveIngredient method.
 	RemoveIngredientFunc func(ctx context.Context, productKey Key, ingredientID types.UID) error
 
-	// SaveFunc mocks the Save method.
-	SaveFunc func(ctx context.Context, prd Product, flag ...types.WritingFlag) (Product, error)
+	// RemoveProductFunc mocks the RemoveProduct method.
+	RemoveProductFunc func(ctx context.Context, key Key) error
 
 	// SaveIngredientsFunc mocks the SaveIngredients method.
 	SaveIngredientsFunc func(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error)
 
+	// UpdateProductFunc mocks the UpdateProduct method.
+	UpdateProductFunc func(ctx context.Context, prd Product) error
+
 	// calls tracks calls to the methods.
 	calls struct {
-		// Get holds details about calls to the Get method.
-		Get []struct {
+		// CreateProduct holds details about calls to the CreateProduct method.
+		CreateProduct []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Key is the key argument value.
-			Key Key
+			// Prd is the prd argument value.
+			Prd Product
 		}
 		// GetProductSaleInfo holds details about calls to the GetProductSaleInfo method.
 		GetProductSaleInfo []struct {
@@ -109,12 +115,12 @@ type ActionsMock struct {
 			// Key is the key argument value.
 			Key Key
 		}
-		// List holds details about calls to the List method.
-		List []struct {
+		// GetProducts holds details about calls to the GetProducts method.
+		GetProducts []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// ProductFilter is the productFilter argument value.
-			ProductFilter Filter
+			// Key is the key argument value.
+			Key Key
 		}
 		// ListIngredients holds details about calls to the ListIngredients method.
 		ListIngredients []struct {
@@ -123,12 +129,12 @@ type ActionsMock struct {
 			// ProductKey is the productKey argument value.
 			ProductKey Key
 		}
-		// Remove holds details about calls to the Remove method.
-		Remove []struct {
+		// ListProducts holds details about calls to the ListProducts method.
+		ListProducts []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Key is the key argument value.
-			Key Key
+			// ProductFilter is the productFilter argument value.
+			ProductFilter Filter
 		}
 		// RemoveAllIngredients holds details about calls to the RemoveAllIngredients method.
 		RemoveAllIngredients []struct {
@@ -146,14 +152,12 @@ type ActionsMock struct {
 			// IngredientID is the ingredientID argument value.
 			IngredientID types.UID
 		}
-		// Save holds details about calls to the Save method.
-		Save []struct {
+		// RemoveProduct holds details about calls to the RemoveProduct method.
+		RemoveProduct []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Prd is the prd argument value.
-			Prd Product
-			// Flag is the flag argument value.
-			Flag []types.WritingFlag
+			// Key is the key argument value.
+			Key Key
 		}
 		// SaveIngredients holds details about calls to the SaveIngredients method.
 		SaveIngredients []struct {
@@ -164,51 +168,59 @@ type ActionsMock struct {
 			// Ingredients is the ingredients argument value.
 			Ingredients []Ingredient
 		}
+		// UpdateProduct holds details about calls to the UpdateProduct method.
+		UpdateProduct []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Prd is the prd argument value.
+			Prd Product
+		}
 	}
-	lockGet                  sync.RWMutex
+	lockCreateProduct        sync.RWMutex
 	lockGetProductSaleInfo   sync.RWMutex
 	lockGetProductStockInfo  sync.RWMutex
-	lockList                 sync.RWMutex
+	lockGetProducts          sync.RWMutex
 	lockListIngredients      sync.RWMutex
-	lockRemove               sync.RWMutex
+	lockListProducts         sync.RWMutex
 	lockRemoveAllIngredients sync.RWMutex
 	lockRemoveIngredient     sync.RWMutex
-	lockSave                 sync.RWMutex
+	lockRemoveProduct        sync.RWMutex
 	lockSaveIngredients      sync.RWMutex
+	lockUpdateProduct        sync.RWMutex
 }
 
-// Get calls GetFunc.
-func (mock *ActionsMock) Get(ctx context.Context, key Key) (Product, error) {
-	if mock.GetFunc == nil {
-		panic("ActionsMock.GetFunc: method is nil but Actions.Get was just called")
+// CreateProduct calls CreateProductFunc.
+func (mock *ActionsMock) CreateProduct(ctx context.Context, prd Product) (Product, error) {
+	if mock.CreateProductFunc == nil {
+		panic("ActionsMock.CreateProductFunc: method is nil but Actions.CreateProduct was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Key Key
+		Prd Product
 	}{
 		Ctx: ctx,
-		Key: key,
+		Prd: prd,
 	}
-	mock.lockGet.Lock()
-	mock.calls.Get = append(mock.calls.Get, callInfo)
-	mock.lockGet.Unlock()
-	return mock.GetFunc(ctx, key)
+	mock.lockCreateProduct.Lock()
+	mock.calls.CreateProduct = append(mock.calls.CreateProduct, callInfo)
+	mock.lockCreateProduct.Unlock()
+	return mock.CreateProductFunc(ctx, prd)
 }
 
-// GetCalls gets all the calls that were made to Get.
+// CreateProductCalls gets all the calls that were made to CreateProduct.
 // Check the length with:
-//     len(mockedActions.GetCalls())
-func (mock *ActionsMock) GetCalls() []struct {
+//     len(mockedActions.CreateProductCalls())
+func (mock *ActionsMock) CreateProductCalls() []struct {
 	Ctx context.Context
-	Key Key
+	Prd Product
 } {
 	var calls []struct {
 		Ctx context.Context
-		Key Key
+		Prd Product
 	}
-	mock.lockGet.RLock()
-	calls = mock.calls.Get
-	mock.lockGet.RUnlock()
+	mock.lockCreateProduct.RLock()
+	calls = mock.calls.CreateProduct
+	mock.lockCreateProduct.RUnlock()
 	return calls
 }
 
@@ -282,38 +294,38 @@ func (mock *ActionsMock) GetProductStockInfoCalls() []struct {
 	return calls
 }
 
-// List calls ListFunc.
-func (mock *ActionsMock) List(ctx context.Context, productFilter Filter) ([]Product, error) {
-	if mock.ListFunc == nil {
-		panic("ActionsMock.ListFunc: method is nil but Actions.List was just called")
+// GetProducts calls GetProductsFunc.
+func (mock *ActionsMock) GetProducts(ctx context.Context, key Key) (Product, error) {
+	if mock.GetProductsFunc == nil {
+		panic("ActionsMock.GetProductsFunc: method is nil but Actions.GetProducts was just called")
 	}
 	callInfo := struct {
-		Ctx           context.Context
-		ProductFilter Filter
+		Ctx context.Context
+		Key Key
 	}{
-		Ctx:           ctx,
-		ProductFilter: productFilter,
+		Ctx: ctx,
+		Key: key,
 	}
-	mock.lockList.Lock()
-	mock.calls.List = append(mock.calls.List, callInfo)
-	mock.lockList.Unlock()
-	return mock.ListFunc(ctx, productFilter)
+	mock.lockGetProducts.Lock()
+	mock.calls.GetProducts = append(mock.calls.GetProducts, callInfo)
+	mock.lockGetProducts.Unlock()
+	return mock.GetProductsFunc(ctx, key)
 }
 
-// ListCalls gets all the calls that were made to List.
+// GetProductsCalls gets all the calls that were made to GetProducts.
 // Check the length with:
-//     len(mockedActions.ListCalls())
-func (mock *ActionsMock) ListCalls() []struct {
-	Ctx           context.Context
-	ProductFilter Filter
+//     len(mockedActions.GetProductsCalls())
+func (mock *ActionsMock) GetProductsCalls() []struct {
+	Ctx context.Context
+	Key Key
 } {
 	var calls []struct {
-		Ctx           context.Context
-		ProductFilter Filter
+		Ctx context.Context
+		Key Key
 	}
-	mock.lockList.RLock()
-	calls = mock.calls.List
-	mock.lockList.RUnlock()
+	mock.lockGetProducts.RLock()
+	calls = mock.calls.GetProducts
+	mock.lockGetProducts.RUnlock()
 	return calls
 }
 
@@ -352,38 +364,38 @@ func (mock *ActionsMock) ListIngredientsCalls() []struct {
 	return calls
 }
 
-// Remove calls RemoveFunc.
-func (mock *ActionsMock) Remove(ctx context.Context, key Key) error {
-	if mock.RemoveFunc == nil {
-		panic("ActionsMock.RemoveFunc: method is nil but Actions.Remove was just called")
+// ListProducts calls ListProductsFunc.
+func (mock *ActionsMock) ListProducts(ctx context.Context, productFilter Filter) ([]Product, error) {
+	if mock.ListProductsFunc == nil {
+		panic("ActionsMock.ListProductsFunc: method is nil but Actions.ListProducts was just called")
 	}
 	callInfo := struct {
-		Ctx context.Context
-		Key Key
+		Ctx           context.Context
+		ProductFilter Filter
 	}{
-		Ctx: ctx,
-		Key: key,
+		Ctx:           ctx,
+		ProductFilter: productFilter,
 	}
-	mock.lockRemove.Lock()
-	mock.calls.Remove = append(mock.calls.Remove, callInfo)
-	mock.lockRemove.Unlock()
-	return mock.RemoveFunc(ctx, key)
+	mock.lockListProducts.Lock()
+	mock.calls.ListProducts = append(mock.calls.ListProducts, callInfo)
+	mock.lockListProducts.Unlock()
+	return mock.ListProductsFunc(ctx, productFilter)
 }
 
-// RemoveCalls gets all the calls that were made to Remove.
+// ListProductsCalls gets all the calls that were made to ListProducts.
 // Check the length with:
-//     len(mockedActions.RemoveCalls())
-func (mock *ActionsMock) RemoveCalls() []struct {
-	Ctx context.Context
-	Key Key
+//     len(mockedActions.ListProductsCalls())
+func (mock *ActionsMock) ListProductsCalls() []struct {
+	Ctx           context.Context
+	ProductFilter Filter
 } {
 	var calls []struct {
-		Ctx context.Context
-		Key Key
+		Ctx           context.Context
+		ProductFilter Filter
 	}
-	mock.lockRemove.RLock()
-	calls = mock.calls.Remove
-	mock.lockRemove.RUnlock()
+	mock.lockListProducts.RLock()
+	calls = mock.calls.ListProducts
+	mock.lockListProducts.RUnlock()
 	return calls
 }
 
@@ -461,42 +473,38 @@ func (mock *ActionsMock) RemoveIngredientCalls() []struct {
 	return calls
 }
 
-// Save calls SaveFunc.
-func (mock *ActionsMock) Save(ctx context.Context, prd Product, flag ...types.WritingFlag) (Product, error) {
-	if mock.SaveFunc == nil {
-		panic("ActionsMock.SaveFunc: method is nil but Actions.Save was just called")
+// RemoveProduct calls RemoveProductFunc.
+func (mock *ActionsMock) RemoveProduct(ctx context.Context, key Key) error {
+	if mock.RemoveProductFunc == nil {
+		panic("ActionsMock.RemoveProductFunc: method is nil but Actions.RemoveProduct was just called")
 	}
 	callInfo := struct {
-		Ctx  context.Context
-		Prd  Product
-		Flag []types.WritingFlag
+		Ctx context.Context
+		Key Key
 	}{
-		Ctx:  ctx,
-		Prd:  prd,
-		Flag: flag,
+		Ctx: ctx,
+		Key: key,
 	}
-	mock.lockSave.Lock()
-	mock.calls.Save = append(mock.calls.Save, callInfo)
-	mock.lockSave.Unlock()
-	return mock.SaveFunc(ctx, prd, flag...)
+	mock.lockRemoveProduct.Lock()
+	mock.calls.RemoveProduct = append(mock.calls.RemoveProduct, callInfo)
+	mock.lockRemoveProduct.Unlock()
+	return mock.RemoveProductFunc(ctx, key)
 }
 
-// SaveCalls gets all the calls that were made to Save.
+// RemoveProductCalls gets all the calls that were made to RemoveProduct.
 // Check the length with:
-//     len(mockedActions.SaveCalls())
-func (mock *ActionsMock) SaveCalls() []struct {
-	Ctx  context.Context
-	Prd  Product
-	Flag []types.WritingFlag
+//     len(mockedActions.RemoveProductCalls())
+func (mock *ActionsMock) RemoveProductCalls() []struct {
+	Ctx context.Context
+	Key Key
 } {
 	var calls []struct {
-		Ctx  context.Context
-		Prd  Product
-		Flag []types.WritingFlag
+		Ctx context.Context
+		Key Key
 	}
-	mock.lockSave.RLock()
-	calls = mock.calls.Save
-	mock.lockSave.RUnlock()
+	mock.lockRemoveProduct.RLock()
+	calls = mock.calls.RemoveProduct
+	mock.lockRemoveProduct.RUnlock()
 	return calls
 }
 
@@ -536,5 +544,40 @@ func (mock *ActionsMock) SaveIngredientsCalls() []struct {
 	mock.lockSaveIngredients.RLock()
 	calls = mock.calls.SaveIngredients
 	mock.lockSaveIngredients.RUnlock()
+	return calls
+}
+
+// UpdateProduct calls UpdateProductFunc.
+func (mock *ActionsMock) UpdateProduct(ctx context.Context, prd Product) error {
+	if mock.UpdateProductFunc == nil {
+		panic("ActionsMock.UpdateProductFunc: method is nil but Actions.UpdateProduct was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Prd Product
+	}{
+		Ctx: ctx,
+		Prd: prd,
+	}
+	mock.lockUpdateProduct.Lock()
+	mock.calls.UpdateProduct = append(mock.calls.UpdateProduct, callInfo)
+	mock.lockUpdateProduct.Unlock()
+	return mock.UpdateProductFunc(ctx, prd)
+}
+
+// UpdateProductCalls gets all the calls that were made to UpdateProduct.
+// Check the length with:
+//     len(mockedActions.UpdateProductCalls())
+func (mock *ActionsMock) UpdateProductCalls() []struct {
+	Ctx context.Context
+	Prd Product
+} {
+	var calls []struct {
+		Ctx context.Context
+		Prd Product
+	}
+	mock.lockUpdateProduct.RLock()
+	calls = mock.calls.UpdateProduct
+	mock.lockUpdateProduct.RUnlock()
 	return calls
 }

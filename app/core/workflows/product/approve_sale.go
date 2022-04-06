@@ -3,7 +3,6 @@ package product
 import (
 	"context"
 	"gomies/app/core/entities/catalog/product"
-	"gomies/app/core/entities/stocking/stock"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/types"
 )
@@ -25,7 +24,7 @@ func (w workflow) ApproveSale(ctx context.Context, req product.ApproveSaleReques
 	}
 
 	if !saleProps.HasIngredients {
-		stk, err := w.stocks.Compute(ctx, stock.Filter{ResourceID: req.ID})
+		stk, err := w.stocks.Compute(ctx, req.ID)
 		if err != nil {
 			return fault.Wrap(err, operation)
 		}
@@ -55,7 +54,7 @@ func (w workflow) checkIngredients(ctx context.Context, productKey product.Key, 
 		ingredientIDs[i] = ingredient.IngredientExternalID
 	}
 
-	calc, err := w.stocks.ComputeSome(ctx, stock.Filter{}, ingredientIDs...)
+	calc, err := w.stocks.ComputeSome(ctx, ingredientIDs...)
 	if err != nil {
 		return err
 	}

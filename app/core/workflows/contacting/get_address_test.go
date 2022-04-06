@@ -2,17 +2,20 @@ package contacting
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/contacting"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_GetAddress(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -37,8 +40,8 @@ func TestWorkflow_GetAddress(t *testing.T) {
 		{
 			name: "should return address",
 			args: args{
-				targetID:  idExample1,
-				addressID: idExample2,
+				targetID:  fakeID,
+				addressID: fakeID,
 			},
 			want: contacting.Address{},
 			opts: opts{
@@ -52,8 +55,8 @@ func TestWorkflow_GetAddress(t *testing.T) {
 		{
 			name: "should return address not found",
 			args: args{
-				targetID:  idExample1,
-				addressID: idExample2,
+				targetID:  fakeID,
+				addressID: fakeID,
 			},
 			wantErr: fault.ErrNotFound,
 			opts: opts{

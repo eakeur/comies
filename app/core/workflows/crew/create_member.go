@@ -4,17 +4,16 @@ import (
 	"context"
 	"gomies/app/core/entities/iam/crew"
 	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
 )
 
-func (w workflow) Save(ctx context.Context, input crew.Member, flag ...types.WritingFlag) (crew.Member, error) {
-	const operation = "Workflows.Crew.Save"
+func (w workflow) CreateMember(ctx context.Context, input crew.Member) (crew.Member, error) {
+	const operation = "Workflows.Crew.CreateMember"
 
 	if err := input.Validate(); err != nil {
 		return crew.Member{}, fault.Wrap(err, operation)
 	}
 
-	input, err := w.crew.Save(ctx, input, flag...)
+	input, err := w.crew.CreateMember(ctx, input)
 	if err != nil {
 		return crew.Member{}, fault.Wrap(err, operation)
 	}

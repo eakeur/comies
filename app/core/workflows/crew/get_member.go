@@ -6,10 +6,10 @@ import (
 	"gomies/pkg/sdk/fault"
 )
 
-func (w workflow) Get(ctx context.Context, key crew.Key) (crew.Member, error) {
-	const operation = "Workflows.Crew.Get"
+func (w workflow) GetMember(ctx context.Context, key crew.Key) (crew.Member, error) {
+	const operation = "Workflows.Crew.GetProducts"
 
-	ct, err := w.crew.Get(ctx, key)
+	ct, err := w.crew.GetMember(ctx, key)
 	if err != nil {
 		return crew.Member{}, fault.Wrap(err, operation)
 	}

@@ -2,9 +2,10 @@ package product
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/product"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ListProducts(t *testing.T) {
@@ -38,7 +39,7 @@ func TestWorkflow_ListProducts(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					ListFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, error) {
+					ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, error) {
 						return []product.Product{
 							{}, {},
 						}, nil
@@ -54,7 +55,9 @@ func TestWorkflow_ListProducts(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, nil, nil)
+			wf := workflow{
+				products: c.opts.products,
+			}
 			got, err := wf.ListProducts(ctx, c.args.filter)
 
 			assert.ErrorIs(t, err, c.wantErr)

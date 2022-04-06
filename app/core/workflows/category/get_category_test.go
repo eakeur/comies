@@ -2,16 +2,19 @@ package category
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/category"
 	"gomies/pkg/sdk/fault"
+	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_GetCategory(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -35,7 +38,7 @@ func TestWorkflow_GetCategory(t *testing.T) {
 		{
 			name: "should return category",
 			args: args{
-				key: category.Key{ID: idExample1},
+				key: category.Key{ID: fakeID},
 			},
 			want: category.Category{
 				Code: "PRD",
@@ -43,7 +46,7 @@ func TestWorkflow_GetCategory(t *testing.T) {
 			},
 			opts: opts{
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, key category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, key category.Key) (category.Category, error) {
 						return category.Category{
 							Code: "PRD",
 							Name: "PRD",
@@ -55,12 +58,12 @@ func TestWorkflow_GetCategory(t *testing.T) {
 		{
 			name: "should return category not found",
 			args: args{
-				key: category.Key{ID: idExample1},
+				key: category.Key{ID: fakeID},
 			},
 			wantErr: fault.ErrNotFound,
 			opts: opts{
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, key category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, key category.Key) (category.Category, error) {
 						return category.Category{}, fault.ErrNotFound
 					},
 				},

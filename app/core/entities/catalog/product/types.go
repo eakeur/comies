@@ -9,6 +9,8 @@ type (
 		Key
 		Quantity types.Quantity
 		Price    types.Currency
+		Ignore   bool
+		Replace  Key
 	}
 
 	ApproveSaleResponse struct {

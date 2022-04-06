@@ -2,10 +2,10 @@ package category
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/category"
-	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_SaveCategory(t *testing.T) {
@@ -45,7 +45,7 @@ func TestWorkflow_SaveCategory(t *testing.T) {
 			},
 			opts: opts{
 				categories: &category.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd category.Category, flag ...types.WritingFlag) (category.Category, error) {
+					CreateCategoryFunc: func(ctx context.Context, prd category.Category) (category.Category, error) {
 						return prd, nil
 					},
 				},
@@ -62,7 +62,7 @@ func TestWorkflow_SaveCategory(t *testing.T) {
 			wantErr: category.ErrInvalidCode,
 			opts: opts{
 				categories: &category.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd category.Category, flag ...types.WritingFlag) (category.Category, error) {
+					CreateCategoryFunc: func(ctx context.Context, prd category.Category) (category.Category, error) {
 						return prd, nil
 					},
 				},
@@ -79,7 +79,7 @@ func TestWorkflow_SaveCategory(t *testing.T) {
 			wantErr: category.ErrInvalidName,
 			opts: opts{
 				categories: &category.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd category.Category, flag ...types.WritingFlag) (category.Category, error) {
+					CreateCategoryFunc: func(ctx context.Context, prd category.Category) (category.Category, error) {
 						return prd, nil
 					},
 				},
@@ -94,7 +94,7 @@ func TestWorkflow_SaveCategory(t *testing.T) {
 			t.Parallel()
 
 			wf := NewWorkflow(c.opts.categories)
-			ingredient, err := wf.SaveCategory(ctx, c.args.category)
+			ingredient, err := wf.CreateCategory(ctx, c.args.category)
 
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, ingredient)

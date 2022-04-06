@@ -2,14 +2,15 @@ package crew
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/iam/crew"
 	"gomies/pkg/sdk/types"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestWorkflow_Save(t *testing.T) {
+func TestWorkflow_CreateMember(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
@@ -65,7 +66,7 @@ func TestWorkflow_Save(t *testing.T) {
 			},
 			opts: opts{
 				crew: &crew.ActionsMock{
-					SaveFunc: func(ctx context.Context, op crew.Member, flag ...types.WritingFlag) (crew.Member, error) {
+					CreateMemberFunc: func(ctx context.Context, op crew.Member) (crew.Member, error) {
 						return op, nil
 					},
 				},
@@ -82,7 +83,7 @@ func TestWorkflow_Save(t *testing.T) {
 			wf := workflow{
 				crew: c.opts.crew,
 			}
-			ingredient, err := wf.Save(ctx, c.args.member)
+			ingredient, err := wf.CreateMember(ctx, c.args.member)
 
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, ingredient)

@@ -2,11 +2,12 @@ package crew
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/iam/crew"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_Get(t *testing.T) {
@@ -36,7 +37,7 @@ func TestWorkflow_Get(t *testing.T) {
 			args: args{key: crew.Key{ID: types.NewUID()}},
 			fields: fields{
 				crew: &crew.ActionsMock{
-					GetFunc: func(ctx context.Context, key crew.Key) (crew.Member, error) {
+					GetMemberFunc: func(ctx context.Context, key crew.Key) (crew.Member, error) {
 						return crew.Member{}, nil
 					},
 				},
@@ -48,7 +49,7 @@ func TestWorkflow_Get(t *testing.T) {
 			wantErr: fault.ErrNotFound,
 			fields: fields{
 				crew: &crew.ActionsMock{
-					GetFunc: func(ctx context.Context, key crew.Key) (crew.Member, error) {
+					GetMemberFunc: func(ctx context.Context, key crew.Key) (crew.Member, error) {
 						return crew.Member{}, fault.ErrNotFound
 					},
 				},
@@ -62,7 +63,7 @@ func TestWorkflow_Get(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			mem, err := workflow{crew: c.fields.crew}.Get(context.Background(), c.args.key)
+			mem, err := workflow{crew: c.fields.crew}.GetMember(context.Background(), c.args.key)
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, mem)
 

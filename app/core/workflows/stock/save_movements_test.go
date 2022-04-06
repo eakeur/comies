@@ -2,16 +2,18 @@ package stock
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/stocking/stock"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_AddToStock(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -37,9 +39,9 @@ func TestWorkflow_AddToStock(t *testing.T) {
 		{
 			name: "should return movement created",
 			args: args{
-				resourceID: idExample1,
+				resourceID: fakeID,
 				movement: stock.Movement{
-					TargetID: idExample1,
+					TargetID: fakeID,
 					Type:     stock.OutputMovement,
 					Quantity: 10,
 				},
@@ -62,9 +64,9 @@ func TestWorkflow_AddToStock(t *testing.T) {
 		{
 			name: "should return input movement created with full stock",
 			args: args{
-				resourceID: idExample1,
+				resourceID: fakeID,
 				movement: stock.Movement{
-					TargetID: idExample1,
+					TargetID: fakeID,
 					Type:     stock.InputMovement,
 					Quantity: 10,
 				},
@@ -87,9 +89,9 @@ func TestWorkflow_AddToStock(t *testing.T) {
 		{
 			name: "should return output movement created with full stock",
 			args: args{
-				resourceID: idExample1,
+				resourceID: fakeID,
 				movement: stock.Movement{
-					TargetID: idExample1,
+					TargetID: fakeID,
 					Type:     stock.OutputMovement,
 					Quantity: 10,
 				},
@@ -112,9 +114,9 @@ func TestWorkflow_AddToStock(t *testing.T) {
 		{
 			name: "should fail because stock is already full",
 			args: args{
-				resourceID: idExample1,
+				resourceID: fakeID,
 				movement: stock.Movement{
-					TargetID: idExample1,
+					TargetID: fakeID,
 					Type:     stock.InputMovement,
 					Quantity: 10,
 				},
@@ -137,9 +139,9 @@ func TestWorkflow_AddToStock(t *testing.T) {
 		{
 			name: "should fail because stock would be lower than allowed",
 			args: args{
-				resourceID: idExample1,
+				resourceID: fakeID,
 				movement: stock.Movement{
-					TargetID: idExample1,
+					TargetID: fakeID,
 					Type:     stock.OutputMovement,
 					Quantity: 10,
 				},

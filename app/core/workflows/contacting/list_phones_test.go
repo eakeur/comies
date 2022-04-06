@@ -2,16 +2,18 @@ package contacting
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/contacting"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ListPhones(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -35,7 +37,7 @@ func TestWorkflow_ListPhones(t *testing.T) {
 		{
 			name: "should return addresses",
 			args: args{
-				targetID: idExample1,
+				targetID: fakeID,
 			},
 			want: []contacting.Phone{},
 			opts: opts{

@@ -6,10 +6,10 @@ import (
 	"gomies/pkg/sdk/fault"
 )
 
-func (w workflow) Remove(ctx context.Context, key crew.Key) error {
-	const operation = "Workflows.Crew.Remove"
+func (w workflow) RemoveMember(ctx context.Context, key crew.Key) error {
+	const operation = "Workflows.Crew.RemoveProduct"
 
-	err := w.crew.Remove(ctx, key)
+	err := w.crew.RemoveMember(ctx, key)
 	if err != nil {
 		return fault.Wrap(err, operation)
 	}

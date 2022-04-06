@@ -2,17 +2,19 @@ package product
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/catalog/category"
 	"gomies/app/core/entities/catalog/product"
 	"gomies/pkg/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestWorkflow_SaveProduct(t *testing.T) {
+func TestWorkflow_CreateProduct(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
+	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
 
 	type (
 		args struct {
@@ -64,12 +66,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{}, nil
 					},
 				},
@@ -81,7 +83,7 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 				product: product.Product{
 					Code:               "PRD",
 					Name:               "Product",
-					CategoryExternalID: idExample2,
+					CategoryExternalID: fakeID,
 					Type:               product.OutputType,
 					Stock: product.Stock{
 						CostPrice: 1,
@@ -96,7 +98,7 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 				Code:               "PRD",
 				Name:               "Product",
 				CategoryID:         2,
-				CategoryExternalID: idExample2,
+				CategoryExternalID: fakeID,
 				Type:               product.OutputType,
 				Stock: product.Stock{
 					CostPrice: 1,
@@ -108,12 +110,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{Entity: types.Entity{ID: 2}}, nil
 					},
 				},
@@ -141,12 +143,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{}, nil
 					},
 				},
@@ -171,12 +173,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			wantErr: product.ErrInvalidCode,
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{}, nil
 					},
 				},
@@ -201,12 +203,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			wantErr: product.ErrInvalidName,
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{}, nil
 					},
 				},
@@ -230,12 +232,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			wantErr: product.ErrInvalidPrice,
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{}, nil
 					},
 				},
@@ -259,12 +261,12 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 			wantErr: product.ErrMinimumSaleQuantity,
 			opts: opts{
 				products: &product.ActionsMock{
-					SaveFunc: func(ctx context.Context, prd product.Product, flag ...types.WritingFlag) (product.Product, error) {
+					CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 						return prd, nil
 					},
 				},
 				categories: &category.ActionsMock{
-					GetFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+					GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
 						return category.Category{}, nil
 					},
 				},
@@ -278,8 +280,11 @@ func TestWorkflow_SaveProduct(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			wf := NewWorkflow(c.opts.products, c.opts.categories, nil)
-			ingredient, err := wf.SaveProduct(ctx, c.args.product)
+			wf := workflow{
+				products:   c.opts.products,
+				categories: c.opts.categories,
+			}
+			ingredient, err := wf.CreateProduct(ctx, c.args.product)
 
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, ingredient)
