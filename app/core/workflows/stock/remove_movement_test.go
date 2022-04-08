@@ -2,7 +2,7 @@ package stock
 
 import (
 	"context"
-	"gomies/app/core/entities/stocking/stock"
+	"gomies/app/core/entities/stock"
 	"gomies/pkg/sdk/types"
 	"testing"
 

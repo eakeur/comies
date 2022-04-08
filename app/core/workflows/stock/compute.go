@@ -3,7 +3,7 @@ package stock
 import (
 	"context"
 	"errors"
-	"gomies/app/core/entities/stocking/stock"
+	"gomies/app/core/entities/stock"
 	"gomies/pkg/sdk/fault"
 	"gomies/pkg/sdk/types"
 )
