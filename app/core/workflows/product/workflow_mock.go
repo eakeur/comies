@@ -35,7 +35,7 @@ var _ Workflow = &WorkflowMock{}
 // 			GetProductFunc: func(ctx context.Context, key product.Key) (product.Product, error) {
 // 				panic("mock out the GetProduct method")
 // 			},
-// 			ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, error) {
+// 			ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error) {
 // 				panic("mock out the ListProducts method")
 // 			},
 // 			RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, id types.UID) error {
@@ -70,7 +70,7 @@ type WorkflowMock struct {
 	GetProductFunc func(ctx context.Context, key product.Key) (product.Product, error)
 
 	// ListProductsFunc mocks the ListProducts method.
-	ListProductsFunc func(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
+	ListProductsFunc func(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error)
 
 	// RemoveIngredientFunc mocks the RemoveIngredient method.
 	RemoveIngredientFunc func(ctx context.Context, productKey product.Key, id types.UID) error
@@ -348,7 +348,7 @@ func (mock *WorkflowMock) GetProductCalls() []struct {
 }
 
 // ListProducts calls ListProductsFunc.
-func (mock *WorkflowMock) ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, error) {
+func (mock *WorkflowMock) ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error) {
 	if mock.ListProductsFunc == nil {
 		panic("WorkflowMock.ListProductsFunc: method is nil but Workflow.ListProducts was just called")
 	}

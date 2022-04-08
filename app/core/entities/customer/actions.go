@@ -9,8 +9,8 @@ import (
 
 type (
 	Actions interface {
-		ListCustomers(ctx context.Context, f Filter) ([]Customer, error)
-		GetCustomers(ctx context.Context, uid types.UID) (Customer, error)
+		ListCustomers(ctx context.Context, f Filter) ([]Customer, int, error)
+		GetCustomer(ctx context.Context, uid types.UID) (Customer, error)
 		CreateCustomer(ctx context.Context, c Customer) (Customer, error)
 		UpdateCustomer(ctx context.Context, c Customer) error
 		RemoveCustomer(ctx context.Context, uid types.UID) error

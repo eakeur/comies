@@ -6,13 +6,13 @@ import (
 	"gomies/pkg/sdk/fault"
 )
 
-func (w workflow) ListCategories(ctx context.Context, filter category.Filter) ([]category.Category, error) {
+func (w workflow) ListCategories(ctx context.Context, filter category.Filter) ([]category.Category, int, error) {
 	const operation = "Workflows.Product.ListCategories"
 
-	ct, err := w.categories.ListCategories(ctx, filter)
+	ct, count, err := w.categories.ListCategories(ctx, filter)
 	if err != nil {
-		return []category.Category{}, fault.Wrap(err, operation)
+		return []category.Category{}, 0, fault.Wrap(err, operation)
 	}
 
-	return ct, nil
+	return ct, count, nil
 }

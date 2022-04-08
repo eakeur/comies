@@ -27,7 +27,7 @@ var _ Actions = &ActionsMock{}
 // 			GetMemberWithNicknamesFunc: func(ctx context.Context, operatorNickname string, storeNickname string) (Member, error) {
 // 				panic("mock out the GetMemberWithNicknames method")
 // 			},
-// 			ListMembersFunc: func(ctx context.Context, operatorFilter Filter) ([]Member, error) {
+// 			ListMembersFunc: func(ctx context.Context, operatorFilter Filter) ([]Member, int, error) {
 // 				panic("mock out the ListMembers method")
 // 			},
 // 			RemoveMemberFunc: func(ctx context.Context, key Key) error {
@@ -53,7 +53,7 @@ type ActionsMock struct {
 	GetMemberWithNicknamesFunc func(ctx context.Context, operatorNickname string, storeNickname string) (Member, error)
 
 	// ListMembersFunc mocks the ListMembers method.
-	ListMembersFunc func(ctx context.Context, operatorFilter Filter) ([]Member, error)
+	ListMembersFunc func(ctx context.Context, operatorFilter Filter) ([]Member, int, error)
 
 	// RemoveMemberFunc mocks the RemoveMember method.
 	RemoveMemberFunc func(ctx context.Context, key Key) error
@@ -226,7 +226,7 @@ func (mock *ActionsMock) GetMemberWithNicknamesCalls() []struct {
 }
 
 // ListMembers calls ListMembersFunc.
-func (mock *ActionsMock) ListMembers(ctx context.Context, operatorFilter Filter) ([]Member, error) {
+func (mock *ActionsMock) ListMembers(ctx context.Context, operatorFilter Filter) ([]Member, int, error) {
 	if mock.ListMembersFunc == nil {
 		panic("ActionsMock.ListMembersFunc: method is nil but Actions.ListMembers was just called")
 	}

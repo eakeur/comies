@@ -28,7 +28,7 @@ var _ Actions = &ActionsMock{}
 // 			ComputeSomeFunc: func(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error) {
 // 				panic("mock out the ComputeSome method")
 // 			},
-// 			ListMovementsFunc: func(ctx context.Context, filter Filter) ([]Movement, error) {
+// 			ListMovementsFunc: func(ctx context.Context, filter Filter) ([]Movement, int, error) {
 // 				panic("mock out the ListMovements method")
 // 			},
 // 			RemoveAllMovementsFunc: func(ctx context.Context, resourceID types.UID) error {
@@ -57,7 +57,7 @@ type ActionsMock struct {
 	ComputeSomeFunc func(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error)
 
 	// ListMovementsFunc mocks the ListMovements method.
-	ListMovementsFunc func(ctx context.Context, filter Filter) ([]Movement, error)
+	ListMovementsFunc func(ctx context.Context, filter Filter) ([]Movement, int, error)
 
 	// RemoveAllMovementsFunc mocks the RemoveAllMovements method.
 	RemoveAllMovementsFunc func(ctx context.Context, resourceID types.UID) error
@@ -243,7 +243,7 @@ func (mock *ActionsMock) ComputeSomeCalls() []struct {
 }
 
 // ListMovements calls ListMovementsFunc.
-func (mock *ActionsMock) ListMovements(ctx context.Context, filter Filter) ([]Movement, error) {
+func (mock *ActionsMock) ListMovements(ctx context.Context, filter Filter) ([]Movement, int, error) {
 	if mock.ListMovementsFunc == nil {
 		panic("ActionsMock.ListMovementsFunc: method is nil but Actions.ListMovements was just called")
 	}

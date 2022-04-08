@@ -6,12 +6,12 @@ import (
 	"gomies/pkg/sdk/fault"
 )
 
-func (w workflow) ListMembers(ctx context.Context, filter crew.Filter) ([]crew.Member, error) {
+func (w workflow) ListMembers(ctx context.Context, filter crew.Filter) ([]crew.Member, int, error) {
 	const operation = "Workflows.Crew.ListProducts"
-	ct, err := w.crew.ListMembers(ctx, filter)
+	ct, count, err := w.crew.ListMembers(ctx, filter)
 	if err != nil {
-		return []crew.Member{}, fault.Wrap(err, operation)
+		return []crew.Member{}, 0, fault.Wrap(err, operation)
 	}
 
-	return ct, nil
+	return ct, count, nil
 }

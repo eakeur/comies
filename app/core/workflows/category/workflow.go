@@ -9,7 +9,7 @@ import (
 type Workflow interface {
 	CreateCategory(ctx context.Context, cat category.Category) (category.Category, error)
 	UpdateCategory(ctx context.Context, cat category.Category) error
-	ListCategories(ctx context.Context, categoryFilter category.Filter) ([]category.Category, error)
+	ListCategories(ctx context.Context, categoryFilter category.Filter) ([]category.Category, int, error)
 	GetCategory(ctx context.Context, categoryKey category.Key) (category.Category, error)
 	RemoveCategory(ctx context.Context, categoryID category.Key) error
 }

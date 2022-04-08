@@ -34,7 +34,7 @@ var _ Actions = &ActionsMock{}
 // 			ListIngredientsFunc: func(ctx context.Context, productKey Key) ([]Ingredient, error) {
 // 				panic("mock out the ListIngredients method")
 // 			},
-// 			ListProductsFunc: func(ctx context.Context, productFilter Filter) ([]Product, error) {
+// 			ListProductsFunc: func(ctx context.Context, productFilter Filter) ([]Product, int, error) {
 // 				panic("mock out the ListProducts method")
 // 			},
 // 			RemoveAllIngredientsFunc: func(ctx context.Context, productKey Key) error {
@@ -75,7 +75,7 @@ type ActionsMock struct {
 	ListIngredientsFunc func(ctx context.Context, productKey Key) ([]Ingredient, error)
 
 	// ListProductsFunc mocks the ListProducts method.
-	ListProductsFunc func(ctx context.Context, productFilter Filter) ([]Product, error)
+	ListProductsFunc func(ctx context.Context, productFilter Filter) ([]Product, int, error)
 
 	// RemoveAllIngredientsFunc mocks the RemoveAllIngredients method.
 	RemoveAllIngredientsFunc func(ctx context.Context, productKey Key) error
@@ -365,7 +365,7 @@ func (mock *ActionsMock) ListIngredientsCalls() []struct {
 }
 
 // ListProducts calls ListProductsFunc.
-func (mock *ActionsMock) ListProducts(ctx context.Context, productFilter Filter) ([]Product, error) {
+func (mock *ActionsMock) ListProducts(ctx context.Context, productFilter Filter) ([]Product, int, error) {
 	if mock.ListProductsFunc == nil {
 		panic("ActionsMock.ListProductsFunc: method is nil but Actions.ListProducts was just called")
 	}

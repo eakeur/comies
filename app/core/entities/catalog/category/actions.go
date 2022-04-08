@@ -9,7 +9,7 @@ import (
 type (
 	Actions interface {
 		GetCategory(ctx context.Context, categoryKey Key) (Category, error)
-		ListCategories(ctx context.Context, categoryFilter Filter) ([]Category, error)
+		ListCategories(ctx context.Context, categoryFilter Filter) ([]Category, int, error)
 		CreateCategory(ctx context.Context, cat Category) (Category, error)
 		RemoveCategory(ctx context.Context, categoryID Key) error
 		UpdateCategory(ctx context.Context, category Category) error

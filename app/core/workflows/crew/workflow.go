@@ -12,7 +12,7 @@ import (
 type (
 	Workflow interface {
 		CreateMember(ctx context.Context, op crew.Member) (crew.Member, error)
-		ListMembers(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, error)
+		ListMembers(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, int, error)
 		GetMember(ctx context.Context, key crew.Key) (crew.Member, error)
 		RemoveMember(ctx context.Context, key crew.Key) error
 		UpdateMember(ctx context.Context, op crew.Member) error

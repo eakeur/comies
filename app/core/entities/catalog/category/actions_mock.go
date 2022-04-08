@@ -24,7 +24,7 @@ var _ Actions = &ActionsMock{}
 // 			GetCategoryFunc: func(ctx context.Context, categoryKey Key) (Category, error) {
 // 				panic("mock out the GetCategory method")
 // 			},
-// 			ListCategoriesFunc: func(ctx context.Context, categoryFilter Filter) ([]Category, error) {
+// 			ListCategoriesFunc: func(ctx context.Context, categoryFilter Filter) ([]Category, int, error) {
 // 				panic("mock out the ListCategories method")
 // 			},
 // 			RemoveCategoryFunc: func(ctx context.Context, categoryID Key) error {
@@ -47,7 +47,7 @@ type ActionsMock struct {
 	GetCategoryFunc func(ctx context.Context, categoryKey Key) (Category, error)
 
 	// ListCategoriesFunc mocks the ListCategories method.
-	ListCategoriesFunc func(ctx context.Context, categoryFilter Filter) ([]Category, error)
+	ListCategoriesFunc func(ctx context.Context, categoryFilter Filter) ([]Category, int, error)
 
 	// RemoveCategoryFunc mocks the RemoveCategory method.
 	RemoveCategoryFunc func(ctx context.Context, categoryID Key) error
@@ -171,7 +171,7 @@ func (mock *ActionsMock) GetCategoryCalls() []struct {
 }
 
 // ListCategories calls ListCategoriesFunc.
-func (mock *ActionsMock) ListCategories(ctx context.Context, categoryFilter Filter) ([]Category, error) {
+func (mock *ActionsMock) ListCategories(ctx context.Context, categoryFilter Filter) ([]Category, int, error) {
 	if mock.ListCategoriesFunc == nil {
 		panic("ActionsMock.ListCategoriesFunc: method is nil but Actions.ListCategories was just called")
 	}

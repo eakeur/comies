@@ -28,7 +28,7 @@ var _ Actions = &ActionsMock{}
 // 			ListPreferencesFunc: func(ctx context.Context, storeKey Key, modules ...string) (types.Preferences, error) {
 // 				panic("mock out the ListPreferences method")
 // 			},
-// 			ListStoreFunc: func(ctx context.Context, storeFilter Filter) ([]Store, error) {
+// 			ListStoreFunc: func(ctx context.Context, storeFilter Filter) ([]Store, int, error) {
 // 				panic("mock out the ListStore method")
 // 			},
 // 			RemoveStoreFunc: func(ctx context.Context, key Key) error {
@@ -57,7 +57,7 @@ type ActionsMock struct {
 	ListPreferencesFunc func(ctx context.Context, storeKey Key, modules ...string) (types.Preferences, error)
 
 	// ListStoreFunc mocks the ListStore method.
-	ListStoreFunc func(ctx context.Context, storeFilter Filter) ([]Store, error)
+	ListStoreFunc func(ctx context.Context, storeFilter Filter) ([]Store, int, error)
 
 	// RemoveStoreFunc mocks the RemoveStore method.
 	RemoveStoreFunc func(ctx context.Context, key Key) error
@@ -243,7 +243,7 @@ func (mock *ActionsMock) ListPreferencesCalls() []struct {
 }
 
 // ListStore calls ListStoreFunc.
-func (mock *ActionsMock) ListStore(ctx context.Context, storeFilter Filter) ([]Store, error) {
+func (mock *ActionsMock) ListStore(ctx context.Context, storeFilter Filter) ([]Store, int, error) {
 	if mock.ListStoreFunc == nil {
 		panic("ActionsMock.ListStoreFunc: method is nil but Actions.ListStore was just called")
 	}

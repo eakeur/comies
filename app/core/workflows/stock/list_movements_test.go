@@ -46,8 +46,8 @@ func TestWorkflow_ListMovements(t *testing.T) {
 			want: []stock.Movement{},
 			opts: opts{
 				stocks: &stock.ActionsMock{
-					ListMovementsFunc: func(ctx context.Context, filter stock.Filter) ([]stock.Movement, error) {
-						return []stock.Movement{}, nil
+					ListMovementsFunc: func(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error) {
+						return []stock.Movement{}, 0, nil
 					},
 				},
 			},
@@ -64,8 +64,8 @@ func TestWorkflow_ListMovements(t *testing.T) {
 			want:    []stock.Movement{},
 			opts: opts{
 				stocks: &stock.ActionsMock{
-					ListMovementsFunc: func(ctx context.Context, filter stock.Filter) ([]stock.Movement, error) {
-						return []stock.Movement{}, nil
+					ListMovementsFunc: func(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error) {
+						return []stock.Movement{}, 0, nil
 					},
 				},
 			},
@@ -79,7 +79,7 @@ func TestWorkflow_ListMovements(t *testing.T) {
 			t.Parallel()
 
 			wf := NewWorkflow(c.opts.stocks)
-			lis, err := wf.ListMovements(ctx, c.args.filter)
+			lis, _, err := wf.ListMovements(ctx, c.args.filter)
 
 			assert.Equal(t, c.want, lis)
 			assert.ErrorIs(t, err, c.wantErr)

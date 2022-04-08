@@ -10,6 +10,7 @@ var (
 	ErrNotFound            = errors.New("this resource could not be found or does not exist")
 	ErrAlreadyExists       = errors.New("this resource could not be created because it already exists")
 	ErrResourceHasChildren = errors.New("this resource could not be deleted because it has children")
+	ErrMissingUID          = errors.New("this resource could not be found because the id provided is not valid")
 )
 
 type AdditionalData struct {

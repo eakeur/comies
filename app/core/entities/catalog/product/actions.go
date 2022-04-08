@@ -8,7 +8,7 @@ import (
 //go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock
 
 type Actions interface {
-	ListProducts(ctx context.Context, productFilter Filter) ([]Product, error)
+	ListProducts(ctx context.Context, productFilter Filter) ([]Product, int, error)
 	GetProducts(ctx context.Context, key Key) (Product, error)
 	GetProductSaleInfo(ctx context.Context, key Key) (Sale, error)
 	GetProductStockInfo(ctx context.Context, key Key) (Stock, error)

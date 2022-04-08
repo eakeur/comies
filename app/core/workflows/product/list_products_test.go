@@ -39,10 +39,10 @@ func TestWorkflow_ListProducts(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, error) {
+					ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error) {
 						return []product.Product{
 							{}, {},
-						}, nil
+						}, 0, nil
 					},
 				},
 			},
@@ -58,7 +58,7 @@ func TestWorkflow_ListProducts(t *testing.T) {
 			wf := workflow{
 				products: c.opts.products,
 			}
-			got, err := wf.ListProducts(ctx, c.args.filter)
+			got, _, err := wf.ListProducts(ctx, c.args.filter)
 
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, got)

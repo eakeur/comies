@@ -14,7 +14,7 @@ type Workflow interface {
 	CreateMovement(ctx context.Context, productID types.UID, mov Movement) (types.Quantity, error)
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)
 	GetProduct(ctx context.Context, key product.Key) (product.Product, error)
-	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
+	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error)
 	RemoveIngredient(ctx context.Context, productKey product.Key, id types.UID) error
 	RemoveProduct(ctx context.Context, key product.Key) error
 	UpdateProduct(ctx context.Context, prd product.Product) error

@@ -29,7 +29,7 @@ var _ Workflow = &WorkflowMock{}
 // 			ComputeSomeFunc: func(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error) {
 // 				panic("mock out the ComputeSome method")
 // 			},
-// 			ListMovementsFunc: func(ctx context.Context, filter stock.Filter) ([]stock.Movement, error) {
+// 			ListMovementsFunc: func(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error) {
 // 				panic("mock out the ListMovements method")
 // 			},
 // 			RemoveMovementFunc: func(ctx context.Context, resourceID types.UID, movementID types.UID) error {
@@ -55,7 +55,7 @@ type WorkflowMock struct {
 	ComputeSomeFunc func(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error)
 
 	// ListMovementsFunc mocks the ListMovements method.
-	ListMovementsFunc func(ctx context.Context, filter stock.Filter) ([]stock.Movement, error)
+	ListMovementsFunc func(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error)
 
 	// RemoveMovementFunc mocks the RemoveMovement method.
 	RemoveMovementFunc func(ctx context.Context, resourceID types.UID, movementID types.UID) error
@@ -234,7 +234,7 @@ func (mock *WorkflowMock) ComputeSomeCalls() []struct {
 }
 
 // ListMovements calls ListMovementsFunc.
-func (mock *WorkflowMock) ListMovements(ctx context.Context, filter stock.Filter) ([]stock.Movement, error) {
+func (mock *WorkflowMock) ListMovements(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error) {
 	if mock.ListMovementsFunc == nil {
 		panic("WorkflowMock.ListMovementsFunc: method is nil but Workflow.ListMovements was just called")
 	}

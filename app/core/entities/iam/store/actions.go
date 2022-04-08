@@ -9,7 +9,7 @@ import (
 
 type Actions interface {
 	GetStore(ctx context.Context, storeID Key) (Store, error)
-	ListStore(ctx context.Context, storeFilter Filter) ([]Store, error)
+	ListStore(ctx context.Context, storeFilter Filter) ([]Store, int, error)
 	CreateStore(ctx context.Context, st Store) (Store, error)
 	RemoveStore(ctx context.Context, key Key) error
 	UpdateStore(ctx context.Context, st Store) error

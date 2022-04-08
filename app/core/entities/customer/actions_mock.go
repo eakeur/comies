@@ -22,10 +22,10 @@ var _ Actions = &ActionsMock{}
 // 			CreateCustomerFunc: func(ctx context.Context, c Customer) (Customer, error) {
 // 				panic("mock out the CreateCustomer method")
 // 			},
-// 			GetCustomersFunc: func(ctx context.Context, uid types.UID) (Customer, error) {
-// 				panic("mock out the GetCustomers method")
+// 			GetCustomerFunc: func(ctx context.Context, uid types.UID) (Customer, error) {
+// 				panic("mock out the GetCustomer method")
 // 			},
-// 			ListCustomersFunc: func(ctx context.Context, f Filter) ([]Customer, error) {
+// 			ListCustomersFunc: func(ctx context.Context, f Filter) ([]Customer, int, error) {
 // 				panic("mock out the ListCustomers method")
 // 			},
 // 			RemoveCustomerFunc: func(ctx context.Context, uid types.UID) error {
@@ -44,11 +44,11 @@ type ActionsMock struct {
 	// CreateCustomerFunc mocks the CreateCustomer method.
 	CreateCustomerFunc func(ctx context.Context, c Customer) (Customer, error)
 
-	// GetCustomersFunc mocks the GetCustomers method.
-	GetCustomersFunc func(ctx context.Context, uid types.UID) (Customer, error)
+	// GetCustomerFunc mocks the GetCustomer method.
+	GetCustomerFunc func(ctx context.Context, uid types.UID) (Customer, error)
 
 	// ListCustomersFunc mocks the ListCustomers method.
-	ListCustomersFunc func(ctx context.Context, f Filter) ([]Customer, error)
+	ListCustomersFunc func(ctx context.Context, f Filter) ([]Customer, int, error)
 
 	// RemoveCustomerFunc mocks the RemoveCustomer method.
 	RemoveCustomerFunc func(ctx context.Context, uid types.UID) error
@@ -65,8 +65,8 @@ type ActionsMock struct {
 			// C is the c argument value.
 			C Customer
 		}
-		// GetCustomers holds details about calls to the GetCustomers method.
-		GetCustomers []struct {
+		// GetCustomer holds details about calls to the GetCustomer method.
+		GetCustomer []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// UID is the uid argument value.
@@ -95,7 +95,7 @@ type ActionsMock struct {
 		}
 	}
 	lockCreateCustomer sync.RWMutex
-	lockGetCustomers   sync.RWMutex
+	lockGetCustomer    sync.RWMutex
 	lockListCustomers  sync.RWMutex
 	lockRemoveCustomer sync.RWMutex
 	lockUpdateCustomer sync.RWMutex
@@ -136,10 +136,10 @@ func (mock *ActionsMock) CreateCustomerCalls() []struct {
 	return calls
 }
 
-// GetCustomers calls GetCustomersFunc.
-func (mock *ActionsMock) GetCustomers(ctx context.Context, uid types.UID) (Customer, error) {
-	if mock.GetCustomersFunc == nil {
-		panic("ActionsMock.GetCustomersFunc: method is nil but Actions.GetCustomers was just called")
+// GetCustomer calls GetCustomerFunc.
+func (mock *ActionsMock) GetCustomer(ctx context.Context, uid types.UID) (Customer, error) {
+	if mock.GetCustomerFunc == nil {
+		panic("ActionsMock.GetCustomerFunc: method is nil but Actions.GetCustomer was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -148,16 +148,16 @@ func (mock *ActionsMock) GetCustomers(ctx context.Context, uid types.UID) (Custo
 		Ctx: ctx,
 		UID: uid,
 	}
-	mock.lockGetCustomers.Lock()
-	mock.calls.GetCustomers = append(mock.calls.GetCustomers, callInfo)
-	mock.lockGetCustomers.Unlock()
-	return mock.GetCustomersFunc(ctx, uid)
+	mock.lockGetCustomer.Lock()
+	mock.calls.GetCustomer = append(mock.calls.GetCustomer, callInfo)
+	mock.lockGetCustomer.Unlock()
+	return mock.GetCustomerFunc(ctx, uid)
 }
 
-// GetCustomersCalls gets all the calls that were made to GetCustomers.
+// GetCustomerCalls gets all the calls that were made to GetCustomer.
 // Check the length with:
-//     len(mockedActions.GetCustomersCalls())
-func (mock *ActionsMock) GetCustomersCalls() []struct {
+//     len(mockedActions.GetCustomerCalls())
+func (mock *ActionsMock) GetCustomerCalls() []struct {
 	Ctx context.Context
 	UID types.UID
 } {
@@ -165,14 +165,14 @@ func (mock *ActionsMock) GetCustomersCalls() []struct {
 		Ctx context.Context
 		UID types.UID
 	}
-	mock.lockGetCustomers.RLock()
-	calls = mock.calls.GetCustomers
-	mock.lockGetCustomers.RUnlock()
+	mock.lockGetCustomer.RLock()
+	calls = mock.calls.GetCustomer
+	mock.lockGetCustomer.RUnlock()
 	return calls
 }
 
 // ListCustomers calls ListCustomersFunc.
-func (mock *ActionsMock) ListCustomers(ctx context.Context, f Filter) ([]Customer, error) {
+func (mock *ActionsMock) ListCustomers(ctx context.Context, f Filter) ([]Customer, int, error) {
 	if mock.ListCustomersFunc == nil {
 		panic("ActionsMock.ListCustomersFunc: method is nil but Actions.ListCustomers was just called")
 	}

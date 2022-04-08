@@ -38,10 +38,10 @@ func TestWorkflow_ListCategories(t *testing.T) {
 			},
 			opts: opts{
 				categories: &category.ActionsMock{
-					ListCategoriesFunc: func(ctx context.Context, productFilter category.Filter) ([]category.Category, error) {
+					ListCategoriesFunc: func(ctx context.Context, productFilter category.Filter) ([]category.Category, int, error) {
 						return []category.Category{
 							{}, {},
-						}, nil
+						}, 0, nil
 					},
 				},
 			},
@@ -55,7 +55,7 @@ func TestWorkflow_ListCategories(t *testing.T) {
 			t.Parallel()
 
 			wf := NewWorkflow(c.opts.categories)
-			got, err := wf.ListCategories(ctx, c.args.filter)
+			got, _, err := wf.ListCategories(ctx, c.args.filter)
 
 			assert.ErrorIs(t, err, c.wantErr)
 			assert.Equal(t, c.want, got)
