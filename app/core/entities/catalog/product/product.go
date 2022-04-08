@@ -52,7 +52,7 @@ type (
 		MinimumSale types.Quantity
 
 		// MaximumDiscount is how much discount a common operator can provide for the customer
-		MaximumDiscount types.Percentage
+		MaximumDiscount types.Discount
 
 		// Display is what will be shown for customers as the name of the product
 		Display string
