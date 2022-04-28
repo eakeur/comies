@@ -1,6 +1,7 @@
 package order
 
 import (
+	"gomies/pkg/sdk/listing"
 	"gomies/pkg/sdk/types"
 	"time"
 )
@@ -27,9 +28,9 @@ const (
 )
 
 type (
-	Status       int
-	ItemStatus   int
-	DeliveryMode int
+	Status            int
+	PreparationStatus int
+	DeliveryMode      int
 
 	Order struct {
 		types.Entity
@@ -46,7 +47,7 @@ type (
 		OrderID    types.ID
 		OrderUID   types.UID
 		Products   []Content
-		ItemStatus ItemStatus
+		ItemStatus PreparationStatus
 		Price      types.Currency
 		FinalPrice types.Currency
 		Discount   types.Discount
@@ -58,6 +59,17 @@ type (
 		ItemUID   types.UID
 		ProductID types.UID
 		Quantity  types.Quantity
+		Status    PreparationStatus
+	}
+
+	Filter struct {
+		Status       Status
+		PlacedBehore time.Time
+		PlacedAfter  time.Time
+		CustomerID   types.UID
+		AddressID    types.UID
+		DeliverMode  DeliveryMode
+		listing.Filter
 	}
 )
 
