@@ -2,7 +2,6 @@ package product
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/product"
 	"gomies/pkg/sdk/types"
 	"time"
 )
@@ -13,7 +12,6 @@ type (
 	StockService interface {
 		Compute(ctx context.Context, productID types.UID) (types.Quantity, error)
 		ComputeSome(ctx context.Context, productID ...types.UID) ([]types.Quantity, error)
-		CreateMovement(ctx context.Context, config product.Stock, resourceID types.UID, movement Movement) (types.Quantity, error)
 	}
 
 	Movement struct {

@@ -18,7 +18,7 @@ func (w workflow) SaveContact(ctx context.Context, contact contacting.Contact) (
 			defer wg.Done()
 			phones, perr := w.contacts.SavePhones(ctx, contact.TargetID, contact.Phones...)
 			if perr != nil {
-				perr = err
+				err = perr
 			}
 			contact.Phones = phones
 		}()

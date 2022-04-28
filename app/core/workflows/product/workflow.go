@@ -11,7 +11,6 @@ import (
 type Workflow interface {
 	ApproveSale(ctx context.Context, req product.ApproveSaleRequest) error
 	CreateIngredient(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error)
-	CreateMovement(ctx context.Context, productID types.UID, mov Movement) (types.Quantity, error)
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)
 	GetProduct(ctx context.Context, key product.Key) (product.Product, error)
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error)
