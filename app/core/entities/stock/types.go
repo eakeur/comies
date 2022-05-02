@@ -1,7 +1,7 @@
 package stock
 
 import (
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"time"
 )
 

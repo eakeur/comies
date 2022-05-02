@@ -3,7 +3,7 @@ package customer
 import (
 	"context"
 	"gomies/app/core/entities/customer"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 )
 
 func (w workflow) CreateCustomer(ctx context.Context, c customer.Customer) (customer.Customer, error) {

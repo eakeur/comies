@@ -3,11 +3,11 @@ package contacting
 import (
 	"context"
 	"gomies/app/core/entities/contacting"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
-func (w workflow) ListAddresses(ctx context.Context, targetID types.UID) ([]contacting.Address, error) {
+func (w workflow) ListAddresses(ctx context.Context, targetID types.ID) ([]contacting.Address, error) {
 	const operation = "Workflows.Contacting.ListAddresses"
 
 	if targetID.Empty() {

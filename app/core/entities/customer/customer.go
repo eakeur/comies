@@ -1,6 +1,6 @@
 package customer
 
-import "gomies/pkg/sdk/types"
+import "gomies/app/sdk/types"
 
 type (
 	Customer struct {

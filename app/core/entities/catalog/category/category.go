@@ -1,6 +1,6 @@
 package category
 
-import "gomies/pkg/sdk/types"
+import "gomies/app/sdk/types"
 
 type Category struct {
 	types.Entity

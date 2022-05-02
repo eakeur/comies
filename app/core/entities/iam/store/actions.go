@@ -2,7 +2,7 @@ package store
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 )
 
 //go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock

@@ -5,8 +5,7 @@ package product
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/product"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"sync"
 )
 
@@ -20,14 +19,11 @@ var _ StockService = &StockServiceMock{}
 //
 // 		// make and configure a mocked StockService
 // 		mockedStockService := &StockServiceMock{
-// 			ComputeFunc: func(ctx context.Context, productID types.UID) (types.Quantity, error) {
+// 			ComputeFunc: func(ctx context.Context, productID types.ID) (types.Quantity, error) {
 // 				panic("mock out the Compute method")
 // 			},
-// 			ComputeSomeFunc: func(ctx context.Context, productID ...types.UID) ([]types.Quantity, error) {
+// 			ComputeSomeFunc: func(ctx context.Context, productID ...types.ID) ([]types.Quantity, error) {
 // 				panic("mock out the ComputeSome method")
-// 			},
-// 			CreateMovementFunc: func(ctx context.Context, config product.Stock, resourceID types.UID, movement Movement) (types.Quantity, error) {
-// 				panic("mock out the CreateMovement method")
 // 			},
 // 		}
 //
@@ -37,13 +33,10 @@ var _ StockService = &StockServiceMock{}
 // 	}
 type StockServiceMock struct {
 	// ComputeFunc mocks the Compute method.
-	ComputeFunc func(ctx context.Context, productID types.UID) (types.Quantity, error)
+	ComputeFunc func(ctx context.Context, productID types.ID) (types.Quantity, error)
 
 	// ComputeSomeFunc mocks the ComputeSome method.
-	ComputeSomeFunc func(ctx context.Context, productID ...types.UID) ([]types.Quantity, error)
-
-	// CreateMovementFunc mocks the CreateMovement method.
-	CreateMovementFunc func(ctx context.Context, config product.Stock, resourceID types.UID, movement Movement) (types.Quantity, error)
+	ComputeSomeFunc func(ctx context.Context, productID ...types.ID) ([]types.Quantity, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -52,40 +45,28 @@ type StockServiceMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// ProductID is the productID argument value.
-			ProductID types.UID
+			ProductID types.ID
 		}
 		// ComputeSome holds details about calls to the ComputeSome method.
 		ComputeSome []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// ProductID is the productID argument value.
-			ProductID []types.UID
-		}
-		// CreateMovement holds details about calls to the CreateMovement method.
-		CreateMovement []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// Config is the config argument value.
-			Config product.Stock
-			// ResourceID is the resourceID argument value.
-			ResourceID types.UID
-			// Movement is the movement argument value.
-			Movement Movement
+			ProductID []types.ID
 		}
 	}
-	lockCompute        sync.RWMutex
-	lockComputeSome    sync.RWMutex
-	lockCreateMovement sync.RWMutex
+	lockCompute     sync.RWMutex
+	lockComputeSome sync.RWMutex
 }
 
 // Compute calls ComputeFunc.
-func (mock *StockServiceMock) Compute(ctx context.Context, productID types.UID) (types.Quantity, error) {
+func (mock *StockServiceMock) Compute(ctx context.Context, productID types.ID) (types.Quantity, error) {
 	if mock.ComputeFunc == nil {
 		panic("StockServiceMock.ComputeFunc: method is nil but StockService.Compute was just called")
 	}
 	callInfo := struct {
 		Ctx       context.Context
-		ProductID types.UID
+		ProductID types.ID
 	}{
 		Ctx:       ctx,
 		ProductID: productID,
@@ -101,11 +82,11 @@ func (mock *StockServiceMock) Compute(ctx context.Context, productID types.UID) 
 //     len(mockedStockService.ComputeCalls())
 func (mock *StockServiceMock) ComputeCalls() []struct {
 	Ctx       context.Context
-	ProductID types.UID
+	ProductID types.ID
 } {
 	var calls []struct {
 		Ctx       context.Context
-		ProductID types.UID
+		ProductID types.ID
 	}
 	mock.lockCompute.RLock()
 	calls = mock.calls.Compute
@@ -114,13 +95,13 @@ func (mock *StockServiceMock) ComputeCalls() []struct {
 }
 
 // ComputeSome calls ComputeSomeFunc.
-func (mock *StockServiceMock) ComputeSome(ctx context.Context, productID ...types.UID) ([]types.Quantity, error) {
+func (mock *StockServiceMock) ComputeSome(ctx context.Context, productID ...types.ID) ([]types.Quantity, error) {
 	if mock.ComputeSomeFunc == nil {
 		panic("StockServiceMock.ComputeSomeFunc: method is nil but StockService.ComputeSome was just called")
 	}
 	callInfo := struct {
 		Ctx       context.Context
-		ProductID []types.UID
+		ProductID []types.ID
 	}{
 		Ctx:       ctx,
 		ProductID: productID,
@@ -136,57 +117,14 @@ func (mock *StockServiceMock) ComputeSome(ctx context.Context, productID ...type
 //     len(mockedStockService.ComputeSomeCalls())
 func (mock *StockServiceMock) ComputeSomeCalls() []struct {
 	Ctx       context.Context
-	ProductID []types.UID
+	ProductID []types.ID
 } {
 	var calls []struct {
 		Ctx       context.Context
-		ProductID []types.UID
+		ProductID []types.ID
 	}
 	mock.lockComputeSome.RLock()
 	calls = mock.calls.ComputeSome
 	mock.lockComputeSome.RUnlock()
-	return calls
-}
-
-// CreateMovement calls CreateMovementFunc.
-func (mock *StockServiceMock) CreateMovement(ctx context.Context, config product.Stock, resourceID types.UID, movement Movement) (types.Quantity, error) {
-	if mock.CreateMovementFunc == nil {
-		panic("StockServiceMock.CreateMovementFunc: method is nil but StockService.CreateMovement was just called")
-	}
-	callInfo := struct {
-		Ctx        context.Context
-		Config     product.Stock
-		ResourceID types.UID
-		Movement   Movement
-	}{
-		Ctx:        ctx,
-		Config:     config,
-		ResourceID: resourceID,
-		Movement:   movement,
-	}
-	mock.lockCreateMovement.Lock()
-	mock.calls.CreateMovement = append(mock.calls.CreateMovement, callInfo)
-	mock.lockCreateMovement.Unlock()
-	return mock.CreateMovementFunc(ctx, config, resourceID, movement)
-}
-
-// CreateMovementCalls gets all the calls that were made to CreateMovement.
-// Check the length with:
-//     len(mockedStockService.CreateMovementCalls())
-func (mock *StockServiceMock) CreateMovementCalls() []struct {
-	Ctx        context.Context
-	Config     product.Stock
-	ResourceID types.UID
-	Movement   Movement
-} {
-	var calls []struct {
-		Ctx        context.Context
-		Config     product.Stock
-		ResourceID types.UID
-		Movement   Movement
-	}
-	mock.lockCreateMovement.RLock()
-	calls = mock.calls.CreateMovement
-	mock.lockCreateMovement.RUnlock()
 	return calls
 }

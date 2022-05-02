@@ -1,7 +1,7 @@
 package crew
 
 import (
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"time"
 )
 
@@ -17,7 +17,6 @@ type (
 		LastSeen       time.Time
 		Password       types.Password
 		Permissions    types.Permissions
-		StoreID        types.ID
 		types.Store
 	}
 

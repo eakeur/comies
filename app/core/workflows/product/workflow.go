@@ -4,17 +4,17 @@ import (
 	"context"
 	"gomies/app/core/entities/catalog/category"
 	"gomies/app/core/entities/catalog/product"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 )
 
 //go:generate moq -fmt goimports -out workflow_mock.go . Workflow:WorkflowMock
 type Workflow interface {
-	ApproveSale(ctx context.Context, req product.ApproveSaleRequest) error
-	CreateIngredient(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error)
+	ApproveSale(ctx context.Context, req ApproveSaleRequest) error
+	CreateIngredient(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error)
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)
 	GetProduct(ctx context.Context, key product.Key) (product.Product, error)
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error)
-	RemoveIngredient(ctx context.Context, productKey product.Key, id types.UID) error
+	RemoveIngredient(ctx context.Context, productKey product.Key, id types.ID) error
 	RemoveProduct(ctx context.Context, key product.Key) error
 	UpdateProduct(ctx context.Context, prd product.Product) error
 }

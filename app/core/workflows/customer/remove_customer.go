@@ -2,18 +2,18 @@ package customer
 
 import (
 	"context"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
-func (w workflow) RemoveCustomer(ctx context.Context, uid types.UID) error {
+func (w workflow) RemoveCustomer(ctx context.Context, id types.ID) error {
 	const operation = "Workflows.Customer.RemoveCustomer"
 
-	if uid.Empty() {
+	if id.Empty() {
 		return fault.Wrap(fault.ErrMissingUID, operation)
 	}
 
-	err := w.customers.RemoveCustomer(ctx, uid)
+	err := w.customers.RemoveCustomer(ctx, id)
 	if err != nil {
 		return fault.Wrap(err, operation)
 	}

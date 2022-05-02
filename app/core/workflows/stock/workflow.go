@@ -3,7 +3,7 @@ package stock
 import (
 	"context"
 	"gomies/app/core/entities/stock"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 )
 
 var _ Workflow = workflow{}
@@ -12,10 +12,10 @@ var _ Workflow = workflow{}
 type (
 	Workflow interface {
 		Compute(ctx context.Context, filter stock.Filter) (types.Quantity, error)
-		ComputeSome(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error)
+		ComputeSome(ctx context.Context, filter stock.Filter, resourcesIDs ...types.ID) ([]types.Quantity, error)
 		ListMovements(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error)
-		SaveMovements(ctx context.Context, config stock.Config, resourceID types.UID, movements ...stock.Movement) (stock.AdditionResult, error)
-		RemoveMovement(ctx context.Context, resourceID types.UID, movementID types.UID) error
+		SaveMovements(ctx context.Context, config stock.Config, resourceID types.ID, movements ...stock.Movement) (stock.AdditionResult, error)
+		RemoveMovement(ctx context.Context, resourceID types.ID, movementID types.ID) error
 		ClosePeriod(ctx context.Context, filter stock.Filter) error
 	}
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"gomies/app/core/entities/iam/crew"
 	"gomies/app/core/entities/iam/store"
-	"gomies/pkg/sdk/session"
+	"gomies/app/sdk/session"
 )
 
 //go:generate moq -fmt goimports -out workflow_mock.go . Workflow:WorkflowMock

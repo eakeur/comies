@@ -1,21 +1,19 @@
 package product
 
-import "gomies/pkg/sdk/types"
+import "gomies/app/sdk/types"
 
 type (
 	Ingredient struct {
 		types.Entity
-		Quantity             types.Quantity
-		ProductID            types.ID
-		ProductExternalID    types.UID
-		IngredientID         types.ID
-		IngredientExternalID types.UID
+		Quantity     types.Quantity
+		ProductID    types.ID
+		IngredientID types.ID
 		types.Store
 	}
 )
 
 func (i Ingredient) Validate() error {
-	if i.IngredientExternalID.Empty() {
+	if i.IngredientID.Empty() {
 		return ErrInvalidIngredient
 	}
 

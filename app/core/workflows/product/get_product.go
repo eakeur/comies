@@ -3,7 +3,7 @@ package product
 import (
 	"context"
 	"gomies/app/core/entities/catalog/product"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 )
 
 func (w workflow) GetProduct(ctx context.Context, ext product.Key) (product.Product, error) {

@@ -3,7 +3,7 @@ package stock
 import (
 	"context"
 	"gomies/app/core/entities/stock"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,11 +13,11 @@ func TestWorkflow_AddToStock(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	fakeID := types.UID("1bdcafba-9deb-48b4-8a0e-ecea4c99b0e3")
+	fakeID := types.ID(1)
 
 	type (
 		args struct {
-			resourceID types.UID
+			resourceID types.ID
 			movement   stock.Movement
 			config     stock.Config
 		}

@@ -1,11 +1,11 @@
 package contacting
 
-import "gomies/pkg/sdk/types"
+import "gomies/app/sdk/types"
 
 type (
 	Address struct {
 		types.Entity
-		TargetID   types.UID
+		TargetID   types.ID
 		Code       string
 		Street     string
 		Number     string
@@ -18,7 +18,7 @@ type (
 
 	Phone struct {
 		types.Entity
-		TargetID    types.UID
+		TargetID    types.ID
 		CountryCode string
 		AreaCode    string
 		Number      string
@@ -26,7 +26,7 @@ type (
 
 	Contact struct {
 		types.Entity
-		TargetID  types.UID
+		TargetID  types.ID
 		Addresses []Address
 		Phones    []Phone
 	}

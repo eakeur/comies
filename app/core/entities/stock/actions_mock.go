@@ -5,7 +5,7 @@ package stock
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"sync"
 )
 
@@ -25,16 +25,16 @@ var _ Actions = &ActionsMock{}
 // 			ComputeFunc: func(ctx context.Context, filter Filter) (types.Quantity, error) {
 // 				panic("mock out the Compute method")
 // 			},
-// 			ComputeSomeFunc: func(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error) {
+// 			ComputeSomeFunc: func(ctx context.Context, filter Filter, resourceID ...types.ID) ([]types.Quantity, error) {
 // 				panic("mock out the ComputeSome method")
 // 			},
 // 			ListMovementsFunc: func(ctx context.Context, filter Filter) ([]Movement, int, error) {
 // 				panic("mock out the ListMovements method")
 // 			},
-// 			RemoveAllMovementsFunc: func(ctx context.Context, resourceID types.UID) error {
+// 			RemoveAllMovementsFunc: func(ctx context.Context, resourceID types.ID) error {
 // 				panic("mock out the RemoveAllMovements method")
 // 			},
-// 			RemoveMovementFunc: func(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+// 			RemoveMovementFunc: func(ctx context.Context, resourceID types.ID, movementID types.ID) error {
 // 				panic("mock out the RemoveMovement method")
 // 			},
 // 			SaveMovementsFunc: func(ctx context.Context, movement ...Movement) ([]Movement, error) {
@@ -54,16 +54,16 @@ type ActionsMock struct {
 	ComputeFunc func(ctx context.Context, filter Filter) (types.Quantity, error)
 
 	// ComputeSomeFunc mocks the ComputeSome method.
-	ComputeSomeFunc func(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error)
+	ComputeSomeFunc func(ctx context.Context, filter Filter, resourceID ...types.ID) ([]types.Quantity, error)
 
 	// ListMovementsFunc mocks the ListMovements method.
 	ListMovementsFunc func(ctx context.Context, filter Filter) ([]Movement, int, error)
 
 	// RemoveAllMovementsFunc mocks the RemoveAllMovements method.
-	RemoveAllMovementsFunc func(ctx context.Context, resourceID types.UID) error
+	RemoveAllMovementsFunc func(ctx context.Context, resourceID types.ID) error
 
 	// RemoveMovementFunc mocks the RemoveMovement method.
-	RemoveMovementFunc func(ctx context.Context, resourceID types.UID, movementID types.UID) error
+	RemoveMovementFunc func(ctx context.Context, resourceID types.ID, movementID types.ID) error
 
 	// SaveMovementsFunc mocks the SaveMovements method.
 	SaveMovementsFunc func(ctx context.Context, movement ...Movement) ([]Movement, error)
@@ -91,7 +91,7 @@ type ActionsMock struct {
 			// Filter is the filter argument value.
 			Filter Filter
 			// ResourceID is the resourceID argument value.
-			ResourceID []types.UID
+			ResourceID []types.ID
 		}
 		// ListMovements holds details about calls to the ListMovements method.
 		ListMovements []struct {
@@ -105,16 +105,16 @@ type ActionsMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// ResourceID is the resourceID argument value.
-			ResourceID types.UID
+			ResourceID types.ID
 		}
 		// RemoveMovement holds details about calls to the RemoveMovement method.
 		RemoveMovement []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// ResourceID is the resourceID argument value.
-			ResourceID types.UID
+			ResourceID types.ID
 			// MovementID is the movementID argument value.
-			MovementID types.UID
+			MovementID types.ID
 		}
 		// SaveMovements holds details about calls to the SaveMovements method.
 		SaveMovements []struct {
@@ -204,14 +204,14 @@ func (mock *ActionsMock) ComputeCalls() []struct {
 }
 
 // ComputeSome calls ComputeSomeFunc.
-func (mock *ActionsMock) ComputeSome(ctx context.Context, filter Filter, resourceID ...types.UID) ([]types.Quantity, error) {
+func (mock *ActionsMock) ComputeSome(ctx context.Context, filter Filter, resourceID ...types.ID) ([]types.Quantity, error) {
 	if mock.ComputeSomeFunc == nil {
 		panic("ActionsMock.ComputeSomeFunc: method is nil but Actions.ComputeSome was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
 		Filter     Filter
-		ResourceID []types.UID
+		ResourceID []types.ID
 	}{
 		Ctx:        ctx,
 		Filter:     filter,
@@ -229,12 +229,12 @@ func (mock *ActionsMock) ComputeSome(ctx context.Context, filter Filter, resourc
 func (mock *ActionsMock) ComputeSomeCalls() []struct {
 	Ctx        context.Context
 	Filter     Filter
-	ResourceID []types.UID
+	ResourceID []types.ID
 } {
 	var calls []struct {
 		Ctx        context.Context
 		Filter     Filter
-		ResourceID []types.UID
+		ResourceID []types.ID
 	}
 	mock.lockComputeSome.RLock()
 	calls = mock.calls.ComputeSome
@@ -278,13 +278,13 @@ func (mock *ActionsMock) ListMovementsCalls() []struct {
 }
 
 // RemoveAllMovements calls RemoveAllMovementsFunc.
-func (mock *ActionsMock) RemoveAllMovements(ctx context.Context, resourceID types.UID) error {
+func (mock *ActionsMock) RemoveAllMovements(ctx context.Context, resourceID types.ID) error {
 	if mock.RemoveAllMovementsFunc == nil {
 		panic("ActionsMock.RemoveAllMovementsFunc: method is nil but Actions.RemoveAllMovements was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
-		ResourceID types.UID
+		ResourceID types.ID
 	}{
 		Ctx:        ctx,
 		ResourceID: resourceID,
@@ -300,11 +300,11 @@ func (mock *ActionsMock) RemoveAllMovements(ctx context.Context, resourceID type
 //     len(mockedActions.RemoveAllMovementsCalls())
 func (mock *ActionsMock) RemoveAllMovementsCalls() []struct {
 	Ctx        context.Context
-	ResourceID types.UID
+	ResourceID types.ID
 } {
 	var calls []struct {
 		Ctx        context.Context
-		ResourceID types.UID
+		ResourceID types.ID
 	}
 	mock.lockRemoveAllMovements.RLock()
 	calls = mock.calls.RemoveAllMovements
@@ -313,14 +313,14 @@ func (mock *ActionsMock) RemoveAllMovementsCalls() []struct {
 }
 
 // RemoveMovement calls RemoveMovementFunc.
-func (mock *ActionsMock) RemoveMovement(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+func (mock *ActionsMock) RemoveMovement(ctx context.Context, resourceID types.ID, movementID types.ID) error {
 	if mock.RemoveMovementFunc == nil {
 		panic("ActionsMock.RemoveMovementFunc: method is nil but Actions.RemoveMovement was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
-		ResourceID types.UID
-		MovementID types.UID
+		ResourceID types.ID
+		MovementID types.ID
 	}{
 		Ctx:        ctx,
 		ResourceID: resourceID,
@@ -337,13 +337,13 @@ func (mock *ActionsMock) RemoveMovement(ctx context.Context, resourceID types.UI
 //     len(mockedActions.RemoveMovementCalls())
 func (mock *ActionsMock) RemoveMovementCalls() []struct {
 	Ctx        context.Context
-	ResourceID types.UID
-	MovementID types.UID
+	ResourceID types.ID
+	MovementID types.ID
 } {
 	var calls []struct {
 		Ctx        context.Context
-		ResourceID types.UID
-		MovementID types.UID
+		ResourceID types.ID
+		MovementID types.ID
 	}
 	mock.lockRemoveMovement.RLock()
 	calls = mock.calls.RemoveMovement

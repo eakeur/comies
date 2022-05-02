@@ -3,7 +3,7 @@ package ordering
 import (
 	"context"
 	"gomies/app/core/entities/order"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 )
 
 type (
@@ -11,17 +11,17 @@ type (
 		CreateOrder(ctx context.Context, o order.Order) (order.Order, error)
 		CreateItem(ctx context.Context, i order.Item) (order.Item, error)
 
-		UpdateOrderDeliveryMode(ctx context.Context, uid types.UID, deliveryMode order.DeliveryMode) error
-		UpdateOrderStatus(ctx context.Context, uid types.UID, st order.Status) error
-		UpdateOrderAddressID(ctx context.Context, uid types.UID, addressID types.UID) error
+		UpdateOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error
+		UpdateOrderStatus(ctx context.Context, id types.ID, st order.Status) error
+		UpdateOrderAddressID(ctx context.Context, id types.ID, addressID types.ID) error
 
-		UpdateItemStatus(ctx context.Context, uid types.UID, status order.PreparationStatus) error
+		UpdateItemStatus(ctx context.Context, id types.ID, status order.PreparationStatus) error
 
-		UpdateContentStatus(ctx context.Context, uid types.UID, status order.PreparationStatus) error
-		UpdateContentQuantity(ctx context.Context, uid types.UID, qt types.Quantity) error
+		UpdateContentStatus(ctx context.Context, id types.ID, status order.PreparationStatus) error
+		UpdateContentQuantity(ctx context.Context, id types.ID, qt types.Quantity) error
 
 		ListOrders(ctx context.Context, f order.Filter) ([]order.Order, int, error)
-		GetOrder(ctx context.Context, uid types.UID) (order.Order, error)
-		CancelOrder(ctx context.Context, uid types.UID) error
+		GetOrder(ctx context.Context, id types.ID) (order.Order, error)
+		CancelOrder(ctx context.Context, id types.ID) error
 	}
 )

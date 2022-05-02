@@ -2,7 +2,7 @@ package product
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 )
 
 //go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock
@@ -17,6 +17,6 @@ type Actions interface {
 	RemoveProduct(ctx context.Context, key Key) error
 	ListIngredients(ctx context.Context, productKey Key) ([]Ingredient, error)
 	SaveIngredients(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error)
-	RemoveIngredient(ctx context.Context, productKey Key, ingredientID types.UID) error
+	RemoveIngredient(ctx context.Context, productKey Key, ingredientID types.ID) error
 	RemoveAllIngredients(ctx context.Context, productKey Key) error
 }

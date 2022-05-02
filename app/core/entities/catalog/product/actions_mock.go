@@ -5,7 +5,7 @@ package product
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"sync"
 )
 
@@ -40,7 +40,7 @@ var _ Actions = &ActionsMock{}
 // 			RemoveAllIngredientsFunc: func(ctx context.Context, productKey Key) error {
 // 				panic("mock out the RemoveAllIngredients method")
 // 			},
-// 			RemoveIngredientFunc: func(ctx context.Context, productKey Key, ingredientID types.UID) error {
+// 			RemoveIngredientFunc: func(ctx context.Context, productKey Key, ingredientID types.ID) error {
 // 				panic("mock out the RemoveIngredient method")
 // 			},
 // 			RemoveProductFunc: func(ctx context.Context, key Key) error {
@@ -81,7 +81,7 @@ type ActionsMock struct {
 	RemoveAllIngredientsFunc func(ctx context.Context, productKey Key) error
 
 	// RemoveIngredientFunc mocks the RemoveIngredient method.
-	RemoveIngredientFunc func(ctx context.Context, productKey Key, ingredientID types.UID) error
+	RemoveIngredientFunc func(ctx context.Context, productKey Key, ingredientID types.ID) error
 
 	// RemoveProductFunc mocks the RemoveProduct method.
 	RemoveProductFunc func(ctx context.Context, key Key) error
@@ -150,7 +150,7 @@ type ActionsMock struct {
 			// ProductKey is the productKey argument value.
 			ProductKey Key
 			// IngredientID is the ingredientID argument value.
-			IngredientID types.UID
+			IngredientID types.ID
 		}
 		// RemoveProduct holds details about calls to the RemoveProduct method.
 		RemoveProduct []struct {
@@ -435,14 +435,14 @@ func (mock *ActionsMock) RemoveAllIngredientsCalls() []struct {
 }
 
 // RemoveIngredient calls RemoveIngredientFunc.
-func (mock *ActionsMock) RemoveIngredient(ctx context.Context, productKey Key, ingredientID types.UID) error {
+func (mock *ActionsMock) RemoveIngredient(ctx context.Context, productKey Key, ingredientID types.ID) error {
 	if mock.RemoveIngredientFunc == nil {
 		panic("ActionsMock.RemoveIngredientFunc: method is nil but Actions.RemoveIngredient was just called")
 	}
 	callInfo := struct {
 		Ctx          context.Context
 		ProductKey   Key
-		IngredientID types.UID
+		IngredientID types.ID
 	}{
 		Ctx:          ctx,
 		ProductKey:   productKey,
@@ -460,12 +460,12 @@ func (mock *ActionsMock) RemoveIngredient(ctx context.Context, productKey Key, i
 func (mock *ActionsMock) RemoveIngredientCalls() []struct {
 	Ctx          context.Context
 	ProductKey   Key
-	IngredientID types.UID
+	IngredientID types.ID
 } {
 	var calls []struct {
 		Ctx          context.Context
 		ProductKey   Key
-		IngredientID types.UID
+		IngredientID types.ID
 	}
 	mock.lockRemoveIngredient.RLock()
 	calls = mock.calls.RemoveIngredient

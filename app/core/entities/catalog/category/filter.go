@@ -1,8 +1,8 @@
 package category
 
 import (
-	"gomies/pkg/sdk/listing"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/listing"
+	"gomies/app/sdk/types"
 )
 
 type (
@@ -13,7 +13,7 @@ type (
 	}
 
 	Key struct {
-		ID   types.UID
+		ID   types.ID
 		Code string
 		types.Store
 	}

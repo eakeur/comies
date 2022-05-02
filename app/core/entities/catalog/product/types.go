@@ -1,7 +1,7 @@
 package product
 
 import (
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 )
 
 type (

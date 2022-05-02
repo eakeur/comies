@@ -3,11 +3,11 @@ package stock
 import (
 	"context"
 	"gomies/app/core/entities/stock"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
-func (w workflow) RemoveMovement(ctx context.Context, resourceID types.UID, movementID types.UID) error {
+func (w workflow) RemoveMovement(ctx context.Context, resourceID types.ID, movementID types.ID) error {
 	const operation = "Workflows.Stock.RemoveMovement"
 
 	if resourceID.Empty() || movementID.Empty() {

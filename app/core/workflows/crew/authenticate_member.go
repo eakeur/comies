@@ -4,8 +4,8 @@ import (
 	"context"
 	"gomies/app/core/entities/iam/crew"
 	"gomies/app/core/entities/iam/store"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/session"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/session"
 	"strings"
 )
 
@@ -32,7 +32,7 @@ func (w workflow) AuthenticateMember(ctx context.Context, auth AuthRequest) (ses
 	}
 
 	_, ses, err := w.sessions.Create(ctx, session.Session{
-		OperatorID:   op.ExternalID,
+		OperatorID:   op.ID,
 		StoreID:      op.Store.StoreID,
 		OperatorName: op.Name,
 		Permissions:  op.Permissions,

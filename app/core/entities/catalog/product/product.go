@@ -1,6 +1,6 @@
 package product
 
-import "gomies/pkg/sdk/types"
+import "gomies/app/sdk/types"
 
 type (
 	Product struct {
@@ -14,9 +14,6 @@ type (
 
 		// CategoryID is the identifier of the category this product belongs to
 		CategoryID types.ID
-
-		// CategoryExternalID is the external identifier of the category this product belongs to
-		CategoryExternalID types.UID
 
 		Type Type
 

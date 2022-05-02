@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"gomies/app/core/entities/stock"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
 func (w workflow) Compute(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
@@ -24,7 +24,7 @@ func (w workflow) Compute(ctx context.Context, filter stock.Filter) (types.Quant
 
 }
 
-func (w workflow) ComputeSome(ctx context.Context, filter stock.Filter, resourcesIDs ...types.UID) ([]types.Quantity, error) {
+func (w workflow) ComputeSome(ctx context.Context, filter stock.Filter, resourcesIDs ...types.ID) ([]types.Quantity, error) {
 	const operation = "Workflows.Stock.ComputeSome"
 
 	if err := filter.Validate(); err != nil && !errors.Is(err, stock.ErrMissingResourceID) {

@@ -1,7 +1,7 @@
 package stock
 
 import (
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"time"
 )
 
@@ -15,7 +15,7 @@ type (
 		types.Entity
 
 		// TargetID is an identifier for the object this stocks references to
-		TargetID types.UID
+		TargetID types.ID
 
 		// Type points out if this movement is input or output
 		Type MovementType
@@ -30,7 +30,7 @@ type (
 		PaidValue types.Currency
 
 		// Agent is the entity from this resource came from or is going to
-		Agent types.UID
+		Agent types.ID
 
 		// Batch references to a group of resources that came together
 		Batch string

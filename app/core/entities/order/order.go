@@ -1,8 +1,8 @@
 package order
 
 import (
-	"gomies/pkg/sdk/listing"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/listing"
+	"gomies/app/sdk/types"
 	"time"
 )
 
@@ -36,8 +36,8 @@ type (
 		types.Entity
 		types.Store
 		PlacedAt     time.Time
-		AddressID    types.UID
-		CustomerID   types.UID
+		AddressID    types.ID
+		CustomerID   types.ID
 		Status       Status
 		DeliveryMode DeliveryMode
 	}
@@ -45,7 +45,6 @@ type (
 	Item struct {
 		types.Entity
 		OrderID    types.ID
-		OrderUID   types.UID
 		Products   []Content
 		ItemStatus PreparationStatus
 		Price      types.Currency
@@ -56,8 +55,7 @@ type (
 	Content struct {
 		types.Entity
 		ItemID    types.ID
-		ItemUID   types.UID
-		ProductID types.UID
+		ProductID types.ID
 		Quantity  types.Quantity
 		Status    PreparationStatus
 	}
@@ -66,8 +64,8 @@ type (
 		Status       Status
 		PlacedBehore time.Time
 		PlacedAfter  time.Time
-		CustomerID   types.UID
-		AddressID    types.UID
+		CustomerID   types.ID
+		AddressID    types.ID
 		DeliverMode  DeliveryMode
 		listing.Filter
 	}

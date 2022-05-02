@@ -6,7 +6,7 @@ package product
 import (
 	"context"
 	"gomies/app/core/entities/catalog/product"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"sync"
 )
 
@@ -20,14 +20,11 @@ var _ Workflow = &WorkflowMock{}
 //
 // 		// make and configure a mocked Workflow
 // 		mockedWorkflow := &WorkflowMock{
-// 			ApproveSaleFunc: func(ctx context.Context, req product.ApproveSaleRequest) error {
+// 			ApproveSaleFunc: func(ctx context.Context, req ApproveSaleRequest) error {
 // 				panic("mock out the ApproveSale method")
 // 			},
-// 			CreateIngredientFunc: func(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error) {
+// 			CreateIngredientFunc: func(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error) {
 // 				panic("mock out the CreateIngredient method")
-// 			},
-// 			CreateMovementFunc: func(ctx context.Context, productID types.UID, mov Movement) (types.Quantity, error) {
-// 				panic("mock out the CreateMovement method")
 // 			},
 // 			CreateProductFunc: func(ctx context.Context, prd product.Product) (product.Product, error) {
 // 				panic("mock out the CreateProduct method")
@@ -38,7 +35,7 @@ var _ Workflow = &WorkflowMock{}
 // 			ListProductsFunc: func(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error) {
 // 				panic("mock out the ListProducts method")
 // 			},
-// 			RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, id types.UID) error {
+// 			RemoveIngredientFunc: func(ctx context.Context, productKey product.Key, id types.ID) error {
 // 				panic("mock out the RemoveIngredient method")
 // 			},
 // 			RemoveProductFunc: func(ctx context.Context, key product.Key) error {
@@ -55,13 +52,10 @@ var _ Workflow = &WorkflowMock{}
 // 	}
 type WorkflowMock struct {
 	// ApproveSaleFunc mocks the ApproveSale method.
-	ApproveSaleFunc func(ctx context.Context, req product.ApproveSaleRequest) error
+	ApproveSaleFunc func(ctx context.Context, req ApproveSaleRequest) error
 
 	// CreateIngredientFunc mocks the CreateIngredient method.
-	CreateIngredientFunc func(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error)
-
-	// CreateMovementFunc mocks the CreateMovement method.
-	CreateMovementFunc func(ctx context.Context, productID types.UID, mov Movement) (types.Quantity, error)
+	CreateIngredientFunc func(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error)
 
 	// CreateProductFunc mocks the CreateProduct method.
 	CreateProductFunc func(ctx context.Context, prd product.Product) (product.Product, error)
@@ -73,7 +67,7 @@ type WorkflowMock struct {
 	ListProductsFunc func(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error)
 
 	// RemoveIngredientFunc mocks the RemoveIngredient method.
-	RemoveIngredientFunc func(ctx context.Context, productKey product.Key, id types.UID) error
+	RemoveIngredientFunc func(ctx context.Context, productKey product.Key, id types.ID) error
 
 	// RemoveProductFunc mocks the RemoveProduct method.
 	RemoveProductFunc func(ctx context.Context, key product.Key) error
@@ -88,7 +82,7 @@ type WorkflowMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Req is the req argument value.
-			Req product.ApproveSaleRequest
+			Req ApproveSaleRequest
 		}
 		// CreateIngredient holds details about calls to the CreateIngredient method.
 		CreateIngredient []struct {
@@ -96,17 +90,8 @@ type WorkflowMock struct {
 			Ctx context.Context
 			// ProductKey is the productKey argument value.
 			ProductKey product.Key
-			// Ingredient is the ingredient argument value.
-			Ingredient product.Ingredient
-		}
-		// CreateMovement holds details about calls to the CreateMovement method.
-		CreateMovement []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// ProductID is the productID argument value.
-			ProductID types.UID
-			// Mov is the mov argument value.
-			Mov Movement
+			// Input is the input argument value.
+			Input IngredientInput
 		}
 		// CreateProduct holds details about calls to the CreateProduct method.
 		CreateProduct []struct {
@@ -136,7 +121,7 @@ type WorkflowMock struct {
 			// ProductKey is the productKey argument value.
 			ProductKey product.Key
 			// ID is the id argument value.
-			ID types.UID
+			ID types.ID
 		}
 		// RemoveProduct holds details about calls to the RemoveProduct method.
 		RemoveProduct []struct {
@@ -155,7 +140,6 @@ type WorkflowMock struct {
 	}
 	lockApproveSale      sync.RWMutex
 	lockCreateIngredient sync.RWMutex
-	lockCreateMovement   sync.RWMutex
 	lockCreateProduct    sync.RWMutex
 	lockGetProduct       sync.RWMutex
 	lockListProducts     sync.RWMutex
@@ -165,13 +149,13 @@ type WorkflowMock struct {
 }
 
 // ApproveSale calls ApproveSaleFunc.
-func (mock *WorkflowMock) ApproveSale(ctx context.Context, req product.ApproveSaleRequest) error {
+func (mock *WorkflowMock) ApproveSale(ctx context.Context, req ApproveSaleRequest) error {
 	if mock.ApproveSaleFunc == nil {
 		panic("WorkflowMock.ApproveSaleFunc: method is nil but Workflow.ApproveSale was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Req product.ApproveSaleRequest
+		Req ApproveSaleRequest
 	}{
 		Ctx: ctx,
 		Req: req,
@@ -187,11 +171,11 @@ func (mock *WorkflowMock) ApproveSale(ctx context.Context, req product.ApproveSa
 //     len(mockedWorkflow.ApproveSaleCalls())
 func (mock *WorkflowMock) ApproveSaleCalls() []struct {
 	Ctx context.Context
-	Req product.ApproveSaleRequest
+	Req ApproveSaleRequest
 } {
 	var calls []struct {
 		Ctx context.Context
-		Req product.ApproveSaleRequest
+		Req ApproveSaleRequest
 	}
 	mock.lockApproveSale.RLock()
 	calls = mock.calls.ApproveSale
@@ -200,23 +184,23 @@ func (mock *WorkflowMock) ApproveSaleCalls() []struct {
 }
 
 // CreateIngredient calls CreateIngredientFunc.
-func (mock *WorkflowMock) CreateIngredient(ctx context.Context, productKey product.Key, ingredient product.Ingredient) (product.Ingredient, error) {
+func (mock *WorkflowMock) CreateIngredient(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error) {
 	if mock.CreateIngredientFunc == nil {
 		panic("WorkflowMock.CreateIngredientFunc: method is nil but Workflow.CreateIngredient was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
 		ProductKey product.Key
-		Ingredient product.Ingredient
+		Input      IngredientInput
 	}{
 		Ctx:        ctx,
 		ProductKey: productKey,
-		Ingredient: ingredient,
+		Input:      input,
 	}
 	mock.lockCreateIngredient.Lock()
 	mock.calls.CreateIngredient = append(mock.calls.CreateIngredient, callInfo)
 	mock.lockCreateIngredient.Unlock()
-	return mock.CreateIngredientFunc(ctx, productKey, ingredient)
+	return mock.CreateIngredientFunc(ctx, productKey, input)
 }
 
 // CreateIngredientCalls gets all the calls that were made to CreateIngredient.
@@ -225,55 +209,16 @@ func (mock *WorkflowMock) CreateIngredient(ctx context.Context, productKey produ
 func (mock *WorkflowMock) CreateIngredientCalls() []struct {
 	Ctx        context.Context
 	ProductKey product.Key
-	Ingredient product.Ingredient
+	Input      IngredientInput
 } {
 	var calls []struct {
 		Ctx        context.Context
 		ProductKey product.Key
-		Ingredient product.Ingredient
+		Input      IngredientInput
 	}
 	mock.lockCreateIngredient.RLock()
 	calls = mock.calls.CreateIngredient
 	mock.lockCreateIngredient.RUnlock()
-	return calls
-}
-
-// CreateMovement calls CreateMovementFunc.
-func (mock *WorkflowMock) CreateMovement(ctx context.Context, productID types.UID, mov Movement) (types.Quantity, error) {
-	if mock.CreateMovementFunc == nil {
-		panic("WorkflowMock.CreateMovementFunc: method is nil but Workflow.CreateMovement was just called")
-	}
-	callInfo := struct {
-		Ctx       context.Context
-		ProductID types.UID
-		Mov       Movement
-	}{
-		Ctx:       ctx,
-		ProductID: productID,
-		Mov:       mov,
-	}
-	mock.lockCreateMovement.Lock()
-	mock.calls.CreateMovement = append(mock.calls.CreateMovement, callInfo)
-	mock.lockCreateMovement.Unlock()
-	return mock.CreateMovementFunc(ctx, productID, mov)
-}
-
-// CreateMovementCalls gets all the calls that were made to CreateMovement.
-// Check the length with:
-//     len(mockedWorkflow.CreateMovementCalls())
-func (mock *WorkflowMock) CreateMovementCalls() []struct {
-	Ctx       context.Context
-	ProductID types.UID
-	Mov       Movement
-} {
-	var calls []struct {
-		Ctx       context.Context
-		ProductID types.UID
-		Mov       Movement
-	}
-	mock.lockCreateMovement.RLock()
-	calls = mock.calls.CreateMovement
-	mock.lockCreateMovement.RUnlock()
 	return calls
 }
 
@@ -383,14 +328,14 @@ func (mock *WorkflowMock) ListProductsCalls() []struct {
 }
 
 // RemoveIngredient calls RemoveIngredientFunc.
-func (mock *WorkflowMock) RemoveIngredient(ctx context.Context, productKey product.Key, id types.UID) error {
+func (mock *WorkflowMock) RemoveIngredient(ctx context.Context, productKey product.Key, id types.ID) error {
 	if mock.RemoveIngredientFunc == nil {
 		panic("WorkflowMock.RemoveIngredientFunc: method is nil but Workflow.RemoveIngredient was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
 		ProductKey product.Key
-		ID         types.UID
+		ID         types.ID
 	}{
 		Ctx:        ctx,
 		ProductKey: productKey,
@@ -408,12 +353,12 @@ func (mock *WorkflowMock) RemoveIngredient(ctx context.Context, productKey produ
 func (mock *WorkflowMock) RemoveIngredientCalls() []struct {
 	Ctx        context.Context
 	ProductKey product.Key
-	ID         types.UID
+	ID         types.ID
 } {
 	var calls []struct {
 		Ctx        context.Context
 		ProductKey product.Key
-		ID         types.UID
+		ID         types.ID
 	}
 	mock.lockRemoveIngredient.RLock()
 	calls = mock.calls.RemoveIngredient

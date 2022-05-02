@@ -3,11 +3,11 @@ package product
 import (
 	"context"
 	"gomies/app/core/entities/catalog/product"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
-func (w workflow) RemoveIngredient(ctx context.Context, productKey product.Key, id types.UID) error {
+func (w workflow) RemoveIngredient(ctx context.Context, productKey product.Key, id types.ID) error {
 	const operation = "Workflows.Product.RemoveIngredient"
 
 	err := w.products.RemoveIngredient(ctx, productKey, id)

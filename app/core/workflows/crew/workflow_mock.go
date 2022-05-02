@@ -6,7 +6,7 @@ package crew
 import (
 	"context"
 	"gomies/app/core/entities/iam/crew"
-	"gomies/pkg/sdk/session"
+	"gomies/app/sdk/session"
 	"sync"
 )
 

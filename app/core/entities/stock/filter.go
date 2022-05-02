@@ -1,14 +1,14 @@
 package stock
 
 import (
-	"gomies/pkg/sdk/listing"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/listing"
+	"gomies/app/sdk/types"
 	"time"
 )
 
 type (
 	Filter struct {
-		ResourceID  types.UID
+		ResourceID  types.ID
 		InitialDate time.Time
 		FinalDate   time.Time
 		listing.Filter

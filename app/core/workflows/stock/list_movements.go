@@ -3,7 +3,7 @@ package stock
 import (
 	"context"
 	"gomies/app/core/entities/stock"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 )
 
 func (w workflow) ListMovements(ctx context.Context, filter stock.Filter) ([]stock.Movement, int, error) {

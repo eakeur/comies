@@ -3,11 +3,11 @@ package contacting
 import (
 	"context"
 	"gomies/app/core/entities/contacting"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
-func (w workflow) RemoveAddress(ctx context.Context, targetID types.UID, id types.UID) error {
+func (w workflow) RemoveAddress(ctx context.Context, targetID types.ID, id types.ID) error {
 	const operation = "Workflows.Contacting.RemoveAddress"
 
 	if targetID.Empty() {

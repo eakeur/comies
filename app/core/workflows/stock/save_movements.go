@@ -3,11 +3,11 @@ package stock
 import (
 	"context"
 	"gomies/app/core/entities/stock"
-	"gomies/pkg/sdk/fault"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
 )
 
-func (w workflow) SaveMovements(ctx context.Context, config stock.Config, resourceID types.UID, movements ...stock.Movement) (stock.AdditionResult, error) {
+func (w workflow) SaveMovements(ctx context.Context, config stock.Config, resourceID types.ID, movements ...stock.Movement) (stock.AdditionResult, error) {
 	const operation = "Workflows.Stock.SaveMovements"
 
 	actual, err := w.stocks.Compute(ctx, stock.Filter{ResourceID: resourceID})

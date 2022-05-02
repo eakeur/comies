@@ -3,7 +3,7 @@ package crew
 import (
 	"context"
 	"gomies/app/core/entities/iam/crew"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 )
 
 func (w workflow) CreateMember(ctx context.Context, input crew.Member) (crew.Member, error) {

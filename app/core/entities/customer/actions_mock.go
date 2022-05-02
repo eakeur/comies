@@ -5,7 +5,7 @@ package customer
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"sync"
 )
 
@@ -22,13 +22,13 @@ var _ Actions = &ActionsMock{}
 // 			CreateCustomerFunc: func(ctx context.Context, c Customer) (Customer, error) {
 // 				panic("mock out the CreateCustomer method")
 // 			},
-// 			GetCustomerFunc: func(ctx context.Context, uid types.UID) (Customer, error) {
+// 			GetCustomerFunc: func(ctx context.Context, id types.ID) (Customer, error) {
 // 				panic("mock out the GetCustomer method")
 // 			},
 // 			ListCustomersFunc: func(ctx context.Context, f Filter) ([]Customer, int, error) {
 // 				panic("mock out the ListCustomers method")
 // 			},
-// 			RemoveCustomerFunc: func(ctx context.Context, uid types.UID) error {
+// 			RemoveCustomerFunc: func(ctx context.Context, id types.ID) error {
 // 				panic("mock out the RemoveCustomer method")
 // 			},
 // 			UpdateCustomerFunc: func(ctx context.Context, c Customer) error {
@@ -45,13 +45,13 @@ type ActionsMock struct {
 	CreateCustomerFunc func(ctx context.Context, c Customer) (Customer, error)
 
 	// GetCustomerFunc mocks the GetCustomer method.
-	GetCustomerFunc func(ctx context.Context, uid types.UID) (Customer, error)
+	GetCustomerFunc func(ctx context.Context, id types.ID) (Customer, error)
 
 	// ListCustomersFunc mocks the ListCustomers method.
 	ListCustomersFunc func(ctx context.Context, f Filter) ([]Customer, int, error)
 
 	// RemoveCustomerFunc mocks the RemoveCustomer method.
-	RemoveCustomerFunc func(ctx context.Context, uid types.UID) error
+	RemoveCustomerFunc func(ctx context.Context, id types.ID) error
 
 	// UpdateCustomerFunc mocks the UpdateCustomer method.
 	UpdateCustomerFunc func(ctx context.Context, c Customer) error
@@ -69,8 +69,8 @@ type ActionsMock struct {
 		GetCustomer []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// UID is the uid argument value.
-			UID types.UID
+			// ID is the id argument value.
+			ID types.ID
 		}
 		// ListCustomers holds details about calls to the ListCustomers method.
 		ListCustomers []struct {
@@ -83,8 +83,8 @@ type ActionsMock struct {
 		RemoveCustomer []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// UID is the uid argument value.
-			UID types.UID
+			// ID is the id argument value.
+			ID types.ID
 		}
 		// UpdateCustomer holds details about calls to the UpdateCustomer method.
 		UpdateCustomer []struct {
@@ -137,21 +137,21 @@ func (mock *ActionsMock) CreateCustomerCalls() []struct {
 }
 
 // GetCustomer calls GetCustomerFunc.
-func (mock *ActionsMock) GetCustomer(ctx context.Context, uid types.UID) (Customer, error) {
+func (mock *ActionsMock) GetCustomer(ctx context.Context, id types.ID) (Customer, error) {
 	if mock.GetCustomerFunc == nil {
 		panic("ActionsMock.GetCustomerFunc: method is nil but Actions.GetCustomer was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		UID types.UID
+		ID  types.ID
 	}{
 		Ctx: ctx,
-		UID: uid,
+		ID:  id,
 	}
 	mock.lockGetCustomer.Lock()
 	mock.calls.GetCustomer = append(mock.calls.GetCustomer, callInfo)
 	mock.lockGetCustomer.Unlock()
-	return mock.GetCustomerFunc(ctx, uid)
+	return mock.GetCustomerFunc(ctx, id)
 }
 
 // GetCustomerCalls gets all the calls that were made to GetCustomer.
@@ -159,11 +159,11 @@ func (mock *ActionsMock) GetCustomer(ctx context.Context, uid types.UID) (Custom
 //     len(mockedActions.GetCustomerCalls())
 func (mock *ActionsMock) GetCustomerCalls() []struct {
 	Ctx context.Context
-	UID types.UID
+	ID  types.ID
 } {
 	var calls []struct {
 		Ctx context.Context
-		UID types.UID
+		ID  types.ID
 	}
 	mock.lockGetCustomer.RLock()
 	calls = mock.calls.GetCustomer
@@ -207,21 +207,21 @@ func (mock *ActionsMock) ListCustomersCalls() []struct {
 }
 
 // RemoveCustomer calls RemoveCustomerFunc.
-func (mock *ActionsMock) RemoveCustomer(ctx context.Context, uid types.UID) error {
+func (mock *ActionsMock) RemoveCustomer(ctx context.Context, id types.ID) error {
 	if mock.RemoveCustomerFunc == nil {
 		panic("ActionsMock.RemoveCustomerFunc: method is nil but Actions.RemoveCustomer was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		UID types.UID
+		ID  types.ID
 	}{
 		Ctx: ctx,
-		UID: uid,
+		ID:  id,
 	}
 	mock.lockRemoveCustomer.Lock()
 	mock.calls.RemoveCustomer = append(mock.calls.RemoveCustomer, callInfo)
 	mock.lockRemoveCustomer.Unlock()
-	return mock.RemoveCustomerFunc(ctx, uid)
+	return mock.RemoveCustomerFunc(ctx, id)
 }
 
 // RemoveCustomerCalls gets all the calls that were made to RemoveCustomer.
@@ -229,11 +229,11 @@ func (mock *ActionsMock) RemoveCustomer(ctx context.Context, uid types.UID) erro
 //     len(mockedActions.RemoveCustomerCalls())
 func (mock *ActionsMock) RemoveCustomerCalls() []struct {
 	Ctx context.Context
-	UID types.UID
+	ID  types.ID
 } {
 	var calls []struct {
 		Ctx context.Context
-		UID types.UID
+		ID  types.ID
 	}
 	mock.lockRemoveCustomer.RLock()
 	calls = mock.calls.RemoveCustomer

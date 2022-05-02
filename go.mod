@@ -3,7 +3,6 @@ module gomies
 go 1.17
 
 require (
-	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
 )

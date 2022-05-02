@@ -3,7 +3,7 @@ package contacting
 import (
 	"context"
 	"gomies/app/core/entities/contacting"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 	"sync"
 )
 

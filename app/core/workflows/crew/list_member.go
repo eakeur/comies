@@ -3,7 +3,7 @@ package crew
 import (
 	"context"
 	"gomies/app/core/entities/iam/crew"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 )
 
 func (w workflow) ListMembers(ctx context.Context, filter crew.Filter) ([]crew.Member, int, error) {

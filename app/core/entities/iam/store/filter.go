@@ -1,18 +1,18 @@
 package store
 
 import (
-	"gomies/pkg/sdk/listing"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/listing"
+	"gomies/app/sdk/types"
 )
 
 type (
 	Filter struct {
-		ParentExternalID types.UID
+		ParentID types.ID
 		listing.Filter
 	}
 
 	Key struct {
-		ID       types.UID
+		ID       types.ID
 		Nickname string
 	}
 )

@@ -3,7 +3,7 @@ package category
 import (
 	"context"
 	"gomies/app/core/entities/catalog/category"
-	"gomies/pkg/sdk/fault"
+	"gomies/app/sdk/fault"
 )
 
 func (w workflow) CreateCategory(ctx context.Context, ct category.Category) (category.Category, error) {

@@ -5,7 +5,7 @@ package customer
 
 import (
 	"context"
-	"gomies/pkg/sdk/types"
+	"gomies/app/sdk/types"
 	"sync"
 )
 
@@ -19,7 +19,7 @@ var _ ContactingService = &ContactingServiceMock{}
 //
 // 		// make and configure a mocked ContactingService
 // 		mockedContactingService := &ContactingServiceMock{
-// 			RemoveAllCustomerContactsFunc: func(ctx context.Context, customerUID types.UID) error {
+// 			RemoveAllCustomerContactsFunc: func(ctx context.Context, customerUID types.ID) error {
 // 				panic("mock out the RemoveAllCustomerContacts method")
 // 			},
 // 			SaveContactFunc: func(ctx context.Context, addresses []Address, phones []Phone) error {
@@ -33,7 +33,7 @@ var _ ContactingService = &ContactingServiceMock{}
 // 	}
 type ContactingServiceMock struct {
 	// RemoveAllCustomerContactsFunc mocks the RemoveAllCustomerContacts method.
-	RemoveAllCustomerContactsFunc func(ctx context.Context, customerUID types.UID) error
+	RemoveAllCustomerContactsFunc func(ctx context.Context, customerUID types.ID) error
 
 	// SaveContactFunc mocks the SaveContact method.
 	SaveContactFunc func(ctx context.Context, addresses []Address, phones []Phone) error
@@ -45,7 +45,7 @@ type ContactingServiceMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// CustomerUID is the customerUID argument value.
-			CustomerUID types.UID
+			CustomerUID types.ID
 		}
 		// SaveContact holds details about calls to the SaveContact method.
 		SaveContact []struct {
@@ -62,13 +62,13 @@ type ContactingServiceMock struct {
 }
 
 // RemoveAllCustomerContacts calls RemoveAllCustomerContactsFunc.
-func (mock *ContactingServiceMock) RemoveAllCustomerContacts(ctx context.Context, customerUID types.UID) error {
+func (mock *ContactingServiceMock) RemoveAllCustomerContacts(ctx context.Context, customerUID types.ID) error {
 	if mock.RemoveAllCustomerContactsFunc == nil {
 		panic("ContactingServiceMock.RemoveAllCustomerContactsFunc: method is nil but ContactingService.RemoveAllCustomerContacts was just called")
 	}
 	callInfo := struct {
 		Ctx         context.Context
-		CustomerUID types.UID
+		CustomerUID types.ID
 	}{
 		Ctx:         ctx,
 		CustomerUID: customerUID,
@@ -84,11 +84,11 @@ func (mock *ContactingServiceMock) RemoveAllCustomerContacts(ctx context.Context
 //     len(mockedContactingService.RemoveAllCustomerContactsCalls())
 func (mock *ContactingServiceMock) RemoveAllCustomerContactsCalls() []struct {
 	Ctx         context.Context
-	CustomerUID types.UID
+	CustomerUID types.ID
 } {
 	var calls []struct {
 		Ctx         context.Context
-		CustomerUID types.UID
+		CustomerUID types.ID
 	}
 	mock.lockRemoveAllCustomerContacts.RLock()
 	calls = mock.calls.RemoveAllCustomerContacts
