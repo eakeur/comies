@@ -17,14 +17,7 @@ type (
 	}
 
 	AdditionResult struct {
+		ID    types.ID
 		Count types.Quantity
-	}
-
-	Config struct {
-		// MaximumQuantity is how many unities of this resource the stock can support
-		MaximumQuantity types.Quantity
-
-		// MinimumQuantity is the lowest quantity of this resource the stock can have
-		MinimumQuantity types.Quantity
 	}
 )

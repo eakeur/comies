@@ -11,7 +11,6 @@ type Actions interface {
 	ListProducts(ctx context.Context, productFilter Filter) ([]Product, int, error)
 	GetProducts(ctx context.Context, key Key) (Product, error)
 	GetProductSaleInfo(ctx context.Context, key Key) (Sale, error)
-	GetProductStockInfo(ctx context.Context, key Key) (Stock, error)
 	CreateProduct(ctx context.Context, prd Product) (Product, error)
 	UpdateProduct(ctx context.Context, prd Product) error
 	RemoveProduct(ctx context.Context, key Key) error

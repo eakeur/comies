@@ -25,9 +25,6 @@ var _ Actions = &ActionsMock{}
 // 			GetProductSaleInfoFunc: func(ctx context.Context, key Key) (Sale, error) {
 // 				panic("mock out the GetProductSaleInfo method")
 // 			},
-// 			GetProductStockInfoFunc: func(ctx context.Context, key Key) (Stock, error) {
-// 				panic("mock out the GetProductStockInfo method")
-// 			},
 // 			GetProductsFunc: func(ctx context.Context, key Key) (Product, error) {
 // 				panic("mock out the GetProducts method")
 // 			},
@@ -65,9 +62,6 @@ type ActionsMock struct {
 	// GetProductSaleInfoFunc mocks the GetProductSaleInfo method.
 	GetProductSaleInfoFunc func(ctx context.Context, key Key) (Sale, error)
 
-	// GetProductStockInfoFunc mocks the GetProductStockInfo method.
-	GetProductStockInfoFunc func(ctx context.Context, key Key) (Stock, error)
-
 	// GetProductsFunc mocks the GetProducts method.
 	GetProductsFunc func(ctx context.Context, key Key) (Product, error)
 
@@ -103,13 +97,6 @@ type ActionsMock struct {
 		}
 		// GetProductSaleInfo holds details about calls to the GetProductSaleInfo method.
 		GetProductSaleInfo []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// Key is the key argument value.
-			Key Key
-		}
-		// GetProductStockInfo holds details about calls to the GetProductStockInfo method.
-		GetProductStockInfo []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Key is the key argument value.
@@ -178,7 +165,6 @@ type ActionsMock struct {
 	}
 	lockCreateProduct        sync.RWMutex
 	lockGetProductSaleInfo   sync.RWMutex
-	lockGetProductStockInfo  sync.RWMutex
 	lockGetProducts          sync.RWMutex
 	lockListIngredients      sync.RWMutex
 	lockListProducts         sync.RWMutex
@@ -256,41 +242,6 @@ func (mock *ActionsMock) GetProductSaleInfoCalls() []struct {
 	mock.lockGetProductSaleInfo.RLock()
 	calls = mock.calls.GetProductSaleInfo
 	mock.lockGetProductSaleInfo.RUnlock()
-	return calls
-}
-
-// GetProductStockInfo calls GetProductStockInfoFunc.
-func (mock *ActionsMock) GetProductStockInfo(ctx context.Context, key Key) (Stock, error) {
-	if mock.GetProductStockInfoFunc == nil {
-		panic("ActionsMock.GetProductStockInfoFunc: method is nil but Actions.GetProductStockInfo was just called")
-	}
-	callInfo := struct {
-		Ctx context.Context
-		Key Key
-	}{
-		Ctx: ctx,
-		Key: key,
-	}
-	mock.lockGetProductStockInfo.Lock()
-	mock.calls.GetProductStockInfo = append(mock.calls.GetProductStockInfo, callInfo)
-	mock.lockGetProductStockInfo.Unlock()
-	return mock.GetProductStockInfoFunc(ctx, key)
-}
-
-// GetProductStockInfoCalls gets all the calls that were made to GetProductStockInfo.
-// Check the length with:
-//     len(mockedActions.GetProductStockInfoCalls())
-func (mock *ActionsMock) GetProductStockInfoCalls() []struct {
-	Ctx context.Context
-	Key Key
-} {
-	var calls []struct {
-		Ctx context.Context
-		Key Key
-	}
-	mock.lockGetProductStockInfo.RLock()
-	calls = mock.calls.GetProductStockInfo
-	mock.lockGetProductStockInfo.RUnlock()
 	return calls
 }
 

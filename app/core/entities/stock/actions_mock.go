@@ -5,6 +5,7 @@ package stock
 
 import (
 	"context"
+	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 	"sync"
 )
@@ -22,23 +23,38 @@ var _ Actions = &ActionsMock{}
 // 			ArchiveMovementsFunc: func(ctx context.Context, filter Filter) error {
 // 				panic("mock out the ArchiveMovements method")
 // 			},
-// 			ComputeFunc: func(ctx context.Context, filter Filter) (types.Quantity, error) {
-// 				panic("mock out the Compute method")
+// 			ComputeStockFunc: func(ctx context.Context, filter Filter) (types.Quantity, error) {
+// 				panic("mock out the ComputeStock method")
 // 			},
-// 			ComputeSomeFunc: func(ctx context.Context, filter Filter, resourceID ...types.ID) ([]types.Quantity, error) {
-// 				panic("mock out the ComputeSome method")
+// 			CreateStockFunc: func(ctx context.Context, st Stock) (Stock, error) {
+// 				panic("mock out the CreateStock method")
+// 			},
+// 			GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (Stock, error) {
+// 				panic("mock out the GetStockByID method")
 // 			},
 // 			ListMovementsFunc: func(ctx context.Context, filter Filter) ([]Movement, int, error) {
 // 				panic("mock out the ListMovements method")
 // 			},
-// 			RemoveAllMovementsFunc: func(ctx context.Context, resourceID types.ID) error {
-// 				panic("mock out the RemoveAllMovements method")
+// 			ListStocksFunc: func(ctx context.Context, filter listing.Filter) ([]Stock, int, error) {
+// 				panic("mock out the ListStocks method")
 // 			},
 // 			RemoveMovementFunc: func(ctx context.Context, resourceID types.ID, movementID types.ID) error {
 // 				panic("mock out the RemoveMovement method")
 // 			},
-// 			SaveMovementsFunc: func(ctx context.Context, movement ...Movement) ([]Movement, error) {
+// 			RemoveReservedFunc: func(ctx context.Context, agentID types.ID) error {
+// 				panic("mock out the RemoveReserved method")
+// 			},
+// 			RemoveStockFunc: func(ctx context.Context, resourceID types.ID) error {
+// 				panic("mock out the RemoveStock method")
+// 			},
+// 			SaveMovementsFunc: func(ctx context.Context, movement Movement) (Movement, error) {
 // 				panic("mock out the SaveMovements method")
+// 			},
+// 			UpdateReservedFunc: func(ctx context.Context, agentID types.ID) error {
+// 				panic("mock out the UpdateReserved method")
+// 			},
+// 			UpdateStockFunc: func(ctx context.Context, st Stock) error {
+// 				panic("mock out the UpdateStock method")
 // 			},
 // 		}
 //
@@ -50,23 +66,38 @@ type ActionsMock struct {
 	// ArchiveMovementsFunc mocks the ArchiveMovements method.
 	ArchiveMovementsFunc func(ctx context.Context, filter Filter) error
 
-	// ComputeFunc mocks the Compute method.
-	ComputeFunc func(ctx context.Context, filter Filter) (types.Quantity, error)
+	// ComputeStockFunc mocks the ComputeStock method.
+	ComputeStockFunc func(ctx context.Context, filter Filter) (types.Quantity, error)
 
-	// ComputeSomeFunc mocks the ComputeSome method.
-	ComputeSomeFunc func(ctx context.Context, filter Filter, resourceID ...types.ID) ([]types.Quantity, error)
+	// CreateStockFunc mocks the CreateStock method.
+	CreateStockFunc func(ctx context.Context, st Stock) (Stock, error)
+
+	// GetStockByIDFunc mocks the GetStockByID method.
+	GetStockByIDFunc func(ctx context.Context, resourceID types.ID) (Stock, error)
 
 	// ListMovementsFunc mocks the ListMovements method.
 	ListMovementsFunc func(ctx context.Context, filter Filter) ([]Movement, int, error)
 
-	// RemoveAllMovementsFunc mocks the RemoveAllMovements method.
-	RemoveAllMovementsFunc func(ctx context.Context, resourceID types.ID) error
+	// ListStocksFunc mocks the ListStocks method.
+	ListStocksFunc func(ctx context.Context, filter listing.Filter) ([]Stock, int, error)
 
 	// RemoveMovementFunc mocks the RemoveMovement method.
 	RemoveMovementFunc func(ctx context.Context, resourceID types.ID, movementID types.ID) error
 
+	// RemoveReservedFunc mocks the RemoveReserved method.
+	RemoveReservedFunc func(ctx context.Context, agentID types.ID) error
+
+	// RemoveStockFunc mocks the RemoveStock method.
+	RemoveStockFunc func(ctx context.Context, resourceID types.ID) error
+
 	// SaveMovementsFunc mocks the SaveMovements method.
-	SaveMovementsFunc func(ctx context.Context, movement ...Movement) ([]Movement, error)
+	SaveMovementsFunc func(ctx context.Context, movement Movement) (Movement, error)
+
+	// UpdateReservedFunc mocks the UpdateReserved method.
+	UpdateReservedFunc func(ctx context.Context, agentID types.ID) error
+
+	// UpdateStockFunc mocks the UpdateStock method.
+	UpdateStockFunc func(ctx context.Context, st Stock) error
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -77,21 +108,26 @@ type ActionsMock struct {
 			// Filter is the filter argument value.
 			Filter Filter
 		}
-		// Compute holds details about calls to the Compute method.
-		Compute []struct {
+		// ComputeStock holds details about calls to the ComputeStock method.
+		ComputeStock []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Filter is the filter argument value.
 			Filter Filter
 		}
-		// ComputeSome holds details about calls to the ComputeSome method.
-		ComputeSome []struct {
+		// CreateStock holds details about calls to the CreateStock method.
+		CreateStock []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// Filter is the filter argument value.
-			Filter Filter
+			// St is the st argument value.
+			St Stock
+		}
+		// GetStockByID holds details about calls to the GetStockByID method.
+		GetStockByID []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 			// ResourceID is the resourceID argument value.
-			ResourceID []types.ID
+			ResourceID types.ID
 		}
 		// ListMovements holds details about calls to the ListMovements method.
 		ListMovements []struct {
@@ -100,12 +136,12 @@ type ActionsMock struct {
 			// Filter is the filter argument value.
 			Filter Filter
 		}
-		// RemoveAllMovements holds details about calls to the RemoveAllMovements method.
-		RemoveAllMovements []struct {
+		// ListStocks holds details about calls to the ListStocks method.
+		ListStocks []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// ResourceID is the resourceID argument value.
-			ResourceID types.ID
+			// Filter is the filter argument value.
+			Filter listing.Filter
 		}
 		// RemoveMovement holds details about calls to the RemoveMovement method.
 		RemoveMovement []struct {
@@ -116,21 +152,54 @@ type ActionsMock struct {
 			// MovementID is the movementID argument value.
 			MovementID types.ID
 		}
+		// RemoveReserved holds details about calls to the RemoveReserved method.
+		RemoveReserved []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// AgentID is the agentID argument value.
+			AgentID types.ID
+		}
+		// RemoveStock holds details about calls to the RemoveStock method.
+		RemoveStock []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// ResourceID is the resourceID argument value.
+			ResourceID types.ID
+		}
 		// SaveMovements holds details about calls to the SaveMovements method.
 		SaveMovements []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Movement is the movement argument value.
-			Movement []Movement
+			Movement Movement
+		}
+		// UpdateReserved holds details about calls to the UpdateReserved method.
+		UpdateReserved []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// AgentID is the agentID argument value.
+			AgentID types.ID
+		}
+		// UpdateStock holds details about calls to the UpdateStock method.
+		UpdateStock []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// St is the st argument value.
+			St Stock
 		}
 	}
-	lockArchiveMovements   sync.RWMutex
-	lockCompute            sync.RWMutex
-	lockComputeSome        sync.RWMutex
-	lockListMovements      sync.RWMutex
-	lockRemoveAllMovements sync.RWMutex
-	lockRemoveMovement     sync.RWMutex
-	lockSaveMovements      sync.RWMutex
+	lockArchiveMovements sync.RWMutex
+	lockComputeStock     sync.RWMutex
+	lockCreateStock      sync.RWMutex
+	lockGetStockByID     sync.RWMutex
+	lockListMovements    sync.RWMutex
+	lockListStocks       sync.RWMutex
+	lockRemoveMovement   sync.RWMutex
+	lockRemoveReserved   sync.RWMutex
+	lockRemoveStock      sync.RWMutex
+	lockSaveMovements    sync.RWMutex
+	lockUpdateReserved   sync.RWMutex
+	lockUpdateStock      sync.RWMutex
 }
 
 // ArchiveMovements calls ArchiveMovementsFunc.
@@ -168,10 +237,10 @@ func (mock *ActionsMock) ArchiveMovementsCalls() []struct {
 	return calls
 }
 
-// Compute calls ComputeFunc.
-func (mock *ActionsMock) Compute(ctx context.Context, filter Filter) (types.Quantity, error) {
-	if mock.ComputeFunc == nil {
-		panic("ActionsMock.ComputeFunc: method is nil but Actions.Compute was just called")
+// ComputeStock calls ComputeStockFunc.
+func (mock *ActionsMock) ComputeStock(ctx context.Context, filter Filter) (types.Quantity, error) {
+	if mock.ComputeStockFunc == nil {
+		panic("ActionsMock.ComputeStockFunc: method is nil but Actions.ComputeStock was just called")
 	}
 	callInfo := struct {
 		Ctx    context.Context
@@ -180,16 +249,16 @@ func (mock *ActionsMock) Compute(ctx context.Context, filter Filter) (types.Quan
 		Ctx:    ctx,
 		Filter: filter,
 	}
-	mock.lockCompute.Lock()
-	mock.calls.Compute = append(mock.calls.Compute, callInfo)
-	mock.lockCompute.Unlock()
-	return mock.ComputeFunc(ctx, filter)
+	mock.lockComputeStock.Lock()
+	mock.calls.ComputeStock = append(mock.calls.ComputeStock, callInfo)
+	mock.lockComputeStock.Unlock()
+	return mock.ComputeStockFunc(ctx, filter)
 }
 
-// ComputeCalls gets all the calls that were made to Compute.
+// ComputeStockCalls gets all the calls that were made to ComputeStock.
 // Check the length with:
-//     len(mockedActions.ComputeCalls())
-func (mock *ActionsMock) ComputeCalls() []struct {
+//     len(mockedActions.ComputeStockCalls())
+func (mock *ActionsMock) ComputeStockCalls() []struct {
 	Ctx    context.Context
 	Filter Filter
 } {
@@ -197,48 +266,79 @@ func (mock *ActionsMock) ComputeCalls() []struct {
 		Ctx    context.Context
 		Filter Filter
 	}
-	mock.lockCompute.RLock()
-	calls = mock.calls.Compute
-	mock.lockCompute.RUnlock()
+	mock.lockComputeStock.RLock()
+	calls = mock.calls.ComputeStock
+	mock.lockComputeStock.RUnlock()
 	return calls
 }
 
-// ComputeSome calls ComputeSomeFunc.
-func (mock *ActionsMock) ComputeSome(ctx context.Context, filter Filter, resourceID ...types.ID) ([]types.Quantity, error) {
-	if mock.ComputeSomeFunc == nil {
-		panic("ActionsMock.ComputeSomeFunc: method is nil but Actions.ComputeSome was just called")
+// CreateStock calls CreateStockFunc.
+func (mock *ActionsMock) CreateStock(ctx context.Context, st Stock) (Stock, error) {
+	if mock.CreateStockFunc == nil {
+		panic("ActionsMock.CreateStockFunc: method is nil but Actions.CreateStock was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		St  Stock
+	}{
+		Ctx: ctx,
+		St:  st,
+	}
+	mock.lockCreateStock.Lock()
+	mock.calls.CreateStock = append(mock.calls.CreateStock, callInfo)
+	mock.lockCreateStock.Unlock()
+	return mock.CreateStockFunc(ctx, st)
+}
+
+// CreateStockCalls gets all the calls that were made to CreateStock.
+// Check the length with:
+//     len(mockedActions.CreateStockCalls())
+func (mock *ActionsMock) CreateStockCalls() []struct {
+	Ctx context.Context
+	St  Stock
+} {
+	var calls []struct {
+		Ctx context.Context
+		St  Stock
+	}
+	mock.lockCreateStock.RLock()
+	calls = mock.calls.CreateStock
+	mock.lockCreateStock.RUnlock()
+	return calls
+}
+
+// GetStockByID calls GetStockByIDFunc.
+func (mock *ActionsMock) GetStockByID(ctx context.Context, resourceID types.ID) (Stock, error) {
+	if mock.GetStockByIDFunc == nil {
+		panic("ActionsMock.GetStockByIDFunc: method is nil but Actions.GetStockByID was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
-		Filter     Filter
-		ResourceID []types.ID
+		ResourceID types.ID
 	}{
 		Ctx:        ctx,
-		Filter:     filter,
 		ResourceID: resourceID,
 	}
-	mock.lockComputeSome.Lock()
-	mock.calls.ComputeSome = append(mock.calls.ComputeSome, callInfo)
-	mock.lockComputeSome.Unlock()
-	return mock.ComputeSomeFunc(ctx, filter, resourceID...)
+	mock.lockGetStockByID.Lock()
+	mock.calls.GetStockByID = append(mock.calls.GetStockByID, callInfo)
+	mock.lockGetStockByID.Unlock()
+	return mock.GetStockByIDFunc(ctx, resourceID)
 }
 
-// ComputeSomeCalls gets all the calls that were made to ComputeSome.
+// GetStockByIDCalls gets all the calls that were made to GetStockByID.
 // Check the length with:
-//     len(mockedActions.ComputeSomeCalls())
-func (mock *ActionsMock) ComputeSomeCalls() []struct {
+//     len(mockedActions.GetStockByIDCalls())
+func (mock *ActionsMock) GetStockByIDCalls() []struct {
 	Ctx        context.Context
-	Filter     Filter
-	ResourceID []types.ID
+	ResourceID types.ID
 } {
 	var calls []struct {
 		Ctx        context.Context
-		Filter     Filter
-		ResourceID []types.ID
+		ResourceID types.ID
 	}
-	mock.lockComputeSome.RLock()
-	calls = mock.calls.ComputeSome
-	mock.lockComputeSome.RUnlock()
+	mock.lockGetStockByID.RLock()
+	calls = mock.calls.GetStockByID
+	mock.lockGetStockByID.RUnlock()
 	return calls
 }
 
@@ -277,38 +377,38 @@ func (mock *ActionsMock) ListMovementsCalls() []struct {
 	return calls
 }
 
-// RemoveAllMovements calls RemoveAllMovementsFunc.
-func (mock *ActionsMock) RemoveAllMovements(ctx context.Context, resourceID types.ID) error {
-	if mock.RemoveAllMovementsFunc == nil {
-		panic("ActionsMock.RemoveAllMovementsFunc: method is nil but Actions.RemoveAllMovements was just called")
+// ListStocks calls ListStocksFunc.
+func (mock *ActionsMock) ListStocks(ctx context.Context, filter listing.Filter) ([]Stock, int, error) {
+	if mock.ListStocksFunc == nil {
+		panic("ActionsMock.ListStocksFunc: method is nil but Actions.ListStocks was just called")
 	}
 	callInfo := struct {
-		Ctx        context.Context
-		ResourceID types.ID
+		Ctx    context.Context
+		Filter listing.Filter
 	}{
-		Ctx:        ctx,
-		ResourceID: resourceID,
+		Ctx:    ctx,
+		Filter: filter,
 	}
-	mock.lockRemoveAllMovements.Lock()
-	mock.calls.RemoveAllMovements = append(mock.calls.RemoveAllMovements, callInfo)
-	mock.lockRemoveAllMovements.Unlock()
-	return mock.RemoveAllMovementsFunc(ctx, resourceID)
+	mock.lockListStocks.Lock()
+	mock.calls.ListStocks = append(mock.calls.ListStocks, callInfo)
+	mock.lockListStocks.Unlock()
+	return mock.ListStocksFunc(ctx, filter)
 }
 
-// RemoveAllMovementsCalls gets all the calls that were made to RemoveAllMovements.
+// ListStocksCalls gets all the calls that were made to ListStocks.
 // Check the length with:
-//     len(mockedActions.RemoveAllMovementsCalls())
-func (mock *ActionsMock) RemoveAllMovementsCalls() []struct {
-	Ctx        context.Context
-	ResourceID types.ID
+//     len(mockedActions.ListStocksCalls())
+func (mock *ActionsMock) ListStocksCalls() []struct {
+	Ctx    context.Context
+	Filter listing.Filter
 } {
 	var calls []struct {
-		Ctx        context.Context
-		ResourceID types.ID
+		Ctx    context.Context
+		Filter listing.Filter
 	}
-	mock.lockRemoveAllMovements.RLock()
-	calls = mock.calls.RemoveAllMovements
-	mock.lockRemoveAllMovements.RUnlock()
+	mock.lockListStocks.RLock()
+	calls = mock.calls.ListStocks
+	mock.lockListStocks.RUnlock()
 	return calls
 }
 
@@ -351,14 +451,84 @@ func (mock *ActionsMock) RemoveMovementCalls() []struct {
 	return calls
 }
 
+// RemoveReserved calls RemoveReservedFunc.
+func (mock *ActionsMock) RemoveReserved(ctx context.Context, agentID types.ID) error {
+	if mock.RemoveReservedFunc == nil {
+		panic("ActionsMock.RemoveReservedFunc: method is nil but Actions.RemoveReserved was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		AgentID types.ID
+	}{
+		Ctx:     ctx,
+		AgentID: agentID,
+	}
+	mock.lockRemoveReserved.Lock()
+	mock.calls.RemoveReserved = append(mock.calls.RemoveReserved, callInfo)
+	mock.lockRemoveReserved.Unlock()
+	return mock.RemoveReservedFunc(ctx, agentID)
+}
+
+// RemoveReservedCalls gets all the calls that were made to RemoveReserved.
+// Check the length with:
+//     len(mockedActions.RemoveReservedCalls())
+func (mock *ActionsMock) RemoveReservedCalls() []struct {
+	Ctx     context.Context
+	AgentID types.ID
+} {
+	var calls []struct {
+		Ctx     context.Context
+		AgentID types.ID
+	}
+	mock.lockRemoveReserved.RLock()
+	calls = mock.calls.RemoveReserved
+	mock.lockRemoveReserved.RUnlock()
+	return calls
+}
+
+// RemoveStock calls RemoveStockFunc.
+func (mock *ActionsMock) RemoveStock(ctx context.Context, resourceID types.ID) error {
+	if mock.RemoveStockFunc == nil {
+		panic("ActionsMock.RemoveStockFunc: method is nil but Actions.RemoveStock was just called")
+	}
+	callInfo := struct {
+		Ctx        context.Context
+		ResourceID types.ID
+	}{
+		Ctx:        ctx,
+		ResourceID: resourceID,
+	}
+	mock.lockRemoveStock.Lock()
+	mock.calls.RemoveStock = append(mock.calls.RemoveStock, callInfo)
+	mock.lockRemoveStock.Unlock()
+	return mock.RemoveStockFunc(ctx, resourceID)
+}
+
+// RemoveStockCalls gets all the calls that were made to RemoveStock.
+// Check the length with:
+//     len(mockedActions.RemoveStockCalls())
+func (mock *ActionsMock) RemoveStockCalls() []struct {
+	Ctx        context.Context
+	ResourceID types.ID
+} {
+	var calls []struct {
+		Ctx        context.Context
+		ResourceID types.ID
+	}
+	mock.lockRemoveStock.RLock()
+	calls = mock.calls.RemoveStock
+	mock.lockRemoveStock.RUnlock()
+	return calls
+}
+
 // SaveMovements calls SaveMovementsFunc.
-func (mock *ActionsMock) SaveMovements(ctx context.Context, movement ...Movement) ([]Movement, error) {
+func (mock *ActionsMock) SaveMovements(ctx context.Context, movement Movement) (Movement, error) {
 	if mock.SaveMovementsFunc == nil {
 		panic("ActionsMock.SaveMovementsFunc: method is nil but Actions.SaveMovements was just called")
 	}
 	callInfo := struct {
 		Ctx      context.Context
-		Movement []Movement
+		Movement Movement
 	}{
 		Ctx:      ctx,
 		Movement: movement,
@@ -366,7 +536,7 @@ func (mock *ActionsMock) SaveMovements(ctx context.Context, movement ...Movement
 	mock.lockSaveMovements.Lock()
 	mock.calls.SaveMovements = append(mock.calls.SaveMovements, callInfo)
 	mock.lockSaveMovements.Unlock()
-	return mock.SaveMovementsFunc(ctx, movement...)
+	return mock.SaveMovementsFunc(ctx, movement)
 }
 
 // SaveMovementsCalls gets all the calls that were made to SaveMovements.
@@ -374,14 +544,84 @@ func (mock *ActionsMock) SaveMovements(ctx context.Context, movement ...Movement
 //     len(mockedActions.SaveMovementsCalls())
 func (mock *ActionsMock) SaveMovementsCalls() []struct {
 	Ctx      context.Context
-	Movement []Movement
+	Movement Movement
 } {
 	var calls []struct {
 		Ctx      context.Context
-		Movement []Movement
+		Movement Movement
 	}
 	mock.lockSaveMovements.RLock()
 	calls = mock.calls.SaveMovements
 	mock.lockSaveMovements.RUnlock()
+	return calls
+}
+
+// UpdateReserved calls UpdateReservedFunc.
+func (mock *ActionsMock) UpdateReserved(ctx context.Context, agentID types.ID) error {
+	if mock.UpdateReservedFunc == nil {
+		panic("ActionsMock.UpdateReservedFunc: method is nil but Actions.UpdateReserved was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		AgentID types.ID
+	}{
+		Ctx:     ctx,
+		AgentID: agentID,
+	}
+	mock.lockUpdateReserved.Lock()
+	mock.calls.UpdateReserved = append(mock.calls.UpdateReserved, callInfo)
+	mock.lockUpdateReserved.Unlock()
+	return mock.UpdateReservedFunc(ctx, agentID)
+}
+
+// UpdateReservedCalls gets all the calls that were made to UpdateReserved.
+// Check the length with:
+//     len(mockedActions.UpdateReservedCalls())
+func (mock *ActionsMock) UpdateReservedCalls() []struct {
+	Ctx     context.Context
+	AgentID types.ID
+} {
+	var calls []struct {
+		Ctx     context.Context
+		AgentID types.ID
+	}
+	mock.lockUpdateReserved.RLock()
+	calls = mock.calls.UpdateReserved
+	mock.lockUpdateReserved.RUnlock()
+	return calls
+}
+
+// UpdateStock calls UpdateStockFunc.
+func (mock *ActionsMock) UpdateStock(ctx context.Context, st Stock) error {
+	if mock.UpdateStockFunc == nil {
+		panic("ActionsMock.UpdateStockFunc: method is nil but Actions.UpdateStock was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		St  Stock
+	}{
+		Ctx: ctx,
+		St:  st,
+	}
+	mock.lockUpdateStock.Lock()
+	mock.calls.UpdateStock = append(mock.calls.UpdateStock, callInfo)
+	mock.lockUpdateStock.Unlock()
+	return mock.UpdateStockFunc(ctx, st)
+}
+
+// UpdateStockCalls gets all the calls that were made to UpdateStock.
+// Check the length with:
+//     len(mockedActions.UpdateStockCalls())
+func (mock *ActionsMock) UpdateStockCalls() []struct {
+	Ctx context.Context
+	St  Stock
+} {
+	var calls []struct {
+		Ctx context.Context
+		St  Stock
+	}
+	mock.lockUpdateStock.RLock()
+	calls = mock.calls.UpdateStock
+	mock.lockUpdateStock.RUnlock()
 	return calls
 }

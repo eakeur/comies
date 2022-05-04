@@ -6,16 +6,17 @@ import (
 )
 
 const (
-	InputMovement  MovementType = iota
-	OutputMovement MovementType = iota
+	InputMovement    MovementType = iota
+	OutputMovement   MovementType = iota
+	ReservedMovement MovementType = iota
 )
 
 type (
 	Movement struct {
 		types.Entity
 
-		// TargetID is an identifier for the object this stocks references to
-		TargetID types.ID
+		// ResourceID is an identifier for the stock this movement references to
+		ResourceID types.ID
 
 		// Type points out if this movement is input or output
 		Type MovementType
@@ -41,10 +42,24 @@ type (
 		// AdditionalData is a general-purpose space to store additional data about this entry
 		AdditionalData string
 	}
+
+	Stock struct {
+		ID      types.ID
+		Active  bool
+		History types.History
+		// TargetID is an identifier for the object this stocks references to
+		TargetID types.ID
+		// MaximumQuantity is how many unities of this resource the stock can support
+		MaximumQuantity types.Quantity
+		// MinimumQuantity is the lowest quantity of this resource the stock can have
+		MinimumQuantity types.Quantity
+		// Location is a brief description of where this stock is located
+		Location string
+	}
 )
 
 func (m Movement) Value() types.Quantity {
-	if m.Type == OutputMovement {
+	if m.Type == OutputMovement || m.Type == ReservedMovement {
 		return m.Quantity * -1
 	}
 
@@ -53,9 +68,5 @@ func (m Movement) Value() types.Quantity {
 }
 
 func (m Movement) Validate() error {
-	if m.TargetID.Empty() {
-		return ErrMissingResourceID
-	}
-
 	return nil
 }

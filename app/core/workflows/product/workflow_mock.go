@@ -20,9 +20,6 @@ var _ Workflow = &WorkflowMock{}
 //
 // 		// make and configure a mocked Workflow
 // 		mockedWorkflow := &WorkflowMock{
-// 			ApproveSaleFunc: func(ctx context.Context, req ApproveSaleRequest) error {
-// 				panic("mock out the ApproveSale method")
-// 			},
 // 			CreateIngredientFunc: func(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error) {
 // 				panic("mock out the CreateIngredient method")
 // 			},
@@ -41,8 +38,14 @@ var _ Workflow = &WorkflowMock{}
 // 			RemoveProductFunc: func(ctx context.Context, key product.Key) error {
 // 				panic("mock out the RemoveProduct method")
 // 			},
+// 			ReserveProductFunc: func(ctx context.Context, reservation Reservation) (ReservationResult, error) {
+// 				panic("mock out the ReserveProduct method")
+// 			},
 // 			UpdateProductFunc: func(ctx context.Context, prd product.Product) error {
 // 				panic("mock out the UpdateProduct method")
+// 			},
+// 			UpdateReservationFunc: func(ctx context.Context, reservationID types.ID, consume bool) error {
+// 				panic("mock out the UpdateReservation method")
 // 			},
 // 		}
 //
@@ -51,9 +54,6 @@ var _ Workflow = &WorkflowMock{}
 //
 // 	}
 type WorkflowMock struct {
-	// ApproveSaleFunc mocks the ApproveSale method.
-	ApproveSaleFunc func(ctx context.Context, req ApproveSaleRequest) error
-
 	// CreateIngredientFunc mocks the CreateIngredient method.
 	CreateIngredientFunc func(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error)
 
@@ -72,18 +72,17 @@ type WorkflowMock struct {
 	// RemoveProductFunc mocks the RemoveProduct method.
 	RemoveProductFunc func(ctx context.Context, key product.Key) error
 
+	// ReserveProductFunc mocks the ReserveProduct method.
+	ReserveProductFunc func(ctx context.Context, reservation Reservation) (ReservationResult, error)
+
 	// UpdateProductFunc mocks the UpdateProduct method.
 	UpdateProductFunc func(ctx context.Context, prd product.Product) error
 
+	// UpdateReservationFunc mocks the UpdateReservation method.
+	UpdateReservationFunc func(ctx context.Context, reservationID types.ID, consume bool) error
+
 	// calls tracks calls to the methods.
 	calls struct {
-		// ApproveSale holds details about calls to the ApproveSale method.
-		ApproveSale []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// Req is the req argument value.
-			Req ApproveSaleRequest
-		}
 		// CreateIngredient holds details about calls to the CreateIngredient method.
 		CreateIngredient []struct {
 			// Ctx is the ctx argument value.
@@ -130,6 +129,13 @@ type WorkflowMock struct {
 			// Key is the key argument value.
 			Key product.Key
 		}
+		// ReserveProduct holds details about calls to the ReserveProduct method.
+		ReserveProduct []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Reservation is the reservation argument value.
+			Reservation Reservation
+		}
 		// UpdateProduct holds details about calls to the UpdateProduct method.
 		UpdateProduct []struct {
 			// Ctx is the ctx argument value.
@@ -137,50 +143,25 @@ type WorkflowMock struct {
 			// Prd is the prd argument value.
 			Prd product.Product
 		}
+		// UpdateReservation holds details about calls to the UpdateReservation method.
+		UpdateReservation []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// ReservationID is the reservationID argument value.
+			ReservationID types.ID
+			// Consume is the consume argument value.
+			Consume bool
+		}
 	}
-	lockApproveSale      sync.RWMutex
-	lockCreateIngredient sync.RWMutex
-	lockCreateProduct    sync.RWMutex
-	lockGetProduct       sync.RWMutex
-	lockListProducts     sync.RWMutex
-	lockRemoveIngredient sync.RWMutex
-	lockRemoveProduct    sync.RWMutex
-	lockUpdateProduct    sync.RWMutex
-}
-
-// ApproveSale calls ApproveSaleFunc.
-func (mock *WorkflowMock) ApproveSale(ctx context.Context, req ApproveSaleRequest) error {
-	if mock.ApproveSaleFunc == nil {
-		panic("WorkflowMock.ApproveSaleFunc: method is nil but Workflow.ApproveSale was just called")
-	}
-	callInfo := struct {
-		Ctx context.Context
-		Req ApproveSaleRequest
-	}{
-		Ctx: ctx,
-		Req: req,
-	}
-	mock.lockApproveSale.Lock()
-	mock.calls.ApproveSale = append(mock.calls.ApproveSale, callInfo)
-	mock.lockApproveSale.Unlock()
-	return mock.ApproveSaleFunc(ctx, req)
-}
-
-// ApproveSaleCalls gets all the calls that were made to ApproveSale.
-// Check the length with:
-//     len(mockedWorkflow.ApproveSaleCalls())
-func (mock *WorkflowMock) ApproveSaleCalls() []struct {
-	Ctx context.Context
-	Req ApproveSaleRequest
-} {
-	var calls []struct {
-		Ctx context.Context
-		Req ApproveSaleRequest
-	}
-	mock.lockApproveSale.RLock()
-	calls = mock.calls.ApproveSale
-	mock.lockApproveSale.RUnlock()
-	return calls
+	lockCreateIngredient  sync.RWMutex
+	lockCreateProduct     sync.RWMutex
+	lockGetProduct        sync.RWMutex
+	lockListProducts      sync.RWMutex
+	lockRemoveIngredient  sync.RWMutex
+	lockRemoveProduct     sync.RWMutex
+	lockReserveProduct    sync.RWMutex
+	lockUpdateProduct     sync.RWMutex
+	lockUpdateReservation sync.RWMutex
 }
 
 // CreateIngredient calls CreateIngredientFunc.
@@ -401,6 +382,41 @@ func (mock *WorkflowMock) RemoveProductCalls() []struct {
 	return calls
 }
 
+// ReserveProduct calls ReserveProductFunc.
+func (mock *WorkflowMock) ReserveProduct(ctx context.Context, reservation Reservation) (ReservationResult, error) {
+	if mock.ReserveProductFunc == nil {
+		panic("WorkflowMock.ReserveProductFunc: method is nil but Workflow.ReserveProduct was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		Reservation Reservation
+	}{
+		Ctx:         ctx,
+		Reservation: reservation,
+	}
+	mock.lockReserveProduct.Lock()
+	mock.calls.ReserveProduct = append(mock.calls.ReserveProduct, callInfo)
+	mock.lockReserveProduct.Unlock()
+	return mock.ReserveProductFunc(ctx, reservation)
+}
+
+// ReserveProductCalls gets all the calls that were made to ReserveProduct.
+// Check the length with:
+//     len(mockedWorkflow.ReserveProductCalls())
+func (mock *WorkflowMock) ReserveProductCalls() []struct {
+	Ctx         context.Context
+	Reservation Reservation
+} {
+	var calls []struct {
+		Ctx         context.Context
+		Reservation Reservation
+	}
+	mock.lockReserveProduct.RLock()
+	calls = mock.calls.ReserveProduct
+	mock.lockReserveProduct.RUnlock()
+	return calls
+}
+
 // UpdateProduct calls UpdateProductFunc.
 func (mock *WorkflowMock) UpdateProduct(ctx context.Context, prd product.Product) error {
 	if mock.UpdateProductFunc == nil {
@@ -433,5 +449,44 @@ func (mock *WorkflowMock) UpdateProductCalls() []struct {
 	mock.lockUpdateProduct.RLock()
 	calls = mock.calls.UpdateProduct
 	mock.lockUpdateProduct.RUnlock()
+	return calls
+}
+
+// UpdateReservation calls UpdateReservationFunc.
+func (mock *WorkflowMock) UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error {
+	if mock.UpdateReservationFunc == nil {
+		panic("WorkflowMock.UpdateReservationFunc: method is nil but Workflow.UpdateReservation was just called")
+	}
+	callInfo := struct {
+		Ctx           context.Context
+		ReservationID types.ID
+		Consume       bool
+	}{
+		Ctx:           ctx,
+		ReservationID: reservationID,
+		Consume:       consume,
+	}
+	mock.lockUpdateReservation.Lock()
+	mock.calls.UpdateReservation = append(mock.calls.UpdateReservation, callInfo)
+	mock.lockUpdateReservation.Unlock()
+	return mock.UpdateReservationFunc(ctx, reservationID, consume)
+}
+
+// UpdateReservationCalls gets all the calls that were made to UpdateReservation.
+// Check the length with:
+//     len(mockedWorkflow.UpdateReservationCalls())
+func (mock *WorkflowMock) UpdateReservationCalls() []struct {
+	Ctx           context.Context
+	ReservationID types.ID
+	Consume       bool
+} {
+	var calls []struct {
+		Ctx           context.Context
+		ReservationID types.ID
+		Consume       bool
+	}
+	mock.lockUpdateReservation.RLock()
+	calls = mock.calls.UpdateReservation
+	mock.lockUpdateReservation.RUnlock()
 	return calls
 }

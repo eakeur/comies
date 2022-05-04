@@ -17,28 +17,15 @@ type (
 
 		Type Type
 
-		Stock
-
 		Sale
 
 		types.Store
 	}
 
-	Stock struct {
+	Sale struct {
 		// CostPrice is how much the store pays to make or store this product
 		CostPrice types.Currency
 
-		// MaximumQuantity is how many unities of this product the store can support
-		MaximumQuantity types.Quantity
-
-		// MinimumQuantity is the lowest quantity of this product the store can have
-		MinimumQuantity types.Quantity
-
-		// Location is a brief description of where this stock is located
-		Location string
-	}
-
-	Sale struct {
 		// Price is how much the customer pays for this product
 		SalePrice types.Currency
 

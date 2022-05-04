@@ -1,31 +1,37 @@
 package product
 
-import "gomies/app/sdk/types"
+import (
+	"gomies/app/core/entities/catalog/product"
+	"gomies/app/sdk/types"
+)
 
 type (
+	IngredientList []product.Ingredient
+
 	IngredientInput struct {
 		Quantity     types.Quantity
 		IngredientID types.ID
 	}
 
-	Substitutions map[types.ID]types.ID
-
-	ApproveSaleRequest struct {
-		ProductID            types.ID
-		Quantity             types.Quantity
-		Price                types.Currency
-		IngredientsToIgnore  []types.ID
-		IngredientsToReplace Substitutions
+	Reservation struct {
+		ID        types.ID
+		ProductID types.ID
+		Quantity  types.Quantity
+		Price     types.Currency
+		Ignore    []types.ID
+		Replace   map[types.ID]types.ID
+		composite bool
 	}
 
-	ApproveSaleResponse struct {
-		RemainingStock types.Quantity
-		Price          types.Quantity
+	ReservationResult struct {
+		Price        types.Currency
+		FailedChecks []FailedReservation
 	}
 
-	IngredientToVerify struct {
-		IngredientID      types.ID
-		Quantity          types.Quantity
-		AvailableQuantity types.Quantity
+	FailedReservation struct {
+		ProductID types.ID
+		Want      types.Quantity
+		Got       types.Quantity
+		Error     error
 	}
 )

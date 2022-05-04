@@ -5,6 +5,7 @@ package product
 
 import (
 	"context"
+	"gomies/app/core/entities/catalog/product"
 	"gomies/app/sdk/types"
 	"sync"
 )
@@ -19,11 +20,14 @@ var _ StockService = &StockServiceMock{}
 //
 // 		// make and configure a mocked StockService
 // 		mockedStockService := &StockServiceMock{
-// 			ComputeFunc: func(ctx context.Context, productID types.ID) (types.Quantity, error) {
-// 				panic("mock out the Compute method")
+// 			ConsumeResourcesFunc: func(ctx context.Context, reservationID types.ID) error {
+// 				panic("mock out the ConsumeResources method")
 // 			},
-// 			ComputeSomeFunc: func(ctx context.Context, productID ...types.ID) ([]types.Quantity, error) {
-// 				panic("mock out the ComputeSome method")
+// 			FreeResourcesFunc: func(ctx context.Context, reservationID types.ID) error {
+// 				panic("mock out the FreeResources method")
+// 			},
+// 			ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+// 				panic("mock out the ReserveResources method")
 // 			},
 // 		}
 //
@@ -32,99 +36,151 @@ var _ StockService = &StockServiceMock{}
 //
 // 	}
 type StockServiceMock struct {
-	// ComputeFunc mocks the Compute method.
-	ComputeFunc func(ctx context.Context, productID types.ID) (types.Quantity, error)
+	// ConsumeResourcesFunc mocks the ConsumeResources method.
+	ConsumeResourcesFunc func(ctx context.Context, reservationID types.ID) error
 
-	// ComputeSomeFunc mocks the ComputeSome method.
-	ComputeSomeFunc func(ctx context.Context, productID ...types.ID) ([]types.Quantity, error)
+	// FreeResourcesFunc mocks the FreeResources method.
+	FreeResourcesFunc func(ctx context.Context, reservationID types.ID) error
+
+	// ReserveResourcesFunc mocks the ReserveResources method.
+	ReserveResourcesFunc func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// Compute holds details about calls to the Compute method.
-		Compute []struct {
+		// ConsumeResources holds details about calls to the ConsumeResources method.
+		ConsumeResources []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// ProductID is the productID argument value.
-			ProductID types.ID
+			// ReservationID is the reservationID argument value.
+			ReservationID types.ID
 		}
-		// ComputeSome holds details about calls to the ComputeSome method.
-		ComputeSome []struct {
+		// FreeResources holds details about calls to the FreeResources method.
+		FreeResources []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
-			// ProductID is the productID argument value.
-			ProductID []types.ID
+			// ReservationID is the reservationID argument value.
+			ReservationID types.ID
+		}
+		// ReserveResources holds details about calls to the ReserveResources method.
+		ReserveResources []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// ReservationID is the reservationID argument value.
+			ReservationID types.ID
+			// Resources is the resources argument value.
+			Resources []product.Ingredient
 		}
 	}
-	lockCompute     sync.RWMutex
-	lockComputeSome sync.RWMutex
+	lockConsumeResources sync.RWMutex
+	lockFreeResources    sync.RWMutex
+	lockReserveResources sync.RWMutex
 }
 
-// Compute calls ComputeFunc.
-func (mock *StockServiceMock) Compute(ctx context.Context, productID types.ID) (types.Quantity, error) {
-	if mock.ComputeFunc == nil {
-		panic("StockServiceMock.ComputeFunc: method is nil but StockService.Compute was just called")
+// ConsumeResources calls ConsumeResourcesFunc.
+func (mock *StockServiceMock) ConsumeResources(ctx context.Context, reservationID types.ID) error {
+	if mock.ConsumeResourcesFunc == nil {
+		panic("StockServiceMock.ConsumeResourcesFunc: method is nil but StockService.ConsumeResources was just called")
 	}
 	callInfo := struct {
-		Ctx       context.Context
-		ProductID types.ID
+		Ctx           context.Context
+		ReservationID types.ID
 	}{
-		Ctx:       ctx,
-		ProductID: productID,
+		Ctx:           ctx,
+		ReservationID: reservationID,
 	}
-	mock.lockCompute.Lock()
-	mock.calls.Compute = append(mock.calls.Compute, callInfo)
-	mock.lockCompute.Unlock()
-	return mock.ComputeFunc(ctx, productID)
+	mock.lockConsumeResources.Lock()
+	mock.calls.ConsumeResources = append(mock.calls.ConsumeResources, callInfo)
+	mock.lockConsumeResources.Unlock()
+	return mock.ConsumeResourcesFunc(ctx, reservationID)
 }
 
-// ComputeCalls gets all the calls that were made to Compute.
+// ConsumeResourcesCalls gets all the calls that were made to ConsumeResources.
 // Check the length with:
-//     len(mockedStockService.ComputeCalls())
-func (mock *StockServiceMock) ComputeCalls() []struct {
-	Ctx       context.Context
-	ProductID types.ID
+//     len(mockedStockService.ConsumeResourcesCalls())
+func (mock *StockServiceMock) ConsumeResourcesCalls() []struct {
+	Ctx           context.Context
+	ReservationID types.ID
 } {
 	var calls []struct {
-		Ctx       context.Context
-		ProductID types.ID
+		Ctx           context.Context
+		ReservationID types.ID
 	}
-	mock.lockCompute.RLock()
-	calls = mock.calls.Compute
-	mock.lockCompute.RUnlock()
+	mock.lockConsumeResources.RLock()
+	calls = mock.calls.ConsumeResources
+	mock.lockConsumeResources.RUnlock()
 	return calls
 }
 
-// ComputeSome calls ComputeSomeFunc.
-func (mock *StockServiceMock) ComputeSome(ctx context.Context, productID ...types.ID) ([]types.Quantity, error) {
-	if mock.ComputeSomeFunc == nil {
-		panic("StockServiceMock.ComputeSomeFunc: method is nil but StockService.ComputeSome was just called")
+// FreeResources calls FreeResourcesFunc.
+func (mock *StockServiceMock) FreeResources(ctx context.Context, reservationID types.ID) error {
+	if mock.FreeResourcesFunc == nil {
+		panic("StockServiceMock.FreeResourcesFunc: method is nil but StockService.FreeResources was just called")
 	}
 	callInfo := struct {
-		Ctx       context.Context
-		ProductID []types.ID
+		Ctx           context.Context
+		ReservationID types.ID
 	}{
-		Ctx:       ctx,
-		ProductID: productID,
+		Ctx:           ctx,
+		ReservationID: reservationID,
 	}
-	mock.lockComputeSome.Lock()
-	mock.calls.ComputeSome = append(mock.calls.ComputeSome, callInfo)
-	mock.lockComputeSome.Unlock()
-	return mock.ComputeSomeFunc(ctx, productID...)
+	mock.lockFreeResources.Lock()
+	mock.calls.FreeResources = append(mock.calls.FreeResources, callInfo)
+	mock.lockFreeResources.Unlock()
+	return mock.FreeResourcesFunc(ctx, reservationID)
 }
 
-// ComputeSomeCalls gets all the calls that were made to ComputeSome.
+// FreeResourcesCalls gets all the calls that were made to FreeResources.
 // Check the length with:
-//     len(mockedStockService.ComputeSomeCalls())
-func (mock *StockServiceMock) ComputeSomeCalls() []struct {
-	Ctx       context.Context
-	ProductID []types.ID
+//     len(mockedStockService.FreeResourcesCalls())
+func (mock *StockServiceMock) FreeResourcesCalls() []struct {
+	Ctx           context.Context
+	ReservationID types.ID
 } {
 	var calls []struct {
-		Ctx       context.Context
-		ProductID []types.ID
+		Ctx           context.Context
+		ReservationID types.ID
 	}
-	mock.lockComputeSome.RLock()
-	calls = mock.calls.ComputeSome
-	mock.lockComputeSome.RUnlock()
+	mock.lockFreeResources.RLock()
+	calls = mock.calls.FreeResources
+	mock.lockFreeResources.RUnlock()
+	return calls
+}
+
+// ReserveResources calls ReserveResourcesFunc.
+func (mock *StockServiceMock) ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+	if mock.ReserveResourcesFunc == nil {
+		panic("StockServiceMock.ReserveResourcesFunc: method is nil but StockService.ReserveResources was just called")
+	}
+	callInfo := struct {
+		Ctx           context.Context
+		ReservationID types.ID
+		Resources     []product.Ingredient
+	}{
+		Ctx:           ctx,
+		ReservationID: reservationID,
+		Resources:     resources,
+	}
+	mock.lockReserveResources.Lock()
+	mock.calls.ReserveResources = append(mock.calls.ReserveResources, callInfo)
+	mock.lockReserveResources.Unlock()
+	return mock.ReserveResourcesFunc(ctx, reservationID, resources...)
+}
+
+// ReserveResourcesCalls gets all the calls that were made to ReserveResources.
+// Check the length with:
+//     len(mockedStockService.ReserveResourcesCalls())
+func (mock *StockServiceMock) ReserveResourcesCalls() []struct {
+	Ctx           context.Context
+	ReservationID types.ID
+	Resources     []product.Ingredient
+} {
+	var calls []struct {
+		Ctx           context.Context
+		ReservationID types.ID
+		Resources     []product.Ingredient
+	}
+	mock.lockReserveResources.RLock()
+	calls = mock.calls.ReserveResources
+	mock.lockReserveResources.RUnlock()
 	return calls
 }

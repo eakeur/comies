@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"gomies/app/core/entities/catalog/product"
 	"gomies/app/sdk/types"
 )
 
@@ -9,7 +10,8 @@ import (
 
 type (
 	StockService interface {
-		Compute(ctx context.Context, productID types.ID) (types.Quantity, error)
-		ComputeSome(ctx context.Context, productID ...types.ID) ([]types.Quantity, error)
+		ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error)
+		ConsumeResources(ctx context.Context, reservationID types.ID) error
+		FreeResources(ctx context.Context, reservationID types.ID) error
 	}
 )

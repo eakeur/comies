@@ -13,15 +13,12 @@ var (
 	ErrMissingUID          = errors.New("this resource could not be found because the id provided is not valid")
 )
 
-type AdditionalData struct {
-	Key   string
-	Value interface{}
-}
+type AdditionalData map[string]string
 
 type Error struct {
 	Operation  string
 	Err        error
-	Parameters []AdditionalData
+	Parameters AdditionalData
 	ParentErr  *Error
 }
 
@@ -29,12 +26,8 @@ func (e Error) Error() string {
 
 	var parameters string
 	if e.Parameters != nil {
-		prms := map[string]interface{}{}
-		for _, prm := range e.Parameters {
-			prms[prm.Key] = prm.Value
-		}
 
-		res, err := json.Marshal(prms)
+		res, err := json.Marshal(e.Parameters)
 		if err == nil {
 			parameters = string(res)
 			parameters = parameters[1 : len(parameters)-1]
@@ -55,8 +48,13 @@ func Wrap(err error, operation string, parameters ...AdditionalData) *Error {
 		return nil
 	}
 
+	var prm AdditionalData
+	if len(parameters) > 0 {
+		prm = parameters[0]
+	}
+
 	domainError := Error{
-		Parameters: parameters,
+		Parameters: prm,
 		Operation:  operation,
 		Err:        err,
 	}
