@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	InTheCartStatus       Status = iota
 	PendingStatus         Status = iota
 	PreparingStatus       Status = iota
 	WaitingTakeoutStatus  Status = iota
@@ -54,19 +55,31 @@ type (
 
 	Content struct {
 		types.Entity
-		ItemID    types.ID
-		ProductID types.ID
-		Quantity  types.Quantity
-		Status    PreparationStatus
+		ItemID       types.ID
+		ProductID    types.ID
+		Quantity     types.Quantity
+		Status       PreparationStatus
+		Observations string
+		Details      ContentDetails
+	}
+
+	ContentDetails struct {
+		IgnoreIngredients  []types.ID
+		ReplaceIngredients []ContentSubstitution
+	}
+
+	ContentSubstitution struct {
+		From types.ID
+		To   types.ID
 	}
 
 	Filter struct {
 		Status       Status
-		PlacedBehore time.Time
+		PlacedBefore time.Time
 		PlacedAfter  time.Time
 		CustomerID   types.ID
 		AddressID    types.ID
-		DeliverMode  DeliveryMode
+		DeliveryMode DeliveryMode
 		listing.Filter
 	}
 )

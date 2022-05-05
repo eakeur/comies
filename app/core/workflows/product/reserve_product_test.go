@@ -24,7 +24,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 		test struct {
 			name    string
 			args    args
-			want    ReservationResult
+			want    Reservation
 			wantErr error
 			opts    opts
 		}
@@ -38,23 +38,21 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					ID:        1,
 					ProductID: 2,
 					Quantity:  10,
-					Price:     1000,
 				},
 			},
-			want: ReservationResult{
-				Price: 1000,
+			want: Reservation{
+				ID:        1,
+				ProductID: 2,
+				Quantity:  10,
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
-						return product.Sale{
-							SalePrice:   1000,
-							MinimumSale: 1,
-						}, nil
+					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
+						return nil, nil
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
 						return nil, nil
 					},
 				},
@@ -67,12 +65,13 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					ID:        1,
 					ProductID: 2,
 					Quantity:  1000,
-					Price:     1000,
 				},
 			},
-			want: ReservationResult{
-				Price: 1000,
-				FailedChecks: []FailedReservation{
+			want: Reservation{
+				ID:        1,
+				ProductID: 2,
+				Quantity:  1000,
+				Failures: []ItemFailed{
 					{
 						ProductID: 1,
 						Want:      10000,
@@ -95,13 +94,6 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
-						return product.Sale{
-							SalePrice:      1000,
-							MinimumSale:    1,
-							HasIngredients: true,
-						}, nil
-					},
 					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
 						return []product.Ingredient{
 							{
@@ -119,8 +111,8 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
-						return []FailedReservation{
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+						return []ItemFailed{
 							{
 								ProductID: 1,
 								Want:      10000,
@@ -151,12 +143,13 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					ID:        1,
 					ProductID: 2,
 					Quantity:  1000,
-					Price:     1000,
 				},
 			},
-			want: ReservationResult{
-				Price: 1000,
-				FailedChecks: []FailedReservation{
+			want: Reservation{
+				ID:        1,
+				ProductID: 2,
+				Quantity:  1000,
+				Failures: []ItemFailed{
 					{
 						ProductID: 3,
 						Want:      20000,
@@ -167,13 +160,6 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
-						return product.Sale{
-							SalePrice:      1000,
-							MinimumSale:    1,
-							HasIngredients: true,
-						}, nil
-					},
 					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
 						return []product.Ingredient{
 							{
@@ -191,8 +177,8 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
-						return []FailedReservation{
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+						return []ItemFailed{
 							{
 								ProductID: 3,
 								Want:      20000,
@@ -211,24 +197,21 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					ID:        1,
 					ProductID: 2,
 					Quantity:  1000,
-					Price:     1000,
 					Ignore: []types.ID{
 						3,
 					},
 				},
 			},
-			want: ReservationResult{
-				Price: 1000,
+			want: Reservation{
+				ID:        1,
+				ProductID: 2,
+				Quantity:  1000,
+				Ignore: []types.ID{
+					3,
+				},
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
-						return product.Sale{
-							SalePrice:      1000,
-							MinimumSale:    1,
-							HasIngredients: true,
-						}, nil
-					},
 					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
 						return []product.Ingredient{
 							{
@@ -247,10 +230,10 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
 						for _, resource := range resources {
 							if resource.IngredientID == 3 {
-								return []FailedReservation{
+								return []ItemFailed{
 									{
 										ProductID: 3,
 										Want:      20000,
@@ -272,15 +255,19 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					ID:        1,
 					ProductID: 2,
 					Quantity:  1000,
-					Price:     1000,
 					Replace: map[types.ID]types.ID{
 						3: 5,
 					},
 				},
 			},
-			want: ReservationResult{
-				Price: 1000,
-				FailedChecks: []FailedReservation{
+			want: Reservation{
+				ID:        1,
+				ProductID: 2,
+				Quantity:  1000,
+				Replace: map[types.ID]types.ID{
+					3: 5,
+				},
+				Failures: []ItemFailed{
 					{
 						ProductID: 5,
 						Want:      20000,
@@ -291,13 +278,6 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				products: &product.ActionsMock{
-					GetProductSaleInfoFunc: func(ctx context.Context, key product.Key) (product.Sale, error) {
-						return product.Sale{
-							SalePrice:      1000,
-							MinimumSale:    1,
-							HasIngredients: true,
-						}, nil
-					},
 					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
 						return []product.Ingredient{
 							{
@@ -316,10 +296,10 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
 						for _, resource := range resources {
 							if resource.IngredientID == 3 || resource.IngredientID == 5 {
-								return []FailedReservation{
+								return []ItemFailed{
 									{
 										ProductID: resource.IngredientID,
 										Want:      20000,

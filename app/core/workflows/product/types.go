@@ -13,22 +13,23 @@ type (
 		IngredientID types.ID
 	}
 
+	Check struct {
+		ProductID types.ID
+		Quantity  types.Quantity
+		Price     types.Currency
+	}
+
 	Reservation struct {
 		ID        types.ID
 		ProductID types.ID
 		Quantity  types.Quantity
-		Price     types.Currency
 		Ignore    []types.ID
 		Replace   map[types.ID]types.ID
+		Failures  []ItemFailed
 		composite bool
 	}
 
-	ReservationResult struct {
-		Price        types.Currency
-		FailedChecks []FailedReservation
-	}
-
-	FailedReservation struct {
+	ItemFailed struct {
 		ProductID types.ID
 		Want      types.Quantity
 		Got       types.Quantity

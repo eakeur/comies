@@ -19,7 +19,7 @@ var _ Actions = &ActionsMock{}
 //
 // 		// make and configure a mocked Actions
 // 		mockedActions := &ActionsMock{
-// 			CreateContentFunc: func(ctx context.Context, c ...Content) ([]Content, error) {
+// 			CreateContentFunc: func(ctx context.Context, c Content) (Content, error) {
 // 				panic("mock out the CreateContent method")
 // 			},
 // 			CreateItemFunc: func(ctx context.Context, item Item) (Item, error) {
@@ -75,7 +75,7 @@ var _ Actions = &ActionsMock{}
 // 	}
 type ActionsMock struct {
 	// CreateContentFunc mocks the CreateContent method.
-	CreateContentFunc func(ctx context.Context, c ...Content) ([]Content, error)
+	CreateContentFunc func(ctx context.Context, c Content) (Content, error)
 
 	// CreateItemFunc mocks the CreateItem method.
 	CreateItemFunc func(ctx context.Context, item Item) (Item, error)
@@ -129,7 +129,7 @@ type ActionsMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// C is the c argument value.
-			C []Content
+			C Content
 		}
 		// CreateItem holds details about calls to the CreateItem method.
 		CreateItem []struct {
@@ -268,13 +268,13 @@ type ActionsMock struct {
 }
 
 // CreateContent calls CreateContentFunc.
-func (mock *ActionsMock) CreateContent(ctx context.Context, c ...Content) ([]Content, error) {
+func (mock *ActionsMock) CreateContent(ctx context.Context, c Content) (Content, error) {
 	if mock.CreateContentFunc == nil {
 		panic("ActionsMock.CreateContentFunc: method is nil but Actions.CreateContent was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		C   []Content
+		C   Content
 	}{
 		Ctx: ctx,
 		C:   c,
@@ -282,7 +282,7 @@ func (mock *ActionsMock) CreateContent(ctx context.Context, c ...Content) ([]Con
 	mock.lockCreateContent.Lock()
 	mock.calls.CreateContent = append(mock.calls.CreateContent, callInfo)
 	mock.lockCreateContent.Unlock()
-	return mock.CreateContentFunc(ctx, c...)
+	return mock.CreateContentFunc(ctx, c)
 }
 
 // CreateContentCalls gets all the calls that were made to CreateContent.
@@ -290,11 +290,11 @@ func (mock *ActionsMock) CreateContent(ctx context.Context, c ...Content) ([]Con
 //     len(mockedActions.CreateContentCalls())
 func (mock *ActionsMock) CreateContentCalls() []struct {
 	Ctx context.Context
-	C   []Content
+	C   Content
 } {
 	var calls []struct {
 		Ctx context.Context
-		C   []Content
+		C   Content
 	}
 	mock.lockCreateContent.RLock()
 	calls = mock.calls.CreateContent

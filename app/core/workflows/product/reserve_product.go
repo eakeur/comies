@@ -6,65 +6,25 @@ import (
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) ReserveProduct(ctx context.Context, reservation Reservation) (ReservationResult, error) {
-	const operation = "Workflows.Product.CheckProduct"
+func (w workflow) ReserveProduct(ctx context.Context, reservation Reservation) (Reservation, error) {
+	const operation = "Workflows.Product.ReserveProduct"
 
-	reservation, err := w.checkSaleProperties(ctx, reservation)
-	if err != nil {
-		return ReservationResult{}, fault.Wrap(err, operation)
-	}
+	var (
+		results []ItemFailed
+		err     error
+	)
 
-	failed, err := w.reserveProductStock(ctx, reservation)
-	if err != nil {
-		return ReservationResult{}, fault.Wrap(err, operation)
-	}
-
-	return ReservationResult{
-		Price:        reservation.Price,
-		FailedChecks: failed,
-	}, nil
-
-}
-
-func (w workflow) checkSaleProperties(ctx context.Context, reservation Reservation) (Reservation, error) {
-	const operation = "Workflows.Product.approveSaleProperties"
-
-	saleProps, err := w.products.GetProductSaleInfo(ctx, product.Key{ID: reservation.ProductID})
+	ingredients, err := w.products.ListIngredients(ctx, product.Key{ID: reservation.ProductID})
 	if err != nil {
 		return Reservation{}, fault.Wrap(err, operation)
 	}
 
-	if saleProps.SalePrice != reservation.Price {
-		return Reservation{}, fault.Wrap(product.ErrInvalidSalePrice, operation)
-	}
-
-	if saleProps.MinimumSale > reservation.Quantity {
-		return Reservation{}, fault.Wrap(product.ErrInvalidSaleQuantity, operation)
-	}
-
-	reservation.composite = saleProps.HasIngredients
-
-	return reservation, nil
-}
-
-func (w workflow) reserveProductStock(ctx context.Context, reservation Reservation) ([]FailedReservation, error) {
-	const operation = "Workflows.Product.reserveProductStock"
-
-	var (
-		results []FailedReservation
-		err     error
-	)
-	if !reservation.composite {
+	if len(ingredients) == 0 {
 		results, err = w.stocks.ReserveResources(ctx, reservation.ID, product.Ingredient{
 			Quantity:     reservation.Quantity,
 			IngredientID: reservation.ProductID,
 		})
 	} else {
-		ingredients, err := w.products.ListIngredients(ctx, product.Key{ID: reservation.ProductID})
-		if err != nil {
-			return []FailedReservation{}, fault.Wrap(err, operation)
-		}
-
 		// This block of code removes from the ingredient array ignored ingredients and
 		// replaces the ones set as replaced in the reservation
 		var ing []product.Ingredient
@@ -97,8 +57,10 @@ func (w workflow) reserveProductStock(ctx context.Context, reservation Reservati
 	}
 
 	if err != nil {
-		return []FailedReservation{}, fault.Wrap(err, operation)
+		return Reservation{}, fault.Wrap(err, operation)
 	}
 
-	return results, nil
+	reservation.Failures = results
+
+	return reservation, nil
 }

@@ -9,7 +9,7 @@ import (
 
 //go:generate moq -fmt goimports -out workflow_mock.go . Workflow:WorkflowMock
 type Workflow interface {
-	ReserveProduct(ctx context.Context, reservation Reservation) (ReservationResult, error)
+	ReserveProduct(ctx context.Context, reservation Reservation) (Reservation, error)
 	UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error
 	CreateIngredient(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error)
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)

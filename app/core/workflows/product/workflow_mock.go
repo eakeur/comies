@@ -38,7 +38,7 @@ var _ Workflow = &WorkflowMock{}
 // 			RemoveProductFunc: func(ctx context.Context, key product.Key) error {
 // 				panic("mock out the RemoveProduct method")
 // 			},
-// 			ReserveProductFunc: func(ctx context.Context, reservation Reservation) (ReservationResult, error) {
+// 			ReserveProductFunc: func(ctx context.Context, reservation Reservation) (Reservation, error) {
 // 				panic("mock out the ReserveProduct method")
 // 			},
 // 			UpdateProductFunc: func(ctx context.Context, prd product.Product) error {
@@ -73,7 +73,7 @@ type WorkflowMock struct {
 	RemoveProductFunc func(ctx context.Context, key product.Key) error
 
 	// ReserveProductFunc mocks the ReserveProduct method.
-	ReserveProductFunc func(ctx context.Context, reservation Reservation) (ReservationResult, error)
+	ReserveProductFunc func(ctx context.Context, reservation Reservation) (Reservation, error)
 
 	// UpdateProductFunc mocks the UpdateProduct method.
 	UpdateProductFunc func(ctx context.Context, prd product.Product) error
@@ -383,7 +383,7 @@ func (mock *WorkflowMock) RemoveProductCalls() []struct {
 }
 
 // ReserveProduct calls ReserveProductFunc.
-func (mock *WorkflowMock) ReserveProduct(ctx context.Context, reservation Reservation) (ReservationResult, error) {
+func (mock *WorkflowMock) ReserveProduct(ctx context.Context, reservation Reservation) (Reservation, error) {
 	if mock.ReserveProductFunc == nil {
 		panic("WorkflowMock.ReserveProductFunc: method is nil but Workflow.ReserveProduct was just called")
 	}

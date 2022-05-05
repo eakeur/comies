@@ -9,7 +9,7 @@ import (
 type Actions interface {
 	CreateOrder(ctx context.Context, o Order) (Order, error)
 	CreateItem(ctx context.Context, item Item) (Item, error)
-	CreateContent(ctx context.Context, c ...Content) ([]Content, error)
+	CreateContent(ctx context.Context, c Content) (Content, error)
 
 	ListOrders(ctx context.Context, f Filter) ([]Order, int, error)
 	ListItems(ctx context.Context, orderUID types.ID) ([]Item, error)

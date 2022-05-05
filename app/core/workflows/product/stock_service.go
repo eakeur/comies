@@ -10,7 +10,7 @@ import (
 
 type (
 	StockService interface {
-		ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error)
+		ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error)
 		ConsumeResources(ctx context.Context, reservationID types.ID) error
 		FreeResources(ctx context.Context, reservationID types.ID) error
 	}

@@ -26,7 +26,7 @@ var _ StockService = &StockServiceMock{}
 // 			FreeResourcesFunc: func(ctx context.Context, reservationID types.ID) error {
 // 				panic("mock out the FreeResources method")
 // 			},
-// 			ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+// 			ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
 // 				panic("mock out the ReserveResources method")
 // 			},
 // 		}
@@ -43,7 +43,7 @@ type StockServiceMock struct {
 	FreeResourcesFunc func(ctx context.Context, reservationID types.ID) error
 
 	// ReserveResourcesFunc mocks the ReserveResources method.
-	ReserveResourcesFunc func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error)
+	ReserveResourcesFunc func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -147,7 +147,7 @@ func (mock *StockServiceMock) FreeResourcesCalls() []struct {
 }
 
 // ReserveResources calls ReserveResourcesFunc.
-func (mock *StockServiceMock) ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]FailedReservation, error) {
+func (mock *StockServiceMock) ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
 	if mock.ReserveResourcesFunc == nil {
 		panic("StockServiceMock.ReserveResourcesFunc: method is nil but StockService.ReserveResources was just called")
 	}
