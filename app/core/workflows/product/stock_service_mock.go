@@ -5,7 +5,7 @@ package product
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/product"
+	"gomies/app/core/entities/catalog/ingredient"
 	"gomies/app/sdk/types"
 	"sync"
 )
@@ -26,7 +26,7 @@ var _ StockService = &StockServiceMock{}
 // 			FreeResourcesFunc: func(ctx context.Context, reservationID types.ID) error {
 // 				panic("mock out the FreeResources method")
 // 			},
-// 			ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+// 			ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 // 				panic("mock out the ReserveResources method")
 // 			},
 // 		}
@@ -43,7 +43,7 @@ type StockServiceMock struct {
 	FreeResourcesFunc func(ctx context.Context, reservationID types.ID) error
 
 	// ReserveResourcesFunc mocks the ReserveResources method.
-	ReserveResourcesFunc func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error)
+	ReserveResourcesFunc func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -68,7 +68,7 @@ type StockServiceMock struct {
 			// ReservationID is the reservationID argument value.
 			ReservationID types.ID
 			// Resources is the resources argument value.
-			Resources []product.Ingredient
+			Resources []ingredient.Ingredient
 		}
 	}
 	lockConsumeResources sync.RWMutex
@@ -147,14 +147,14 @@ func (mock *StockServiceMock) FreeResourcesCalls() []struct {
 }
 
 // ReserveResources calls ReserveResourcesFunc.
-func (mock *StockServiceMock) ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+func (mock *StockServiceMock) ReserveResources(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 	if mock.ReserveResourcesFunc == nil {
 		panic("StockServiceMock.ReserveResourcesFunc: method is nil but StockService.ReserveResources was just called")
 	}
 	callInfo := struct {
 		Ctx           context.Context
 		ReservationID types.ID
-		Resources     []product.Ingredient
+		Resources     []ingredient.Ingredient
 	}{
 		Ctx:           ctx,
 		ReservationID: reservationID,
@@ -172,12 +172,12 @@ func (mock *StockServiceMock) ReserveResources(ctx context.Context, reservationI
 func (mock *StockServiceMock) ReserveResourcesCalls() []struct {
 	Ctx           context.Context
 	ReservationID types.ID
-	Resources     []product.Ingredient
+	Resources     []ingredient.Ingredient
 } {
 	var calls []struct {
 		Ctx           context.Context
 		ReservationID types.ID
-		Resources     []product.Ingredient
+		Resources     []ingredient.Ingredient
 	}
 	mock.lockReserveResources.RLock()
 	calls = mock.calls.ReserveResources

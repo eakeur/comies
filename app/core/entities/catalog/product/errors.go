@@ -17,7 +17,8 @@ var (
 
 	ErrNotEnoughStocked = errors.New("the stock for this product cannot afford this sale")
 
-	ErrInvalidIngredient = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
+	ErrInvalidIngredient          = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
+	ErrInvalidIngredientProductID = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
 
 	ErrInvalidIngredientQuantity = errors.New("the ingredient quantity for this product is invalid. please check if it is greater than 0")
 

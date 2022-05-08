@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 	"gomies/app/core/entities/catalog/category"
+	"gomies/app/core/entities/catalog/ingredient"
 	"gomies/app/core/entities/catalog/product"
 	"gomies/app/sdk/types"
 )
@@ -11,13 +12,16 @@ import (
 type Workflow interface {
 	ReserveProduct(ctx context.Context, reservation Reservation) (Reservation, error)
 	UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error
-	CreateIngredient(ctx context.Context, productKey product.Key, input IngredientInput) (product.Ingredient, error)
+
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)
 	GetProduct(ctx context.Context, key product.Key) (product.Product, error)
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, int, error)
-	RemoveIngredient(ctx context.Context, productKey product.Key, id types.ID) error
 	RemoveProduct(ctx context.Context, key product.Key) error
 	UpdateProduct(ctx context.Context, prd product.Product) error
+
+	AddProductIngredient(ctx context.Context, ingredient ingredient.Ingredient) (ingredient.Ingredient, error)
+	RemoveProductIngredient(ctx context.Context, id types.ID) error
+	ListProductIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error)
 }
 
 var _ Workflow = workflow{}
@@ -25,17 +29,20 @@ var _ Workflow = workflow{}
 func NewWorkflow(
 	products product.Actions,
 	categories category.Actions,
+	ingredients ingredient.Actions,
 	stocks StockService,
 ) Workflow {
 	return workflow{
-		products:   products,
-		categories: categories,
-		stocks:     stocks,
+		ingredients: ingredients,
+		products:    products,
+		categories:  categories,
+		stocks:      stocks,
 	}
 }
 
 type workflow struct {
-	products   product.Actions
-	categories category.Actions
-	stocks     StockService
+	products    product.Actions
+	categories  category.Actions
+	ingredients ingredient.Actions
+	stocks      StockService
 }

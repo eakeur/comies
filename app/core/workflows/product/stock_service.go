@@ -2,7 +2,7 @@ package product
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/product"
+	"gomies/app/core/entities/catalog/ingredient"
 	"gomies/app/sdk/types"
 )
 
@@ -10,7 +10,7 @@ import (
 
 type (
 	StockService interface {
-		ReserveResources(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error)
+		ReserveResources(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error)
 		ConsumeResources(ctx context.Context, reservationID types.ID) error
 		FreeResources(ctx context.Context, reservationID types.ID) error
 	}

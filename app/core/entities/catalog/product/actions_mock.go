@@ -44,7 +44,7 @@ var _ Actions = &ActionsMock{}
 // 				panic("mock out the RemoveProduct method")
 // 			},
 // 			SaveIngredientsFunc: func(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error) {
-// 				panic("mock out the SaveIngredients method")
+// 				panic("mock out the SaveIngredient method")
 // 			},
 // 			UpdateProductFunc: func(ctx context.Context, prd Product) error {
 // 				panic("mock out the UpdateProduct method")
@@ -80,7 +80,7 @@ type ActionsMock struct {
 	// RemoveProductFunc mocks the RemoveProduct method.
 	RemoveProductFunc func(ctx context.Context, key Key) error
 
-	// SaveIngredientsFunc mocks the SaveIngredients method.
+	// SaveIngredientsFunc mocks the SaveIngredient method.
 	SaveIngredientsFunc func(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error)
 
 	// UpdateProductFunc mocks the UpdateProduct method.
@@ -146,7 +146,7 @@ type ActionsMock struct {
 			// Key is the key argument value.
 			Key Key
 		}
-		// SaveIngredients holds details about calls to the SaveIngredients method.
+		// SaveIngredient holds details about calls to the SaveIngredient method.
 		SaveIngredients []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
@@ -459,10 +459,10 @@ func (mock *ActionsMock) RemoveProductCalls() []struct {
 	return calls
 }
 
-// SaveIngredients calls SaveIngredientsFunc.
+// SaveIngredient calls SaveIngredientsFunc.
 func (mock *ActionsMock) SaveIngredients(ctx context.Context, productKey Key, ingredients ...Ingredient) ([]Ingredient, error) {
 	if mock.SaveIngredientsFunc == nil {
-		panic("ActionsMock.SaveIngredientsFunc: method is nil but Actions.SaveIngredients was just called")
+		panic("ActionsMock.SaveIngredientsFunc: method is nil but Actions.SaveIngredient was just called")
 	}
 	callInfo := struct {
 		Ctx         context.Context
@@ -479,7 +479,7 @@ func (mock *ActionsMock) SaveIngredients(ctx context.Context, productKey Key, in
 	return mock.SaveIngredientsFunc(ctx, productKey, ingredients...)
 }
 
-// SaveIngredientsCalls gets all the calls that were made to SaveIngredients.
+// SaveIngredientsCalls gets all the calls that were made to SaveIngredient.
 // Check the length with:
 //     len(mockedActions.SaveIngredientsCalls())
 func (mock *ActionsMock) SaveIngredientsCalls() []struct {

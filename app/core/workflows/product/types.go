@@ -1,6 +1,7 @@
 package product
 
 import (
+	"gomies/app/core/entities/catalog/ingredient"
 	"gomies/app/core/entities/catalog/product"
 	"gomies/app/sdk/types"
 )
@@ -23,8 +24,8 @@ type (
 		ID        types.ID
 		ProductID types.ID
 		Quantity  types.Quantity
-		Ignore    []types.ID
-		Replace   map[types.ID]types.ID
+		Ignore    ingredient.IgnoredList
+		Replace   ingredient.ReplacedList
 		Failures  []ItemFailed
 		composite bool
 	}

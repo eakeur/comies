@@ -13,7 +13,7 @@ var (
 	ErrMissingUID          = errors.New("this resource could not be found because the id provided is not valid")
 )
 
-type AdditionalData map[string]string
+type AdditionalData map[string]interface{}
 
 type Error struct {
 	Operation  string

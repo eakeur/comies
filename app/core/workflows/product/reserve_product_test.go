@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 	"github.com/stretchr/testify/assert"
+	"gomies/app/core/entities/catalog/ingredient"
 	"gomies/app/core/entities/catalog/product"
 	"gomies/app/sdk/types"
 	"testing"
@@ -17,8 +18,9 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 		}
 
 		opts struct {
-			products *product.ActionsMock
-			stocks   *StockServiceMock
+			products    *product.ActionsMock
+			ingredients *ingredient.ActionsMock
+			stocks      *StockServiceMock
 		}
 
 		test struct {
@@ -46,13 +48,13 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 				Quantity:  10,
 			},
 			opts: opts{
-				products: &product.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
+				ingredients: &ingredient.ActionsMock{
+					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 						return nil, nil
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 						return nil, nil
 					},
 				},
@@ -93,9 +95,9 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 				},
 			},
 			opts: opts{
-				products: &product.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
-						return []product.Ingredient{
+				ingredients: &ingredient.ActionsMock{
+					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
 								Quantity:     10,
@@ -111,7 +113,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 						return []ItemFailed{
 							{
 								ProductID: 1,
@@ -159,9 +161,9 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 				},
 			},
 			opts: opts{
-				products: &product.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
-						return []product.Ingredient{
+				ingredients: &ingredient.ActionsMock{
+					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
 								Quantity:     10,
@@ -177,7 +179,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 						return []ItemFailed{
 							{
 								ProductID: 3,
@@ -211,9 +213,9 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 				},
 			},
 			opts: opts{
-				products: &product.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
-						return []product.Ingredient{
+				ingredients: &ingredient.ActionsMock{
+					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
 								Quantity:     10,
@@ -221,8 +223,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 							{
 								IngredientID: 2,
 								Quantity:     10,
-							},
-							{
+							}, {
 								IngredientID: 3,
 								Quantity:     20,
 							},
@@ -230,7 +231,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 						for _, resource := range resources {
 							if resource.IngredientID == 3 {
 								return []ItemFailed{
@@ -277,9 +278,9 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 				},
 			},
 			opts: opts{
-				products: &product.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productKey product.Key) ([]product.Ingredient, error) {
-						return []product.Ingredient{
+				ingredients: &ingredient.ActionsMock{
+					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
 								Quantity:     10,
@@ -287,8 +288,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 							{
 								IngredientID: 2,
 								Quantity:     10,
-							},
-							{
+							}, {
 								IngredientID: 3,
 								Quantity:     20,
 							},
@@ -296,7 +296,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 					},
 				},
 				stocks: &StockServiceMock{
-					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...product.Ingredient) ([]ItemFailed, error) {
+					ReserveResourcesFunc: func(ctx context.Context, reservationID types.ID, resources ...ingredient.Ingredient) ([]ItemFailed, error) {
 						for _, resource := range resources {
 							if resource.IngredientID == 3 || resource.IngredientID == 5 {
 								return []ItemFailed{
@@ -320,7 +320,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, gotErr := workflow{products: c.opts.products, stocks: c.opts.stocks}.
+			got, gotErr := workflow{products: c.opts.products, stocks: c.opts.stocks, ingredients: c.opts.ingredients}.
 				ReserveProduct(context.Background(), c.args.reservation)
 
 			assert.ErrorIs(t, gotErr, c.wantErr)
