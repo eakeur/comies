@@ -12,5 +12,8 @@
 *.out
 *.idea
 *.env
+
+# Mocks and other generated files
+*_mock.go
 # Dependency directories (remove the comment below to include it)
 # vendor/

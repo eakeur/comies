@@ -1,7 +1,8 @@
-package stock
+package stocking
 
 import (
 	"context"
+	"gomies/app/core/entities/movement"
 	"gomies/app/core/entities/stock"
 	"gomies/app/sdk/fault"
 	"gomies/app/sdk/types"
@@ -49,9 +50,9 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 func (w workflow) checkResource(ctx context.Context, reservationID types.ID, reservation Reservation) (ReservationResult, error) {
 	const operation = "Workflows.Stock.checkResource"
 
-	movement := stock.Movement{
+	mv := movement.Movement{
 		ResourceID: reservation.ResourceID,
-		Type:       stock.ReservedMovement,
+		Type:       movement.ReservedMovement,
 		Date:       time.Now(),
 		Quantity:   reservation.Quantity,
 		Agent:      reservationID,
@@ -62,7 +63,7 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 		Want:       reservation.Quantity,
 	}
 
-	actual, err := w.stocks.ComputeStock(ctx, stock.Filter{ResourceID: reservation.ResourceID})
+	actual, err := w.movements.GetBalance(ctx, movement.Filter{ResourceID: reservation.ResourceID})
 	if err != nil {
 		return ReservationResult{}, fault.Wrap(err, operation)
 	}
@@ -73,18 +74,18 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 		return ReservationResult{}, fault.Wrap(err, operation)
 	}
 
-	if err := movement.Validate(); err != nil {
+	if err := mv.Validate(); err != nil {
 		return ReservationResult{}, fault.Wrap(err, operation)
 	}
 
-	actual += movement.Value()
+	actual += mv.Value()
 
 	if actual < stk.MinimumQuantity {
 		res.Error = stock.ErrStockEmpty
 		return res, nil
 	}
 
-	_, err = w.stocks.SaveMovements(ctx, movement)
+	_, err = w.movements.Save(ctx, mv)
 	if err != nil {
 		return ReservationResult{}, fault.Wrap(err, operation)
 	}

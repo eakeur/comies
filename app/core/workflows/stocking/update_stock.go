@@ -1,4 +1,4 @@
-package stock
+package stocking
 
 import (
 	"context"

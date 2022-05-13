@@ -1,4 +1,4 @@
-package stock
+package stocking
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 func (w workflow) FreeResources(ctx context.Context, reservationID types.ID) error {
 	const operation = "Workflows.Stock.FreeResources"
 
-	err := w.stocks.RemoveReserved(ctx, reservationID)
+	err := w.movements.RemoveReserved(ctx, reservationID)
 	if err != nil {
 		return fault.Wrap(err, operation)
 	}

@@ -1,12 +1,14 @@
-package stock
+package stocking
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
+	"gomies/app/core/entities/movement"
 	"gomies/app/core/entities/stock"
 	"gomies/app/sdk/fault"
 	"gomies/app/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ReserveResources(t *testing.T) {
@@ -19,7 +21,8 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 		}
 
 		opts struct {
-			stocks *stock.ActionsMock
+			movements *movement.ActionsMock
+			stocks    *stock.ActionsMock
 		}
 
 		test struct {
@@ -60,8 +63,8 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 				},
 			},
 			opts: opts{
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
+				movements: &movement.ActionsMock{
+					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
 						if filter.ResourceID == 1 {
 							return 300, nil
 						}
@@ -69,15 +72,16 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 						return 5000, nil
 					},
 
+					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+						return movement, nil
+					},
+				},
+				stocks: &stock.ActionsMock{
 					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{
 							MaximumQuantity: 5000,
 							MinimumQuantity: 0,
 						}, nil
-					},
-
-					SaveMovementsFunc: func(ctx context.Context, movement stock.Movement) (stock.Movement, error) {
-						return movement, nil
 					},
 				},
 			},
@@ -111,8 +115,8 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 				},
 			},
 			opts: opts{
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
+				movements: &movement.ActionsMock{
+					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
 						if filter.ResourceID == 1 {
 							return 300, nil
 						}
@@ -120,15 +124,16 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 						return 20, nil
 					},
 
+					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+						return movement, nil
+					},
+				},
+				stocks: &stock.ActionsMock{
 					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{
 							MaximumQuantity: 5000,
 							MinimumQuantity: 0,
 						}, nil
-					},
-
-					SaveMovementsFunc: func(ctx context.Context, movement stock.Movement) (stock.Movement, error) {
-						return movement, nil
 					},
 				},
 			},
@@ -150,8 +155,8 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			},
 			wantErr: fault.ErrNotFound,
 			opts: opts{
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
+				movements: &movement.ActionsMock{
+					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
 						if filter.ResourceID == 1 {
 							return 300, nil
 						}
@@ -159,6 +164,11 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 						return 20, nil
 					},
 
+					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+						return movement, nil
+					},
+				},
+				stocks: &stock.ActionsMock{
 					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{}, fault.ErrNotFound
 					},
@@ -194,17 +204,18 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 				return arr
 			}(),
 			opts: opts{
-				stocks: &stock.ActionsMock{
-					ComputeStockFunc: func(ctx context.Context, filter stock.Filter) (types.Quantity, error) {
+				movements: &movement.ActionsMock{
+					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
 						return 100, nil
 					},
 
+					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+						return movement, nil
+					},
+				},
+				stocks: &stock.ActionsMock{
 					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{}, nil
-					},
-
-					SaveMovementsFunc: func(ctx context.Context, movement stock.Movement) (stock.Movement, error) {
-						return movement, nil
 					},
 				},
 			},
@@ -215,7 +226,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, gotErr := workflow{stocks: c.opts.stocks}.
+			got, gotErr := workflow{stocks: c.opts.stocks, movements: c.opts.movements}.
 				ReserveResources(context.Background(), c.args.reservationID, c.args.reservations)
 
 			assert.ErrorIs(t, gotErr, c.wantErr)

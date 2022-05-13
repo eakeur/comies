@@ -1,6 +1,7 @@
-package stock
+package movement
 
 import (
+	"gomies/app/sdk/fault"
 	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 	"time"
@@ -17,7 +18,7 @@ type (
 
 func (f Filter) Validate() error {
 	if f.ResourceID.Empty() {
-		return ErrMissingResourceID
+		return fault.ErrMissingUID
 	}
 
 	if f.FinalDate.Before(f.InitialDate) {
