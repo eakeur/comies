@@ -5,7 +5,7 @@ package crew
 
 import (
 	"context"
-	"gomies/app/core/entities/iam/crew"
+	crew2 "gomies/app/core/entities/crew"
 	"gomies/app/sdk/session"
 	"sync"
 )
@@ -23,19 +23,19 @@ var _ Workflow = &WorkflowMock{}
 // 			AuthenticateMemberFunc: func(ctx context.Context, auth AuthRequest) (session.Session, error) {
 // 				panic("mock out the AuthenticateMember method")
 // 			},
-// 			CreateMemberFunc: func(ctx context.Context, op crew.Member) (crew.Member, error) {
+// 			CreateMemberFunc: func(ctx context.Context, op crew2.Member) (crew2.Member, error) {
 // 				panic("mock out the CreateMember method")
 // 			},
-// 			GetMemberFunc: func(ctx context.Context, key crew.Key) (crew.Member, error) {
+// 			GetMemberFunc: func(ctx context.Context, key crew2.Key) (crew2.Member, error) {
 // 				panic("mock out the GetMember method")
 // 			},
-// 			ListMembersFunc: func(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, int, error) {
+// 			ListMembersFunc: func(ctx context.Context, operatorFilter crew2.Filter) ([]crew2.Member, int, error) {
 // 				panic("mock out the ListMembers method")
 // 			},
-// 			RemoveMemberFunc: func(ctx context.Context, key crew.Key) error {
+// 			RemoveMemberFunc: func(ctx context.Context, key crew2.Key) error {
 // 				panic("mock out the RemoveMember method")
 // 			},
-// 			UpdateMemberFunc: func(ctx context.Context, op crew.Member) error {
+// 			UpdateMemberFunc: func(ctx context.Context, op crew2.Member) error {
 // 				panic("mock out the UpdateMember method")
 // 			},
 // 		}
@@ -49,19 +49,19 @@ type WorkflowMock struct {
 	AuthenticateMemberFunc func(ctx context.Context, auth AuthRequest) (session.Session, error)
 
 	// CreateMemberFunc mocks the CreateMember method.
-	CreateMemberFunc func(ctx context.Context, op crew.Member) (crew.Member, error)
+	CreateMemberFunc func(ctx context.Context, op crew2.Member) (crew2.Member, error)
 
 	// GetMemberFunc mocks the GetMember method.
-	GetMemberFunc func(ctx context.Context, key crew.Key) (crew.Member, error)
+	GetMemberFunc func(ctx context.Context, key crew2.Key) (crew2.Member, error)
 
 	// ListMembersFunc mocks the ListMembers method.
-	ListMembersFunc func(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, int, error)
+	ListMembersFunc func(ctx context.Context, operatorFilter crew2.Filter) ([]crew2.Member, int, error)
 
 	// RemoveMemberFunc mocks the RemoveMember method.
-	RemoveMemberFunc func(ctx context.Context, key crew.Key) error
+	RemoveMemberFunc func(ctx context.Context, key crew2.Key) error
 
 	// UpdateMemberFunc mocks the UpdateMember method.
-	UpdateMemberFunc func(ctx context.Context, op crew.Member) error
+	UpdateMemberFunc func(ctx context.Context, op crew2.Member) error
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -77,35 +77,35 @@ type WorkflowMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Op is the op argument value.
-			Op crew.Member
+			Op crew2.Member
 		}
 		// GetMember holds details about calls to the GetMember method.
 		GetMember []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Key is the key argument value.
-			Key crew.Key
+			Key crew2.Key
 		}
 		// ListMembers holds details about calls to the ListMembers method.
 		ListMembers []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// OperatorFilter is the operatorFilter argument value.
-			OperatorFilter crew.Filter
+			OperatorFilter crew2.Filter
 		}
 		// RemoveMember holds details about calls to the RemoveMember method.
 		RemoveMember []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Key is the key argument value.
-			Key crew.Key
+			Key crew2.Key
 		}
 		// UpdateMember holds details about calls to the UpdateMember method.
 		UpdateMember []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Op is the op argument value.
-			Op crew.Member
+			Op crew2.Member
 		}
 	}
 	lockAuthenticateMember sync.RWMutex
@@ -152,13 +152,13 @@ func (mock *WorkflowMock) AuthenticateMemberCalls() []struct {
 }
 
 // CreateMember calls CreateMemberFunc.
-func (mock *WorkflowMock) CreateMember(ctx context.Context, op crew.Member) (crew.Member, error) {
+func (mock *WorkflowMock) CreateMember(ctx context.Context, op crew2.Member) (crew2.Member, error) {
 	if mock.CreateMemberFunc == nil {
 		panic("WorkflowMock.CreateMemberFunc: method is nil but Workflow.CreateMember was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Op  crew.Member
+		Op  crew2.Member
 	}{
 		Ctx: ctx,
 		Op:  op,
@@ -174,11 +174,11 @@ func (mock *WorkflowMock) CreateMember(ctx context.Context, op crew.Member) (cre
 //     len(mockedWorkflow.CreateMemberCalls())
 func (mock *WorkflowMock) CreateMemberCalls() []struct {
 	Ctx context.Context
-	Op  crew.Member
+	Op  crew2.Member
 } {
 	var calls []struct {
 		Ctx context.Context
-		Op  crew.Member
+		Op  crew2.Member
 	}
 	mock.lockCreateMember.RLock()
 	calls = mock.calls.CreateMember
@@ -187,13 +187,13 @@ func (mock *WorkflowMock) CreateMemberCalls() []struct {
 }
 
 // GetMember calls GetMemberFunc.
-func (mock *WorkflowMock) GetMember(ctx context.Context, key crew.Key) (crew.Member, error) {
+func (mock *WorkflowMock) GetMember(ctx context.Context, key crew2.Key) (crew2.Member, error) {
 	if mock.GetMemberFunc == nil {
 		panic("WorkflowMock.GetMemberFunc: method is nil but Workflow.GetMember was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Key crew.Key
+		Key crew2.Key
 	}{
 		Ctx: ctx,
 		Key: key,
@@ -209,11 +209,11 @@ func (mock *WorkflowMock) GetMember(ctx context.Context, key crew.Key) (crew.Mem
 //     len(mockedWorkflow.GetMemberCalls())
 func (mock *WorkflowMock) GetMemberCalls() []struct {
 	Ctx context.Context
-	Key crew.Key
+	Key crew2.Key
 } {
 	var calls []struct {
 		Ctx context.Context
-		Key crew.Key
+		Key crew2.Key
 	}
 	mock.lockGetMember.RLock()
 	calls = mock.calls.GetMember
@@ -222,13 +222,13 @@ func (mock *WorkflowMock) GetMemberCalls() []struct {
 }
 
 // ListMembers calls ListMembersFunc.
-func (mock *WorkflowMock) ListMembers(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, int, error) {
+func (mock *WorkflowMock) ListMembers(ctx context.Context, operatorFilter crew2.Filter) ([]crew2.Member, int, error) {
 	if mock.ListMembersFunc == nil {
 		panic("WorkflowMock.ListMembersFunc: method is nil but Workflow.ListMembers was just called")
 	}
 	callInfo := struct {
 		Ctx            context.Context
-		OperatorFilter crew.Filter
+		OperatorFilter crew2.Filter
 	}{
 		Ctx:            ctx,
 		OperatorFilter: operatorFilter,
@@ -244,11 +244,11 @@ func (mock *WorkflowMock) ListMembers(ctx context.Context, operatorFilter crew.F
 //     len(mockedWorkflow.ListMembersCalls())
 func (mock *WorkflowMock) ListMembersCalls() []struct {
 	Ctx            context.Context
-	OperatorFilter crew.Filter
+	OperatorFilter crew2.Filter
 } {
 	var calls []struct {
 		Ctx            context.Context
-		OperatorFilter crew.Filter
+		OperatorFilter crew2.Filter
 	}
 	mock.lockListMembers.RLock()
 	calls = mock.calls.ListMembers
@@ -257,13 +257,13 @@ func (mock *WorkflowMock) ListMembersCalls() []struct {
 }
 
 // RemoveMember calls RemoveMemberFunc.
-func (mock *WorkflowMock) RemoveMember(ctx context.Context, key crew.Key) error {
+func (mock *WorkflowMock) RemoveMember(ctx context.Context, key crew2.Key) error {
 	if mock.RemoveMemberFunc == nil {
 		panic("WorkflowMock.RemoveMemberFunc: method is nil but Workflow.RemoveMember was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Key crew.Key
+		Key crew2.Key
 	}{
 		Ctx: ctx,
 		Key: key,
@@ -279,11 +279,11 @@ func (mock *WorkflowMock) RemoveMember(ctx context.Context, key crew.Key) error 
 //     len(mockedWorkflow.RemoveMemberCalls())
 func (mock *WorkflowMock) RemoveMemberCalls() []struct {
 	Ctx context.Context
-	Key crew.Key
+	Key crew2.Key
 } {
 	var calls []struct {
 		Ctx context.Context
-		Key crew.Key
+		Key crew2.Key
 	}
 	mock.lockRemoveMember.RLock()
 	calls = mock.calls.RemoveMember
@@ -292,13 +292,13 @@ func (mock *WorkflowMock) RemoveMemberCalls() []struct {
 }
 
 // UpdateMember calls UpdateMemberFunc.
-func (mock *WorkflowMock) UpdateMember(ctx context.Context, op crew.Member) error {
+func (mock *WorkflowMock) UpdateMember(ctx context.Context, op crew2.Member) error {
 	if mock.UpdateMemberFunc == nil {
 		panic("WorkflowMock.UpdateMemberFunc: method is nil but Workflow.UpdateMember was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Op  crew.Member
+		Op  crew2.Member
 	}{
 		Ctx: ctx,
 		Op:  op,
@@ -314,11 +314,11 @@ func (mock *WorkflowMock) UpdateMember(ctx context.Context, op crew.Member) erro
 //     len(mockedWorkflow.UpdateMemberCalls())
 func (mock *WorkflowMock) UpdateMemberCalls() []struct {
 	Ctx context.Context
-	Op  crew.Member
+	Op  crew2.Member
 } {
 	var calls []struct {
 		Ctx context.Context
-		Op  crew.Member
+		Op  crew2.Member
 	}
 	mock.lockUpdateMember.RLock()
 	calls = mock.calls.UpdateMember

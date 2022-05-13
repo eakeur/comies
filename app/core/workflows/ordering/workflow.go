@@ -3,7 +3,6 @@ package ordering
 import (
 	"context"
 	"gomies/app/core/entities/order"
-	"gomies/app/sdk/fault"
 	"gomies/app/sdk/types"
 )
 
@@ -34,51 +33,6 @@ type (
 		orders   order.Actions
 	}
 )
-
-func (w workflow) RequestOrderTicket(ctx context.Context, customerID types.ID) (types.ID, error) {
-	const operation = "Workflow.Ordering.RequestOrderTicket"
-
-	if customerID.Empty() {
-		return 0, fault.Wrap(fault.ErrMissingUID, operation)
-	}
-
-	o, err := w.orders.CreateOrder(ctx, order.Order{
-		CustomerID: customerID,
-		Status:     order.InTheCartStatus,
-	})
-	if err != nil {
-		return 0, fault.Wrap(err, operation)
-	}
-
-	return o.ID, nil
-}
-
-func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionResult, error) {
-	const operation = "Workflow.Ordering.AddToOrder"
-
-	if i.OrderID.Empty() {
-		return ItemAdditionResult{}, fault.Wrap(fault.ErrMissingUID, operation)
-	}
-
-	i, err := w.orders.CreateItem(ctx, i)
-	if err != nil {
-		return ItemAdditionResult{}, fault.Wrap(err, operation)
-	}
-
-	errChan := make(chan error, len(i.Products))
-	results := make(chan error, len(i.Products))
-
-	for _, product := range i.Products {
-		product := product
-	}
-
-	return o.ID, nil
-}
-
-func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
-	//TODO implement me
-	panic("implement me")
-}
 
 func (w workflow) UpdateOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error {
 	//TODO implement me

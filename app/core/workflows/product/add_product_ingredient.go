@@ -2,7 +2,7 @@ package product
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/ingredient"
+	"gomies/app/core/entities/ingredient"
 	"gomies/app/sdk/fault"
 )
 

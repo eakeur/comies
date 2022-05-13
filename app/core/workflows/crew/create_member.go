@@ -2,7 +2,7 @@ package crew
 
 import (
 	"context"
-	"gomies/app/core/entities/iam/crew"
+	"gomies/app/core/entities/crew"
 	"gomies/app/sdk/fault"
 )
 

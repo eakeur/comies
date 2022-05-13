@@ -11,7 +11,7 @@ type (
 		ProductID types.ID
 		Quantity  types.Quantity
 		Ignore    []types.ID
-		Replace   map[types.ID]types.ID
+		Replace   []order.ContentSubstitution
 		Failures  []ItemFailed
 	}
 
@@ -23,8 +23,9 @@ type (
 	}
 
 	ItemAdditionResult struct {
-		Item        order.Item
-		Reservation []Reservation
+		Item      order.Item
+		Succeeded []Reservation
+		Failed    []Reservation
 	}
 
 	OrderConfirmation struct {

@@ -5,7 +5,7 @@ package category
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/category"
+	category2 "gomies/app/core/entities/category"
 	"sync"
 )
 
@@ -19,19 +19,19 @@ var _ Workflow = &WorkflowMock{}
 //
 // 		// make and configure a mocked Workflow
 // 		mockedWorkflow := &WorkflowMock{
-// 			CreateCategoryFunc: func(ctx context.Context, cat category.Category) (category.Category, error) {
+// 			CreateCategoryFunc: func(ctx context.Context, cat category2.Category) (category2.Category, error) {
 // 				panic("mock out the CreateCategory method")
 // 			},
-// 			GetCategoryFunc: func(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+// 			GetCategoryFunc: func(ctx context.Context, categoryKey category2.Key) (category2.Category, error) {
 // 				panic("mock out the GetCategory method")
 // 			},
-// 			ListCategoriesFunc: func(ctx context.Context, categoryFilter category.Filter) ([]category.Category, int, error) {
+// 			ListCategoriesFunc: func(ctx context.Context, categoryFilter category2.Filter) ([]category2.Category, int, error) {
 // 				panic("mock out the ListCategories method")
 // 			},
-// 			RemoveCategoryFunc: func(ctx context.Context, categoryID category.Key) error {
+// 			RemoveCategoryFunc: func(ctx context.Context, categoryID category2.Key) error {
 // 				panic("mock out the RemoveCategory method")
 // 			},
-// 			UpdateCategoryFunc: func(ctx context.Context, cat category.Category) error {
+// 			UpdateCategoryFunc: func(ctx context.Context, cat category2.Category) error {
 // 				panic("mock out the UpdateCategory method")
 // 			},
 // 		}
@@ -42,19 +42,19 @@ var _ Workflow = &WorkflowMock{}
 // 	}
 type WorkflowMock struct {
 	// CreateCategoryFunc mocks the CreateCategory method.
-	CreateCategoryFunc func(ctx context.Context, cat category.Category) (category.Category, error)
+	CreateCategoryFunc func(ctx context.Context, cat category2.Category) (category2.Category, error)
 
 	// GetCategoryFunc mocks the GetCategory method.
-	GetCategoryFunc func(ctx context.Context, categoryKey category.Key) (category.Category, error)
+	GetCategoryFunc func(ctx context.Context, categoryKey category2.Key) (category2.Category, error)
 
 	// ListCategoriesFunc mocks the ListCategories method.
-	ListCategoriesFunc func(ctx context.Context, categoryFilter category.Filter) ([]category.Category, int, error)
+	ListCategoriesFunc func(ctx context.Context, categoryFilter category2.Filter) ([]category2.Category, int, error)
 
 	// RemoveCategoryFunc mocks the RemoveCategory method.
-	RemoveCategoryFunc func(ctx context.Context, categoryID category.Key) error
+	RemoveCategoryFunc func(ctx context.Context, categoryID category2.Key) error
 
 	// UpdateCategoryFunc mocks the UpdateCategory method.
-	UpdateCategoryFunc func(ctx context.Context, cat category.Category) error
+	UpdateCategoryFunc func(ctx context.Context, cat category2.Category) error
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -63,35 +63,35 @@ type WorkflowMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Cat is the cat argument value.
-			Cat category.Category
+			Cat category2.Category
 		}
 		// GetCategory holds details about calls to the GetCategory method.
 		GetCategory []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// CategoryKey is the categoryKey argument value.
-			CategoryKey category.Key
+			CategoryKey category2.Key
 		}
 		// ListCategories holds details about calls to the ListCategories method.
 		ListCategories []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// CategoryFilter is the categoryFilter argument value.
-			CategoryFilter category.Filter
+			CategoryFilter category2.Filter
 		}
 		// RemoveCategory holds details about calls to the RemoveCategory method.
 		RemoveCategory []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// CategoryID is the categoryID argument value.
-			CategoryID category.Key
+			CategoryID category2.Key
 		}
 		// UpdateCategory holds details about calls to the UpdateCategory method.
 		UpdateCategory []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Cat is the cat argument value.
-			Cat category.Category
+			Cat category2.Category
 		}
 	}
 	lockCreateCategory sync.RWMutex
@@ -102,13 +102,13 @@ type WorkflowMock struct {
 }
 
 // CreateCategory calls CreateCategoryFunc.
-func (mock *WorkflowMock) CreateCategory(ctx context.Context, cat category.Category) (category.Category, error) {
+func (mock *WorkflowMock) CreateCategory(ctx context.Context, cat category2.Category) (category2.Category, error) {
 	if mock.CreateCategoryFunc == nil {
 		panic("WorkflowMock.CreateCategoryFunc: method is nil but Workflow.CreateCategory was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Cat category.Category
+		Cat category2.Category
 	}{
 		Ctx: ctx,
 		Cat: cat,
@@ -124,11 +124,11 @@ func (mock *WorkflowMock) CreateCategory(ctx context.Context, cat category.Categ
 //     len(mockedWorkflow.CreateCategoryCalls())
 func (mock *WorkflowMock) CreateCategoryCalls() []struct {
 	Ctx context.Context
-	Cat category.Category
+	Cat category2.Category
 } {
 	var calls []struct {
 		Ctx context.Context
-		Cat category.Category
+		Cat category2.Category
 	}
 	mock.lockCreateCategory.RLock()
 	calls = mock.calls.CreateCategory
@@ -137,13 +137,13 @@ func (mock *WorkflowMock) CreateCategoryCalls() []struct {
 }
 
 // GetCategory calls GetCategoryFunc.
-func (mock *WorkflowMock) GetCategory(ctx context.Context, categoryKey category.Key) (category.Category, error) {
+func (mock *WorkflowMock) GetCategory(ctx context.Context, categoryKey category2.Key) (category2.Category, error) {
 	if mock.GetCategoryFunc == nil {
 		panic("WorkflowMock.GetCategoryFunc: method is nil but Workflow.GetCategory was just called")
 	}
 	callInfo := struct {
 		Ctx         context.Context
-		CategoryKey category.Key
+		CategoryKey category2.Key
 	}{
 		Ctx:         ctx,
 		CategoryKey: categoryKey,
@@ -159,11 +159,11 @@ func (mock *WorkflowMock) GetCategory(ctx context.Context, categoryKey category.
 //     len(mockedWorkflow.GetCategoryCalls())
 func (mock *WorkflowMock) GetCategoryCalls() []struct {
 	Ctx         context.Context
-	CategoryKey category.Key
+	CategoryKey category2.Key
 } {
 	var calls []struct {
 		Ctx         context.Context
-		CategoryKey category.Key
+		CategoryKey category2.Key
 	}
 	mock.lockGetCategory.RLock()
 	calls = mock.calls.GetCategory
@@ -172,13 +172,13 @@ func (mock *WorkflowMock) GetCategoryCalls() []struct {
 }
 
 // ListCategories calls ListCategoriesFunc.
-func (mock *WorkflowMock) ListCategories(ctx context.Context, categoryFilter category.Filter) ([]category.Category, int, error) {
+func (mock *WorkflowMock) ListCategories(ctx context.Context, categoryFilter category2.Filter) ([]category2.Category, int, error) {
 	if mock.ListCategoriesFunc == nil {
 		panic("WorkflowMock.ListCategoriesFunc: method is nil but Workflow.ListCategories was just called")
 	}
 	callInfo := struct {
 		Ctx            context.Context
-		CategoryFilter category.Filter
+		CategoryFilter category2.Filter
 	}{
 		Ctx:            ctx,
 		CategoryFilter: categoryFilter,
@@ -194,11 +194,11 @@ func (mock *WorkflowMock) ListCategories(ctx context.Context, categoryFilter cat
 //     len(mockedWorkflow.ListCategoriesCalls())
 func (mock *WorkflowMock) ListCategoriesCalls() []struct {
 	Ctx            context.Context
-	CategoryFilter category.Filter
+	CategoryFilter category2.Filter
 } {
 	var calls []struct {
 		Ctx            context.Context
-		CategoryFilter category.Filter
+		CategoryFilter category2.Filter
 	}
 	mock.lockListCategories.RLock()
 	calls = mock.calls.ListCategories
@@ -207,13 +207,13 @@ func (mock *WorkflowMock) ListCategoriesCalls() []struct {
 }
 
 // RemoveCategory calls RemoveCategoryFunc.
-func (mock *WorkflowMock) RemoveCategory(ctx context.Context, categoryID category.Key) error {
+func (mock *WorkflowMock) RemoveCategory(ctx context.Context, categoryID category2.Key) error {
 	if mock.RemoveCategoryFunc == nil {
 		panic("WorkflowMock.RemoveCategoryFunc: method is nil but Workflow.RemoveCategory was just called")
 	}
 	callInfo := struct {
 		Ctx        context.Context
-		CategoryID category.Key
+		CategoryID category2.Key
 	}{
 		Ctx:        ctx,
 		CategoryID: categoryID,
@@ -229,11 +229,11 @@ func (mock *WorkflowMock) RemoveCategory(ctx context.Context, categoryID categor
 //     len(mockedWorkflow.RemoveCategoryCalls())
 func (mock *WorkflowMock) RemoveCategoryCalls() []struct {
 	Ctx        context.Context
-	CategoryID category.Key
+	CategoryID category2.Key
 } {
 	var calls []struct {
 		Ctx        context.Context
-		CategoryID category.Key
+		CategoryID category2.Key
 	}
 	mock.lockRemoveCategory.RLock()
 	calls = mock.calls.RemoveCategory
@@ -242,13 +242,13 @@ func (mock *WorkflowMock) RemoveCategoryCalls() []struct {
 }
 
 // UpdateCategory calls UpdateCategoryFunc.
-func (mock *WorkflowMock) UpdateCategory(ctx context.Context, cat category.Category) error {
+func (mock *WorkflowMock) UpdateCategory(ctx context.Context, cat category2.Category) error {
 	if mock.UpdateCategoryFunc == nil {
 		panic("WorkflowMock.UpdateCategoryFunc: method is nil but Workflow.UpdateCategory was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Cat category.Category
+		Cat category2.Category
 	}{
 		Ctx: ctx,
 		Cat: cat,
@@ -264,11 +264,11 @@ func (mock *WorkflowMock) UpdateCategory(ctx context.Context, cat category.Categ
 //     len(mockedWorkflow.UpdateCategoryCalls())
 func (mock *WorkflowMock) UpdateCategoryCalls() []struct {
 	Ctx context.Context
-	Cat category.Category
+	Cat category2.Category
 } {
 	var calls []struct {
 		Ctx context.Context
-		Cat category.Category
+		Cat category2.Category
 	}
 	mock.lockUpdateCategory.RLock()
 	calls = mock.calls.UpdateCategory

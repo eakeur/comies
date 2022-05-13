@@ -7,25 +7,25 @@ import (
 )
 
 const (
-	InTheCartStatus       Status = iota
-	PendingStatus         Status = iota
-	PreparingStatus       Status = iota
-	WaitingTakeoutStatus  Status = iota
-	WaitingDeliveryStatus Status = iota
-	DeliveringStatus      Status = iota
-	FinishedStatus        Status = iota
-	CanceledStatus        Status = iota
+	InTheCartStatus       Status = 0
+	PendingStatus         Status = 10
+	PreparingStatus       Status = 20
+	WaitingTakeoutStatus  Status = 30
+	WaitingDeliveryStatus Status = 40
+	DeliveringStatus      Status = 50
+	FinishedStatus        Status = 60
+	CanceledStatus        Status = 70
 )
 
 const (
-	PreparingItemStatus Status = iota
-	DoneItemStatus      Status = iota
-	FailedItemStatus    Status = iota
+	PreparingItemStatus Status = 0
+	DoneItemStatus      Status = 10
+	FailedItemStatus    Status = 20
 )
 
 const (
-	DeliveryDeliveryMode DeliveryMode = iota
-	TakeoutDeliveryMode  DeliveryMode = iota
+	DeliveryDeliveryMode DeliveryMode = 0
+	TakeoutDeliveryMode  DeliveryMode = 10
 )
 
 type (

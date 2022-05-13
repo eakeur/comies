@@ -2,7 +2,7 @@ package category
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/category"
+	"gomies/app/core/entities/category"
 	"gomies/app/sdk/fault"
 )
 

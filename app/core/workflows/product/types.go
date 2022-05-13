@@ -1,8 +1,8 @@
 package product
 
 import (
-	"gomies/app/core/entities/catalog/ingredient"
-	"gomies/app/core/entities/catalog/product"
+	"gomies/app/core/entities/ingredient"
+	"gomies/app/core/entities/product"
 	"gomies/app/sdk/types"
 )
 
@@ -27,7 +27,6 @@ type (
 		Ignore    ingredient.IgnoredList
 		Replace   ingredient.ReplacedList
 		Failures  []ItemFailed
-		composite bool
 	}
 
 	ItemFailed struct {

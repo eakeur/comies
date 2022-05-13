@@ -2,8 +2,8 @@ package crew
 
 import (
 	"context"
-	"gomies/app/core/entities/iam/crew"
-	"gomies/app/core/entities/iam/store"
+	crew2 "gomies/app/core/entities/crew"
+	"gomies/app/core/entities/store"
 	"gomies/app/sdk/session"
 )
 
@@ -11,11 +11,11 @@ import (
 
 type (
 	Workflow interface {
-		CreateMember(ctx context.Context, op crew.Member) (crew.Member, error)
-		ListMembers(ctx context.Context, operatorFilter crew.Filter) ([]crew.Member, int, error)
-		GetMember(ctx context.Context, key crew.Key) (crew.Member, error)
-		RemoveMember(ctx context.Context, key crew.Key) error
-		UpdateMember(ctx context.Context, op crew.Member) error
+		CreateMember(ctx context.Context, op crew2.Member) (crew2.Member, error)
+		ListMembers(ctx context.Context, operatorFilter crew2.Filter) ([]crew2.Member, int, error)
+		GetMember(ctx context.Context, key crew2.Key) (crew2.Member, error)
+		RemoveMember(ctx context.Context, key crew2.Key) error
+		UpdateMember(ctx context.Context, op crew2.Member) error
 		AuthenticateMember(ctx context.Context, auth AuthRequest) (session.Session, error)
 	}
 
@@ -27,7 +27,7 @@ type (
 
 	workflow struct {
 		stores   store.Actions
-		crew     crew.Actions
+		crew     crew2.Actions
 		sessions session.Manager
 	}
 )
@@ -36,7 +36,7 @@ var _ Workflow = workflow{}
 
 func NewWorkflow(
 	stores store.Actions,
-	crew crew.Actions,
+	crew crew2.Actions,
 	sessions session.Manager,
 ) Workflow {
 	return workflow{

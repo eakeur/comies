@@ -2,16 +2,16 @@ package product
 
 import (
 	"context"
-	"gomies/app/core/entities/catalog/product"
+	product2 "gomies/app/core/entities/product"
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) ListProducts(ctx context.Context, filter product.Filter) ([]product.Product, int, error) {
+func (w workflow) ListProducts(ctx context.Context, filter product2.Filter) ([]product2.Product, int, error) {
 	const operation = "Workflows.Product.ListProducts"
 
 	list, count, err := w.products.ListProducts(ctx, filter)
 	if err != nil {
-		return []product.Product{}, 0, fault.Wrap(err, operation)
+		return []product2.Product{}, 0, fault.Wrap(err, operation)
 	}
 	return list, count, err
 }

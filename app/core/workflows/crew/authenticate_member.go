@@ -2,8 +2,8 @@ package crew
 
 import (
 	"context"
-	"gomies/app/core/entities/iam/crew"
-	"gomies/app/core/entities/iam/store"
+	"gomies/app/core/entities/crew"
+	"gomies/app/core/entities/store"
 	"gomies/app/sdk/fault"
 	"gomies/app/sdk/session"
 	"strings"

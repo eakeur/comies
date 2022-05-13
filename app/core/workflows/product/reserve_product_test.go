@@ -2,11 +2,12 @@ package product
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
-	"gomies/app/core/entities/catalog/ingredient"
-	"gomies/app/core/entities/catalog/product"
+	"gomies/app/core/entities/ingredient"
+	"gomies/app/core/entities/product"
 	"gomies/app/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWorkflow_ReserveProduct(t *testing.T) {
