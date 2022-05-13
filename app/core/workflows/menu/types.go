@@ -1,4 +1,4 @@
-package product
+package menu
 
 import (
 	"gomies/app/core/entities/ingredient"
