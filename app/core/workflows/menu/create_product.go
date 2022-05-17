@@ -7,10 +7,9 @@ import (
 )
 
 func (w workflow) CreateProduct(ctx context.Context, prd product.Product) (product.Product, error) {
-	const operation = "Workflows.Product.CreateProduct"
 
 	if err := prd.Validate(); err != nil {
-		return product.Product{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return product.Product{}, fault.Wrap(err).Params(map[string]interface{}{
 			"minimum_quantity": prd.MinimumSale,
 			"cost_price":       prd.CostPrice,
 			"code":             prd.Code,
@@ -21,7 +20,7 @@ func (w workflow) CreateProduct(ctx context.Context, prd product.Product) (produ
 
 	prd, err := w.products.CreateProduct(ctx, prd)
 	if err != nil {
-		return product.Product{}, fault.Wrap(err, operation)
+		return product.Product{}, fault.Wrap(err)
 	}
 
 	return prd, nil

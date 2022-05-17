@@ -7,11 +7,10 @@ import (
 )
 
 func (w workflow) GetProduct(ctx context.Context, ext product2.Key) (product2.Product, error) {
-	const operation = "Workflows.Product.GetCategory"
 
 	prod, err := w.products.GetProducts(ctx, ext)
 	if err != nil {
-		return product2.Product{}, fault.Wrap(err, operation)
+		return product2.Product{}, fault.Wrap(err)
 	}
 	return prod, nil
 }

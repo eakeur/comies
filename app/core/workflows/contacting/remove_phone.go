@@ -2,21 +2,19 @@ package contacting
 
 import (
 	"context"
-	"gomies/app/core/entities/contacting"
 	"gomies/app/sdk/fault"
 	"gomies/app/sdk/types"
 )
 
-func (w workflow) RemovePhone(ctx context.Context, targetID types.ID, id types.ID) error {
-	const operation = "Workflows.Contacting.RemovePhones"
+func (w workflow) RemovePhone(ctx context.Context, id types.ID) error {
 
-	if targetID.Empty() {
-		return fault.Wrap(contacting.ErrMissingResourceID, operation)
+	if id.Empty() {
+		return fault.Wrap(fault.ErrMissingID)
 	}
 
-	err := w.contacts.RemovePhones(ctx, targetID, id)
+	err := w.phones.Remove(ctx, id)
 	if err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	return nil

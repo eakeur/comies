@@ -8,15 +8,14 @@ import (
 )
 
 func (w workflow) GetCustomer(ctx context.Context, id types.ID) (customer.Customer, error) {
-	const operation = "Workflows.Customer.GetCustomer"
 
 	if id.Empty() {
-		return customer.Customer{}, fault.Wrap(fault.ErrMissingUID, operation)
+		return customer.Customer{}, fault.Wrap(fault.ErrMissingID)
 	}
 
 	c, err := w.customers.GetCustomer(ctx, id)
 	if err != nil {
-		return customer.Customer{}, fault.Wrap(err, operation)
+		return customer.Customer{}, fault.Wrap(err)
 	}
 
 	return c, nil

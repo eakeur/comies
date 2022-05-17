@@ -1,67 +1,48 @@
 package fault
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
+	"runtime"
+	"strings"
 )
 
 var (
-	ErrNotFound            = errors.New("this resource could not be found or does not exist")
-	ErrAlreadyExists       = errors.New("this resource could not be created because it already exists")
-	ErrResourceHasChildren = errors.New("this resource could not be deleted because it has children")
-	ErrMissingUID          = errors.New("this resource could not be found because the id provided is not valid")
+	ErrNotFound  = New("this resource could not be found or does not exist")
+	ErrMissingID = New("this resource's id was not provided or is invalid")
 )
 
-type AdditionalData map[string]interface{}
-
-type Error struct {
-	Operation  string
-	Err        error
-	Parameters AdditionalData
-	ParentErr  *Error
-}
-
-func (e Error) Error() string {
-
-	var parameters string
-	if e.Parameters != nil {
-
-		res, err := json.Marshal(e.Parameters)
-		if err == nil {
-			parameters = string(res)
-			parameters = parameters[1 : len(parameters)-1]
-		}
-
-		return fmt.Sprintf("%s with %s -> %s", e.Operation, parameters, e.Err.Error())
+func New(title string) Error {
+	return &fault{
+		child: errors.New(title),
 	}
-
-	return fmt.Sprintf("%s -> %s", e.Operation, e.Err.Error())
 }
 
-func (e Error) Unwrap() error {
-	return e.Err
+func Wrap(err error) Error {
+	return wrap(err, 2)
 }
 
-func Wrap(err error, operation string, parameters ...AdditionalData) *Error {
-	if err == nil {
+func wrap(actualError error, stackToIgnore int) Error {
+	if actualError == nil {
 		return nil
 	}
 
-	var prm AdditionalData
-	if len(parameters) > 0 {
-		prm = parameters[0]
+	ft := fault{
+		child: actualError,
 	}
 
-	domainError := Error{
-		Parameters: prm,
-		Operation:  operation,
-		Err:        err,
+	pc, file, line, ok := runtime.Caller(stackToIgnore)
+	if ok {
+		funcPointer := runtime.FuncForPC(pc)
+		ft.line = line
+		ft.file = file
+		if funcPointer != nil {
+			ft.operation = strings.ReplaceAll(funcPointer.Name(), "/", ".")
+		}
 	}
 
-	if typedError, ok := err.(*Error); ok {
-		typedError.ParentErr = &domainError
+	if faultActualError, ok := actualError.(*fault); ok {
+		faultActualError.inner = &ft
 	}
 
-	return &domainError
+	return &ft
 }

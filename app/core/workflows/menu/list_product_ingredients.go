@@ -8,15 +8,14 @@ import (
 )
 
 func (w workflow) ListProductIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
-	const operation = "Workflows.Product.AddProductIngredient"
 
 	if productID.Empty() {
-		return []ingredient.Ingredient{}, fault.Wrap(fault.ErrMissingUID, operation)
+		return []ingredient.Ingredient{}, fault.Wrap(fault.ErrMissingID)
 	}
 
 	list, err := w.ingredients.ListIngredients(ctx, productID)
 	if err != nil {
-		return []ingredient.Ingredient{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return []ingredient.Ingredient{}, fault.Wrap(err).Params(map[string]interface{}{
 			"product_id": productID.String(),
 		})
 	}

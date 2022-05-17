@@ -7,15 +7,14 @@ import (
 )
 
 func (w workflow) ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, int, error) {
-	const operation = "Workflows.Stock.ListMovements"
 
 	if err := filter.Validate(); err != nil {
-		return []movement.Movement{}, 0, fault.Wrap(err, operation)
+		return []movement.Movement{}, 0, fault.Wrap(err)
 	}
 
 	movements, count, err := w.movements.List(ctx, filter)
 	if err != nil {
-		return []movement.Movement{}, 0, fault.Wrap(err, operation)
+		return []movement.Movement{}, 0, fault.Wrap(err)
 	}
 
 	return movements, count, nil

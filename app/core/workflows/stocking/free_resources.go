@@ -7,11 +7,10 @@ import (
 )
 
 func (w workflow) FreeResources(ctx context.Context, reservationID types.ID) error {
-	const operation = "Workflows.Stock.FreeResources"
 
 	err := w.movements.RemoveReserved(ctx, reservationID)
 	if err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	return nil

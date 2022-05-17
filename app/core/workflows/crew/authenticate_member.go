@@ -10,7 +10,6 @@ import (
 )
 
 func (w workflow) AuthenticateMember(ctx context.Context, auth AuthRequest) (session.Session, error) {
-	const operation = "Workflows.Crew.AuthenticateMember"
 
 	operatorNick, storeNick := split(auth.Nickname)
 	if operatorNick == "" || storeNick == "" {
@@ -19,7 +18,7 @@ func (w workflow) AuthenticateMember(ctx context.Context, auth AuthRequest) (ses
 
 	op, err := w.crew.GetMemberWithNicknames(ctx, operatorNick, storeNick)
 	if err != nil {
-		return session.Session{}, fault.Wrap(err, operation)
+		return session.Session{}, fault.Wrap(err)
 	}
 
 	if err := op.Password.Compare(auth.Password); err != nil {
@@ -28,7 +27,7 @@ func (w workflow) AuthenticateMember(ctx context.Context, auth AuthRequest) (ses
 
 	pref, err := w.stores.ListPreferences(ctx, store.Key{ID: op.Store.StoreID})
 	if err != nil {
-		return session.Session{}, fault.Wrap(err, operation)
+		return session.Session{}, fault.Wrap(err)
 	}
 
 	_, ses, err := w.sessions.Create(ctx, session.Session{
@@ -39,7 +38,7 @@ func (w workflow) AuthenticateMember(ctx context.Context, auth AuthRequest) (ses
 		Preferences:  pref,
 	})
 	if err != nil {
-		return session.Session{}, fault.Wrap(err, operation)
+		return session.Session{}, fault.Wrap(err)
 	}
 
 	return ses, nil

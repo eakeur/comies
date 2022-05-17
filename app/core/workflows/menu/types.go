@@ -2,13 +2,10 @@ package menu
 
 import (
 	"gomies/app/core/entities/ingredient"
-	"gomies/app/core/entities/product"
 	"gomies/app/sdk/types"
 )
 
 type (
-	IngredientList []product.Ingredient
-
 	IngredientInput struct {
 		Quantity     types.Quantity
 		IngredientID types.ID

@@ -7,7 +7,6 @@ import (
 )
 
 func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservation, error) {
-	const operation = "Workflows.Product.ReserveProduct"
 
 	var (
 		failures []ItemFailed
@@ -16,7 +15,7 @@ func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservatio
 
 	ingredients, err := w.ingredients.ListIngredients(ctx, r.ProductID)
 	if err != nil {
-		return Reservation{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return Reservation{}, fault.Wrap(err).Params(map[string]interface{}{
 			"product_id": r.ProductID,
 		})
 	}
@@ -39,7 +38,7 @@ func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservatio
 	}
 
 	if err != nil {
-		return Reservation{}, fault.Wrap(err, operation)
+		return Reservation{}, fault.Wrap(err)
 	}
 
 	r.Failures = failures

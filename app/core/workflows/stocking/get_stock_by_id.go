@@ -8,11 +8,10 @@ import (
 )
 
 func (w workflow) GetStockByID(ctx context.Context, id types.ID) (stock.Stock, error) {
-	const operation = "Workflows.Stock.GetStockByID"
 
 	s, err := w.stocks.GetStockByID(ctx, id)
 	if err != nil {
-		return stock.Stock{}, fault.Wrap(err, operation)
+		return stock.Stock{}, fault.Wrap(err)
 	}
 
 	return s, nil

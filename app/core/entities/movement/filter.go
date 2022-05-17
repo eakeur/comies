@@ -18,7 +18,7 @@ type (
 
 func (f Filter) Validate() error {
 	if f.ResourceID.Empty() {
-		return fault.ErrMissingUID
+		return fault.ErrMissingID
 	}
 
 	if f.FinalDate.Before(f.InitialDate) {

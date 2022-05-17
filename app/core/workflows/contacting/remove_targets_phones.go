@@ -6,13 +6,13 @@ import (
 	"gomies/app/sdk/types"
 )
 
-func (w workflow) RemoveAddress(ctx context.Context, id types.ID) error {
+func (w workflow) RemoveTargetsPhones(ctx context.Context, targetID types.ID) error {
 
-	if id.Empty() {
+	if targetID.Empty() {
 		return fault.Wrap(fault.ErrMissingID)
 	}
 
-	err := w.addresses.Remove(ctx, id)
+	err := w.phones.RemoveAllByTarget(ctx, targetID)
 	if err != nil {
 		return fault.Wrap(err)
 	}

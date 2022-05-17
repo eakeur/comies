@@ -8,10 +8,9 @@ import (
 )
 
 func (w workflow) RequestOrderTicket(ctx context.Context, customerID types.ID) (types.ID, error) {
-	const operation = "Workflow.Ordering.RequestOrderTicket"
 
 	if customerID.Empty() {
-		return 0, fault.Wrap(fault.ErrMissingUID, operation)
+		return 0, fault.Wrap(fault.ErrMissingID)
 	}
 
 	o, err := w.orders.CreateOrder(ctx, order.Order{
@@ -19,7 +18,7 @@ func (w workflow) RequestOrderTicket(ctx context.Context, customerID types.ID) (
 		Status:     order.InTheCartStatus,
 	})
 	if err != nil {
-		return 0, fault.Wrap(err, operation)
+		return 0, fault.Wrap(err)
 	}
 
 	return o.ID, nil

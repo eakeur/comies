@@ -14,7 +14,7 @@ var (
 	ErrInvalidPassword = errors.New("the password must have minimum eight and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
 	ErrWrongPassword   = errors.New("the password provided is different from the stored one")
 	passwordTests      = []*regexp.Regexp{
-		regexp.MustCompile("[0-9]"),
+		regexp.MustCompile("\\d"),
 		regexp.MustCompile("[a-z]"),
 		regexp.MustCompile("[A-Z]"),
 		regexp.MustCompile("[@#$%^&+=*]"),

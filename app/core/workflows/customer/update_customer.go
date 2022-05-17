@@ -7,15 +7,14 @@ import (
 )
 
 func (w workflow) UpdateCustomer(ctx context.Context, op customer.Customer) error {
-	const operation = "Workflows.Customers.UpdateCustomer"
 
 	if err := op.Validate(); err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	err := w.customers.UpdateCustomer(ctx, op)
 	if err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	return nil

@@ -7,11 +7,10 @@ import (
 )
 
 func (w workflow) RemoveCategory(ctx context.Context, ext category.Key) error {
-	const operation = "Workflows.Category.RemoveCategory"
 
 	err := w.categories.RemoveCategory(ctx, ext)
 	if err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	return nil

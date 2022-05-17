@@ -2,22 +2,21 @@ package contacting
 
 import (
 	"context"
-	"gomies/app/core/entities/contacting"
+	"gomies/app/core/entities/phone"
 	"gomies/app/sdk/fault"
 	"gomies/app/sdk/types"
 )
 
-func (w workflow) GetPhone(ctx context.Context, targetID types.ID, id types.ID) (contacting.Phone, error) {
-	const operation = "Workflows.Contacting.GetPhone"
+func (w workflow) GetPhoneByID(ctx context.Context, phoneID types.ID) (phone.Phone, error) {
 
-	if targetID.Empty() || id.Empty() {
-		return contacting.Phone{}, fault.Wrap(contacting.ErrMissingResourceID, operation)
+	if phoneID.Empty() {
+		return phone.Phone{}, fault.Wrap(fault.ErrMissingID)
 	}
 
-	phone, err := w.contacts.GetPhone(ctx, targetID, id)
+	p, err := w.phones.GetByID(ctx, phoneID)
 	if err != nil {
-		return contacting.Phone{}, fault.Wrap(err, operation)
+		return phone.Phone{}, fault.Wrap(err)
 	}
 
-	return phone, nil
+	return p, nil
 }

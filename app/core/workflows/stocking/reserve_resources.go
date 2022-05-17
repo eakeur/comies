@@ -11,7 +11,6 @@ import (
 )
 
 func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, reservations []Reservation) ([]ReservationResult, error) {
-	const operation = "Workflows.Stock.ReserveResources"
 
 	reservationsNumber := len(reservations)
 	responses := make([]ReservationResult, reservationsNumber)
@@ -24,12 +23,11 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 		wg.Add(1)
 
 		go func() {
-			const operation = "Workflows.Stock.ReserveResources.ReservationRoutine"
 
 			defer wg.Done()
 			res, err := w.checkResource(ctx, reservationID, reservation)
 			if err != nil {
-				errChan <- fault.Wrap(err, operation, fault.AdditionalData{
+				errChan <- fault.Wrap(err).Params(map[string]interface{}{
 					"reservation_id": reservationID.String(),
 					"resource_id":    reservation.ResourceID.String(),
 				})
@@ -40,7 +38,7 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 	wg.Wait()
 
 	if len(errChan) > 0 {
-		return nil, fault.Wrap(<-errChan, operation)
+		return nil, fault.Wrap(<-errChan)
 	}
 
 	return responses, nil
@@ -48,7 +46,6 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 }
 
 func (w workflow) checkResource(ctx context.Context, reservationID types.ID, reservation Reservation) (ReservationResult, error) {
-	const operation = "Workflows.Stock.checkResource"
 
 	mv := movement.Movement{
 		ResourceID: reservation.ResourceID,
@@ -65,17 +62,17 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 
 	actual, err := w.movements.GetBalance(ctx, movement.Filter{ResourceID: reservation.ResourceID})
 	if err != nil {
-		return ReservationResult{}, fault.Wrap(err, operation)
+		return ReservationResult{}, fault.Wrap(err)
 	}
 	res.Got = actual
 
 	stk, err := w.stocks.GetStockByID(ctx, reservation.ResourceID)
 	if err != nil {
-		return ReservationResult{}, fault.Wrap(err, operation)
+		return ReservationResult{}, fault.Wrap(err)
 	}
 
 	if err := mv.Validate(); err != nil {
-		return ReservationResult{}, fault.Wrap(err, operation)
+		return ReservationResult{}, fault.Wrap(err)
 	}
 
 	actual += mv.Value()
@@ -87,7 +84,7 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 
 	_, err = w.movements.Save(ctx, mv)
 	if err != nil {
-		return ReservationResult{}, fault.Wrap(err, operation)
+		return ReservationResult{}, fault.Wrap(err)
 	}
 
 	return res, nil

@@ -7,18 +7,17 @@ import (
 )
 
 func (w workflow) UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error {
-	const operation = "Workflows.Product.UpdateReservation"
 
 	if consume {
 		err := w.stocks.ConsumeResources(ctx, reservationID)
 		if err != nil {
-			return fault.Wrap(err, operation)
+			return fault.Wrap(err)
 		}
 	}
 
 	err := w.stocks.FreeResources(ctx, reservationID)
 	if err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	return nil

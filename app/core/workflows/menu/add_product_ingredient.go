@@ -7,10 +7,9 @@ import (
 )
 
 func (w workflow) AddProductIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
-	const operation = "Workflows.Product.AddProductIngredient"
 
 	if err := i.Validate(); err != nil {
-		return ingredient.Ingredient{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return ingredient.Ingredient{}, fault.Wrap(err).Params(map[string]interface{}{
 			"product_id":    i.ProductID,
 			"ingredient_id": i.IngredientID,
 			"quantity":      i.Quantity,
@@ -19,7 +18,7 @@ func (w workflow) AddProductIngredient(ctx context.Context, i ingredient.Ingredi
 
 	i, err := w.ingredients.SaveIngredient(ctx, i)
 	if err != nil {
-		return ingredient.Ingredient{}, fault.Wrap(err, operation)
+		return ingredient.Ingredient{}, fault.Wrap(err)
 	}
 
 	return i, nil

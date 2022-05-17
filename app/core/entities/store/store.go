@@ -1,7 +1,8 @@
 package store
 
 import (
-	"gomies/app/core/entities/contacting"
+	"gomies/app/core/entities/address"
+	"gomies/app/core/entities/phone"
 	"gomies/app/sdk/types"
 )
 
@@ -13,8 +14,8 @@ type Store struct {
 	ParentID        types.ID
 	Preferences     types.Preferences
 	Document        types.Document
-	Addresses       []contacting.Address
-	Phones          []contacting.Phone
+	Addresses       []address.Address
+	Phones          []phone.Phone
 }
 
 func (s Store) IsPrimary() bool {

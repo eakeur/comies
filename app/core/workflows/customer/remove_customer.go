@@ -7,15 +7,14 @@ import (
 )
 
 func (w workflow) RemoveCustomer(ctx context.Context, id types.ID) error {
-	const operation = "Workflows.Customer.RemoveCustomer"
 
 	if id.Empty() {
-		return fault.Wrap(fault.ErrMissingUID, operation)
+		return fault.Wrap(fault.ErrMissingID)
 	}
 
 	err := w.customers.RemoveCustomer(ctx, id)
 	if err != nil {
-		return fault.Wrap(err, operation)
+		return fault.Wrap(err)
 	}
 
 	return nil

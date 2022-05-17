@@ -11,7 +11,7 @@ Comies is a platform that helps food services and stores organize themselves bet
 
 ### Architecture
 
-As it is intended to make this service increase their capabilities, we used [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) to structure our project. This way, the service functions can grow and change with less possibilities of breaking other parts
+As it is intended to make this service increase their capabilities, we used [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) to structure our project. This way, the service functions can grow and change with fewer possibilities of breaking other parts
 
 ```
 .

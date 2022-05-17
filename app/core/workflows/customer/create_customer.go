@@ -7,15 +7,14 @@ import (
 )
 
 func (w workflow) CreateCustomer(ctx context.Context, c customer.Customer) (customer.Customer, error) {
-	const operation = "Workflows.Customer.CreateCustomer"
 
 	if err := c.Validate(); err != nil {
-		return customer.Customer{}, fault.Wrap(err, operation)
+		return customer.Customer{}, fault.Wrap(err)
 	}
 
 	c, err := w.customers.CreateCustomer(ctx, c)
 	if err != nil {
-		return customer.Customer{}, fault.Wrap(err, operation)
+		return customer.Customer{}, fault.Wrap(err)
 	}
 
 	return c, nil

@@ -8,15 +8,14 @@ import (
 )
 
 func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionResult, error) {
-	const operation = "Workflow.Ordering.AddToOrder"
 
 	if i.OrderID.Empty() {
-		return ItemAdditionResult{}, fault.Wrap(fault.ErrMissingUID, operation)
+		return ItemAdditionResult{}, fault.Wrap(fault.ErrMissingID)
 	}
 
 	i, err := w.orders.CreateItem(ctx, i)
 	if err != nil {
-		return ItemAdditionResult{}, fault.Wrap(err, operation)
+		return ItemAdditionResult{}, fault.Wrap(err)
 	}
 
 	contentNumber := len(i.Products)
@@ -26,7 +25,7 @@ func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionRes
 	wg := sync.WaitGroup{}
 	wg.Add(contentNumber)
 	for _, product := range i.Products {
-		const operation = "Workflow.Ordering.AddToOrder.ContentRoutine"
+
 		product := product
 
 		go func() {
@@ -34,7 +33,7 @@ func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionRes
 
 			product, err := w.orders.CreateContent(ctx, product)
 			if err != nil {
-				failures <- fault.Wrap(err, operation)
+				failures <- fault.Wrap(err)
 			}
 
 			res, err := w.products.ReserveResources(ctx, i.ID, Reservation{
@@ -45,7 +44,7 @@ func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionRes
 				Replace:   product.Details.ReplaceIngredients,
 			})
 			if err != nil {
-				failures <- fault.Wrap(err, operation)
+				failures <- fault.Wrap(err)
 			}
 
 			reservations <- res
@@ -57,7 +56,7 @@ func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionRes
 	close(reservations)
 
 	if err := <-failures; err != nil {
-		return ItemAdditionResult{}, fault.Wrap(err, operation)
+		return ItemAdditionResult{}, fault.Wrap(err)
 	}
 
 	var result ItemAdditionResult

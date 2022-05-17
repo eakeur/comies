@@ -7,15 +7,14 @@ import (
 )
 
 func (w workflow) CreateMember(ctx context.Context, input crew.Member) (crew.Member, error) {
-	const operation = "Workflows.Crew.CreateMember"
 
 	if err := input.Validate(); err != nil {
-		return crew.Member{}, fault.Wrap(err, operation)
+		return crew.Member{}, fault.Wrap(err)
 	}
 
 	input, err := w.crew.CreateMember(ctx, input)
 	if err != nil {
-		return crew.Member{}, fault.Wrap(err, operation)
+		return crew.Member{}, fault.Wrap(err)
 	}
 
 	return input, nil

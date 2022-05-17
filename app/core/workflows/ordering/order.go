@@ -8,30 +8,29 @@ import (
 )
 
 func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
-	const operation = "Workflow.Ordering.Order"
 
 	ord, err := w.orders.GetOrder(ctx, o.OrderID)
 	if err != nil {
-		return order.Order{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id": o.OrderID,
 		})
 	}
 
 	if ord.Status >= order.PreparingStatus {
-		return order.Order{}, fault.Wrap(order.ErrOrderAlreadyOrdered, operation, fault.AdditionalData{
+		return order.Order{}, fault.Wrap(order.ErrOrderAlreadyOrdered).Params(map[string]interface{}{
 			"order_status": ord.Status,
 		})
 	}
 
 	items, err := w.orders.ListItems(ctx, o.OrderID)
 	if err != nil {
-		return order.Order{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id": o.OrderID,
 		})
 	}
 
 	if len(items) <= 0 {
-		return order.Order{}, fault.Wrap(order.ErrInvalidNumberOfItems, operation, fault.AdditionalData{
+		return order.Order{}, fault.Wrap(order.ErrInvalidNumberOfItems).Params(map[string]interface{}{
 			"order_id": o.OrderID,
 		})
 	}
@@ -58,7 +57,7 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	close(failures)
 
 	if err := <-failures; err != nil {
-		return order.Order{}, fault.Wrap(err, operation, fault.AdditionalData{
+		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id":      o.OrderID,
 			"address_id":    o.AddressID,
 			"delivery_mode": o.DeliveryMode,
@@ -69,7 +68,7 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	for _, item := range items {
 		err := w.products.UpdateResources(ctx, item.ID, true)
 		if err != nil {
-			return order.Order{}, fault.Wrap(err, operation, fault.AdditionalData{
+			return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 				"order_id": item.ID,
 				"consume":  true,
 			})
