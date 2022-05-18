@@ -15,15 +15,12 @@ type (
 	Status int
 
 	Item struct {
-		ID         types.ID
-		History    types.History
-		Active     bool
-		OrderID    types.ID
-		Status     Status
-		Price      types.Currency
-		FinalPrice types.Currency
-		Discount   types.Discount
-
+		ID           types.ID
+		History      types.History
+		Active       bool
+		OrderID      types.ID
+		Status       Status
+		Price        types.Currency
 		ProductID    types.ID
 		Quantity     types.Quantity
 		Observations string

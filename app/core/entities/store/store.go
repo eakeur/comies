@@ -9,5 +9,4 @@ type Store struct {
 	Name        string
 	Nickname    string
 	Preferences types.Preferences
-	Document    types.Document
 }

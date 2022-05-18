@@ -33,15 +33,6 @@ type Movement struct {
 
 	// Agent is the entity from this resource came from or is going to
 	Agent types.ID
-
-	// Batch references to a group of resources that came together
-	Batch string
-
-	// ShelfLife is the date when the resource is not usable anymore
-	ShelfLife time.Time
-
-	// AdditionalData is a general-purpose space to store additional data about this entry
-	AdditionalData string
 }
 
 func (m Movement) Value() types.Quantity {

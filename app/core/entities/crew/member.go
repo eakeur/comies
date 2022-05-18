@@ -2,20 +2,15 @@ package crew
 
 import (
 	"gomies/app/sdk/types"
-	"time"
 )
 
 type (
 	Member struct {
 		types.Entity
-		Name           string
-		FullName       string
-		Nickname       string
-		PictureURL     string
-		PasswordChange time.Time
-		LastSeen       time.Time
-		Password       types.Password
-		Permissions    types.Permissions
+		Name        string
+		Nickname    string
+		Password    types.Password
+		Permissions types.Permissions
 		types.Store
 	}
 
