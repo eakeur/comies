@@ -25,6 +25,7 @@ As it is intended to make this service increase their capabilities, we used [Cle
 └── docs # swagger and domain documentation
 ```
 
+
 ### More
 Below there are links referencing specific documentation for the entities envolving this service
 * [product](docs/product/README.md)
