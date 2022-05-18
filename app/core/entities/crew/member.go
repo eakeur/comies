@@ -11,7 +11,6 @@ type (
 		Name           string
 		FullName       string
 		Nickname       string
-		Reference      string
 		PictureURL     string
 		PasswordChange time.Time
 		LastSeen       time.Time

@@ -12,9 +12,6 @@ type (
 		// shown in fiscal documents
 		Name string
 
-		// CategoryID is the identifier of the category this product belongs to
-		CategoryID types.ID
-
 		Type Type
 
 		Sale
@@ -34,18 +31,6 @@ type (
 
 		// MinimumSale is the lowest number of unities of this product that can be sold
 		MinimumSale types.Quantity
-
-		// MaximumDiscount is how much discount a common operator can provide for the customer
-		MaximumDiscount types.Discount
-
-		// Display is what will be shown for customers as the name of the product
-		Display string
-
-		// Description is a text that describes the product for the customer
-		Description string
-
-		// HasIngredients tells if the product has other products chained to it
-		HasIngredients bool
 	}
 
 	Type int

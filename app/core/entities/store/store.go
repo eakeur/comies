@@ -6,9 +6,8 @@ import (
 
 type Store struct {
 	types.Entity
-	Name            string
-	Nickname        string
-	ResponsibleName string
-	Preferences     types.Preferences
-	Document        types.Document
+	Name        string
+	Nickname    string
+	Preferences types.Preferences
+	Document    types.Document
 }
