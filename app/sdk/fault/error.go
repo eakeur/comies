@@ -11,7 +11,6 @@ type (
 		parameters  map[string]interface{}
 		description string
 		operation   string
-		file        string
 		line        int
 		inner       error
 		child       error
@@ -68,7 +67,7 @@ func (e fault) Error() string {
 		child = fmt.Sprintf(`"%s"`, child)
 	}
 
-	return fmt.Sprintf(`{"operation":"%s", "description":"%s", "parameters":%s, "child":%s}`, e.operation, e.description, params, child)
+	return fmt.Sprintf(`{"operation":"%s#%d", "description":"%s", "parameters":%s, "child":%s}`, e.operation, e.line, e.description, params, child)
 }
 
 func (e fault) Unwrap() error {

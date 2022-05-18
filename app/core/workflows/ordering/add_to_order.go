@@ -2,46 +2,46 @@ package ordering
 
 import (
 	"context"
-	"gomies/app/core/entities/order"
+	"gomies/app/core/entities/content"
+	"gomies/app/core/entities/item"
 	"gomies/app/sdk/fault"
 	"sync"
 )
 
-func (w workflow) AddToOrder(ctx context.Context, i order.Item) (ItemAdditionResult, error) {
+func (w workflow) AddToOrder(ctx context.Context, i item.Item, contents []content.Content) (ItemAdditionResult, error) {
 
 	if i.OrderID.Empty() {
 		return ItemAdditionResult{}, fault.Wrap(fault.ErrMissingID)
 	}
 
-	i, err := w.orders.CreateItem(ctx, i)
+	i, err := w.items.Create(ctx, i)
 	if err != nil {
 		return ItemAdditionResult{}, fault.Wrap(err)
 	}
 
-	contentNumber := len(i.Products)
+	contentNumber := len(contents)
 	reservations := make(chan Reservation, contentNumber)
 	failures := make(chan error, contentNumber)
-
 	wg := sync.WaitGroup{}
 	wg.Add(contentNumber)
-	for _, product := range i.Products {
 
-		product := product
+	for _, c := range contents {
+		c := c
 
 		go func() {
 			defer wg.Done()
 
-			product, err := w.orders.CreateContent(ctx, product)
+			c, err := w.content.Create(ctx, c)
 			if err != nil {
 				failures <- fault.Wrap(err)
 			}
 
 			res, err := w.products.ReserveResources(ctx, i.ID, Reservation{
 				ID:        i.ID,
-				ProductID: product.ProductID,
-				Quantity:  product.Quantity,
-				Ignore:    product.Details.IgnoreIngredients,
-				Replace:   product.Details.ReplaceIngredients,
+				ProductID: c.ProductID,
+				Quantity:  c.Quantity,
+				Ignore:    c.Details.IgnoreIngredients,
+				Replace:   c.Details.ReplaceIngredients,
 			})
 			if err != nil {
 				failures <- fault.Wrap(err)

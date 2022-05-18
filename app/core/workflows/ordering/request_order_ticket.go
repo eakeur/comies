@@ -13,7 +13,7 @@ func (w workflow) RequestOrderTicket(ctx context.Context, customerID types.ID) (
 		return 0, fault.Wrap(fault.ErrMissingID)
 	}
 
-	o, err := w.orders.CreateOrder(ctx, order.Order{
+	o, err := w.orders.Create(ctx, order.Order{
 		CustomerID: customerID,
 		Status:     order.InTheCartStatus,
 	})

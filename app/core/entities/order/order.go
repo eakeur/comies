@@ -17,21 +17,9 @@ const (
 	CanceledStatus        Status = 70
 )
 
-const (
-	PreparingItemStatus Status = 0
-	DoneItemStatus      Status = 10
-	FailedItemStatus    Status = 20
-)
-
-const (
-	DeliveryDeliveryMode DeliveryMode = 0
-	TakeoutDeliveryMode  DeliveryMode = 10
-)
-
 type (
-	Status            int
-	PreparationStatus int
-	DeliveryMode      int
+	Status       int
+	DeliveryMode int
 
 	Order struct {
 		types.Entity
@@ -41,36 +29,6 @@ type (
 		CustomerID   types.ID
 		Status       Status
 		DeliveryMode DeliveryMode
-	}
-
-	Item struct {
-		types.Entity
-		OrderID    types.ID
-		Products   []Content
-		ItemStatus PreparationStatus
-		Price      types.Currency
-		FinalPrice types.Currency
-		Discount   types.Discount
-	}
-
-	Content struct {
-		types.Entity
-		ItemID       types.ID
-		ProductID    types.ID
-		Quantity     types.Quantity
-		Status       PreparationStatus
-		Observations string
-		Details      ContentDetails
-	}
-
-	ContentDetails struct {
-		IgnoreIngredients  []types.ID
-		ReplaceIngredients []ContentSubstitution
-	}
-
-	ContentSubstitution struct {
-		From types.ID
-		To   types.ID
 	}
 
 	Filter struct {
@@ -85,15 +43,5 @@ type (
 )
 
 func (o Order) Validate() error {
-	return nil
-}
-
-func (i Item) Validate() error {
-
-	productsLen := len(i.Products)
-	if productsLen == 0 {
-		return ErrMissingProducts
-	}
-
 	return nil
 }

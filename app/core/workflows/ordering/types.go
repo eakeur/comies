@@ -1,6 +1,8 @@
 package ordering
 
 import (
+	"gomies/app/core/entities/content"
+	"gomies/app/core/entities/item"
 	"gomies/app/core/entities/order"
 	"gomies/app/sdk/types"
 )
@@ -10,8 +12,8 @@ type (
 		ID        types.ID
 		ProductID types.ID
 		Quantity  types.Quantity
-		Ignore    []types.ID
-		Replace   []order.ContentSubstitution
+		Ignore    []content.Ignoring
+		Replace   []content.Replacement
 		Failures  []ItemFailed
 	}
 
@@ -23,7 +25,7 @@ type (
 	}
 
 	ItemAdditionResult struct {
-		Item      order.Item
+		Item      item.Item
 		Succeeded []Reservation
 		Failed    []Reservation
 	}

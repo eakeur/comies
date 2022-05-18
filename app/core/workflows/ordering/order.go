@@ -9,7 +9,7 @@ import (
 
 func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
 
-	ord, err := w.orders.GetOrder(ctx, o.OrderID)
+	ord, err := w.orders.GetByID(ctx, o.OrderID)
 	if err != nil {
 		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id": o.OrderID,
@@ -17,12 +17,12 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	}
 
 	if ord.Status >= order.PreparingStatus {
-		return order.Order{}, fault.Wrap(order.ErrOrderAlreadyOrdered).Params(map[string]interface{}{
+		return order.Order{}, fault.Wrap(order.ErrAlreadyOrdered).Params(map[string]interface{}{
 			"order_status": ord.Status,
 		})
 	}
 
-	items, err := w.orders.ListItems(ctx, o.OrderID)
+	items, err := w.items.List(ctx, o.OrderID)
 	if err != nil {
 		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id": o.OrderID,
@@ -41,17 +41,17 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		failures <- w.orders.UpdateOrderAddressID(ctx, o.OrderID, o.AddressID)
+		failures <- w.orders.UpdateAddressID(ctx, o.OrderID, o.AddressID)
 	}()
 
 	go func() {
 		defer wg.Done()
-		failures <- w.orders.UpdateOrderDeliveryMode(ctx, o.OrderID, o.DeliveryMode)
+		failures <- w.orders.UpdateDeliveryMode(ctx, o.OrderID, o.DeliveryMode)
 	}()
 
 	go func() {
 		defer wg.Done()
-		failures <- w.orders.UpdateOrderStatus(ctx, o.OrderID, order.PreparingStatus)
+		failures <- w.orders.UpdateStatus(ctx, o.OrderID, order.PreparingStatus)
 	}()
 	wg.Wait()
 	close(failures)

@@ -36,5 +36,9 @@ func (c Content) Validate() error {
 			DescribeF("the quantity should be bigger than %v", types.QuantityMinimum)
 	}
 
+	if c.ItemID.Empty() {
+		return fault.Wrap(fault.ErrMissingID).Describe("an item id must be specified")
+	}
+
 	return nil
 }

@@ -2,6 +2,8 @@ package ordering
 
 import (
 	"context"
+	"gomies/app/core/entities/content"
+	"gomies/app/core/entities/item"
 	"gomies/app/core/entities/order"
 	"gomies/app/sdk/types"
 )
@@ -12,25 +14,23 @@ type (
 	Workflow interface {
 		RequestOrderTicket(ctx context.Context, customerID types.ID) (types.ID, error)
 		Order(ctx context.Context, o OrderConfirmation) (order.Order, error)
-		AddToOrder(ctx context.Context, i order.Item) (ItemAdditionResult, error)
+		AddToOrder(ctx context.Context, i item.Item, c []content.Content) (ItemAdditionResult, error)
 
 		UpdateOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error
 		UpdateOrderStatus(ctx context.Context, id types.ID, st order.Status) error
 		UpdateOrderAddressID(ctx context.Context, id types.ID, addressID types.ID) error
-
-		UpdateItemStatus(ctx context.Context, id types.ID, status order.PreparationStatus) error
-
-		UpdateContentStatus(ctx context.Context, id types.ID, status order.PreparationStatus) error
-		UpdateContentQuantity(ctx context.Context, id types.ID, qt types.Quantity) error
+		UpdateItemStatus(ctx context.Context, id types.ID, status item.Status) error
 
 		ListOrders(ctx context.Context, f order.Filter) ([]order.Order, int, error)
-		GetOrder(ctx context.Context, id types.ID) (order.Order, error)
+		GetOrderByID(ctx context.Context, id types.ID) (order.Order, error)
 		CancelOrder(ctx context.Context, id types.ID) error
 	}
 
 	workflow struct {
 		products ProductService
 		orders   order.Actions
+		items    item.Actions
+		content  content.Actions
 	}
 )
 
@@ -49,17 +49,7 @@ func (w workflow) UpdateOrderAddressID(ctx context.Context, id types.ID, address
 	panic("implement me")
 }
 
-func (w workflow) UpdateItemStatus(ctx context.Context, id types.ID, status order.PreparationStatus) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (w workflow) UpdateContentStatus(ctx context.Context, id types.ID, status order.PreparationStatus) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (w workflow) UpdateContentQuantity(ctx context.Context, id types.ID, qt types.Quantity) error {
+func (w workflow) UpdateItemStatus(ctx context.Context, id types.ID, status item.Status) error {
 	//TODO implement me
 	panic("implement me")
 }
@@ -69,7 +59,7 @@ func (w workflow) ListOrders(ctx context.Context, f order.Filter) ([]order.Order
 	panic("implement me")
 }
 
-func (w workflow) GetOrder(ctx context.Context, id types.ID) (order.Order, error) {
+func (w workflow) GetOrderByID(ctx context.Context, id types.ID) (order.Order, error) {
 	//TODO implement me
 	panic("implement me")
 }

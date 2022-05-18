@@ -7,15 +7,9 @@ import (
 )
 
 var (
-	ErrNotFound  = New("this resource could not be found or does not exist")
-	ErrMissingID = New("this resource's id was not provided or is invalid")
+	ErrNotFound  = errors.New("this resource could not be found or does not exist")
+	ErrMissingID = errors.New("this resource's id was not provided or is invalid")
 )
-
-func New(title string) Error {
-	return &fault{
-		child: errors.New(title),
-	}
-}
 
 func Wrap(err error) Error {
 	return wrap(err, 2)
@@ -34,9 +28,10 @@ func wrap(actualError error, stackToIgnore int) Error {
 	if ok {
 		funcPointer := runtime.FuncForPC(pc)
 		ft.line = line
-		ft.file = file
 		if funcPointer != nil {
 			ft.operation = strings.ReplaceAll(funcPointer.Name(), "/", ".")
+		} else {
+			ft.operation = file
 		}
 	}
 
