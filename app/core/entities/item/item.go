@@ -1,6 +1,9 @@
 package item
 
-import "gomies/app/sdk/types"
+import (
+	"gomies/app/sdk/fault"
+	"gomies/app/sdk/types"
+)
 
 const (
 	PreparingStatus Status = 0
@@ -20,5 +23,35 @@ type (
 		Price      types.Currency
 		FinalPrice types.Currency
 		Discount   types.Discount
+
+		ProductID    types.ID
+		Quantity     types.Quantity
+		Observations string
+		Details      Details
+	}
+
+	Details struct {
+		IgnoreIngredients  []Ignoring
+		ReplaceIngredients []Replacement
+	}
+
+	Ignoring types.ID
+
+	Replacement struct {
+		From types.ID
+		To   types.ID
 	}
 )
+
+func (i Item) Validate() error {
+	if i.Quantity <= types.QuantityMinimum {
+		return fault.Wrap(ErrInvalidQuantity).
+			DescribeF("the quantity should be bigger than %v", types.QuantityMinimum)
+	}
+
+	if i.ProductID.Empty() {
+		return fault.Wrap(fault.ErrMissingID).Describe("a product id must be specified")
+	}
+
+	return nil
+}

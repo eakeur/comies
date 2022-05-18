@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"gomies/app/core/entities/content"
 	"gomies/app/core/entities/item"
 	"gomies/app/core/entities/order"
 	"gomies/app/sdk/types"
@@ -12,8 +11,8 @@ type (
 		ID        types.ID
 		ProductID types.ID
 		Quantity  types.Quantity
-		Ignore    []content.Ignoring
-		Replace   []content.Replacement
+		Ignore    []item.Ignoring
+		Replace   []item.Replacement
 		Failures  []ItemFailed
 	}
 

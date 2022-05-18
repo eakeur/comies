@@ -64,8 +64,8 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 		err := w.products.UpdateResources(ctx, item.ID, true)
 		if err != nil {
 			return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
-				"order_id": item.ID,
-				"consume":  true,
+				"item_id": item.ID,
+				"consume": true,
 			})
 		}
 	}

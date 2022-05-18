@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"context"
-	"gomies/app/core/entities/content"
 	"gomies/app/core/entities/item"
 	"gomies/app/core/entities/order"
 	"gomies/app/sdk/types"
@@ -14,7 +13,7 @@ type (
 	Workflow interface {
 		RequestOrderTicket(ctx context.Context) (types.ID, error)
 		Order(ctx context.Context, o OrderConfirmation) (order.Order, error)
-		AddToOrder(ctx context.Context, i item.Item, c []content.Content) (ItemAdditionResult, error)
+		AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error)
 
 		SetOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error
 		SetOrderStatus(ctx context.Context, id types.ID, st order.Status) error
@@ -29,7 +28,6 @@ type (
 		products ProductService
 		orders   order.Actions
 		items    item.Actions
-		content  content.Actions
 	}
 )
 

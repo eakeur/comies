@@ -10,7 +10,3 @@ type (
 		SortDirection SortDirection
 	}
 )
-
-func HasMore(len, cap int) bool {
-	return len < cap
-}
