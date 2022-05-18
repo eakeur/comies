@@ -32,7 +32,6 @@ type (
 
 	OrderConfirmation struct {
 		OrderID      types.ID
-		AddressID    types.ID
 		Status       order.Status
 		DeliveryMode order.DeliveryMode
 	}

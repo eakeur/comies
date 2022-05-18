@@ -38,20 +38,16 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	failures := make(chan error)
 	wg := sync.WaitGroup{}
 
-	wg.Add(3)
+	wg.Add(2)
+
 	go func() {
 		defer wg.Done()
-		failures <- w.orders.UpdateAddressID(ctx, o.OrderID, o.AddressID)
+		failures <- w.orders.SetDeliveryMode(ctx, o.OrderID, o.DeliveryMode)
 	}()
 
 	go func() {
 		defer wg.Done()
-		failures <- w.orders.UpdateDeliveryMode(ctx, o.OrderID, o.DeliveryMode)
-	}()
-
-	go func() {
-		defer wg.Done()
-		failures <- w.orders.UpdateStatus(ctx, o.OrderID, order.PreparingStatus)
+		failures <- w.orders.SetStatus(ctx, o.OrderID, order.PreparingStatus)
 	}()
 	wg.Wait()
 	close(failures)
@@ -59,7 +55,6 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	if err := <-failures; err != nil {
 		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id":      o.OrderID,
-			"address_id":    o.AddressID,
 			"delivery_mode": o.DeliveryMode,
 			"order_status":  order.PreparingStatus,
 		})

@@ -7,15 +7,9 @@ import (
 	"gomies/app/sdk/types"
 )
 
-func (w workflow) RequestOrderTicket(ctx context.Context, customerID types.ID) (types.ID, error) {
-
-	if customerID.Empty() {
-		return 0, fault.Wrap(fault.ErrMissingID)
-	}
-
+func (w workflow) RequestOrderTicket(ctx context.Context) (types.ID, error) {
 	o, err := w.orders.Create(ctx, order.Order{
-		CustomerID: customerID,
-		Status:     order.InTheCartStatus,
+		Status: order.InTheCartStatus,
 	})
 	if err != nil {
 		return 0, fault.Wrap(err)

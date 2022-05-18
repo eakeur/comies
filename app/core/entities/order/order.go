@@ -24,11 +24,11 @@ type (
 	Order struct {
 		types.Entity
 		types.Store
-		PlacedAt     time.Time
-		AddressID    types.ID
-		CustomerID   types.ID
-		Status       Status
-		DeliveryMode DeliveryMode
+		Identification string
+		PlacedAt       time.Time
+		Status         Status
+		DeliveryMode   DeliveryMode
+		Observations   string
 	}
 
 	Filter struct {
@@ -36,7 +36,6 @@ type (
 		PlacedBefore time.Time
 		PlacedAfter  time.Time
 		CustomerID   types.ID
-		AddressID    types.ID
 		DeliveryMode DeliveryMode
 		listing.Filter
 	}
