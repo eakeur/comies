@@ -6,27 +6,38 @@ import (
 	"gomies/app/core/entities/item"
 	"gomies/app/core/entities/order"
 	"gomies/app/core/entities/product"
+	"reflect"
 )
+
+func (d *Database) CheckValue(ctx context.Context, script string, expected interface{}, args ...interface{}) {
+	var got interface{}
+	r := d.Pool.QueryRow(ctx, script, args...)
+	if err := r.Scan(&got); err != nil {
+		d.Test.Errorf("an error occurred when checking value: %v", err)
+	}
+	if !reflect.DeepEqual(expected, got) {
+		d.Test.Errorf("check failed: got %v ----- expected %v", got, expected)
+	}
+
+}
 
 func (d *Database) InsertOrders(ctx context.Context, orders ...order.Order) ([]order.Order, error) {
 	const script = `
 		insert into orders (
 			id,
-			store_id, 
 			identification, 
 			placed_at, 
 			status,
 			delivery_mode,
 			observations
 		) values (
-			$1, $2, $3, $4, $5, $6, $7
+			$1, $2, $3, $4, $5, $6
 		)
 	`
 
 	for _, o := range orders {
 		_, err := d.Pool.Exec(ctx, script,
 			o.ID,
-			o.StoreID,
 			o.Identification,
 			o.PlacedAt,
 			o.Status,
@@ -50,10 +61,9 @@ func (d *Database) InsertItems(ctx context.Context, items ...item.Item) ([]item.
             price,
 			product_id,
 			quantity,
-			observations,
-			store_id
+			observations
 		) values (
-			$1, $2, $3, $4, $5, $6, $7, $8
+			$1, $2, $3, $4, $5, $6, $7
 		)
 	`
 
@@ -66,7 +76,6 @@ func (d *Database) InsertItems(ctx context.Context, items ...item.Item) ([]item.
 			i.ProductID,
 			i.Quantity,
 			i.Observations,
-			i.StoreID,
 		)
 		if err != nil {
 			return nil, err
@@ -87,10 +96,9 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 			cost_price,
 			sale_price,
 			sale_unit,
-			minimum_sale,
-			store_id
+			minimum_sale
 		) values (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+			$1, $2, $3, $4, $5, $6, $7, $8, $9
 		)
 	`
 
@@ -105,7 +113,6 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 			p.SalePrice,
 			p.SaleUnit,
 			p.MinimumSale,
-			p.StoreID,
 		)
 		if err != nil {
 			return nil, err
@@ -122,10 +129,9 @@ func (d *Database) InsertIngredients(ctx context.Context, ingredients ...ingredi
 			product_id,
 			ingredient_id,
 			quantity,
-			optional,
-			store_id
+			optional
 		) values (
-			$1, $2, $3, $4, $5, $6
+			$1, $2, $3, $4, $5
 		)
 	`
 
@@ -136,7 +142,6 @@ func (d *Database) InsertIngredients(ctx context.Context, ingredients ...ingredi
 			o.IngredientID,
 			o.Quantity,
 			o.Optional,
-			o.StoreID,
 		)
 		if err != nil {
 			return nil, err

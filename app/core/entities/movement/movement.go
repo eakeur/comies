@@ -14,7 +14,7 @@ const (
 type Type int
 
 type Movement struct {
-	types.Entity
+	ID types.ID
 
 	// ResourceID is an identifier for the stock this movement references to
 	ResourceID types.ID
@@ -33,6 +33,8 @@ type Movement struct {
 
 	// Agent is the entity from this resource came from or is going to
 	Agent types.ID
+
+	types.History
 }
 
 func (m Movement) Value() types.Quantity {

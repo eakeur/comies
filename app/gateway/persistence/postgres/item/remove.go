@@ -4,19 +4,13 @@ import (
 	"context"
 	"gomies/app/gateway/persistence/postgres/transaction"
 	"gomies/app/sdk/fault"
-	"gomies/app/sdk/session"
 	"gomies/app/sdk/types"
 )
 
 func (a actions) Remove(ctx context.Context, itemID types.ID) error {
-	const script = `delete from items where id = $1 and store_id = $2`
+	const script = `delete from items where id = $1`
 
-	s, err := session.FromContext(ctx)
-	if err != nil {
-		return fault.Wrap(err)
-	}
-
-	cmd, err := transaction.ExecFromContext(ctx, script, itemID, s.StoreID)
+	cmd, err := transaction.ExecFromContext(ctx, script, itemID)
 	if err != nil {
 		return fault.Wrap(err)
 	}

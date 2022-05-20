@@ -17,6 +17,5 @@ type (
 		MinimumQuantity types.Quantity
 		// Location is a brief description of where this stock is located
 		Location string
-		types.Store
 	}
 )

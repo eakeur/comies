@@ -12,7 +12,6 @@ type (
 		Quantity     types.Quantity
 		Optional     bool
 		History      types.History
-		types.Store
 	}
 
 	IgnoredList []types.ID

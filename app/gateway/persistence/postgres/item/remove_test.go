@@ -36,20 +36,16 @@ func Test_actions_Remove(t *testing.T) {
 				}
 
 				_, err = d.InsertItems(ctx,
-					item.Item{ID: 1, OrderID: 1, ProductID: 1, Store: tests.DefaultStore},
-					item.Item{ID: 2, OrderID: 1, ProductID: 2, Store: tests.DefaultStore},
-					item.Item{ID: 3, OrderID: 1, ProductID: 3, Store: tests.DefaultStore},
+					item.Item{ID: 1, OrderID: 1, ProductID: 1},
+					item.Item{ID: 2, OrderID: 1, ProductID: 2},
+					item.Item{ID: 3, OrderID: 1, ProductID: 3},
 				)
 				if err != nil {
 					t.Error(err)
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				var quantityInserted item.Status
-				r := d.Pool.QueryRow(ctx, "select count(id) from items")
-				if err := r.Scan(&quantityInserted); err != nil || quantityInserted != 2 {
-					t.Errorf("the item was not deleted: %v", err)
-				}
+				d.CheckValue(ctx, "select count(id) from items", int64(2))
 			},
 		},
 		{

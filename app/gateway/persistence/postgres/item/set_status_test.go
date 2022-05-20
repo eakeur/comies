@@ -38,7 +38,7 @@ func Test_actions_SetStatus(t *testing.T) {
 				}
 
 				_, err = d.InsertItems(ctx,
-					item.Item{ID: 1, OrderID: 1, ProductID: 2, Store: tests.DefaultStore},
+					item.Item{ID: 1, OrderID: 1, ProductID: 2},
 				)
 				if err != nil {
 					t.Error(err)

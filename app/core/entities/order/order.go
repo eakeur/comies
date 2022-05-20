@@ -29,7 +29,6 @@ type (
 		DeliveryMode   DeliveryMode
 		Observations   string
 		types.History
-		types.Store
 	}
 
 	Filter struct {

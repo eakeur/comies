@@ -24,7 +24,6 @@ type (
 		Observations string
 		Details      Details
 		History      types.History
-		types.Store
 	}
 
 	Details struct {

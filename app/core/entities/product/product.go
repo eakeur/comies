@@ -18,7 +18,6 @@ type (
 		Sale
 
 		types.History
-		types.Store
 	}
 
 	Sale struct {

@@ -33,10 +33,9 @@ begin;
         sale_price   bigint      not null,
         minimum_sale bigint      not null,
         sale_unit    varchar(3)  not null,
-        store_id     bigint      not null,
 
         constraint products_pk primary key (id),
-        constraint code_store_id_uk unique (code, store_id)
+        constraint code_store_id_uk unique (code)
     );
 
     create table ingredients (
@@ -45,12 +44,11 @@ begin;
         ingredient_id bigint not null,
         quantity bigint not null,
         optional boolean not null,
-        store_id bigint not null,
 
         constraint ingredients_pk primary key (id),
         constraint product_id_fk foreign key (product_id) references products(id),
         constraint ingredient_id_fk foreign key (ingredient_id) references products(id),
-        constraint product_ingredient_id_uk unique (product_id, ingredient_id, store_id)
+        constraint product_ingredient_id_uk unique (product_id, ingredient_id)
     );
 
     create table orders (
@@ -60,7 +58,6 @@ begin;
         status int not null,
         delivery_mode int not null,
         observations text,
-        store_id bigint not null,
 
         constraint orders_pk primary key (id)
     );
@@ -73,7 +70,6 @@ begin;
         product_id bigint not null,
         quantity bigint not null,
         observations text not null,
-        store_id bigint not null,
 
         constraint items_pk primary key (id),
         constraint order_id_fk foreign key (order_id) references orders(id),
@@ -96,10 +92,9 @@ begin;
         maximum_quantity bigint not null,
         minimum_quantity bigint not null,
         location text,
-        store_id bigint not null,
 
         constraint stocks_id primary key (id),
-        constraint target_store_uk unique (target_id, store_id)
+        constraint target_store_uk unique (target_id)
     );
 
     create table movements (

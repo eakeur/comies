@@ -40,9 +40,9 @@ func Test_actions_List(t *testing.T) {
 				}
 
 				_, err = d.InsertItems(ctx,
-					item.Item{ID: 1, OrderID: 1, ProductID: 1, Store: tests.DefaultStore},
-					item.Item{ID: 2, OrderID: 1, ProductID: 2, Store: tests.DefaultStore},
-					item.Item{ID: 3, OrderID: 1, ProductID: 3, Store: tests.DefaultStore},
+					item.Item{ID: 1, OrderID: 1, ProductID: 1},
+					item.Item{ID: 2, OrderID: 1, ProductID: 2},
+					item.Item{ID: 3, OrderID: 1, ProductID: 3},
 				)
 				if err != nil {
 					t.Error(err)
@@ -52,9 +52,9 @@ func Test_actions_List(t *testing.T) {
 				orderID: 1,
 			},
 			want: []item.Item{
-				{ID: 1, OrderID: 1, ProductID: 1, Store: tests.DefaultStore},
-				{ID: 2, OrderID: 1, ProductID: 2, Store: tests.DefaultStore},
-				{ID: 3, OrderID: 1, ProductID: 3, Store: tests.DefaultStore},
+				{ID: 1, OrderID: 1, ProductID: 1},
+				{ID: 2, OrderID: 1, ProductID: 2},
+				{ID: 3, OrderID: 1, ProductID: 3},
 			},
 		},
 	}

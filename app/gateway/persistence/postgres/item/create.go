@@ -19,10 +19,9 @@ func (a actions) Create(ctx context.Context, i item.Item) (item.Item, error) {
             price,
 			product_id,
 			quantity,
-			observations,
-			store_id
+			observations
 		) values (
-			$1, $2, $3, $4, $5, $6, $7, $8
+			$1, $2, $3, $4, $5, $6, $7
 		)
 	`
 
@@ -34,7 +33,6 @@ func (a actions) Create(ctx context.Context, i item.Item) (item.Item, error) {
 		i.ProductID,
 		i.Quantity,
 		i.Observations,
-		i.StoreID,
 	)
 	if err != nil {
 		var pgErr *pgconn.PgError

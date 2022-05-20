@@ -4,7 +4,6 @@ import (
 	"context"
 	"gomies/app/core/entities/item"
 	"gomies/app/sdk/fault"
-	"gomies/app/sdk/session"
 	"gomies/app/sdk/types"
 )
 
@@ -17,21 +16,14 @@ func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error
             price,
 			product_id,
 			quantity,
-			observations,
-			store_id
+			observations
 		from
 			items
 		where
-			order_id = $1 and
-			store_id = $2
+			order_id = $1
 	`
 
-	s, err := session.FromContext(ctx)
-	if err != nil {
-		return nil, fault.Wrap(err)
-	}
-
-	rows, err := a.db.Query(ctx, script, orderID, s.StoreID)
+	rows, err := a.db.Query(ctx, script, orderID)
 	if err != nil {
 		return nil, fault.Wrap(err)
 	}
@@ -47,7 +39,6 @@ func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error
 			&it.ProductID,
 			&it.Quantity,
 			&it.Observations,
-			&it.Store.StoreID,
 		)
 		if err != nil {
 			continue
