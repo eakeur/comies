@@ -4,7 +4,8 @@ import "gomies/app/sdk/types"
 
 type (
 	Product struct {
-		types.Entity
+		ID     types.ID
+		Active bool
 		// Code represents how the store's crew call this product internally
 		Code string
 
@@ -16,6 +17,7 @@ type (
 
 		Sale
 
+		types.History
 		types.Store
 	}
 

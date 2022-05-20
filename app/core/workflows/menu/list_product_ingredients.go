@@ -13,7 +13,7 @@ func (w workflow) ListProductIngredients(ctx context.Context, productID types.ID
 		return []ingredient.Ingredient{}, fault.Wrap(fault.ErrMissingID)
 	}
 
-	list, err := w.ingredients.ListIngredients(ctx, productID)
+	list, err := w.ingredients.List(ctx, productID)
 	if err != nil {
 		return []ingredient.Ingredient{}, fault.Wrap(err).Params(map[string]interface{}{
 			"product_id": productID.String(),

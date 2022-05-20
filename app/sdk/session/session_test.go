@@ -33,23 +33,21 @@ func TestSession_Delegate(t *testing.T) {
 		{
 			name: "should fill all fields",
 			args: args{
-				operation: "Workflows.Product.CreateProduct",
-				store:     &types.Store{},
-				history:   &types.History{},
+				store:   &types.Store{},
+				history: &types.History{},
 			},
 			session: Session{
 				OperatorID: fakeID,
 				StoreID:    fakeID,
 			},
 			wantStore:   types.Store{StoreID: fakeID},
-			wantHistory: types.History{Operation: "Workflows.Product.CreateProduct", By: fakeID},
+			wantHistory: types.History{By: fakeID},
 		},
 		{
 			name: "should fill store fields only",
 			args: args{
-				operation: "Workflows.Product.CreateProduct",
-				store:     &types.Store{},
-				history:   nil,
+				store:   &types.Store{},
+				history: nil,
 			},
 			session: Session{
 				OperatorID: fakeID,
@@ -63,7 +61,7 @@ func TestSession_Delegate(t *testing.T) {
 		c := c
 
 		t.Run(c.name, func(t *testing.T) {
-			c.session.Delegate(c.args.operation, c.args.store, c.args.history)
+			c.session.Delegate(c.args.store, c.args.history)
 
 			assert.Equal(t, c.wantStore.StoreID, c.args.store.StoreID)
 
@@ -73,7 +71,6 @@ func TestSession_Delegate(t *testing.T) {
 
 			if c.args.history != nil {
 				assert.Equal(t, c.wantHistory.By, c.args.history.By)
-				assert.Equal(t, c.wantHistory.Operation, c.args.history.Operation)
 			}
 		})
 	}

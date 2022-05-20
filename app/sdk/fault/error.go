@@ -1,9 +1,7 @@
 package fault
 
 import (
-	"encoding/json"
 	"fmt"
-	"strings"
 )
 
 type (
@@ -56,18 +54,12 @@ func (e fault) Wrap() Error {
 
 func (e fault) Error() string {
 
-	params := "{}"
-	res, err := json.Marshal(e.parameters)
-	if err == nil && string(res) != "null" {
-		params = string(res)
+	var params string
+	if e.parameters != nil {
+		params = fmt.Sprint(e.parameters)
+		params = params[4 : len(params)-1]
 	}
-
-	child := e.child.Error()
-	if !strings.HasPrefix(child, "{") {
-		child = fmt.Sprintf(`"%s"`, child)
-	}
-
-	return fmt.Sprintf(`{"operation":"%s#%d", "description":"%s", "parameters":%s, "child":%s}`, e.operation, e.line, e.description, params, child)
+	return fmt.Sprintf("%s#%d(%s): %s ----> %v", e.operation, e.line, params, e.description, e.child.Error())
 }
 
 func (e fault) Unwrap() error {

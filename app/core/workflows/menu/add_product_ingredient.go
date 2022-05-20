@@ -16,7 +16,7 @@ func (w workflow) AddProductIngredient(ctx context.Context, i ingredient.Ingredi
 		})
 	}
 
-	i, err := w.ingredients.SaveIngredient(ctx, i)
+	i, err := w.ingredients.Create(ctx, i)
 	if err != nil {
 		return ingredient.Ingredient{}, fault.Wrap(err)
 	}

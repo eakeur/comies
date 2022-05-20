@@ -16,8 +16,6 @@ type (
 
 	Item struct {
 		ID           types.ID
-		History      types.History
-		Active       bool
 		OrderID      types.ID
 		Status       Status
 		Price        types.Currency
@@ -25,6 +23,8 @@ type (
 		Quantity     types.Quantity
 		Observations string
 		Details      Details
+		History      types.History
+		types.Store
 	}
 
 	Details struct {

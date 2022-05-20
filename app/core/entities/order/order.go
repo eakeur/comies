@@ -22,13 +22,14 @@ type (
 	DeliveryMode int
 
 	Order struct {
-		types.Entity
-		types.Store
+		ID             types.ID
 		Identification string
 		PlacedAt       time.Time
 		Status         Status
 		DeliveryMode   DeliveryMode
 		Observations   string
+		types.History
+		types.Store
 	}
 
 	Filter struct {

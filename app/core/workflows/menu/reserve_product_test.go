@@ -35,7 +35,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 
 	for _, c := range []test{
 		{
-			name: "should reserve product without ingredients",
+			name: "should reserve product without ingredient",
 			args: args{
 				reservation: Reservation{
 					ID:        1,
@@ -140,7 +140,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 		},
 		{
-			name: "should reserve some ingredients and fail the ones not stocked",
+			name: "should reserve some ingredient and fail the ones not stocked",
 			args: args{
 				reservation: Reservation{
 					ID:        1,
@@ -194,7 +194,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 		},
 		{
-			name: "should reserve some ingredients and ignore the ones parameterized",
+			name: "should reserve some ingredient and ignore the ones parameterized",
 			args: args{
 				reservation: Reservation{
 					ID:        1,
@@ -251,7 +251,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 		},
 		{
-			name: "should reserve some ingredients and replace the ones parameterized",
+			name: "should reserve some ingredient and replace the ones parameterized",
 			args: args{
 				reservation: Reservation{
 					ID:        1,

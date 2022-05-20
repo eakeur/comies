@@ -12,7 +12,7 @@ func (w workflow) RemoveProductIngredient(ctx context.Context, id types.ID) erro
 		return fault.Wrap(fault.ErrMissingID)
 	}
 
-	err := w.ingredients.RemoveIngredient(ctx, id)
+	err := w.ingredients.Remove(ctx, id)
 	if err != nil {
 		return fault.Wrap(err).Params(map[string]interface{}{
 			"id": id.String(),

@@ -11,7 +11,6 @@ type (
 		IngredientID types.ID
 		Quantity     types.Quantity
 		Optional     bool
-		Active       bool
 		History      types.History
 		types.Store
 	}

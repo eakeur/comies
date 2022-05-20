@@ -16,14 +16,13 @@ type Session struct {
 	Digest       string
 }
 
-func (s Session) Delegate(operation string, store *types.Store, history *types.History) {
+func (s Session) Delegate(store *types.Store, history *types.History) {
 	if store != nil && store.StoreID.Empty() {
 		store.StoreID = s.StoreID
 	}
 
 	if history != nil {
 		history.By = s.OperatorID
-		history.Operation = operation
 	}
 }
 
@@ -43,4 +42,15 @@ func FromContext(ctx context.Context) (Session, error) {
 	}
 
 	return session, nil
+}
+
+func DelegateFromContext(ctx context.Context, store *types.Store, history *types.History) (Session, error) {
+	s, err := FromContext(ctx)
+	if err != nil {
+		return Session{}, err
+	}
+
+	s.Delegate(store, history)
+
+	return s, nil
 }

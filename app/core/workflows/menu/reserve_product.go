@@ -13,7 +13,7 @@ func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservatio
 		err      error
 	)
 
-	ingredients, err := w.ingredients.ListIngredients(ctx, r.ProductID)
+	ingredients, err := w.ingredients.List(ctx, r.ProductID)
 	if err != nil {
 		return Reservation{}, fault.Wrap(err).Params(map[string]interface{}{
 			"product_id": r.ProductID,
