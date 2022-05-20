@@ -39,6 +39,5 @@ func (w workflow) CancelOrder(ctx context.Context, id types.ID) error {
 		}
 	}
 
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
