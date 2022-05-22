@@ -1,4 +1,4 @@
-package crew
+package member
 
 import (
 	"gomies/app/sdk/types"
@@ -6,12 +6,12 @@ import (
 
 type (
 	Member struct {
-		types.Entity
-		Name        string
-		Nickname    string
-		Password    types.Password
-		Permissions types.Permissions
-		types.Store
+		ID       types.ID
+		Active   bool
+		Name     string
+		Nickname string
+		Password types.Password
+		History  types.History
 	}
 
 	MemberType int

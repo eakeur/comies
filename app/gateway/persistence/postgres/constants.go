@@ -6,4 +6,8 @@ const (
 
 	ItemOrderIDFK = "order_id_fk"
 	ItemIDPK      = "items_pk"
+
+	IngredientProductUK   = "product_ingredient_id_uk"
+	IngredientProductIDFK = "product_id_fk"
+	IngredientIDFK        = "ingredient_id_fk"
 )

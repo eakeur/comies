@@ -2,15 +2,15 @@ package crew
 
 import (
 	"context"
-	crew2 "gomies/app/core/entities/crew"
+	"gomies/app/core/entities/member"
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) GetMember(ctx context.Context, key crew2.Key) (crew2.Member, error) {
+func (w workflow) GetByKey(ctx context.Context, key member.Key) (member.Member, error) {
 
-	ct, err := w.crew.GetMember(ctx, key)
+	ct, err := w.crew.GetByKey(ctx, key)
 	if err != nil {
-		return crew2.Member{}, fault.Wrap(err)
+		return member.Member{}, fault.Wrap(err)
 	}
 
 	return ct, nil

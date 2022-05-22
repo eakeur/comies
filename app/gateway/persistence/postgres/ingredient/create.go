@@ -2,7 +2,10 @@ package ingredient
 
 import (
 	"context"
+	"errors"
+	"github.com/jackc/pgconn"
 	"gomies/app/core/entities/ingredient"
+	"gomies/app/gateway/persistence/postgres"
 	"gomies/app/gateway/persistence/postgres/transaction"
 	"gomies/app/sdk/fault"
 )
@@ -28,6 +31,25 @@ func (a actions) Create(ctx context.Context, i ingredient.Ingredient) (ingredien
 		i.Optional,
 	)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			params := map[string]interface{}{
+				"product_id": i.ProductID, "ingredient_id": i.IngredientID, "quantity": i.Quantity.String(),
+			}
+
+			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.IngredientProductIDFK {
+				return ingredient.Ingredient{}, fault.Wrap(fault.ErrNotFound).
+					Describe("the product id provided in the product id field seems to not exist").Params(params)
+			}
+			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.IngredientIDFK {
+				return ingredient.Ingredient{}, fault.Wrap(fault.ErrNotFound).
+					Describe("the product id provided in the ingredient id field seems to not exist").Params(params)
+			}
+			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.IngredientProductUK {
+				return ingredient.Ingredient{}, fault.Wrap(fault.ErrAlreadyExists).
+					Describe("the ingredient provided seems to already exist").Params(params)
+			}
+		}
 		return ingredient.Ingredient{}, fault.Wrap(err)
 	}
 

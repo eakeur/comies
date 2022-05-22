@@ -2,13 +2,13 @@ package crew
 
 import (
 	"context"
-	"gomies/app/core/entities/crew"
+	"gomies/app/core/entities/member"
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) RemoveMember(ctx context.Context, key crew.Key) error {
+func (w workflow) Remove(ctx context.Context, key member.Key) error {
 
-	err := w.crew.RemoveMember(ctx, key)
+	err := w.crew.Remove(ctx, key)
 	if err != nil {
 		return fault.Wrap(err)
 	}

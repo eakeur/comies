@@ -50,7 +50,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				ingredients: &ingredient.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+					ListFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 						return nil, nil
 					},
 				},
@@ -97,7 +97,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				ingredients: &ingredient.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+					ListFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
@@ -163,7 +163,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				ingredients: &ingredient.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+					ListFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
@@ -215,7 +215,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				ingredients: &ingredient.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+					ListFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,
@@ -280,7 +280,7 @@ func TestWorkflow_ReserveProduct(t *testing.T) {
 			},
 			opts: opts{
 				ingredients: &ingredient.ActionsMock{
-					ListIngredientsFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+					ListFunc: func(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 						return []ingredient.Ingredient{
 							{
 								IngredientID: 1,

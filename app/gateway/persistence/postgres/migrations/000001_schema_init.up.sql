@@ -46,7 +46,7 @@ begin;
         optional boolean not null,
 
         constraint ingredients_pk primary key (id),
-        constraint product_id_fk foreign key (product_id) references products(id),
+        constraint product_id_fk foreign key (product_id) references products(id) on delete cascade,
         constraint ingredient_id_fk foreign key (ingredient_id) references products(id),
         constraint product_ingredient_id_uk unique (product_id, ingredient_id)
     );

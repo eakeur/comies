@@ -2,19 +2,19 @@ package crew
 
 import (
 	"context"
-	"gomies/app/core/entities/crew"
+	"gomies/app/core/entities/member"
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) CreateMember(ctx context.Context, input crew.Member) (crew.Member, error) {
+func (w workflow) Create(ctx context.Context, input member.Member) (member.Member, error) {
 
 	if err := input.Validate(); err != nil {
-		return crew.Member{}, fault.Wrap(err)
+		return member.Member{}, fault.Wrap(err)
 	}
 
-	input, err := w.crew.CreateMember(ctx, input)
+	input, err := w.crew.Create(ctx, input)
 	if err != nil {
-		return crew.Member{}, fault.Wrap(err)
+		return member.Member{}, fault.Wrap(err)
 	}
 
 	return input, nil

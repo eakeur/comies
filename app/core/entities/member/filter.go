@@ -1,4 +1,4 @@
-package crew
+package member
 
 import (
 	"gomies/app/sdk/listing"

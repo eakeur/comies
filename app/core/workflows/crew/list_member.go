@@ -2,15 +2,15 @@ package crew
 
 import (
 	"context"
-	crew2 "gomies/app/core/entities/crew"
+	member "gomies/app/core/entities/member"
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) ListMembers(ctx context.Context, filter crew2.Filter) ([]crew2.Member, int, error) {
+func (w workflow) List(ctx context.Context, filter member.Filter) ([]member.Member, int, error) {
 
-	ct, count, err := w.crew.ListMembers(ctx, filter)
+	ct, count, err := w.crew.List(ctx, filter)
 	if err != nil {
-		return []crew2.Member{}, 0, fault.Wrap(err)
+		return []member.Member{}, 0, fault.Wrap(err)
 	}
 
 	return ct, count, nil
