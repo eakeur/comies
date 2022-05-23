@@ -13,8 +13,6 @@ type (
 		Password types.Password
 		History  types.History
 	}
-
-	MemberType int
 )
 
 func (m Member) Validate() error {

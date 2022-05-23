@@ -7,7 +7,6 @@ import (
 type (
 	Stock struct {
 		ID      types.ID
-		Active  bool
 		History types.History
 		// TargetID is an identifier for the object this stocks references to
 		TargetID types.ID
