@@ -17,7 +17,6 @@ type (
 
 		SetOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error
 		SetOrderStatus(ctx context.Context, id types.ID, st order.Status) error
-		SetItemStatus(ctx context.Context, id types.ID, status item.Status) error
 
 		ListOrders(ctx context.Context, f order.Filter) ([]order.Order, int, error)
 		GetOrderByID(ctx context.Context, id types.ID) (order.Order, error)

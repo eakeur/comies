@@ -38,8 +38,8 @@ type (
 )
 
 const (
-	OutputType Type = iota
-	InputType  Type = iota
+	OutputType Type = 0
+	InputType  Type = 10
 )
 
 func (p Product) Validate() error {

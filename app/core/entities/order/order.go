@@ -35,7 +35,6 @@ type (
 		Status       Status
 		PlacedBefore time.Time
 		PlacedAfter  time.Time
-		CustomerID   types.ID
 		DeliveryMode DeliveryMode
 		listing.Filter
 	}
