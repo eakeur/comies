@@ -17,3 +17,5 @@
 *_mock.go
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+*pb.go
