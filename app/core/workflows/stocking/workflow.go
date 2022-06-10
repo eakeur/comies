@@ -4,7 +4,6 @@ import (
 	"context"
 	"gomies/app/core/entities/movement"
 	"gomies/app/core/entities/stock"
-	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 )
 
@@ -21,7 +20,7 @@ type (
 		CreateStock(ctx context.Context, s stock.Stock) (stock.Stock, error)
 		UpdateStock(ctx context.Context, s stock.Stock) error
 		RemoveStock(ctx context.Context, id types.ID) error
-		ListStock(ctx context.Context, filter listing.Filter) ([]stock.Stock, int, error)
+		ListStock(ctx context.Context) ([]stock.Stock, int, error)
 		GetStockByID(ctx context.Context, id types.ID) (stock.Stock, error)
 
 		ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, int, error)

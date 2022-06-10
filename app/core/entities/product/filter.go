@@ -1,7 +1,6 @@
 package product
 
 import (
-	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 )
 
@@ -11,7 +10,6 @@ type (
 		Name       string
 		Type       Type
 		CategoryID types.ID
-		listing.Filter
 	}
 
 	Key struct {

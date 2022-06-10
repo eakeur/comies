@@ -2,7 +2,6 @@ package stock
 
 import (
 	"context"
-	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 )
 
@@ -13,5 +12,5 @@ type Actions interface {
 	UpdateStock(ctx context.Context, st Stock) error
 	GetStockByID(ctx context.Context, resourceID types.ID) (Stock, error)
 	RemoveStock(ctx context.Context, resourceID types.ID) error
-	ListStocks(ctx context.Context, filter listing.Filter) ([]Stock, int, error)
+	ListStocks(ctx context.Context) ([]Stock, int, error)
 }

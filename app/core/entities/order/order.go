@@ -1,7 +1,6 @@
 package order
 
 import (
-	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 	"time"
 )
@@ -52,7 +51,6 @@ type (
 		PlacedBefore time.Time
 		PlacedAfter  time.Time
 		DeliveryMode DeliveryMode
-		listing.Filter
 	}
 )
 

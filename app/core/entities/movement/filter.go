@@ -2,7 +2,6 @@ package movement
 
 import (
 	"gomies/app/sdk/fault"
-	"gomies/app/sdk/listing"
 	"gomies/app/sdk/types"
 	"time"
 )
@@ -12,7 +11,6 @@ type (
 		ResourceID  types.ID
 		InitialDate time.Time
 		FinalDate   time.Time
-		listing.Filter
 	}
 )
 
