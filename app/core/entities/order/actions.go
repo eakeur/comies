@@ -17,5 +17,5 @@ type Actions interface {
 	UpdateFlow(ctx context.Context, f FlowUpdate) (FlowUpdate, error)
 	ListFlow(ctx context.Context, orderID types.ID) ([]FlowUpdate, error)
 	GetStatus(ctx context.Context, orderID types.ID) (Status, error)
-	Remove(ctx context.Context, o Order) error
+	Remove(ctx context.Context, id types.ID) error
 }

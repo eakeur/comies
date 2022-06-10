@@ -12,4 +12,8 @@ const (
 	IngredientIDFK        = "ingredient_id_fk"
 
 	OrderIDPK = "orders_pk"
+
+	OrderFlowFK   = "order_id_fk"
+	OrderFlowPK   = "flow_pk"
+	OrderStatusUK = "order_status_uk"
 )

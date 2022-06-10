@@ -4,7 +4,7 @@ import (
 	"context"
 	"gomies/app/core/entities/order"
 	"gomies/app/sdk/fault"
-	"sync"
+	"time"
 )
 
 func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
@@ -35,28 +35,21 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 		})
 	}
 
-	failures := make(chan error)
-	wg := sync.WaitGroup{}
-
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		failures <- w.orders.SetDeliveryMode(ctx, o.OrderID, o.DeliveryMode)
-	}()
-
-	go func() {
-		defer wg.Done()
-		failures <- w.orders.SetStatus(ctx, o.OrderID, order.PreparingStatus)
-	}()
-	wg.Wait()
-	close(failures)
-
-	if err := <-failures; err != nil {
+	if err := w.orders.SetDeliveryMode(ctx, o.OrderID, o.DeliveryMode); err != nil {
 		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
 			"order_id":      o.OrderID,
 			"delivery_mode": o.DeliveryMode,
-			"order_status":  order.PreparingStatus,
+		})
+	}
+
+	if _, err = w.orders.UpdateFlow(ctx, order.FlowUpdate{
+		OrderID:    o.OrderID,
+		Status:     order.PreparingStatus,
+		OccurredAt: time.Now().UTC(),
+	}); err != nil {
+		return order.Order{}, fault.Wrap(err).Params(map[string]interface{}{
+			"order_id":     o.OrderID,
+			"order_status": order.PreparingStatus,
 		})
 	}
 

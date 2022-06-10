@@ -15,7 +15,7 @@ func (a actions) Remove(ctx context.Context, ingredientID types.ID) error {
 		return fault.Wrap(err)
 	}
 
-	if cmd.RowsAffected() <= 0 {
+	if cmd.RowsAffected() != 1 {
 		return fault.Wrap(fault.ErrNotFound)
 	}
 

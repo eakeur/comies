@@ -69,8 +69,9 @@ begin;
         status varchar(30) not null,
         occurred_at timestamp with time zone not null,
 
-        constraint history_pk primary key (id),
-        constraint order_id_fk foreign key (order_id) references orders(id)
+        constraint flow_pk primary key (id),
+        constraint order_id_fk foreign key (order_id) references orders(id),
+        constraint order_status_uk unique(status, order_id)
     );
 
     create view orders_statuses as (
