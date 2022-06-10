@@ -7,19 +7,24 @@ import (
 )
 
 const (
-	InTheCartStatus       Status = 0
-	PendingStatus         Status = 10
-	PreparingStatus       Status = 20
-	WaitingTakeoutStatus  Status = 30
-	WaitingDeliveryStatus Status = 40
-	DeliveringStatus      Status = 50
-	FinishedStatus        Status = 60
-	CanceledStatus        Status = 70
+	InTheCartStatus       Status = "IN_THE_CART"
+	PendingStatus         Status = "PENDING"
+	PreparingStatus       Status = "PREPARING"
+	WaitingTakeoutStatus  Status = "WAITING_TAKEOUT"
+	WaitingDeliveryStatus Status = "WAITING_DELIVERY"
+	DeliveringStatus      Status = "DELIVERING"
+	FinishedStatus        Status = "FINISHED"
+	CanceledStatus        Status = "CANCELED"
+)
+
+const (
+	TakeoutDeliveryMode  DeliveryMode = "TAKEOUT"
+	DeliveryDeliveryMode DeliveryMode = "DELIVERY"
 )
 
 type (
-	Status       int
-	DeliveryMode int
+	Status       string
+	DeliveryMode string
 
 	Order struct {
 		ID             types.ID
@@ -28,7 +33,18 @@ type (
 		Status         Status
 		DeliveryMode   DeliveryMode
 		Observations   string
+		FinalPrice     types.Currency
+		Address        string
+		Phone          string
 		types.History
+	}
+
+	FlowUpdate struct {
+		ID         types.ID
+		OrderID    types.ID
+		Status     Status
+		OccurredAt time.Time
+		History    types.History
 	}
 
 	Filter struct {

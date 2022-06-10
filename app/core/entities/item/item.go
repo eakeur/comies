@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	PreparingStatus Status = 0
-	DoneStatus      Status = 10
-	FailedStatus    Status = 20
+	PreparingStatus Status = "PREPARING"
+	DoneStatus      Status = "DONE"
+	FailedStatus    Status = "FAILED"
 )
 
 type (
-	Status int
+	Status string
 
 	Item struct {
 		ID           types.ID

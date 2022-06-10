@@ -55,17 +55,40 @@ begin;
         id bigint not null,
         identification text not null,
         placed_at timestamp with time zone not null,
-        status int not null,
-        delivery_mode int not null,
+        delivery_mode varchar(30) not null,
         observations text,
+        address text not null,
+        phone varchar(11) not null,
 
         constraint orders_pk primary key (id)
+    );
+
+    create table orders_flow (
+        id bigint not null,
+        order_id bigint not null,
+        status varchar(30) not null,
+        occurred_at timestamp with time zone not null,
+
+        constraint history_pk primary key (id),
+        constraint order_id_fk foreign key (order_id) references orders(id)
+    );
+
+    create view orders_statuses as (
+         select distinct on (f.order_id)
+            f.order_id,
+            f.status
+        from
+            orders_flow f
+        order by
+            f.order_id,
+            f.id desc,
+            f.occurred_at desc nulls last
     );
 
     create table items (
         id bigint not null,
         order_id bigint not null,
-        status int not null,
+        status varchar(30) not null,
         price bigint not null,
         product_id bigint not null,
         quantity bigint not null,

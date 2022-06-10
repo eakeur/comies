@@ -14,20 +14,30 @@ func NewQuery(script string) Query {
 
 type (
 	Query struct {
-		Args         []interface{}
-		query        string
-		placeholder  string
-		nextOperator string
+		Args        []interface{}
+		query       string
+		placeholder string
+		conjunction string
 	}
 )
 
 func (q Query) Script() string {
-	script := fmt.Sprintf(q.placeholder, q.query)
+	var clause = "where "
+	if q.query == "" {
+		clause = ""
+	}
 
-	return strings.Trim(script, " ")
+	script := strings.Trim(
+		strings.Replace(
+			strings.Replace(q.placeholder, "%query%", q.query, 1),
+			"%where_query%", clause+q.query, 1,
+		),
+		" ",
+	)
+	return script
 }
 
-func (q Query) Append(inCase bool, input string, values ...interface{}) Query {
+func (q Query) Where(inCase bool, input string, values ...interface{}) Query {
 	if inCase {
 		placeholders := make([]interface{}, len(values))
 		for i, value := range values {
@@ -35,9 +45,7 @@ func (q Query) Append(inCase bool, input string, values ...interface{}) Query {
 			placeholders[i] = len(q.Args)
 		}
 
-		q.getNextOperator()
-
-		q.query += fmt.Sprintf(q.getNextOperator()+input+" ", placeholders...)
+		q.query += fmt.Sprintf(q.nextConjunction()+input+" ", placeholders...)
 	}
 
 	return q
@@ -45,7 +53,7 @@ func (q Query) Append(inCase bool, input string, values ...interface{}) Query {
 
 func (q Query) And() Query {
 	if q.query != "" {
-		q.nextOperator = "and "
+		q.conjunction = "and "
 	}
 
 	return q
@@ -53,15 +61,13 @@ func (q Query) And() Query {
 
 func (q Query) Or() Query {
 	if q.query != "" {
-		q.nextOperator = "or "
+		q.conjunction = "or "
 	}
 
 	return q
 }
 
-func (q Query) getNextOperator() string {
-	op := q.nextOperator
-	q.nextOperator = ""
-
+func (q Query) nextConjunction() string {
+	op := q.conjunction
 	return op
 }

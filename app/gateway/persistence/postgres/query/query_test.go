@@ -1,8 +1,8 @@
 package query
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
@@ -14,7 +14,13 @@ func TestQuery(t *testing.T) {
 		id, uid, auth_id, name, created_at, updated_at
 	from editors
 	where
-		%s`
+		%query%`
+
+	const scriptNoWhere = `
+	select
+		id, uid, auth_id, name, created_at, updated_at
+	from editors
+		%where_query%`
 
 	type (
 		test struct {
@@ -29,37 +35,46 @@ func TestQuery(t *testing.T) {
 		{
 			name: "should return script with no condition",
 			query: NewQuery(script).
-				Append(false, "id = $%v", "val").And().
-				Append(false, "uid = $%v", "val1").Or().
-				Append(false, "auth_id = $%v", "val2"),
-			wantScript: fmt.Sprintf(script, ""),
+				Where(false, "id = $%v", "val").And().
+				Where(false, "uid = $%v", "val1").Or().
+				Where(false, "auth_id = $%v", "val2"),
+			wantScript: strings.Replace(script, "%query%", "", 1),
 			wantArgs:   []interface{}{},
 		},
 		{
 			name: "should return script with one condition",
 			query: NewQuery(script).
-				Append(false, "id = $%v", "val").And().
-				Append(true, "uid = $%v", "val1").Or().
-				Append(false, "auth_id = $%v", "val2"),
-			wantScript: fmt.Sprintf(script, "uid = $1"),
+				Where(false, "id = $%v", "val").And().
+				Where(true, "uid = $%v", "val1").Or().
+				Where(false, "auth_id = $%v", "val2"),
+			wantScript: strings.Replace(script, "%query%", "uid = $1", 1),
 			wantArgs:   []interface{}{"val1"},
 		},
 		{
 			name: "should return script with two conditions and operator",
 			query: NewQuery(script).
-				Append(true, "id = $%v", "val").And().
-				Append(true, "uid = $%v", "val1").Or().
-				Append(false, "auth_id = $%v", "val2"),
-			wantScript: fmt.Sprintf(script, "id = $1 and uid = $2"),
+				Where(true, "id = $%v", "val").And().
+				Where(true, "uid = $%v", "val1").Or().
+				Where(false, "auth_id = $%v", "val2"),
+			wantScript: strings.Replace(script, "%query%", "id = $1 and uid = $2", 1),
 			wantArgs:   []interface{}{"val", "val1"},
 		},
 		{
 			name: "should return script with all conditions and operators",
 			query: NewQuery(script).
-				Append(true, "id = $%v", "val").And().
-				Append(true, "uid = $%v", "val1").Or().
-				Append(true, "(auth_id = $%v or auth_id = $%v)", "val2", "val3"),
-			wantScript: fmt.Sprintf(script, "id = $1 and uid = $2 or (auth_id = $3 or auth_id = $4)"),
+				Where(true, "id = $%v", "val").And().
+				Where(true, "uid = $%v", "val1").Or().
+				Where(true, "(auth_id = $%v or auth_id = $%v)", "val2", "val3"),
+			wantScript: strings.Replace(script, "%query%", "id = $1 and uid = $2 or (auth_id = $3 or auth_id = $4)", 1),
+			wantArgs:   []interface{}{"val", "val1", "val2", "val3"},
+		},
+		{
+			name: "should return script with all conditions and operators with where",
+			query: NewQuery(scriptNoWhere).
+				Where(true, "id = $%v", "val").And().
+				Where(true, "uid = $%v", "val1").Or().
+				Where(true, "(auth_id = $%v or auth_id = $%v)", "val2", "val3"),
+			wantScript: strings.Replace(scriptNoWhere, "%where_query%", "where id = $1 and uid = $2 or (auth_id = $3 or auth_id = $4)", 1),
 			wantArgs:   []interface{}{"val", "val1", "val2", "val3"},
 		},
 	} {

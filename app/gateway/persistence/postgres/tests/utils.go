@@ -26,12 +26,13 @@ func (d *Database) InsertOrders(ctx context.Context, orders ...order.Order) ([]o
 		insert into orders (
 			id,
 			identification, 
-			placed_at, 
-			status,
+			placed_at,
 			delivery_mode,
-			observations
+			observations,
+			address,
+			phone
 		) values (
-			$1, $2, $3, $4, $5, $6
+			$1, $2, $3, $4, $5, $6, $7
 		)
 	`
 
@@ -40,9 +41,37 @@ func (d *Database) InsertOrders(ctx context.Context, orders ...order.Order) ([]o
 			o.ID,
 			o.Identification,
 			o.PlacedAt,
-			o.Status,
 			o.DeliveryMode,
 			o.Observations,
+			o.Address,
+			o.Phone,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return orders, nil
+}
+
+func (d *Database) InsertOrdersFlow(ctx context.Context, orders ...order.FlowUpdate) ([]order.FlowUpdate, error) {
+	const script = `
+		insert into orders_flow (
+			id,
+			order_id, 
+			occurred_at,
+			status
+		) values (
+			$1, $2, $3, $4
+		)
+	`
+
+	for _, o := range orders {
+		_, err := d.Pool.Exec(ctx, script,
+			o.ID,
+			o.OrderID,
+			o.OccurredAt,
+			o.Status,
 		)
 		if err != nil {
 			return nil, err

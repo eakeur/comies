@@ -2,11 +2,14 @@ package tests
 
 import (
 	"fmt"
-	"gomies/app/gateway/persistence/postgres"
-	"log"
-
 	"github.com/ory/dockertest"
 	"github.com/pkg/errors"
+	"gomies/app/gateway/persistence/postgres"
+	"log"
+)
+
+const (
+	ContainerExpirationSeconds = 600
 )
 
 type Container struct {
@@ -40,7 +43,7 @@ func (c *Container) create() error {
 	c.pool = pool
 	c.resource = resource
 	c.config.Port = c.resource.GetPort("5432/tcp")
-	err = resource.Expire(360)
+	err = resource.Expire(ContainerExpirationSeconds)
 	if err != nil {
 		return errors.Wrap(err, "could not set an expiration time")
 	}
