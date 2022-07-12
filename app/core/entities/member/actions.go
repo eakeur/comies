@@ -11,5 +11,4 @@ type Actions interface {
 	List(ctx context.Context, operatorFilter Filter) ([]Member, int, error)
 	Create(ctx context.Context, op Member) (Member, error)
 	Remove(ctx context.Context, key Key) error
-	Update(ctx context.Context, op Member) error
 }

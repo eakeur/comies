@@ -95,7 +95,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 			},
 		},
 		{
-			name: "should return ErrAlreadyExists error for existing id",
+			name: "should return ErrNotFound error for nonexistent id",
 			args: args{
 				flow: order.FlowUpdate{
 					ID:         4,

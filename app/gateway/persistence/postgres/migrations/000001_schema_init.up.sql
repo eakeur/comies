@@ -1,26 +1,14 @@
 begin;
 
-    create table stores (
-        id        bigint       not null,
-        active    boolean      not null,
-        name      text         not null,
-        nickname  varchar(24)  not null,
-
-        constraint stores_pk primary key(id),
-        constraint nickname_uk unique(nickname)
-    );
-
-    create table crew (
+    create table member (
         id                      bigint                   not null,
         active                  boolean                  not null,
         name                    varchar(24)              not null,
         nickname                varchar(24)              not null,
         password                text                     not null,
-        store_id                bigint                   not null,
 
-        constraint crew_pk primary key (id),
-        constraint stores_store_id foreign key (store_id) references stores(id),
-        constraint nickname_store_id_uk unique (nickname, store_id)
+        constraint member_pk primary key (id),
+        constraint nickname_uk unique (nickname)
     );
 
     create table products (

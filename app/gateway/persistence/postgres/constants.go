@@ -16,4 +16,7 @@ const (
 	OrderFlowFK   = "order_id_fk"
 	OrderFlowPK   = "flow_pk"
 	OrderStatusUK = "order_status_uk"
+
+	MemberIDPK       = "member_pk"
+	MemberNicknameUK = "nickname_uk"
 )
