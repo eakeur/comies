@@ -26,7 +26,6 @@ type (
 		ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, int, error)
 		SaveMovement(ctx context.Context, resourceID types.ID, movement movement.Movement) (AdditionResult, error)
 		RemoveMovement(ctx context.Context, resourceID types.ID, movementID types.ID) error
-		ClosePeriod(ctx context.Context, filter movement.Filter) error
 	}
 
 	workflow struct {

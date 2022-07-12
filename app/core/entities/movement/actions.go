@@ -11,8 +11,7 @@ type Actions interface {
 	List(ctx context.Context, filter Filter) ([]Movement, int, error)
 	Save(ctx context.Context, movement Movement) (Movement, error)
 	Remove(ctx context.Context, resourceID types.ID, movementID types.ID) error
-	Archive(ctx context.Context, filter Filter) error
 	GetBalance(ctx context.Context, filter Filter) (types.Quantity, error)
-	UpdateReserved(ctx context.Context, agentID types.ID) error
+	SetOutputStatus(ctx context.Context, agentID types.ID) error
 	RemoveReserved(ctx context.Context, agentID types.ID) error
 }
