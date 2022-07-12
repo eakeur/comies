@@ -14,7 +14,6 @@ type (
 		List(ctx context.Context, operatorFilter member.Filter) ([]member.Member, int, error)
 		GetByKey(ctx context.Context, key member.Key) (member.Member, error)
 		Remove(ctx context.Context, key member.Key) error
-		Update(ctx context.Context, op member.Member) error
 		AuthenticateMember(ctx context.Context, auth AuthRequest) (session.Session, error)
 	}
 
