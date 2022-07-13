@@ -17,7 +17,7 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 			m.date,
 			m.quantity,
 			m.value,
-			m.agent
+			m.agent_id
 		from
 			movements m
 		inner join

@@ -6,12 +6,12 @@ import (
 )
 
 const (
-	InputMovement    Type = iota
-	OutputMovement   Type = iota
-	ReservedMovement Type = iota
+	InputMovement    Type = "INPUT"
+	OutputMovement   Type = "OUTPUT"
+	ReservedMovement Type = "RESERVED"
 )
 
-type Type int
+type Type string
 
 type Movement struct {
 	ID types.ID

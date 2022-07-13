@@ -112,7 +112,7 @@ begin;
     create table movements (
         id bigint not null,
         stock_id bigint not null,
-        type int not null,
+        type varchar(30) not null,
         date timestamp with time zone not null,
         quantity bigint not null,
         value bigint not null,
