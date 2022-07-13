@@ -16,8 +16,8 @@ type Type int
 type Movement struct {
 	ID types.ID
 
-	// ResourceID is an identifier for the stock this movement references to
-	ResourceID types.ID
+	// StockID is an identifier for the stock this movement references to
+	StockID types.ID
 
 	// Type points out if this movement is input or output
 	Type Type
@@ -31,8 +31,8 @@ type Movement struct {
 	// PaidValue is how much was paid/received for this resource
 	PaidValue types.Currency
 
-	// Agent is the entity from this resource came from or is going to
-	Agent types.ID
+	// AgentID is the entity from this resource came from or is going to
+	AgentID types.ID
 
 	types.History
 }

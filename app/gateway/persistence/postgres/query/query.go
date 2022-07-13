@@ -1,8 +1,13 @@
 package query
 
 import (
+	"errors"
 	"fmt"
 	"strings"
+)
+
+var (
+	ErrMandatoryParameter = errors.New("a mandatory parameter was not informed to the query")
 )
 
 func NewQuery(script string) Query {
@@ -38,17 +43,19 @@ func (q Query) Script() string {
 }
 
 func (q Query) Where(inCase bool, input string, values ...interface{}) Query {
-	if inCase {
-		placeholders := make([]interface{}, len(values))
-		for i, value := range values {
-			q.Args = append(q.Args, value)
-			placeholders[i] = len(q.Args)
-		}
-
-		q.query += fmt.Sprintf(q.nextConjunction()+input+" ", placeholders...)
+	if !inCase {
+		return q
 	}
 
-	return q
+	return q.append(input, values...)
+}
+
+func (q Query) OnlyWhere(inCase bool, input string, values ...interface{}) (Query, error) {
+	if !inCase {
+		return Query{}, ErrMandatoryParameter
+	}
+
+	return q.append(input, values...), nil
 }
 
 func (q Query) And() Query {
@@ -70,4 +77,16 @@ func (q Query) Or() Query {
 func (q Query) nextConjunction() string {
 	op := q.conjunction
 	return op
+}
+
+func (q Query) append(input string, values ...interface{}) Query {
+	placeholders := make([]interface{}, len(values))
+	for i, value := range values {
+		q.Args = append(q.Args, value)
+		placeholders[i] = len(q.Args)
+	}
+
+	q.query += fmt.Sprintf(q.nextConjunction()+input+" ", placeholders...)
+
+	return q
 }

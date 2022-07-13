@@ -8,7 +8,7 @@ import (
 
 func (w workflow) ConsumeResources(ctx context.Context, reservationID types.ID) error {
 
-	err := w.movements.SetOutputStatus(ctx, reservationID)
+	err := w.movements.SetOutputType(ctx, reservationID)
 	if err != nil {
 		return fault.Wrap(err)
 	}

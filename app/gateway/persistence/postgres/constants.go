@@ -19,4 +19,7 @@ const (
 
 	MemberIDPK       = "member_pk"
 	MemberNicknameUK = "nickname_uk"
+
+	MovementIDPK      = "movements_id"
+	MovementStockIDFK = "stock_id_fk"
 )

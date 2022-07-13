@@ -111,13 +111,12 @@ begin;
 
     create table movements (
         id bigint not null,
-        active boolean not null,
         stock_id bigint not null,
         type int not null,
         date timestamp with time zone not null,
         quantity bigint not null,
         value bigint not null,
-        agent bigint not null,
+        agent_id bigint not null,
 
         constraint movements_id primary key (id),
         constraint stock_id_fk foreign key (stock_id) references stocks(id)

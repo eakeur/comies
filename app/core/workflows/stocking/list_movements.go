@@ -12,7 +12,7 @@ func (w workflow) ListMovements(ctx context.Context, filter movement.Filter) ([]
 		return []movement.Movement{}, 0, fault.Wrap(err)
 	}
 
-	movements, count, err := w.movements.List(ctx, filter)
+	movements, count, err := w.movements.ListByResourceID(ctx, filter.ResourceID, filter)
 	if err != nil {
 		return []movement.Movement{}, 0, fault.Wrap(err)
 	}

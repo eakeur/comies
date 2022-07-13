@@ -13,7 +13,7 @@ func (w workflow) GetBalance(ctx context.Context, filter movement.Filter) (types
 		return 0, fault.Wrap(err)
 	}
 
-	actual, err := w.movements.GetBalance(ctx, filter)
+	actual, err := w.movements.GetBalanceByResourceID(ctx, filter.ResourceID, filter)
 	if err != nil {
 		return 0, fault.Wrap(err)
 	}

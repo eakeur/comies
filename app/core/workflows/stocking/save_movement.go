@@ -10,7 +10,7 @@ import (
 
 func (w workflow) SaveMovement(ctx context.Context, resourceID types.ID, mv movement.Movement) (AdditionResult, error) {
 
-	actual, err := w.movements.GetBalance(ctx, movement.Filter{ResourceID: resourceID})
+	actual, err := w.movements.GetBalanceByResourceID(ctx, resourceID, movement.Filter{})
 	if err != nil {
 		return AdditionResult{}, fault.Wrap(err)
 	}
@@ -20,7 +20,7 @@ func (w workflow) SaveMovement(ctx context.Context, resourceID types.ID, mv move
 		return AdditionResult{}, fault.Wrap(err)
 	}
 
-	mv.ResourceID = resourceID
+	mv.StockID = stk.ID
 	if err := mv.Validate(); err != nil {
 		return AdditionResult{}, fault.Wrap(err)
 	}
@@ -34,7 +34,7 @@ func (w workflow) SaveMovement(ctx context.Context, resourceID types.ID, mv move
 		return AdditionResult{}, fault.Wrap(stock.ErrStockEmpty)
 	}
 
-	_, err = w.movements.Save(ctx, mv)
+	_, err = w.movements.Create(ctx, mv)
 	if err != nil {
 		return AdditionResult{}, fault.Wrap(err)
 	}

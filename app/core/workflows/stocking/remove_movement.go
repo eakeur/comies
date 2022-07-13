@@ -12,7 +12,7 @@ func (w workflow) RemoveMovement(ctx context.Context, resourceID types.ID, movem
 		return fault.Wrap(fault.ErrMissingID)
 	}
 
-	err := w.movements.Remove(ctx, resourceID, movementID)
+	err := w.movements.Remove(ctx, movementID)
 	if err != nil {
 		return fault.Wrap(err)
 	}

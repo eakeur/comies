@@ -48,11 +48,10 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 func (w workflow) checkResource(ctx context.Context, reservationID types.ID, reservation Reservation) (ReservationResult, error) {
 
 	mv := movement.Movement{
-		ResourceID: reservation.ResourceID,
-		Type:       movement.ReservedMovement,
-		Date:       time.Now(),
-		Quantity:   reservation.Quantity,
-		Agent:      reservationID,
+		Type:     movement.ReservedMovement,
+		Date:     time.Now(),
+		Quantity: reservation.Quantity,
+		AgentID:  reservationID,
 	}
 
 	res := ReservationResult{
@@ -60,7 +59,7 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 		Want:       reservation.Quantity,
 	}
 
-	actual, err := w.movements.GetBalance(ctx, movement.Filter{ResourceID: reservation.ResourceID})
+	actual, err := w.movements.GetBalanceByResourceID(ctx, reservation.ResourceID, movement.Filter{})
 	if err != nil {
 		return ReservationResult{}, fault.Wrap(err)
 	}
@@ -82,7 +81,7 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 		return res, nil
 	}
 
-	_, err = w.movements.Save(ctx, mv)
+	_, err = w.movements.Create(ctx, mv)
 	if err != nil {
 		return ReservationResult{}, fault.Wrap(err)
 	}
