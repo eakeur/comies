@@ -17,7 +17,8 @@ func (d *Database) CheckValue(ctx context.Context, script string, expected inter
 	if err := r.Scan(&got); err != nil {
 		d.Test.Errorf("an error occurred when checking value: %v", err)
 	}
-	assert.Equal(d.Test, expected, got)
+
+	assert.EqualValues(d.Test, expected, got)
 }
 
 func (d *Database) InsertOrders(ctx context.Context, orders ...order.Order) ([]order.Order, error) {
@@ -132,7 +133,6 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 	for _, p := range products {
 		_, err := d.Pool.Exec(ctx, script,
 			p.ID,
-			p.Active,
 			p.Code,
 			p.Name,
 			p.Type,
