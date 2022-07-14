@@ -1,16 +1,5 @@
 begin;
 
-    create table member (
-        id                      bigint                   not null,
-        active                  boolean                  not null,
-        name                    varchar(24)              not null,
-        nickname                varchar(24)              not null,
-        password                text                     not null,
-
-        constraint member_pk primary key (id),
-        constraint nickname_uk unique (nickname)
-    );
-
     create table products (
         id           bigint      not null,
         active       boolean     not null,
@@ -121,9 +110,5 @@ begin;
         constraint movements_id primary key (id),
         constraint stock_id_fk foreign key (stock_id) references stocks(id)
     );
-
-
-
-
 
 end;

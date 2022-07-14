@@ -11,7 +11,7 @@ require (
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
+	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd // indirect
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.27.1
 )

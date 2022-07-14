@@ -42,7 +42,6 @@ type (
 		OrderID    types.ID
 		Status     Status
 		OccurredAt time.Time
-		History    types.History
 	}
 
 	Filter struct {

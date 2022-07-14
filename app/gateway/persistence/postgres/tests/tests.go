@@ -3,15 +3,12 @@ package tests
 import (
 	"context"
 	"gomies/app/gateway/persistence/postgres"
-	"gomies/app/sdk/session"
-	"gomies/app/sdk/types"
 	"log"
 	"testing"
 )
 
 var (
-	DefaultStore = types.Store{StoreID: 1}
-	container    *Container
+	container *Container
 )
 
 func SetupTest(m *testing.M) int {
@@ -64,14 +61,14 @@ func NewTestDatabase(t *testing.T, ctx context.Context) *Database {
 }
 
 func FetchTestDB(t *testing.T, callbacks ...Callback) (context.Context, *Database) {
-	ctx := session.Session{StoreID: DefaultStore.StoreID}.WithContext(context.Background())
+	ctx := context.Background()
 	db := NewTestDatabase(t, ctx)
 	db.runCallbacks(callbacks)
 	return ctx, db
 }
 
 func FetchTestTX(t *testing.T, callbacks ...Callback) (context.Context, *Database) {
-	ctx := session.Session{StoreID: DefaultStore.StoreID}.WithContext(context.Background())
+	ctx := context.Background()
 	db := NewTestDatabase(t, ctx)
 	ctx, _ = db.Transaction(ctx)
 	db.runCallbacks(callbacks)
