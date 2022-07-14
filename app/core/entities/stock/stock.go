@@ -6,8 +6,7 @@ import (
 
 type (
 	Stock struct {
-		ID      types.ID
-		History types.History
+		ID types.ID
 		// TargetID is an identifier for the object this stocks references to
 		TargetID types.ID
 		// MaximumQuantity is how many unities of this resource the stock can support

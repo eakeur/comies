@@ -11,7 +11,6 @@ type (
 		IngredientID types.ID
 		Quantity     types.Quantity
 		Optional     bool
-		History      types.History
 	}
 
 	IgnoredList []types.ID

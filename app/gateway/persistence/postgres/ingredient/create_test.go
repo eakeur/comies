@@ -2,13 +2,13 @@ package ingredient
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/ingredient"
 	"gomies/app/core/entities/product"
 	"gomies/app/gateway/persistence/postgres/tests"
 	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_actions_Create(t *testing.T) {
@@ -33,7 +33,6 @@ func Test_actions_Create(t *testing.T) {
 				IngredientID: 2,
 				Quantity:     100,
 				Optional:     false,
-				History:      types.History{},
 			}},
 			want: ingredient.Ingredient{
 				ID:           1,
@@ -41,7 +40,6 @@ func Test_actions_Create(t *testing.T) {
 				IngredientID: 2,
 				Quantity:     100,
 				Optional:     false,
-				History:      types.History{},
 			},
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertProducts(ctx, product.Product{
@@ -73,7 +71,6 @@ func Test_actions_Create(t *testing.T) {
 				IngredientID: 3,
 				Quantity:     100,
 				Optional:     false,
-				History:      types.History{},
 			}},
 			wantErr: fault.ErrNotFound,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
@@ -97,7 +94,6 @@ func Test_actions_Create(t *testing.T) {
 				IngredientID: 1,
 				Quantity:     100,
 				Optional:     false,
-				History:      types.History{},
 			}},
 			wantErr: fault.ErrNotFound,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
@@ -121,7 +117,6 @@ func Test_actions_Create(t *testing.T) {
 				IngredientID: 2,
 				Quantity:     100,
 				Optional:     false,
-				History:      types.History{},
 			}},
 			wantErr: fault.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
@@ -148,7 +143,6 @@ func Test_actions_Create(t *testing.T) {
 					IngredientID: 2,
 					Quantity:     100,
 					Optional:     false,
-					History:      types.History{},
 				})
 				if err != nil {
 					t.Errorf("error inserting ingredients: %v", err)

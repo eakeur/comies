@@ -33,8 +33,6 @@ type Movement struct {
 
 	// AgentID is the entity from this resource came from or is going to
 	AgentID types.ID
-
-	types.History
 }
 
 func (m Movement) Value() types.Quantity {

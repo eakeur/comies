@@ -16,8 +16,6 @@ type (
 		Type Type
 
 		Sale
-
-		types.History
 	}
 
 	Sale struct {

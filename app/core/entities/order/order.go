@@ -35,7 +35,6 @@ type (
 		FinalPrice     types.Currency
 		Address        string
 		Phone          string
-		types.History
 	}
 
 	FlowUpdate struct {

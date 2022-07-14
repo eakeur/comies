@@ -23,7 +23,6 @@ type (
 		Quantity     types.Quantity
 		Observations string
 		Details      Details
-		History      types.History
 	}
 
 	Details struct {

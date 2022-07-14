@@ -11,7 +11,6 @@ type (
 		Name     string
 		Nickname string
 		Password types.Password
-		History  types.History
 	}
 )
 
