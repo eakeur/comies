@@ -26,12 +26,12 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 			%query%
 	`
 
-	q := query.NewQuery(script).
-		Where(filter.ResourceID != 0, "s.target_id = $%v", resourceID).And().
+	q, err := query.NewQuery(script).
 		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
-		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate)
+		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
+		OnlyWhere(resourceID != 0, "s.target_id = $%v", resourceID)
 
-	rows, err := a.db.Query(ctx, q.Script(), q.Args)
+	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {
 		return nil, fault.Wrap(err)
 	}
@@ -50,6 +50,8 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 		); err != nil {
 			continue
 		}
+
+		m.Date = m.Date.UTC()
 
 		movements = append(movements, m)
 	}

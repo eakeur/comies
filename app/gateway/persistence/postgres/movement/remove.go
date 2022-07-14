@@ -8,12 +8,7 @@ import (
 )
 
 func (a actions) Remove(ctx context.Context, movementID types.ID) error {
-	const script = `
-		delete from 
-			movements
-		where 
-			m.id = $1
-	`
+	const script = `delete from movements m where m.id = $1`
 
 	cmd, err := transaction.ExecFromContext(ctx, script, movementID)
 	if err != nil {

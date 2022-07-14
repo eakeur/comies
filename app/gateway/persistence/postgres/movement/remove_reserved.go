@@ -11,9 +11,9 @@ import (
 func (a actions) RemoveReserved(ctx context.Context, agentID types.ID) error {
 	const script = `
 		delete from 
-			movements 	
+			movements m	
 		where 
-			m.agent = $1 and m.type = $3
+			m.agent_id = $1 and m.type = $2
 	`
 
 	cmd, err := transaction.ExecFromContext(ctx, script, agentID, movement.ReservedMovement)
@@ -21,7 +21,7 @@ func (a actions) RemoveReserved(ctx context.Context, agentID types.ID) error {
 		return fault.Wrap(err)
 	}
 
-	if cmd.RowsAffected() != 1 {
+	if cmd.RowsAffected() < 1 {
 		return fault.Wrap(fault.ErrNotFound)
 	}
 

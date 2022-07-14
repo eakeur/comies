@@ -37,9 +37,7 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Mo
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
-			params := map[string]interface{}{
-				"id": mov.ID, "stock_id": mov.StockID, "quantity": mov.Quantity.String(), "type": mov.Type,
-			}
+			params := map[string]interface{}{"id": mov.ID, "stock_id": mov.StockID}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.MovementStockIDFK {
 				return movement.Movement{}, fault.Wrap(fault.ErrNotFound).
