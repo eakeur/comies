@@ -12,5 +12,5 @@ type Actions interface {
 	UpdateStock(ctx context.Context, st Stock) error
 	GetStockByID(ctx context.Context, resourceID types.ID) (Stock, error)
 	RemoveStock(ctx context.Context, resourceID types.ID) error
-	ListStocks(ctx context.Context) ([]Stock, int, error)
+	ListStocks(ctx context.Context) ([]Stock, error)
 }

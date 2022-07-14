@@ -20,10 +20,10 @@ type (
 		CreateStock(ctx context.Context, s stock.Stock) (stock.Stock, error)
 		UpdateStock(ctx context.Context, s stock.Stock) error
 		RemoveStock(ctx context.Context, id types.ID) error
-		ListStock(ctx context.Context) ([]stock.Stock, int, error)
+		ListStock(ctx context.Context) ([]stock.Stock, error)
 		GetStockByID(ctx context.Context, id types.ID) (stock.Stock, error)
 
-		ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, int, error)
+		ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, error)
 		SaveMovement(ctx context.Context, resourceID types.ID, movement movement.Movement) (AdditionResult, error)
 		RemoveMovement(ctx context.Context, resourceID types.ID, movementID types.ID) error
 	}

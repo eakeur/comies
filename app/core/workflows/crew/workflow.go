@@ -11,7 +11,7 @@ import (
 type (
 	Workflow interface {
 		Create(ctx context.Context, op member.Member) (member.Member, error)
-		List(ctx context.Context, operatorFilter member.Filter) ([]member.Member, int, error)
+		List(ctx context.Context, operatorFilter member.Filter) ([]member.Member, error)
 		GetByKey(ctx context.Context, key member.Key) (member.Member, error)
 		Remove(ctx context.Context, key member.Key) error
 		AuthenticateMember(ctx context.Context, auth AuthRequest) (session.Session, error)

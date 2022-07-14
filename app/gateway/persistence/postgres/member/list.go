@@ -7,7 +7,7 @@ import (
 	"gomies/app/sdk/fault"
 )
 
-func (a actions) List(ctx context.Context, filter member.Filter) ([]member.Member, int, error) {
+func (a actions) List(ctx context.Context, filter member.Filter) ([]member.Member, error) {
 	const script = `
 		select
 			m.id,
@@ -24,7 +24,7 @@ func (a actions) List(ctx context.Context, filter member.Filter) ([]member.Membe
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args)
 	if err != nil {
-		return nil, 0, fault.Wrap(err)
+		return nil, fault.Wrap(err)
 	}
 
 	members := make([]member.Member, 0)
@@ -43,5 +43,5 @@ func (a actions) List(ctx context.Context, filter member.Filter) ([]member.Membe
 		members = append(members, m)
 	}
 
-	return members, 0, nil
+	return members, nil
 }

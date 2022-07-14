@@ -8,7 +8,7 @@ import (
 	"gomies/app/sdk/types"
 )
 
-func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filter movement.Filter) ([]movement.Movement, int, error) {
+func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filter movement.Filter) ([]movement.Movement, error) {
 	const script = `
 		select
 			m.id,
@@ -33,7 +33,7 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args)
 	if err != nil {
-		return nil, 0, fault.Wrap(err)
+		return nil, fault.Wrap(err)
 	}
 
 	movements := make([]movement.Movement, 0)
@@ -54,5 +54,5 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 		movements = append(movements, m)
 	}
 
-	return movements, 0, nil
+	return movements, nil
 }

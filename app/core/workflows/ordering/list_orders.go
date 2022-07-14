@@ -6,11 +6,11 @@ import (
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) ListOrders(ctx context.Context, f order.Filter) ([]order.Order, int, error) {
-	list, count, err := w.orders.List(ctx, f)
+func (w workflow) ListOrders(ctx context.Context, f order.Filter) ([]order.Order, error) {
+	list, err := w.orders.List(ctx, f)
 	if err != nil {
-		return nil, 0, fault.Wrap(err)
+		return nil, fault.Wrap(err)
 	}
 
-	return list, count, nil
+	return list, nil
 }

@@ -8,7 +8,7 @@ import (
 
 type Actions interface {
 	GetByKey(ctx context.Context, key Key) (Member, error)
-	List(ctx context.Context, operatorFilter Filter) ([]Member, int, error)
+	List(ctx context.Context, operatorFilter Filter) ([]Member, error)
 	Create(ctx context.Context, op Member) (Member, error)
 	Remove(ctx context.Context, key Key) error
 }

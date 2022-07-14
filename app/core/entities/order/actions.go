@@ -9,7 +9,7 @@ import (
 //go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock
 type Actions interface {
 	Create(ctx context.Context, o Order) (Order, error)
-	List(ctx context.Context, f Filter) ([]Order, int, error)
+	List(ctx context.Context, f Filter) ([]Order, error)
 	GetByID(ctx context.Context, id types.ID) (Order, error)
 	SetDeliveryMode(ctx context.Context, id types.ID, deliverType DeliveryMode) error
 	SetObservation(ctx context.Context, id types.ID, observation string) error

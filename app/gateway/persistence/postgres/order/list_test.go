@@ -2,12 +2,13 @@ package order
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/item"
 	"gomies/app/core/entities/order"
 	"gomies/app/gateway/persistence/postgres/tests"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_actions_List(t *testing.T) {
@@ -179,7 +180,7 @@ func Test_actions_List(t *testing.T) {
 			ctx, db := tests.FetchTestDB(t, tt.before)
 			defer db.Drop()
 
-			got, _, err := actions{db: db.Pool}.List(ctx, tt.args.filter)
+			got, err := actions{db: db.Pool}.List(ctx, tt.args.filter)
 			assert.ErrorIs(t, err, tt.wantErr)
 			assert.Equal(t, tt.want, got)
 		})

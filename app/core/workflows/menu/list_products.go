@@ -2,15 +2,16 @@ package menu
 
 import (
 	"context"
-	product2 "gomies/app/core/entities/product"
+	"gomies/app/core/entities/product"
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) ListProducts(ctx context.Context, filter product2.Filter) ([]product2.Product, int, error) {
+func (w workflow) ListProducts(ctx context.Context, filter product.Filter) ([]product.Product, error) {
 
-	list, count, err := w.products.ListProducts(ctx, filter)
+	list, err := w.products.ListProducts(ctx, filter)
 	if err != nil {
-		return []product2.Product{}, 0, fault.Wrap(err)
+		return []product.Product{}, fault.Wrap(err)
 	}
-	return list, count, err
+
+	return list, err
 }

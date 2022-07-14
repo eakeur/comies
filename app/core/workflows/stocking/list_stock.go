@@ -6,12 +6,12 @@ import (
 	"gomies/app/sdk/fault"
 )
 
-func (w workflow) ListStock(ctx context.Context) ([]stock.Stock, int, error) {
+func (w workflow) ListStock(ctx context.Context) ([]stock.Stock, error) {
 
-	list, count, err := w.stocks.ListStocks(ctx)
+	list, err := w.stocks.ListStocks(ctx)
 	if err != nil {
-		return []stock.Stock{}, 0, fault.Wrap(err)
+		return []stock.Stock{}, fault.Wrap(err)
 	}
 
-	return list, count, nil
+	return list, nil
 }
