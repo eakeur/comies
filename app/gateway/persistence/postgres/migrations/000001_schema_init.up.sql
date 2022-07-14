@@ -2,7 +2,6 @@ begin;
 
     create table products (
         id           bigint      not null,
-        active       boolean     not null,
         code         varchar(12) not null,
         name         varchar(60) not null,
         type         int         not null,
@@ -88,7 +87,6 @@ begin;
 
     create table stocks (
         id bigint not null,
-        active boolean not null,
         target_id bigint not null,
         maximum_quantity bigint not null,
         minimum_quantity bigint not null,
