@@ -2,11 +2,13 @@ package tests
 
 import (
 	"context"
+	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/ingredient"
 	"gomies/app/core/entities/item"
+	"gomies/app/core/entities/movement"
 	"gomies/app/core/entities/order"
 	"gomies/app/core/entities/product"
-	"reflect"
+	"gomies/app/core/entities/stock"
 )
 
 func (d *Database) CheckValue(ctx context.Context, script string, expected interface{}, args ...interface{}) {
@@ -15,10 +17,7 @@ func (d *Database) CheckValue(ctx context.Context, script string, expected inter
 	if err := r.Scan(&got); err != nil {
 		d.Test.Errorf("an error occurred when checking value: %v", err)
 	}
-	if !reflect.DeepEqual(expected, got) {
-		d.Test.Errorf("check failed: got %v ----- expected %v", got, expected)
-	}
-
+	assert.Equal(d.Test, expected, got)
 }
 
 func (d *Database) InsertOrders(ctx context.Context, orders ...order.Order) ([]order.Order, error) {
@@ -118,7 +117,6 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 	const script = `
 		insert into products (
 			id,
-			active,
 			code,
 			name,
 			type,
@@ -127,7 +125,7 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 			sale_unit,
 			minimum_sale
 		) values (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9
+			$1, $2, $3, $4, $5, $6, $7, $8
 		)
 	`
 
@@ -178,4 +176,66 @@ func (d *Database) InsertIngredients(ctx context.Context, ingredients ...ingredi
 	}
 
 	return ingredients, nil
+}
+
+func (d *Database) InsertMovements(ctx context.Context, movements ...movement.Movement) ([]movement.Movement, error) {
+	const script = `
+		insert into movements (
+			id,
+			stock_id,
+			type,
+			date,
+			quantity,
+			value,
+			agent_id
+		) values (
+			$1, $2, $3, $4, $5, $6, $7
+		)
+	`
+
+	for _, o := range movements {
+		_, err := d.Pool.Exec(ctx, script,
+			o.ID,
+			o.StockID,
+			o.Type,
+			o.Date,
+			o.Quantity,
+			o.PaidValue,
+			o.AgentID,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return movements, nil
+}
+
+func (d *Database) InsertStocks(ctx context.Context, stocks ...stock.Stock) ([]stock.Stock, error) {
+	const script = `
+		insert into stocks (
+			id,
+			target_id, 
+			maximum_quantity,
+			minimum_quantity,
+			location
+		) values (
+			$1, $2, $3, $4, $5
+		)
+	`
+
+	for _, o := range stocks {
+		_, err := d.Pool.Exec(ctx, script,
+			o.ID,
+			o.TargetID,
+			o.MaximumQuantity,
+			o.MinimumQuantity,
+			o.Location,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return stocks, nil
 }
