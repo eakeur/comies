@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgconn"
-	"gomies/app/core/entities/movement"
 	"gomies/app/core/entities/product"
 	"gomies/app/gateway/persistence/postgres"
 	"gomies/app/gateway/persistence/postgres/transaction"
@@ -16,18 +15,18 @@ func (a actions) Update(ctx context.Context, prd product.Product) error {
 		update 
 			products
 		set
-			code = $1
-			name = $2
-			type = $3
-			cost_price = $4
-			sale_price = $5
-			sale_unit = $6
+			code = $1,
+			name = $2,
+			type = $3,
+			cost_price = $4,
+			sale_price = $5,
+			sale_unit = $6,
 			minimum_sale = $7
 		where 
-			id = $9
+			id = $8
 	`
 
-	cmd, err := transaction.ExecFromContext(ctx, script, movement.OutputMovement,
+	cmd, err := transaction.ExecFromContext(ctx, script,
 		prd.Code,
 		prd.Name,
 		prd.Type,
