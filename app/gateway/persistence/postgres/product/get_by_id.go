@@ -13,14 +13,14 @@ import (
 func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, error) {
 	const script = `
 		select
-			id,
-			code,
-			name,
-			type,
-			cost_price,
-			sale_price,
-			sale_unit,
-			minimum_sale
+			p.id,
+			p.code,
+			p.name,
+			p.type,
+			p.cost_price,
+			p.sale_price,
+			p.sale_unit,
+			p.minimum_sale
 		from
 			products p
 		where
