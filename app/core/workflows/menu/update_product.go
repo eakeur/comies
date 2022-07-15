@@ -12,7 +12,7 @@ func (w workflow) UpdateProduct(ctx context.Context, prd product.Product) error 
 		return fault.Wrap(err)
 	}
 
-	err := w.products.UpdateProduct(ctx, prd)
+	err := w.products.Update(ctx, prd)
 	if err != nil {
 		return fault.Wrap(err)
 	}

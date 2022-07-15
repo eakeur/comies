@@ -8,7 +8,7 @@ import (
 
 func (w workflow) ListProducts(ctx context.Context, filter product.Filter) ([]product.Product, error) {
 
-	list, err := w.products.ListProducts(ctx, filter)
+	list, err := w.products.List(ctx, filter)
 	if err != nil {
 		return []product.Product{}, fault.Wrap(err)
 	}

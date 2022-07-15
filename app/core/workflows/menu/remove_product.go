@@ -8,7 +8,7 @@ import (
 
 func (w workflow) RemoveProduct(ctx context.Context, ext product.Key) error {
 
-	err := w.products.RemoveProduct(ctx, ext)
+	err := w.products.Remove(ctx, ext.ID)
 	if err != nil {
 		return fault.Wrap(err)
 	}

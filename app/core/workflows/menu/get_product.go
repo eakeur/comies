@@ -8,7 +8,7 @@ import (
 
 func (w workflow) GetProduct(ctx context.Context, ext product2.Key) (product2.Product, error) {
 
-	prod, err := w.products.GetProducts(ctx, ext)
+	prod, err := w.products.GetByID(ctx, ext.ID)
 	if err != nil {
 		return product2.Product{}, fault.Wrap(err)
 	}

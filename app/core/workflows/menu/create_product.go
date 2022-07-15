@@ -18,7 +18,7 @@ func (w workflow) CreateProduct(ctx context.Context, prd product.Product) (produ
 		})
 	}
 
-	prd, err := w.products.CreateProduct(ctx, prd)
+	prd, err := w.products.Create(ctx, prd)
 	if err != nil {
 		return product.Product{}, fault.Wrap(err)
 	}
