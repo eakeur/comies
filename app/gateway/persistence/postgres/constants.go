@@ -22,4 +22,7 @@ const (
 
 	ProductIDPK   = "products_pk"
 	ProductCodeUK = "code_store_id_uk"
+
+	StockIDPK = "stocks_id"
+	StockIDUK = "target_store_uk"
 )
