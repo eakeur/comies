@@ -64,7 +64,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			},
 			opts: opts{
 				movements: &movement.ActionsMock{
-					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
+					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
 						if filter.ResourceID == 1 {
 							return 300, nil
 						}
@@ -72,7 +72,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 						return 5000, nil
 					},
 
-					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+					CreateFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
 						return movement, nil
 					},
 				},
@@ -116,7 +116,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			},
 			opts: opts{
 				movements: &movement.ActionsMock{
-					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
+					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
 						if filter.ResourceID == 1 {
 							return 300, nil
 						}
@@ -124,7 +124,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 						return 20, nil
 					},
 
-					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+					CreateFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
 						return movement, nil
 					},
 				},
@@ -156,15 +156,14 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			wantErr: fault.ErrNotFound,
 			opts: opts{
 				movements: &movement.ActionsMock{
-					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
+					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
 						if filter.ResourceID == 1 {
 							return 300, nil
 						}
 
 						return 20, nil
 					},
-
-					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+					CreateFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
 						return movement, nil
 					},
 				},
@@ -205,11 +204,10 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			}(),
 			opts: opts{
 				movements: &movement.ActionsMock{
-					GetBalanceFunc: func(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
+					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
 						return 100, nil
 					},
-
-					SaveFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
+					CreateFunc: func(ctx context.Context, movement movement.Movement) (movement.Movement, error) {
 						return movement, nil
 					},
 				},
