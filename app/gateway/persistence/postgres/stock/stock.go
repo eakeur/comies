@@ -2,6 +2,7 @@ package stock
 
 import (
 	"comies/app/core/entities/stock"
+
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -11,6 +12,6 @@ type actions struct {
 	db *pgxpool.Pool
 }
 
-func NewRepository(db *pgxpool.Pool) stock.Actions {
+func NewActions(db *pgxpool.Pool) stock.Actions {
 	return actions{db: db}
 }

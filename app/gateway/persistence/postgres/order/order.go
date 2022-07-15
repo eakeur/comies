@@ -12,6 +12,6 @@ type actions struct {
 	db *pgxpool.Pool
 }
 
-func NewRepository(db *pgxpool.Pool) order.Actions {
+func NewActions(db *pgxpool.Pool) order.Actions {
 	return actions{db: db}
 }
