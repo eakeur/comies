@@ -15,7 +15,7 @@ func (w workflow) SaveMovement(ctx context.Context, resourceID types.ID, mv move
 		return AdditionResult{}, fault.Wrap(err)
 	}
 
-	stk, err := w.stocks.GetStockByID(ctx, resourceID)
+	stk, err := w.stocks.GetByID(ctx, resourceID)
 	if err != nil {
 		return AdditionResult{}, fault.Wrap(err)
 	}

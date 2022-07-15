@@ -65,7 +65,7 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 	}
 	res.Got = actual
 
-	stk, err := w.stocks.GetStockByID(ctx, reservation.ResourceID)
+	stk, err := w.stocks.GetByID(ctx, reservation.ResourceID)
 	if err != nil {
 		return ReservationResult{}, fault.Wrap(err)
 	}

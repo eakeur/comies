@@ -20,7 +20,6 @@ type (
 		CreateStock(ctx context.Context, s stock.Stock) (stock.Stock, error)
 		UpdateStock(ctx context.Context, s stock.Stock) error
 		RemoveStock(ctx context.Context, id types.ID) error
-		ListStock(ctx context.Context) ([]stock.Stock, error)
 		GetStockByID(ctx context.Context, id types.ID) (stock.Stock, error)
 
 		ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, error)

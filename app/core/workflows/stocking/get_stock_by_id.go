@@ -9,7 +9,7 @@ import (
 
 func (w workflow) GetStockByID(ctx context.Context, id types.ID) (stock.Stock, error) {
 
-	s, err := w.stocks.GetStockByID(ctx, id)
+	s, err := w.stocks.GetByID(ctx, id)
 	if err != nil {
 		return stock.Stock{}, fault.Wrap(err)
 	}

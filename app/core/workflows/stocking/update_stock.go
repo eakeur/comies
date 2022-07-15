@@ -8,7 +8,7 @@ import (
 
 func (w workflow) UpdateStock(ctx context.Context, s stock.Stock) error {
 
-	err := w.stocks.UpdateStock(ctx, s)
+	err := w.stocks.Update(ctx, s)
 	if err != nil {
 		return fault.Wrap(err)
 	}

@@ -77,7 +77,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 					},
 				},
 				stocks: &stock.ActionsMock{
-					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
+					GetByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{
 							MaximumQuantity: 5000,
 							MinimumQuantity: 0,
@@ -129,7 +129,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 					},
 				},
 				stocks: &stock.ActionsMock{
-					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
+					GetByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{
 							MaximumQuantity: 5000,
 							MinimumQuantity: 0,
@@ -168,7 +168,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 					},
 				},
 				stocks: &stock.ActionsMock{
-					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
+					GetByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{}, fault.ErrNotFound
 					},
 				},
@@ -212,7 +212,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 					},
 				},
 				stocks: &stock.ActionsMock{
-					GetStockByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
+					GetByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
 						return stock.Stock{}, nil
 					},
 				},

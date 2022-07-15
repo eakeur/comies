@@ -8,9 +8,8 @@ import (
 //go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock
 
 type Actions interface {
-	CreateStock(ctx context.Context, st Stock) (Stock, error)
-	UpdateStock(ctx context.Context, st Stock) error
-	GetStockByID(ctx context.Context, resourceID types.ID) (Stock, error)
-	RemoveStock(ctx context.Context, resourceID types.ID) error
-	ListStocks(ctx context.Context) ([]Stock, error)
+	Create(ctx context.Context, st Stock) (Stock, error)
+	Update(ctx context.Context, st Stock) error
+	GetByID(ctx context.Context, resourceID types.ID) (Stock, error)
+	Remove(ctx context.Context, resourceID types.ID) error
 }

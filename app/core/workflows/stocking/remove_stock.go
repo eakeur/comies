@@ -8,7 +8,7 @@ import (
 
 func (w workflow) RemoveStock(ctx context.Context, id types.ID) error {
 
-	err := w.stocks.RemoveStock(ctx, id)
+	err := w.stocks.Remove(ctx, id)
 	if err != nil {
 		return fault.Wrap(err)
 	}
