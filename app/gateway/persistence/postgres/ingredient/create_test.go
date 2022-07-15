@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 
@@ -70,7 +70,7 @@ func Test_actions_Create(t *testing.T) {
 				Quantity:     100,
 				Optional:     false,
 			}},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertProducts(ctx, product.Product{
 					ID:   1,
@@ -92,7 +92,7 @@ func Test_actions_Create(t *testing.T) {
 				Quantity:     100,
 				Optional:     false,
 			}},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertProducts(ctx, product.Product{
 					ID:   1,
@@ -114,7 +114,7 @@ func Test_actions_Create(t *testing.T) {
 				Quantity:     100,
 				Optional:     false,
 			}},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertProducts(ctx, product.Product{
 					ID:   1,

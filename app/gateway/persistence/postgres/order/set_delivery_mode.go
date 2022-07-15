@@ -3,7 +3,7 @@ package order
 import (
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -20,11 +20,11 @@ func (a actions) SetDeliveryMode(ctx context.Context, id types.ID, deliverType o
 
 	cmd, err := transaction.ExecFromContext(ctx, script, deliverType, id)
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return fault.Wrap(fault.ErrNotFound)
+		return throw.Error(throw.ErrNotFound)
 	}
 
 	return nil

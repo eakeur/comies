@@ -3,7 +3,7 @@ package stocking
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/stock"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"testing"
@@ -153,7 +153,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 					},
 				},
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 			opts: opts{
 				movements: &movement.ActionsMock{
 					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
@@ -169,7 +169,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 				},
 				stocks: &stock.ActionsMock{
 					GetByIDFunc: func(ctx context.Context, resourceID types.ID) (stock.Stock, error) {
-						return stock.Stock{}, fault.ErrNotFound
+						return stock.Stock{}, throw.ErrNotFound
 					},
 				},
 			},

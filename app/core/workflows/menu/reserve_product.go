@@ -2,7 +2,7 @@ package menu
 
 import (
 	"comies/app/core/entities/ingredient"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 )
 
@@ -15,7 +15,7 @@ func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservatio
 
 	ingredients, err := w.ingredients.List(ctx, r.ProductID)
 	if err != nil {
-		return Reservation{}, fault.Wrap(err).Params(map[string]interface{}{
+		return Reservation{}, throw.Error(err).Params(map[string]interface{}{
 			"product_id": r.ProductID,
 		})
 	}
@@ -38,7 +38,7 @@ func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservatio
 	}
 
 	if err != nil {
-		return Reservation{}, fault.Wrap(err)
+		return Reservation{}, throw.Error(err)
 	}
 
 	r.Failures = failures

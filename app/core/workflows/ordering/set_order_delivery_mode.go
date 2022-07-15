@@ -2,7 +2,7 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -10,7 +10,7 @@ import (
 func (w workflow) SetOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error {
 	err := w.orders.SetDeliveryMode(ctx, id, deliveryMode)
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	return nil

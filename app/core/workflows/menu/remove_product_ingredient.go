@@ -1,7 +1,7 @@
 package menu
 
 import (
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -9,12 +9,12 @@ import (
 func (w workflow) RemoveProductIngredient(ctx context.Context, id types.ID) error {
 
 	if id.Empty() {
-		return fault.Wrap(fault.ErrMissingID)
+		return throw.Error(throw.ErrMissingID)
 	}
 
 	err := w.ingredients.Remove(ctx, id)
 	if err != nil {
-		return fault.Wrap(err).Params(map[string]interface{}{
+		return throw.Error(err).Params(map[string]interface{}{
 			"id": id.String(),
 		})
 	}

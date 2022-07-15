@@ -2,7 +2,7 @@ package order
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"errors"
@@ -44,12 +44,12 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (order.Order, error) 
 		&o.FinalPrice,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return order.Order{}, fault.Wrap(fault.ErrNotFound).
+			return order.Order{}, throw.Error(throw.ErrNotFound).
 				Describe("the order id provided seems to not exist").Params(map[string]interface{}{
 				"id": id,
 			})
 		}
-		return order.Order{}, fault.Wrap(err)
+		return order.Order{}, throw.Error(err)
 	}
 
 	o.PlacedAt = o.PlacedAt.UTC()

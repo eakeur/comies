@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"errors"
 
@@ -33,14 +33,14 @@ func (a actions) UpdateFlow(ctx context.Context, f order.FlowUpdate) (order.Flow
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == postgres.DuplicateError &&
 				(pgErr.ConstraintName == postgres.OrderFlowPK || pgErr.ConstraintName == postgres.OrderStatusUK) {
-				return order.FlowUpdate{}, fault.Wrap(fault.ErrAlreadyExists).
+				return order.FlowUpdate{}, throw.Error(throw.ErrAlreadyExists).
 					Describe("the flow id or status provided seems to already exist").Params(map[string]interface{}{
 					"id": f.ID, "order_id": f.OrderID, "status": f.Status,
 				})
 			}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.OrderFlowFK {
-				return order.FlowUpdate{}, fault.Wrap(fault.ErrNotFound).
+				return order.FlowUpdate{}, throw.Error(throw.ErrNotFound).
 					Describe("the order id provided seems to not exist").Params(map[string]interface{}{
 					"id": f.ID, "order_id": f.OrderID, "status": f.Status,
 				})

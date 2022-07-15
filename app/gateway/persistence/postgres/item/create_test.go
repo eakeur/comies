@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 
@@ -58,7 +58,7 @@ func Test_actions_Create(t *testing.T) {
 				OrderID:   1,
 				ProductID: 4,
 			}},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 		{
 			name: "should fail because the item id is duplicate",
@@ -82,7 +82,7 @@ func Test_actions_Create(t *testing.T) {
 					t.Error(err)
 				}
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 		},
 	}
 	for _, tt := range cases {

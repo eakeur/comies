@@ -2,7 +2,7 @@ package stock
 
 import (
 	"comies/app/core/entities/stock"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"errors"
@@ -34,12 +34,12 @@ func (a actions) GetByID(ctx context.Context, resourceID types.ID) (stock.Stock,
 		&st.Location,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return stock.Stock{}, fault.Wrap(fault.ErrNotFound).
+			return stock.Stock{}, throw.Error(throw.ErrNotFound).
 				Describe("the resource id provided seems to not exist").Params(map[string]interface{}{
 				"id": resourceID,
 			})
 		}
-		return stock.Stock{}, fault.Wrap(err)
+		return stock.Stock{}, throw.Error(err)
 	}
 
 	return st, nil

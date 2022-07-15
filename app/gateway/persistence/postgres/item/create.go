@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/item"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"errors"
 
@@ -39,20 +39,20 @@ func (a actions) Create(ctx context.Context, i item.Item) (item.Item, error) {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.ItemOrderIDFK {
-				return item.Item{}, fault.Wrap(fault.ErrNotFound).
+				return item.Item{}, throw.Error(throw.ErrNotFound).
 					Describe("the order id provided seems to not exist").Params(map[string]interface{}{
 					"order_id": i.OrderID.String(),
 				})
 			}
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.ItemIDPK {
-				return item.Item{}, fault.Wrap(fault.ErrAlreadyExists).
+				return item.Item{}, throw.Error(throw.ErrAlreadyExists).
 					Describe("the item id provided seems to already exist").Params(map[string]interface{}{
 					"order_id": i.OrderID.String(), "item_id": i.ID.String(),
 				})
 			}
 		}
 
-		return item.Item{}, fault.Wrap(err)
+		return item.Item{}, throw.Error(err)
 	}
 
 	return i, nil

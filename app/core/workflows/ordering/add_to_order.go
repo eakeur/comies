@@ -2,19 +2,19 @@ package ordering
 
 import (
 	"comies/app/core/entities/item"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 )
 
 func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error) {
 
 	if i.OrderID.Empty() {
-		return ItemAdditionResult{}, fault.Wrap(fault.ErrMissingID)
+		return ItemAdditionResult{}, throw.Error(throw.ErrMissingID)
 	}
 
 	i, err := w.items.Create(ctx, i)
 	if err != nil {
-		return ItemAdditionResult{}, fault.Wrap(err)
+		return ItemAdditionResult{}, throw.Error(err)
 	}
 
 	res, err := w.products.ReserveResources(ctx, i.ID, Reservation{
@@ -25,7 +25,7 @@ func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResu
 		Replace:   i.Details.ReplaceIngredients,
 	})
 	if err != nil {
-		return ItemAdditionResult{}, fault.Wrap(err)
+		return ItemAdditionResult{}, throw.Error(err)
 	}
 
 	result := ItemAdditionResult{Item: i}

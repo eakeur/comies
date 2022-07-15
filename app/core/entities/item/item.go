@@ -1,7 +1,7 @@
 package item
 
 import (
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 )
 
@@ -40,12 +40,12 @@ type (
 
 func (i Item) Validate() error {
 	if i.Quantity <= types.QuantityMinimum {
-		return fault.Wrap(ErrInvalidQuantity).
+		return throw.Error(ErrInvalidQuantity).
 			DescribeF("the quantity should be bigger than %v", types.QuantityMinimum)
 	}
 
 	if i.ProductID.Empty() {
-		return fault.Wrap(fault.ErrMissingID).Describe("a product id must be specified")
+		return throw.Error(throw.ErrMissingID).Describe("a product id must be specified")
 	}
 
 	return nil

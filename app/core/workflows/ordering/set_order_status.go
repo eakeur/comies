@@ -2,7 +2,7 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"time"
@@ -15,7 +15,7 @@ func (w workflow) SetOrderStatus(ctx context.Context, id types.ID, st order.Stat
 		OccurredAt: time.Now().UTC(),
 	})
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	return nil

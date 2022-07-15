@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"testing"
@@ -59,7 +59,7 @@ func Test_actions_SetStatus(t *testing.T) {
 				itemID: 1,
 				status: item.DoneStatus,
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 	}
 	for _, tt := range cases {

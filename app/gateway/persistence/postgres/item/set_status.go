@@ -3,7 +3,7 @@ package item
 import (
 	"comies/app/core/entities/item"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -13,11 +13,11 @@ func (a actions) SetStatus(ctx context.Context, itemID types.ID, status item.Sta
 
 	cmd, err := transaction.ExecFromContext(ctx, script, status, itemID)
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	if cmd.RowsAffected() <= 0 {
-		return fault.Wrap(fault.ErrNotFound)
+		return throw.Error(throw.ErrNotFound)
 	}
 
 	return nil

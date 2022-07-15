@@ -1,7 +1,7 @@
 package stocking
 
 import (
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -9,7 +9,7 @@ import (
 func (s service) FreeResources(ctx context.Context, reservationID types.ID) error {
 	err := s.stocks.FreeResources(ctx, reservationID)
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	return nil

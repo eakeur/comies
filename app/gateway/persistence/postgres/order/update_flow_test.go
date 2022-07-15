@@ -3,7 +3,7 @@ package order
 import (
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 	"time"
@@ -62,7 +62,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 					OccurredAt: occurredAt,
 				},
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				if _, err := db.InsertOrders(ctx, order.Order{ID: 1}); err != nil {
 					t.Error(err)
@@ -83,7 +83,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 					OccurredAt: occurredAt,
 				},
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				if _, err := db.InsertOrders(ctx, order.Order{ID: 1}); err != nil {
 					t.Error(err)
@@ -104,7 +104,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 					OccurredAt: occurredAt,
 				},
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 	}
 	for _, tt := range cases {

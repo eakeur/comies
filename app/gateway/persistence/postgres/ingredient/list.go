@@ -2,7 +2,7 @@ package ingredient
 
 import (
 	"comies/app/core/entities/ingredient"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -23,7 +23,7 @@ func (a actions) List(ctx context.Context, productID types.ID) ([]ingredient.Ing
 
 	rows, err := a.db.Query(ctx, script, productID)
 	if err != nil {
-		return nil, fault.Wrap(err)
+		return nil, throw.Error(err)
 	}
 
 	ingredients := make([]ingredient.Ingredient, 0)

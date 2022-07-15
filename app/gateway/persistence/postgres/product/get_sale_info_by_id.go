@@ -2,7 +2,7 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"errors"
@@ -33,12 +33,12 @@ func (a actions) GetSaleInfoByID(ctx context.Context, productID types.ID) (produ
 		&p.MinimumSale,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Sale{}, fault.Wrap(fault.ErrNotFound).
+			return product.Sale{}, throw.Error(throw.ErrNotFound).
 				Describe("the product id provided seems to not exist").Params(map[string]interface{}{
 				"productID": productID,
 			})
 		}
-		return product.Sale{}, fault.Wrap(err)
+		return product.Sale{}, throw.Error(err)
 	}
 
 	return p, nil

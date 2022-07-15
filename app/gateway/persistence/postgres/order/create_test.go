@@ -3,7 +3,7 @@ package order
 import (
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 	"time"
@@ -51,7 +51,7 @@ func Test_actions_Create(t *testing.T) {
 					PlacedAt: placed,
 				},
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertOrders(ctx, order.Order{
 					ID:       1,

@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"errors"
 
@@ -39,19 +39,19 @@ func (a actions) Create(ctx context.Context, i ingredient.Ingredient) (ingredien
 			}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.IngredientProductIDFK {
-				return ingredient.Ingredient{}, fault.Wrap(fault.ErrNotFound).
+				return ingredient.Ingredient{}, throw.Error(throw.ErrNotFound).
 					Describe("the product id provided in the product id field seems to not exist").Params(params)
 			}
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.IngredientIDFK {
-				return ingredient.Ingredient{}, fault.Wrap(fault.ErrNotFound).
+				return ingredient.Ingredient{}, throw.Error(throw.ErrNotFound).
 					Describe("the product id provided in the ingredient id field seems to not exist").Params(params)
 			}
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.IngredientProductUK {
-				return ingredient.Ingredient{}, fault.Wrap(fault.ErrAlreadyExists).
+				return ingredient.Ingredient{}, throw.Error(throw.ErrAlreadyExists).
 					Describe("the ingredient provided seems to already exist").Params(params)
 			}
 		}
-		return ingredient.Ingredient{}, fault.Wrap(err)
+		return ingredient.Ingredient{}, throw.Error(err)
 	}
 
 	return i, nil

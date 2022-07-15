@@ -2,7 +2,7 @@ package menu
 
 import (
 	"comies/app/core/entities/ingredient"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -10,12 +10,12 @@ import (
 func (w workflow) ListProductIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 
 	if productID.Empty() {
-		return []ingredient.Ingredient{}, fault.Wrap(fault.ErrMissingID)
+		return []ingredient.Ingredient{}, throw.Error(throw.ErrMissingID)
 	}
 
 	list, err := w.ingredients.List(ctx, productID)
 	if err != nil {
-		return []ingredient.Ingredient{}, fault.Wrap(err).Params(map[string]interface{}{
+		return []ingredient.Ingredient{}, throw.Error(err).Params(map[string]interface{}{
 			"product_id": productID.String(),
 		})
 	}

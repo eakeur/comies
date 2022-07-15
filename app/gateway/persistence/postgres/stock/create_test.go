@@ -3,7 +3,7 @@ package stock
 import (
 	"comies/app/core/entities/stock"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 
@@ -67,7 +67,7 @@ func Test_actions_Create(t *testing.T) {
 					Location:        "Under the table",
 				},
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertStocks(ctx, stock.Stock{
 					ID:              10,
@@ -92,7 +92,7 @@ func Test_actions_Create(t *testing.T) {
 					Location:        "Under the table",
 				},
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertStocks(ctx, stock.Stock{
 					ID:              1,

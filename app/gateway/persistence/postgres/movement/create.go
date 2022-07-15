@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"errors"
 
@@ -41,16 +41,16 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Mo
 			params := map[string]interface{}{"id": mov.ID, "stock_id": mov.StockID}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.MovementStockIDFK {
-				return movement.Movement{}, fault.Wrap(fault.ErrNotFound).
+				return movement.Movement{}, throw.Error(throw.ErrNotFound).
 					Describe("the stock id provided seems to not exist").Params(params)
 			}
 
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.MovementIDPK {
-				return movement.Movement{}, fault.Wrap(fault.ErrAlreadyExists).
+				return movement.Movement{}, throw.Error(throw.ErrAlreadyExists).
 					Describe("a movement with this id seems to already exist").Params(params)
 			}
 		}
-		return movement.Movement{}, fault.Wrap(err)
+		return movement.Movement{}, throw.Error(err)
 	}
 
 	return mov, nil

@@ -3,7 +3,7 @@ package product
 import (
 	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"testing"
@@ -58,7 +58,7 @@ func Test_actions_GetSaleInfoByID(t *testing.T) {
 			args: args{
 				productID: 1,
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 	}
 	for _, tt := range cases {

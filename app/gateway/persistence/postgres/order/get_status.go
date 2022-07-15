@@ -2,7 +2,7 @@ package order
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"errors"
@@ -27,12 +27,12 @@ func (a actions) GetStatus(ctx context.Context, orderID types.ID) (order.Status,
 		&o,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return "", fault.Wrap(fault.ErrNotFound).
+			return "", throw.Error(throw.ErrNotFound).
 				Describe("the order id provided seems to not exist").Params(map[string]interface{}{
 				"order_id": orderID,
 			})
 		}
-		return "", fault.Wrap(err)
+		return "", throw.Error(err)
 	}
 
 	return o, nil

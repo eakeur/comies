@@ -1,7 +1,7 @@
 package movement
 
 import (
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"time"
 )
@@ -16,7 +16,7 @@ type (
 
 func (f Filter) Validate() error {
 	if f.ResourceID.Empty() {
-		return fault.ErrMissingID
+		return throw.ErrMissingID
 	}
 
 	if f.FinalDate.Before(f.InitialDate) {

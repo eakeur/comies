@@ -3,7 +3,7 @@ package stocking
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/stock"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"sync"
@@ -27,7 +27,7 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 			defer wg.Done()
 			res, err := w.checkResource(ctx, reservationID, reservation)
 			if err != nil {
-				errChan <- fault.Wrap(err).Params(map[string]interface{}{
+				errChan <- throw.Error(err).Params(map[string]interface{}{
 					"reservation_id": reservationID.String(),
 					"resource_id":    reservation.ResourceID.String(),
 				})
@@ -38,7 +38,7 @@ func (w workflow) ReserveResources(ctx context.Context, reservationID types.ID, 
 	wg.Wait()
 
 	if len(errChan) > 0 {
-		return nil, fault.Wrap(<-errChan)
+		return nil, throw.Error(<-errChan)
 	}
 
 	return responses, nil
@@ -61,17 +61,17 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 
 	actual, err := w.movements.GetBalanceByResourceID(ctx, reservation.ResourceID, movement.Filter{})
 	if err != nil {
-		return ReservationResult{}, fault.Wrap(err)
+		return ReservationResult{}, throw.Error(err)
 	}
 	res.Got = actual
 
 	stk, err := w.stocks.GetByID(ctx, reservation.ResourceID)
 	if err != nil {
-		return ReservationResult{}, fault.Wrap(err)
+		return ReservationResult{}, throw.Error(err)
 	}
 
 	if err := mv.Validate(); err != nil {
-		return ReservationResult{}, fault.Wrap(err)
+		return ReservationResult{}, throw.Error(err)
 	}
 
 	actual += mv.Value()
@@ -83,7 +83,7 @@ func (w workflow) checkResource(ctx context.Context, reservationID types.ID, res
 
 	_, err = w.movements.Create(ctx, mv)
 	if err != nil {
-		return ReservationResult{}, fault.Wrap(err)
+		return ReservationResult{}, throw.Error(err)
 	}
 
 	return res, nil

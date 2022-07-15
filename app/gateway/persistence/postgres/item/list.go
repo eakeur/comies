@@ -2,7 +2,7 @@ package item
 
 import (
 	"comies/app/core/entities/item"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -25,7 +25,7 @@ func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error
 
 	rows, err := a.db.Query(ctx, script, orderID)
 	if err != nil {
-		return nil, fault.Wrap(err)
+		return nil, throw.Error(err)
 	}
 
 	items := make([]item.Item, 0)

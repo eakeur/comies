@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"errors"
 
@@ -42,17 +42,17 @@ func (a actions) Update(ctx context.Context, prd product.Product) error {
 		if errors.As(err, &pgErr) {
 
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.ProductCodeUK {
-				return fault.Wrap(fault.ErrAlreadyExists).
+				return throw.Error(throw.ErrAlreadyExists).
 					Describe("the product code provided seems to already exist").Params(map[string]interface{}{
 					"code": prd.Code,
 				})
 			}
 		}
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return fault.Wrap(fault.ErrNotFound)
+		return throw.Error(throw.ErrNotFound)
 	}
 
 	return nil

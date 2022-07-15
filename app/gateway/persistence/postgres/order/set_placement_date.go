@@ -2,7 +2,7 @@ package order
 
 import (
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"time"
@@ -20,11 +20,11 @@ func (a actions) SetPlacementDate(ctx context.Context, id types.ID, date time.Ti
 
 	cmd, err := transaction.ExecFromContext(ctx, script, date, id)
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return fault.Wrap(fault.ErrNotFound)
+		return throw.Error(throw.ErrNotFound)
 	}
 
 	return nil

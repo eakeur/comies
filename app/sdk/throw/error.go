@@ -1,4 +1,4 @@
-package fault
+package throw
 
 import (
 	"fmt"
@@ -14,17 +14,17 @@ type (
 		child       error
 	}
 
-	Error interface {
-		Describe(description string) Error
-		DescribeF(description string, a ...interface{}) Error
-		Params(params map[string]interface{}) Error
-		Wrap() Error
+	DetailedError interface {
+		Describe(description string) DetailedError
+		DescribeF(description string, a ...interface{}) DetailedError
+		Params(params map[string]interface{}) DetailedError
+		Wrap() DetailedError
 		Error() string
 		Unwrap() error
 	}
 )
 
-func (e fault) Describe(description string) Error {
+func (e fault) Describe(description string) DetailedError {
 	if e.description == "" {
 		e.description = description
 	}
@@ -32,7 +32,7 @@ func (e fault) Describe(description string) Error {
 	return e
 }
 
-func (e fault) DescribeF(description string, a ...interface{}) Error {
+func (e fault) DescribeF(description string, a ...interface{}) DetailedError {
 	if e.description == "" {
 		e.description = fmt.Sprintf(description, a...)
 	}
@@ -40,7 +40,7 @@ func (e fault) DescribeF(description string, a ...interface{}) Error {
 	return e
 }
 
-func (e fault) Params(params map[string]interface{}) Error {
+func (e fault) Params(params map[string]interface{}) DetailedError {
 	if e.parameters == nil {
 		e.parameters = params
 	}
@@ -48,7 +48,7 @@ func (e fault) Params(params map[string]interface{}) Error {
 	return e
 }
 
-func (e fault) Wrap() Error {
+func (e fault) Wrap() DetailedError {
 	return wrap(e, 2)
 }
 

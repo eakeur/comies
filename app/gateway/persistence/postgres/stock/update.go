@@ -3,7 +3,7 @@ package stock
 import (
 	"comies/app/core/entities/stock"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 )
 
@@ -26,11 +26,11 @@ func (a actions) Update(ctx context.Context, st stock.Stock) error {
 		st.TargetID,
 	)
 	if err != nil {
-		return fault.Wrap(err)
+		return throw.Error(err)
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return fault.Wrap(fault.ErrNotFound)
+		return throw.Error(throw.ErrNotFound)
 	}
 
 	return nil

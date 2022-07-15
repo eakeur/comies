@@ -3,7 +3,7 @@ package movement
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/gateway/persistence/postgres/query"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -25,14 +25,14 @@ func (a actions) GetBalanceByResourceID(ctx context.Context, resourceID types.ID
 		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
 		OnlyWhere(resourceID != 0, "s.target_id = $%v", resourceID)
 	if err != nil {
-		return 0, fault.Wrap(err)
+		return 0, throw.Error(err)
 	}
 
 	row := a.db.QueryRow(ctx, q.Script(), q.Args...)
 
 	var quantity types.Quantity
 	if err := row.Scan(&quantity); err != nil {
-		return 0, fault.Wrap(err)
+		return 0, throw.Error(err)
 	}
 
 	return quantity, nil

@@ -3,7 +3,7 @@ package order
 import (
 	"comies/app/core/entities/order"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"testing"
@@ -45,7 +45,7 @@ func Test_actions_SetPlacementDate(t *testing.T) {
 				id:   1,
 				date: time.Date(2001, time.September, 30, 22, 45, 00, 0, time.UTC),
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 	}
 	for _, tt := range cases {

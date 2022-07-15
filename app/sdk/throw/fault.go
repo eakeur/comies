@@ -1,4 +1,4 @@
-package fault
+package throw
 
 import (
 	"errors"
@@ -12,11 +12,11 @@ var (
 	ErrAlreadyExists = errors.New("this resource key is already assigned to another resource")
 )
 
-func Wrap(err error) Error {
+func Error(err error) DetailedError {
 	return wrap(err, 2)
 }
 
-func wrap(actualError error, stackToIgnore int) Error {
+func wrap(actualError error, stackToIgnore int) DetailedError {
 	if actualError == nil {
 		return nil
 	}

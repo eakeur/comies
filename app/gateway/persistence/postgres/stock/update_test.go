@@ -3,7 +3,7 @@ package stock
 import (
 	"comies/app/core/entities/stock"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 
@@ -69,7 +69,7 @@ func Test_actions_Update(t *testing.T) {
 					Location:        "Under the blue table",
 				},
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 	}
 	for _, tt := range cases {

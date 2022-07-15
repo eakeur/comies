@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/ordering"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -28,7 +28,7 @@ func (s service) ReserveResources(ctx context.Context, reservationID types.ID, r
 		Replace:   replaceInput,
 	})
 	if err != nil {
-		return ordering.Reservation{}, fault.Wrap(err)
+		return ordering.Reservation{}, throw.Error(err)
 	}
 
 	var failures []ordering.ItemFailed

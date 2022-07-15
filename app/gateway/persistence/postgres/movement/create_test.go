@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/stock"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"context"
 	"testing"
 	"time"
@@ -91,7 +91,7 @@ func Test_actions_Create(t *testing.T) {
 					AgentID:   1544474558856547556,
 				},
 			},
-			wantErr: fault.ErrNotFound,
+			wantErr: throw.ErrNotFound,
 		},
 		{
 			name: "should fail for repeated movement id",
@@ -106,7 +106,7 @@ func Test_actions_Create(t *testing.T) {
 					AgentID:   1544474558856547556,
 				},
 			},
-			wantErr: fault.ErrAlreadyExists,
+			wantErr: throw.ErrAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertStocks(ctx, stock.Stock{
 					ID:              1,

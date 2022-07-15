@@ -4,7 +4,7 @@ import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/stocking"
-	"comies/app/sdk/fault"
+	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -20,7 +20,7 @@ func (s service) ReserveResources(ctx context.Context, reservationID types.ID, r
 
 	results, err := s.stocks.ReserveResources(ctx, reservationID, reservations)
 	if err != nil {
-		return nil, fault.Wrap(err)
+		return nil, throw.Error(err)
 	}
 
 	var failed []menu.ItemFailed
