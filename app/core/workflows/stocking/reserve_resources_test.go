@@ -65,7 +65,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			opts: opts{
 				movements: &movement.ActionsMock{
 					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
-						if filter.ResourceID == 1 {
+						if resourceID == 1 {
 							return 300, nil
 						}
 
@@ -117,7 +117,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			opts: opts{
 				movements: &movement.ActionsMock{
 					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
-						if filter.ResourceID == 1 {
+						if resourceID == 1 {
 							return 300, nil
 						}
 
@@ -157,7 +157,7 @@ func TestWorkflow_ReserveResources(t *testing.T) {
 			opts: opts{
 				movements: &movement.ActionsMock{
 					GetBalanceByResourceIDFunc: func(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
-						if filter.ResourceID == 1 {
+						if resourceID == 1 {
 							return 300, nil
 						}
 
