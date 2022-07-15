@@ -1,9 +1,9 @@
 package stocking
 
 import (
+	"comies/app/core/entities/stock"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/stock"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) CreateStock(ctx context.Context, s stock.Stock) (stock.Stock, error) {

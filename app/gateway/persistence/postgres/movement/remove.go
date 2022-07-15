@@ -1,10 +1,10 @@
 package movement
 
 import (
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) Remove(ctx context.Context, movementID types.ID) error {

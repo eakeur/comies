@@ -1,9 +1,9 @@
 package ordering
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) ListOrders(ctx context.Context, f order.Filter) ([]order.Order, error) {

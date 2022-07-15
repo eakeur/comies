@@ -1,8 +1,8 @@
 package tests
 
 import (
+	"comies/app/gateway/persistence/postgres"
 	"context"
-	"gomies/app/gateway/persistence/postgres"
 	"log"
 	"testing"
 )

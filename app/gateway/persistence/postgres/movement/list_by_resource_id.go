@@ -1,11 +1,11 @@
 package movement
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/gateway/persistence/postgres/query"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/movement"
-	"gomies/app/gateway/persistence/postgres/query"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filter movement.Filter) ([]movement.Movement, error) {

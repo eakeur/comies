@@ -1,11 +1,11 @@
 package movement
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/core/entities/stock"
+	"comies/app/gateway/persistence/postgres/tests"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/movement"
-	"gomies/app/core/entities/stock"
-	"gomies/app/gateway/persistence/postgres/tests"
-	"gomies/app/sdk/types"
 	"testing"
 	"time"
 

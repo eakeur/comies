@@ -1,9 +1,9 @@
 package menu
 
 import (
+	product2 "comies/app/core/entities/product"
+	"comies/app/sdk/fault"
 	"context"
-	product2 "gomies/app/core/entities/product"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) GetProduct(ctx context.Context, ext product2.Key) (product2.Product, error) {

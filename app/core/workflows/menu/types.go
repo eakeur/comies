@@ -1,8 +1,8 @@
 package menu
 
 import (
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/sdk/types"
+	"comies/app/core/entities/ingredient"
+	"comies/app/sdk/types"
 )
 
 type (

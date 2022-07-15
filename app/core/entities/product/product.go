@@ -1,6 +1,6 @@
 package product
 
-import "gomies/app/sdk/types"
+import "comies/app/sdk/types"
 
 type (
 	Product struct {

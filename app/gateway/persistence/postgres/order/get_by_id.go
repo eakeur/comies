@@ -1,12 +1,13 @@
 package order
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgx/v4"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) GetByID(ctx context.Context, id types.ID) (order.Order, error) {

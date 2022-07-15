@@ -1,11 +1,11 @@
 package movement
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/movement"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) SetOutputType(ctx context.Context, agentID types.ID) error {

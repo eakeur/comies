@@ -1,10 +1,10 @@
 package ordering
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (w workflow) GetOrderByID(ctx context.Context, id types.ID) (order.Order, error) {

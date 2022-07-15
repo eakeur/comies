@@ -1,11 +1,11 @@
 package stocking
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/core/entities/stock"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/movement"
-	"gomies/app/core/entities/stock"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

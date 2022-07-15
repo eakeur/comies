@@ -1,12 +1,13 @@
 package product
 
 import (
+	"comies/app/core/entities/product"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgx/v4"
-	"gomies/app/core/entities/product"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) GetSaleInfoByID(ctx context.Context, productID types.ID) (product.Sale, error) {

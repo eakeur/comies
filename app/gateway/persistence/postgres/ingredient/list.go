@@ -1,10 +1,10 @@
 package ingredient
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) List(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {

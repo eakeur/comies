@@ -1,10 +1,10 @@
 package item
 
 import (
+	"comies/app/core/entities/item"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/item"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error) {

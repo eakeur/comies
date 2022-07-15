@@ -1,10 +1,10 @@
 package stocking
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/movement"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (w workflow) GetBalance(ctx context.Context, filter movement.Filter) (types.Quantity, error) {

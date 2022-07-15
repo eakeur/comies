@@ -1,5 +1,5 @@
 package transaction
 
-import "gomies/app/sdk/types"
+import "comies/app/sdk/types"
 
 const ManagerContextKey types.ContextKey = "transaction-manager-context-key"

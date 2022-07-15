@@ -1,8 +1,9 @@
 package order
 
 import (
+	"comies/app/core/entities/order"
+
 	"github.com/jackc/pgx/v4/pgxpool"
-	"gomies/app/core/entities/order"
 )
 
 var _ order.Actions = actions{}

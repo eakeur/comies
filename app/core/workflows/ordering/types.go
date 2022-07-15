@@ -1,9 +1,9 @@
 package ordering
 
 import (
-	"gomies/app/core/entities/item"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/types"
+	"comies/app/core/entities/item"
+	"comies/app/core/entities/order"
+	"comies/app/sdk/types"
 )
 
 type (

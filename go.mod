@@ -1,4 +1,4 @@
-module gomies
+module comies
 
 go 1.17
 

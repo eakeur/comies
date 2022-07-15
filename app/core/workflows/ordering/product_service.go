@@ -1,8 +1,8 @@
 package ordering
 
 import (
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/sdk/types"
 )
 
 //go:generate moq -fmt goimports -out product_service_mock.go . ProductService:ProductServiceMock

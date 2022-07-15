@@ -1,13 +1,14 @@
 package order
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/gateway/persistence/postgres"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgconn"
-	"gomies/app/core/entities/order"
-	"gomies/app/gateway/persistence/postgres"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
 )
 
 func (a actions) UpdateFlow(ctx context.Context, f order.FlowUpdate) (order.FlowUpdate, error) {

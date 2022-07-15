@@ -1,10 +1,10 @@
 package ordering
 
 import (
+	"comies/app/core/entities/item"
+	"comies/app/core/entities/order"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/item"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/types"
 )
 
 var _ Workflow = workflow{}

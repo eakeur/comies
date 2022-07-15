@@ -1,8 +1,9 @@
 package ingredient
 
 import (
+	"comies/app/core/entities/ingredient"
+
 	"github.com/jackc/pgx/v4/pgxpool"
-	"gomies/app/core/entities/ingredient"
 )
 
 var _ ingredient.Actions = actions{}

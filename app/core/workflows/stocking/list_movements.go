@@ -1,9 +1,9 @@
 package stocking
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/movement"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, error) {

@@ -1,8 +1,9 @@
 package movement
 
 import (
+	"comies/app/core/entities/movement"
+
 	"github.com/jackc/pgx/v4/pgxpool"
-	"gomies/app/core/entities/movement"
 )
 
 var _ movement.Actions = actions{}

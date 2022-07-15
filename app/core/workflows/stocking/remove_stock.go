@@ -1,9 +1,9 @@
 package stocking
 
 import (
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (w workflow) RemoveStock(ctx context.Context, id types.ID) error {

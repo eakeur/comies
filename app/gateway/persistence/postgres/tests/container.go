@@ -1,11 +1,12 @@
 package tests
 
 import (
+	"comies/app/gateway/persistence/postgres"
 	"fmt"
+	"log"
+
 	"github.com/ory/dockertest"
 	"github.com/pkg/errors"
-	"gomies/app/gateway/persistence/postgres"
-	"log"
 )
 
 const (

@@ -1,11 +1,11 @@
 package item
 
 import (
+	"comies/app/core/entities/item"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/item"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) SetStatus(ctx context.Context, itemID types.ID, status item.Status) error {

@@ -1,7 +1,7 @@
 package ingredient
 
 import (
-	"gomies/app/sdk/types"
+	"comies/app/sdk/types"
 )
 
 type (

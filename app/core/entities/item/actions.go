@@ -1,8 +1,8 @@
 package item
 
 import (
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/sdk/types"
 )
 
 //go:generate moq -fmt goimports -out actions_mock.go . Actions:ActionsMock

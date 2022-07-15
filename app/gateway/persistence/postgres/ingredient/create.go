@@ -1,13 +1,14 @@
 package ingredient
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/gateway/persistence/postgres"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgconn"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/gateway/persistence/postgres"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
 )
 
 func (a actions) Create(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {

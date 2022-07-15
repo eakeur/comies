@@ -1,11 +1,12 @@
 package product
 
 import (
+	"comies/app/core/entities/product"
+	"comies/app/sdk/fault"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgx/v4"
-	"gomies/app/core/entities/product"
-	"gomies/app/sdk/fault"
 )
 
 func (a actions) GetByCode(ctx context.Context, code string) (product.Product, error) {

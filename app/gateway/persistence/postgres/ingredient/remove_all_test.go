@@ -1,12 +1,12 @@
 package ingredient
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/core/entities/product"
+	"comies/app/gateway/persistence/postgres/tests"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/core/entities/product"
-	"gomies/app/gateway/persistence/postgres/tests"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

@@ -1,8 +1,9 @@
 package item
 
 import (
+	"comies/app/core/entities/item"
+
 	"github.com/jackc/pgx/v4/pgxpool"
-	"gomies/app/core/entities/item"
 )
 
 var _ item.Actions = actions{}

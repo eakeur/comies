@@ -1,9 +1,9 @@
 package ordering
 
 import (
+	"comies/app/core/entities/item"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/item"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error) {

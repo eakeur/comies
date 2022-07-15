@@ -1,13 +1,14 @@
 package movement
 
 import (
+	"comies/app/core/entities/movement"
+	"comies/app/gateway/persistence/postgres"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgconn"
-	"gomies/app/core/entities/movement"
-	"gomies/app/gateway/persistence/postgres"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
 )
 
 func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Movement, error) {

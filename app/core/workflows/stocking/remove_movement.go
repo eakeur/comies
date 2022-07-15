@@ -1,9 +1,9 @@
 package stocking
 
 import (
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (w workflow) RemoveMovement(ctx context.Context, resourceID types.ID, movementID types.ID) error {

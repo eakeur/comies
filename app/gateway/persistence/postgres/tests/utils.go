@@ -1,14 +1,15 @@
 package tests
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/core/entities/item"
+	"comies/app/core/entities/movement"
+	"comies/app/core/entities/order"
+	"comies/app/core/entities/product"
+	"comies/app/core/entities/stock"
 	"context"
+
 	"github.com/stretchr/testify/assert"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/core/entities/item"
-	"gomies/app/core/entities/movement"
-	"gomies/app/core/entities/order"
-	"gomies/app/core/entities/product"
-	"gomies/app/core/entities/stock"
 )
 
 func (d *Database) CheckValue(ctx context.Context, script string, expected interface{}, args ...interface{}) {

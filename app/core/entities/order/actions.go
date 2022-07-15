@@ -1,8 +1,8 @@
 package order
 
 import (
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/sdk/types"
 	"time"
 )
 

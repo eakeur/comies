@@ -1,10 +1,10 @@
 package order
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/gateway/persistence/postgres/tests"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/order"
-	"gomies/app/gateway/persistence/postgres/tests"
-	"gomies/app/sdk/fault"
 	"testing"
 	"time"
 

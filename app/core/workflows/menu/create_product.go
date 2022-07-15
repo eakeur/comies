@@ -1,9 +1,9 @@
 package menu
 
 import (
+	"comies/app/core/entities/product"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/product"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) CreateProduct(ctx context.Context, prd product.Product) (product.Product, error) {

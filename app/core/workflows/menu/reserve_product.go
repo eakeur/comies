@@ -1,9 +1,9 @@
 package menu
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/sdk/fault"
 )
 
 func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservation, error) {

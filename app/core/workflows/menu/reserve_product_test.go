@@ -1,10 +1,10 @@
 package menu
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/core/entities/product"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/core/entities/product"
-	"gomies/app/sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

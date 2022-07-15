@@ -1,10 +1,10 @@
 package order
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/gateway/persistence/postgres/query"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/order"
-	"gomies/app/gateway/persistence/postgres/query"
-	"gomies/app/sdk/fault"
 )
 
 func (a actions) List(ctx context.Context, filter order.Filter) ([]order.Order, error) {

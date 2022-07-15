@@ -1,9 +1,9 @@
 package menu
 
 import (
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (w workflow) UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error {

@@ -1,9 +1,9 @@
 package ordering
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/sdk/fault"
 	"context"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/fault"
 	"time"
 )
 

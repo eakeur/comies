@@ -1,9 +1,9 @@
 package menu
 
 import (
+	"comies/app/core/entities/ingredient"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/ingredient"
-	"gomies/app/sdk/types"
 )
 
 //go:generate moq -fmt goimports -out stock_service_mock.go . StockService:StockServiceMock

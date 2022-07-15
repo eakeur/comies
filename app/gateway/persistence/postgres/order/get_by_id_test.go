@@ -1,12 +1,12 @@
 package order
 
 import (
+	"comies/app/core/entities/item"
+	"comies/app/core/entities/order"
+	"comies/app/gateway/persistence/postgres/tests"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/item"
-	"gomies/app/core/entities/order"
-	"gomies/app/gateway/persistence/postgres/tests"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 	"testing"
 	"time"
 

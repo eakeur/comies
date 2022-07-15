@@ -1,13 +1,14 @@
 package item
 
 import (
+	"comies/app/core/entities/item"
+	"comies/app/core/entities/order"
+	"comies/app/gateway/persistence/postgres/tests"
+	"comies/app/sdk/types"
 	"context"
-	"github.com/stretchr/testify/assert"
-	"gomies/app/core/entities/item"
-	"gomies/app/core/entities/order"
-	"gomies/app/gateway/persistence/postgres/tests"
-	"gomies/app/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_actions_List(t *testing.T) {

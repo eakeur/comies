@@ -1,10 +1,10 @@
 package stocking
 
 import (
+	"comies/app/core/entities/stock"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/stock"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (w workflow) GetStockByID(ctx context.Context, id types.ID) (stock.Stock, error) {

@@ -1,13 +1,14 @@
 package product
 
 import (
+	"comies/app/core/entities/product"
+	"comies/app/gateway/persistence/postgres"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/fault"
 	"context"
 	"errors"
+
 	"github.com/jackc/pgconn"
-	"gomies/app/core/entities/product"
-	"gomies/app/gateway/persistence/postgres"
-	"gomies/app/gateway/persistence/postgres/transaction"
-	"gomies/app/sdk/fault"
 )
 
 func (a actions) Update(ctx context.Context, prd product.Product) error {

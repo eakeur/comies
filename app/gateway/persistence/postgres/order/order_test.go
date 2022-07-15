@@ -1,7 +1,7 @@
 package order
 
 import (
-	"gomies/app/gateway/persistence/postgres/tests"
+	"comies/app/gateway/persistence/postgres/tests"
 	"os"
 	"testing"
 )

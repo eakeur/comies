@@ -1,10 +1,11 @@
 package transaction
 
 import (
+	"comies/app/sdk/fault"
 	"context"
+
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
-	"gomies/app/sdk/fault"
 )
 
 func FromContext(ctx context.Context) (pgx.Tx, error) {

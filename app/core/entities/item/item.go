@@ -1,8 +1,8 @@
 package item
 
 import (
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 )
 
 const (

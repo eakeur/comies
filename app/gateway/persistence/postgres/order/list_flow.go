@@ -1,10 +1,10 @@
 package order
 
 import (
+	"comies/app/core/entities/order"
+	"comies/app/sdk/fault"
+	"comies/app/sdk/types"
 	"context"
-	"gomies/app/core/entities/order"
-	"gomies/app/sdk/fault"
-	"gomies/app/sdk/types"
 )
 
 func (a actions) ListFlow(ctx context.Context, orderID types.ID) ([]order.FlowUpdate, error) {

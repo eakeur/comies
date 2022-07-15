@@ -1,11 +1,11 @@
 package tests
 
 import (
+	"comies/app/gateway/persistence/postgres"
+	"comies/app/gateway/persistence/postgres/transaction"
 	"context"
 	"crypto/rand"
 	"fmt"
-	"gomies/app/gateway/persistence/postgres"
-	"gomies/app/gateway/persistence/postgres/transaction"
 	"log"
 	"math"
 	"math/big"

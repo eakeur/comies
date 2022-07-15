@@ -1,11 +1,12 @@
 package product
 
 import (
+	"comies/app/core/entities/product"
+	"comies/app/gateway/persistence/postgres/tests"
 	"context"
-	"github.com/stretchr/testify/assert"
-	"gomies/app/core/entities/product"
-	"gomies/app/gateway/persistence/postgres/tests"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_actions_List(t *testing.T) {
