@@ -4,7 +4,7 @@ begin;
         id           bigint      not null,
         code         varchar(12) not null,
         name         varchar(60) not null,
-        type         int         not null,
+        type         varchar(30) not null,
         cost_price   bigint      not null,
         sale_price   bigint      not null,
         minimum_sale bigint      not null,
