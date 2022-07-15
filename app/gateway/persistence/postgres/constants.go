@@ -19,4 +19,7 @@ const (
 
 	MovementIDPK      = "movements_id"
 	MovementStockIDFK = "stock_id_fk"
+
+	ProductIDPK   = "products_pk"
+	ProductCodeUK = "code_store_id_uk"
 )
