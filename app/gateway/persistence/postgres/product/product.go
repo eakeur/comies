@@ -11,3 +11,7 @@ var _ product.Actions = actions{}
 type actions struct {
 	db *pgxpool.Pool
 }
+
+func NewRepository(db *pgxpool.Pool) product.Actions {
+	return actions{db: db}
+}
