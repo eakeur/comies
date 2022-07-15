@@ -10,3 +10,7 @@ var _ stock.Actions = actions{}
 type actions struct {
 	db *pgxpool.Pool
 }
+
+func NewRepository(db *pgxpool.Pool) stock.Actions {
+	return actions{db: db}
+}
