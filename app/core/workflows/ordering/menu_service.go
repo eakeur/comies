@@ -5,10 +5,10 @@ import (
 	"context"
 )
 
-//go:generate moq -fmt goimports -out product_service_mock.go . ProductService:ProductServiceMock
+//go:generate moq -fmt goimports -out menu_service_mock.go . MenuService:MenuServiceMock
 
 type (
-	ProductService interface {
+	MenuService interface {
 		ReserveResources(ctx context.Context, reservationID types.ID, reservation Reservation) (Reservation, error)
 		UpdateResources(ctx context.Context, reservationID types.ID, consume bool) error
 	}

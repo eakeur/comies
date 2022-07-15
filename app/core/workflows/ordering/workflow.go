@@ -24,15 +24,16 @@ type (
 	}
 
 	workflow struct {
-		products ProductService
+		products MenuService
 		orders   order.Actions
 		items    item.Actions
 	}
 )
 
-func NewWorkflow(orders order.Actions, products ProductService) Workflow {
+func NewWorkflow(orders order.Actions, items item.Actions, products MenuService) Workflow {
 	return workflow{
 		products: products,
 		orders:   orders,
+		items:    items,
 	}
 }
