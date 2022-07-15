@@ -4,8 +4,7 @@ import "gomies/app/sdk/types"
 
 type (
 	Product struct {
-		ID     types.ID
-		Active bool
+		ID types.ID
 		// Code represents how the store's crew call this product internally
 		Code string
 
@@ -32,12 +31,12 @@ type (
 		MinimumSale types.Quantity
 	}
 
-	Type int
+	Type string
 )
 
 const (
-	OutputType Type = 0
-	InputType  Type = 10
+	OutputType Type = "INPUT"
+	InputType  Type = "OUTPUT"
 )
 
 func (p Product) Validate() error {

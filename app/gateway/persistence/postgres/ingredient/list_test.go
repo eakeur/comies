@@ -2,12 +2,13 @@ package ingredient
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"gomies/app/core/entities/ingredient"
 	"gomies/app/core/entities/product"
 	"gomies/app/gateway/persistence/postgres/tests"
 	"gomies/app/sdk/types"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_actions_List(t *testing.T) {
@@ -35,29 +36,25 @@ func Test_actions_List(t *testing.T) {
 			name: "should return list with ingredients",
 			before: func(ctx context.Context, d *tests.Database, t *testing.T) {
 				_, err := d.InsertProducts(ctx, product.Product{
-					ID:     1,
-					Active: true,
-					Code:   "PZF",
-					Name:   "Pizza de frango",
-					Type:   product.OutputType,
+					ID:   1,
+					Code: "PZF",
+					Name: "Pizza de frango",
+					Type: product.OutputType,
 				}, product.Product{
-					ID:     2,
-					Active: true,
-					Code:   "FGO",
-					Name:   "Frango",
-					Type:   product.InputType,
+					ID:   2,
+					Code: "FGO",
+					Name: "Frango",
+					Type: product.InputType,
 				}, product.Product{
-					ID:     3,
-					Active: true,
-					Code:   "MSS",
-					Name:   "Massa",
-					Type:   product.InputType,
+					ID:   3,
+					Code: "MSS",
+					Name: "Massa",
+					Type: product.InputType,
 				}, product.Product{
-					ID:     4,
-					Active: true,
-					Code:   "QJO",
-					Name:   "Queijo",
-					Type:   product.InputType,
+					ID:   4,
+					Code: "QJO",
+					Name: "Queijo",
+					Type: product.InputType,
 				})
 				if err != nil {
 					t.Errorf("error inserting products: %v", err)
