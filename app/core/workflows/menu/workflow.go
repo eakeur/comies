@@ -13,9 +13,11 @@ type Workflow interface {
 	UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error
 
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)
-	GetProduct(ctx context.Context, key product.Key) (product.Product, error)
+	GetProductByID(ctx context.Context, id types.ID) (product.Product, error)
+	GetProductByCode(ctx context.Context, code string) (product.Product, error)
+	GetProductNameByID(ctx context.Context, id types.ID) (string, error)
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
-	RemoveProduct(ctx context.Context, key product.Key) error
+	RemoveProduct(ctx context.Context, id types.ID) error
 	UpdateProduct(ctx context.Context, prd product.Product) error
 
 	AddProductIngredient(ctx context.Context, ingredient ingredient.Ingredient) (ingredient.Ingredient, error)
