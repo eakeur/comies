@@ -1,6 +1,7 @@
 package product
 
 import (
+	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/transaction"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -16,7 +17,7 @@ func (a actions) Remove(ctx context.Context, id types.ID) error {
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.Error(product.ErrNotFound)
 	}
 
 	return nil

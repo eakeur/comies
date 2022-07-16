@@ -3,6 +3,10 @@ package product
 import "errors"
 
 var (
+	ErrNotFound = errors.New("this product seems to not exist")
+
+	ErrCodeAlreadyExists = errors.New("the product code is assigned to another product")
+
 	ErrInvalidCode = errors.New("the code is not valid. please provide one longer than 2 (two) and shorter than 12 (twelve) characters")
 
 	ErrInvalidName = errors.New("the name is not valid. please provide one longer than 2 (two) and shorter than 60 (sixty) characters")
@@ -17,7 +21,8 @@ var (
 
 	ErrNotEnoughStocked = errors.New("the stock for this product cannot afford this sale")
 
-	ErrInvalidIngredient          = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
+	ErrInvalidIngredient = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
+
 	ErrInvalidIngredientProductID = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
 
 	ErrInvalidIngredientQuantity = errors.New("the ingredient quantity for this product is invalid. please check if it is greater than 0")

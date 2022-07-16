@@ -1,6 +1,7 @@
 package product
 
 import (
+	"comies/app/core/entities/product"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
@@ -18,7 +19,7 @@ func (a actions) GetNameByID(ctx context.Context, id types.ID) (string, error) {
 	var name string
 	if err := row.Scan(&name); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return "", throw.Error(throw.ErrNotFound).
+			return "", throw.Error(product.ErrNotFound).
 				Describe("the product id provided seems to not exist").Params(map[string]interface{}{
 				"id": id,
 			})

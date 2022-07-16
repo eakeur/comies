@@ -33,7 +33,7 @@ func (a actions) GetSaleInfoByID(ctx context.Context, productID types.ID) (produ
 		&p.MinimumSale,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Sale{}, throw.Error(throw.ErrNotFound).
+			return product.Sale{}, throw.Error(product.ErrNotFound).
 				Describe("the product id provided seems to not exist").Params(map[string]interface{}{
 				"productID": productID,
 			})

@@ -3,7 +3,6 @@ package product
 import (
 	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"testing"
@@ -53,7 +52,7 @@ func Test_actions_GetNameByID(t *testing.T) {
 			args: args{
 				id: 1,
 			},
-			wantErr: throw.ErrNotFound,
+			wantErr: product.ErrNotFound,
 		},
 	}
 	for _, tt := range cases {

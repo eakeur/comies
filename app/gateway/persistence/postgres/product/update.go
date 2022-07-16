@@ -42,7 +42,7 @@ func (a actions) Update(ctx context.Context, prd product.Product) error {
 		if errors.As(err, &pgErr) {
 
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.ProductCodeUK {
-				return throw.Error(throw.ErrAlreadyExists).
+				return throw.Error(product.ErrCodeAlreadyExists).
 					Describe("the product code provided seems to already exist").Params(map[string]interface{}{
 					"code": prd.Code,
 				})
@@ -52,7 +52,7 @@ func (a actions) Update(ctx context.Context, prd product.Product) error {
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.Error(product.ErrNotFound)
 	}
 
 	return nil

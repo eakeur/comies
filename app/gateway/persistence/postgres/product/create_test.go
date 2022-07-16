@@ -3,7 +3,6 @@ package product
 import (
 	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
 	"testing"
@@ -71,41 +70,6 @@ func Test_actions_Create(t *testing.T) {
 			},
 		},
 		{
-			name: "should fail for existent product id",
-			args: args{
-				product: product.Product{
-					ID:   1,
-					Code: "PRDX",
-					Name: "Product X",
-					Type: product.OutputType,
-					Sale: product.Sale{
-						CostPrice:   10,
-						SalePrice:   20,
-						SaleUnit:    types.Unit,
-						MinimumSale: 1,
-					},
-				},
-			},
-			wantErr: throw.ErrAlreadyExists,
-			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
-				_, err := db.InsertProducts(ctx, product.Product{
-					ID:   1,
-					Code: "PRDXT",
-					Name: "Product X",
-					Type: product.OutputType,
-					Sale: product.Sale{
-						CostPrice:   10,
-						SalePrice:   20,
-						SaleUnit:    types.Unit,
-						MinimumSale: 1,
-					},
-				})
-				if err != nil {
-					t.Error(err)
-				}
-			},
-		},
-		{
 			name: "should fail for existent product code",
 			args: args{
 				product: product.Product{
@@ -121,7 +85,7 @@ func Test_actions_Create(t *testing.T) {
 					},
 				},
 			},
-			wantErr: throw.ErrAlreadyExists,
+			wantErr: product.ErrCodeAlreadyExists,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertProducts(ctx, product.Product{
 					ID:   1,

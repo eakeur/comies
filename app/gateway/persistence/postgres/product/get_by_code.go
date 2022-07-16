@@ -40,7 +40,7 @@ func (a actions) GetByCode(ctx context.Context, code string) (product.Product, e
 		&p.MinimumSale,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Product{}, throw.Error(throw.ErrNotFound).
+			return product.Product{}, throw.Error(product.ErrNotFound).
 				Describe("the product code provided seems to not exist").Params(map[string]interface{}{
 				"code": code,
 			})

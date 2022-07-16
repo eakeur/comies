@@ -41,7 +41,7 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 		&p.MinimumSale,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Product{}, throw.Error(throw.ErrNotFound).
+			return product.Product{}, throw.Error(product.ErrNotFound).
 				Describe("the product id provided seems to not exist").Params(map[string]interface{}{
 				"id": id,
 			})
