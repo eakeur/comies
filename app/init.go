@@ -38,8 +38,8 @@ func NewApplication(gateways Gateways) Application {
 	orders := ordering.NewWorkflow(actions.orders, actions.items, services.products)
 
 	return Application{
-		menu:     menus,
-		ordering: orders,
-		stocking: stocks,
+		Menu:     menus,
+		Ordering: orders,
+		Stocking: stocks,
 	}
 }

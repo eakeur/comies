@@ -33,8 +33,8 @@ type (
 	}
 
 	Application struct {
-		menu     menu.Workflow
-		ordering ordering.Workflow
-		stocking stocking.Workflow
+		Menu     menu.Workflow
+		Ordering ordering.Workflow
+		Stocking stocking.Workflow
 	}
 )
