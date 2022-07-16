@@ -8,6 +8,8 @@ import (
 
 func (w workflow) CreateStock(ctx context.Context, s stock.Stock) (stock.Stock, error) {
 
+	w.id.Create(&s.ID)
+
 	s, err := w.stocks.Create(ctx, s)
 	if err != nil {
 		return stock.Stock{}, throw.Error(err)

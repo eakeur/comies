@@ -8,6 +8,8 @@ import (
 
 func (w workflow) CreateProduct(ctx context.Context, prd product.Product) (product.Product, error) {
 
+	w.id.Create(&prd.ID)
+
 	if err := prd.Validate(); err != nil {
 		return product.Product{}, throw.Error(err).Params(map[string]interface{}{
 			"minimum_quantity": prd.MinimumSale,

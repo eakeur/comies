@@ -9,6 +9,10 @@ import (
 )
 
 func (s service) CreateProduct(ctx context.Context, in *menu.CreateProductRequest) (*menu.CreateProductResponse, error) {
+
+	ctx = s.tx.Begin(ctx)
+	defer s.tx.End(ctx)
+
 	prd, err := s.menu.CreateProduct(ctx, product.Product{
 		Code: in.Code,
 		Name: in.Name,

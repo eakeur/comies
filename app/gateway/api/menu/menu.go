@@ -5,6 +5,7 @@ import (
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/stocking"
 	client "comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/persistence/postgres/transaction"
 
 	"google.golang.org/grpc"
 )
@@ -15,10 +16,12 @@ type service struct {
 	client.UnimplementedMenuServer
 	menu   menu.Workflow
 	stocks stocking.Workflow
+	tx     transaction.Manager
 }
 
-func NewService(server *grpc.Server, menu menu.Workflow, stocks stocking.Workflow) client.MenuServer {
+func NewService(server *grpc.Server, menu menu.Workflow, stocks stocking.Workflow, tx transaction.Manager) client.MenuServer {
 	s := service{
+		tx:     tx,
 		menu:   menu,
 		stocks: stocks,
 	}

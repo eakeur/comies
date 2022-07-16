@@ -1,10 +1,11 @@
 package config
 
 type Config struct {
-	Database Database
-	Access   Access
-	Server   Server
-	Logger   Logger
+	Database     Database
+	Access       Access
+	Server       Server
+	Logger       Logger
+	IDGeneration IDGeneration
 }
 
 type Access struct {
@@ -25,6 +26,10 @@ type Database struct {
 type Server struct {
 	ListenPort string
 	Hostname   string
+}
+
+type IDGeneration struct {
+	NodeNumber string
 }
 
 type Logger struct {

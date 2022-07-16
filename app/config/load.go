@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func Load() (Config, error) {
@@ -27,6 +28,9 @@ func Load() (Config, error) {
 		},
 		Logger: Logger{
 			Environment: os.Getenv("ENVIRONMENT"),
+		},
+		IDGeneration: IDGeneration{
+			NodeNumber: os.Getenv("ID_GENERATION_NODE_NUMBER"),
 		},
 	}, nil
 }

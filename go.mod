@@ -16,6 +16,8 @@ require (
 	google.golang.org/protobuf v1.27.1
 )
 
+require github.com/bwmarrin/snowflake v0.3.0
+
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect

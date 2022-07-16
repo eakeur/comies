@@ -21,6 +21,8 @@ func (w workflow) SaveMovement(ctx context.Context, resourceID types.ID, mv move
 	}
 
 	mv.StockID = stk.ID
+	w.id.Create(&mv.ID)
+
 	if err := mv.Validate(); err != nil {
 		return AdditionResult{}, throw.Error(err)
 	}

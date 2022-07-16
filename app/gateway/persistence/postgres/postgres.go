@@ -12,12 +12,13 @@ import (
 )
 
 type Config struct {
-	User     string
-	Password string
-	Host     string
-	Port     string
-	Name     string
-	SSLMode  string
+	User      string
+	Password  string
+	Host      string
+	Port      string
+	Name      string
+	SSLMode   string
+	Migration string
 }
 
 const MigrationPath = "../migrations"
@@ -33,7 +34,12 @@ func ConnectAndMount(ctx context.Context, c Config) (*pgxpool.Pool, error) {
 		return nil, err
 	}
 
-	err = Migrate(url, MigrationPath)
+	var mig = MigrationPath
+	if c.Migration != "" {
+		mig = c.Migration
+	}
+
+	err = Migrate(url, mig)
 	if err != nil {
 		return nil, err
 	}

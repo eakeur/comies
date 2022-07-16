@@ -8,6 +8,8 @@ import (
 
 func (w workflow) AddProductIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
 
+	w.id.Create(&i.ID)
+
 	if err := i.Validate(); err != nil {
 		return ingredient.Ingredient{}, throw.Error(err).Params(map[string]interface{}{
 			"product_id":    i.ProductID,

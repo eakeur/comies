@@ -3,6 +3,7 @@ package stocking
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/stock"
+	"comies/app/sdk/id"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -30,12 +31,14 @@ type (
 	workflow struct {
 		stocks    stock.Actions
 		movements movement.Actions
+		id        id.Manager
 	}
 )
 
-func NewWorkflow(stocks stock.Actions, movements movement.Actions) Workflow {
+func NewWorkflow(stocks stock.Actions, movements movement.Actions, id id.Manager) Workflow {
 	return workflow{
 		stocks:    stocks,
 		movements: movements,
+		id:        id,
 	}
 }

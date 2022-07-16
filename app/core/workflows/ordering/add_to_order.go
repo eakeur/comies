@@ -12,6 +12,7 @@ func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResu
 		return ItemAdditionResult{}, throw.Error(throw.ErrMissingID)
 	}
 
+	w.id.Create(&i.ID)
 	i, err := w.items.Create(ctx, i)
 	if err != nil {
 		return ItemAdditionResult{}, throw.Error(err)

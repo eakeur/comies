@@ -10,29 +10,40 @@ import (
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/ordering"
 	"comies/app/core/workflows/stocking"
+	"comies/app/gateway/persistence/postgres/transaction"
+	"comies/app/sdk/id"
+
+	"github.com/bwmarrin/snowflake"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type (
 	Gateways struct {
-		database *pgxpool.Pool
+		Database      *pgxpool.Pool
+		SnowflakeNode *snowflake.Node
 	}
 
 	Actions struct {
-		products    product.Actions
-		ingredients ingredient.Actions
-		stocks      stock.Actions
-		movements   movement.Actions
-		orders      order.Actions
-		items       item.Actions
+		Products    product.Actions
+		Ingredients ingredient.Actions
+		Stocks      stock.Actions
+		Movements   movement.Actions
+		Orders      order.Actions
+		Items       item.Actions
 	}
 
 	Services struct {
-		products ordering.MenuService
-		stocks   menu.StockService
+		Products ordering.MenuService
+		Stocks   menu.StockService
+	}
+
+	Managers struct {
+		Transactions transaction.Manager
+		ID           id.Manager
 	}
 
 	Application struct {
+		Managers Managers
 		Menu     menu.Workflow
 		Ordering ordering.Workflow
 		Stocking stocking.Workflow

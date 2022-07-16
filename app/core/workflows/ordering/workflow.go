@@ -3,6 +3,7 @@ package ordering
 import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
+	"comies/app/sdk/id"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -27,13 +28,15 @@ type (
 		products MenuService
 		orders   order.Actions
 		items    item.Actions
+		id       id.Manager
 	}
 )
 
-func NewWorkflow(orders order.Actions, items item.Actions, products MenuService) Workflow {
+func NewWorkflow(orders order.Actions, items item.Actions, products MenuService, id id.Manager) Workflow {
 	return workflow{
 		products: products,
 		orders:   orders,
 		items:    items,
+		id:       id,
 	}
 }

@@ -3,6 +3,7 @@ package menu
 import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/product"
+	"comies/app/sdk/id"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -31,11 +32,13 @@ func NewWorkflow(
 	products product.Actions,
 	ingredients ingredient.Actions,
 	stocks StockService,
+	id id.Manager,
 ) Workflow {
 	return workflow{
 		ingredients: ingredients,
 		products:    products,
 		stocks:      stocks,
+		id:          id,
 	}
 }
 
@@ -43,4 +46,5 @@ type workflow struct {
 	products    product.Actions
 	ingredients ingredient.Actions
 	stocks      StockService
+	id          id.Manager
 }
