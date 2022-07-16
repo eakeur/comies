@@ -23,6 +23,6 @@ func NewManager(node *snowflake.Node) Manager {
 }
 
 func (m manager) Create(id *types.ID) {
-	gen := m.node.Generate().Int64()
-	id = (*types.ID)(&gen)
+	gen := types.ID(m.node.Generate().Int64())
+	*id = gen
 }

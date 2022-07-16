@@ -2,13 +2,19 @@ package postgres
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/golang-migrate/migrate/v4/source/httpfs"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v4/stdlib"
 	"github.com/pkg/errors"
 	"log"
+	"net/http"
 )
 
 type Config struct {
@@ -21,7 +27,10 @@ type Config struct {
 	Migration string
 }
 
-const MigrationPath = "../migrations"
+const MigrationPath = "migrations"
+
+//go:embed migrations
+var MigrationsFS embed.FS
 
 func CreateDatabaseURL(user, password, host, port, name, SSLMode string) string {
 	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", user, password, host, port, name, SSLMode)
@@ -34,12 +43,7 @@ func ConnectAndMount(ctx context.Context, c Config) (*pgxpool.Pool, error) {
 		return nil, err
 	}
 
-	var mig = MigrationPath
-	if c.Migration != "" {
-		mig = c.Migration
-	}
-
-	err = Migrate(url, mig)
+	err = Migrate(conn.Config().ConnConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -48,9 +52,24 @@ func ConnectAndMount(ctx context.Context, c Config) (*pgxpool.Pool, error) {
 }
 
 // Migrate writes up the schema to a database
-func Migrate(db string, filesPath string) error {
-	path := fmt.Sprintf("file://%v", filesPath)
-	migration, err := migrate.New(path, db)
+func Migrate(cfg *pgx.ConnConfig) error {
+	driver, err := postgres.WithInstance(stdlib.OpenDB(*cfg), &postgres.Config{
+		DatabaseName: cfg.Database,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to get migrations postgres driver: %w", err)
+	}
+
+	source, err := httpfs.New(http.FS(MigrationsFS), MigrationPath)
+	if err != nil {
+		return fmt.Errorf("failed to create migration httpfs driver: %w", err)
+	}
+
+	migration, err := migrate.NewWithInstance("httpfs", source, cfg.Database, driver)
+	if err != nil {
+		return fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
+	}
+
 	if err != nil {
 		return err
 	}

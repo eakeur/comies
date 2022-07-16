@@ -9,6 +9,8 @@ import (
 
 func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
 
+	var consume bool
+
 	ord, err := w.orders.GetByID(ctx, o.OrderID)
 	if err != nil {
 		return order.Order{}, throw.Error(err).Params(map[string]interface{}{
@@ -35,6 +37,20 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 		})
 	}
 
+	defer func() {
+		go func() {
+			for _, item := range items {
+				err := w.products.UpdateResources(ctx, item.ID, consume)
+				if err != nil {
+					err = throw.Error(err).Params(map[string]interface{}{
+						"item_id": item.ID,
+						"consume": consume,
+					})
+				}
+			}
+		}()
+	}()
+
 	if err := w.orders.SetDeliveryMode(ctx, o.OrderID, o.DeliveryMode); err != nil {
 		return order.Order{}, throw.Error(err).Params(map[string]interface{}{
 			"order_id":      o.OrderID,
@@ -53,15 +69,7 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 		})
 	}
 
-	for _, item := range items {
-		err := w.products.UpdateResources(ctx, item.ID, true)
-		if err != nil {
-			return order.Order{}, throw.Error(err).Params(map[string]interface{}{
-				"item_id": item.ID,
-				"consume": true,
-			})
-		}
-	}
+	consume = true
 
 	return ord, nil
 
