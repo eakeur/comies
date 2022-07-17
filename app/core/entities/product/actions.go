@@ -13,6 +13,7 @@ type Actions interface {
 	GetByCode(ctx context.Context, code string) (Product, error)
 	GetNameByID(ctx context.Context, id types.ID) (string, error)
 	GetSaleInfoByID(ctx context.Context, productID types.ID) (Sale, error)
+	GetStockInfoByID(ctx context.Context, productID types.ID) (Stock, error)
 	Create(ctx context.Context, prd Product) (Product, error)
 	Update(ctx context.Context, prd Product) error
 	Remove(ctx context.Context, id types.ID) error

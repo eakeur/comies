@@ -6,7 +6,6 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/order"
 	"comies/app/core/entities/product"
-	"comies/app/core/entities/stock"
 	"context"
 
 	"github.com/stretchr/testify/assert"
@@ -183,7 +182,7 @@ func (d *Database) InsertMovements(ctx context.Context, movements ...movement.Mo
 	const script = `
 		insert into movements (
 			id,
-			stock_id,
+			product_id,
 			type,
 			date,
 			quantity,
@@ -197,7 +196,7 @@ func (d *Database) InsertMovements(ctx context.Context, movements ...movement.Mo
 	for _, o := range movements {
 		_, err := d.Pool.Exec(ctx, script,
 			o.ID,
-			o.StockID,
+			o.ProductID,
 			o.Type,
 			o.Date,
 			o.Quantity,
@@ -210,33 +209,4 @@ func (d *Database) InsertMovements(ctx context.Context, movements ...movement.Mo
 	}
 
 	return movements, nil
-}
-
-func (d *Database) InsertStocks(ctx context.Context, stocks ...stock.Stock) ([]stock.Stock, error) {
-	const script = `
-		insert into stocks (
-			id,
-			target_id, 
-			maximum_quantity,
-			minimum_quantity,
-			location
-		) values (
-			$1, $2, $3, $4, $5
-		)
-	`
-
-	for _, o := range stocks {
-		_, err := d.Pool.Exec(ctx, script,
-			o.ID,
-			o.TargetID,
-			o.MaximumQuantity,
-			o.MinimumQuantity,
-			o.Location,
-		)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return stocks, nil
 }

@@ -33,7 +33,7 @@ func Test_actions_Create(t *testing.T) {
 			args: args{
 				movement: movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,
@@ -43,7 +43,7 @@ func Test_actions_Create(t *testing.T) {
 			},
 			want: movement.Movement{
 				ID:        1,
-				StockID:   1,
+				ProductID: 1,
 				Type:      movement.OutputMovement,
 				Date:      date,
 				Quantity:  100,
@@ -66,7 +66,7 @@ func Test_actions_Create(t *testing.T) {
 				const script = `
 					select 
 						id = $1 and 
-						stock_id = $2 and 
+						product_id = $2 and 
 						type = $3 and 
 						date = $4 and 
 						quantity = $5 and 
@@ -83,7 +83,7 @@ func Test_actions_Create(t *testing.T) {
 			args: args{
 				movement: movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,
@@ -98,7 +98,7 @@ func Test_actions_Create(t *testing.T) {
 			args: args{
 				movement: movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,
@@ -121,7 +121,7 @@ func Test_actions_Create(t *testing.T) {
 
 				_, err = db.InsertMovements(ctx, movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,

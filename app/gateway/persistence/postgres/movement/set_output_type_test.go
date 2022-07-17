@@ -47,7 +47,7 @@ func Test_actions_SetOutputType(t *testing.T) {
 
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      date,
 					Quantity:  100,

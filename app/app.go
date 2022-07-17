@@ -6,10 +6,8 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/order"
 	"comies/app/core/entities/product"
-	"comies/app/core/entities/stock"
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/ordering"
-	"comies/app/core/workflows/stocking"
 	"comies/app/gateway/persistence/postgres/transaction"
 	"comies/app/sdk/id"
 
@@ -26,7 +24,6 @@ type (
 	Actions struct {
 		Products    product.Actions
 		Ingredients ingredient.Actions
-		Stocks      stock.Actions
 		Movements   movement.Actions
 		Orders      order.Actions
 		Items       item.Actions
@@ -34,7 +31,6 @@ type (
 
 	Services struct {
 		Products ordering.MenuService
-		Stocks   menu.StockService
 	}
 
 	Managers struct {
@@ -46,6 +42,5 @@ type (
 		Managers Managers
 		Menu     menu.Workflow
 		Ordering ordering.Workflow
-		Stocking stocking.Workflow
 	}
 )

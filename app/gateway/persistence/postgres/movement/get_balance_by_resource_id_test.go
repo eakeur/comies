@@ -50,7 +50,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 
 				_, err = db.InsertMovements(ctx, movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,
@@ -58,7 +58,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        2,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      date,
 					Quantity:  100,
@@ -66,7 +66,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        3,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      date,
 					Quantity:  100,
@@ -74,7 +74,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        4,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,
@@ -82,7 +82,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 					AgentID:   56547556444444444,
 				}, movement.Movement{
 					ID:        5,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      date,
 					Quantity:  100,
@@ -104,7 +104,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 			defer db.Drop(tt.after)
 
 			a := actions{db: db.Pool}
-			got, err := a.GetBalanceByResourceID(ctx, tt.args.resourceID, tt.args.filter)
+			got, err := a.GetBalanceByProductID(ctx, tt.args.resourceID, tt.args.filter)
 			assert.ErrorIs(t, err, tt.wantErr)
 			assert.Equalf(t, tt.want, got, "GetByID(%v)", tt.args.resourceID)
 		})

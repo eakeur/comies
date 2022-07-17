@@ -46,7 +46,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 			want: []movement.Movement{
 				{
 					ID:        3,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -54,7 +54,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, {
 					ID:        4,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -76,7 +76,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2019, 12, 31, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -84,7 +84,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        2,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2019, 12, 31, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -92,7 +92,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        3,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -100,7 +100,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        4,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -108,7 +108,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   56547556444444444,
 				}, movement.Movement{
 					ID:        5,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 02, 01, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -129,7 +129,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 			want: []movement.Movement{
 				{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2019, 12, 31, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -137,7 +137,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, {
 					ID:        2,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2019, 12, 31, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -145,7 +145,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, {
 					ID:        3,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -153,7 +153,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, {
 					ID:        4,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -161,7 +161,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   56547556444444444,
 				}, {
 					ID:        5,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 02, 01, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -183,7 +183,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2019, 12, 31, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -191,7 +191,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        2,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2019, 12, 31, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -199,7 +199,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        3,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.ReservedMovement,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -207,7 +207,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   1544474558856547556,
 				}, movement.Movement{
 					ID:        4,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -215,7 +215,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 					AgentID:   56547556444444444,
 				}, movement.Movement{
 					ID:        5,
-					StockID:   1,
+					ProductID: 1,
 					Type:      movement.OutputMovement,
 					Date:      time.Date(2020, 01, 02, 01, 00, 00, 00, time.UTC),
 					Quantity:  100,
@@ -237,7 +237,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 			ctx, db := tests.FetchTestDB(t, tt.before)
 			defer db.Drop()
 
-			got, err := actions{db: db.Pool}.ListByResourceID(ctx, tt.args.resourceID, tt.args.filter)
+			got, err := actions{db: db.Pool}.ListByProductID(ctx, tt.args.resourceID, tt.args.filter)
 			assert.ErrorIs(t, err, tt.wantErr)
 			assert.Equal(t, tt.want, got)
 		})

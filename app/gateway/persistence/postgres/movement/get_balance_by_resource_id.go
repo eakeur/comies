@@ -8,14 +8,14 @@ import (
 	"context"
 )
 
-func (a actions) GetBalanceByResourceID(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
+func (a actions) GetBalanceByProductID(ctx context.Context, resourceID types.ID, filter movement.Filter) (types.Quantity, error) {
 	const script = `
 		select
 			coalesce(sum(m.quantity), 0)
 		from
 			movements m
 		inner join
-			stocks s on s.id = m.stock_id
+			products p on p.id = m.product_id
 		where
 			%query%
 	`
@@ -23,7 +23,7 @@ func (a actions) GetBalanceByResourceID(ctx context.Context, resourceID types.ID
 	q, err := query.NewQuery(script).
 		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
 		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
-		OnlyWhere(resourceID != 0, "s.target_id = $%v", resourceID)
+		OnlyWhere(resourceID != 0, "p.id = $%v", resourceID)
 	if err != nil {
 		return 0, throw.Error(err)
 	}

@@ -16,8 +16,8 @@ type Type string
 type Movement struct {
 	ID types.ID
 
-	// StockID is an identifier for the stock this movement references to
-	StockID types.ID
+	// ProductID is an identifier for the stock this movement references to
+	ProductID types.ID
 
 	// Type points out if this movement is input or output
 	Type Type

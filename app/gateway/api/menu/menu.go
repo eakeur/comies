@@ -2,8 +2,8 @@ package menu
 
 import (
 	"comies/app/core/workflows/menu"
-	"comies/app/core/workflows/stocking"
 	client "comies/app/gateway/api/gen/menu"
+
 	"google.golang.org/grpc"
 )
 
@@ -11,14 +11,12 @@ var _ client.MenuServer = service{}
 
 type service struct {
 	client.UnimplementedMenuServer
-	menu   menu.Workflow
-	stocks stocking.Workflow
+	menu menu.Workflow
 }
 
-func NewService(server *grpc.Server, menu menu.Workflow, stocks stocking.Workflow) client.MenuServer {
+func NewService(server *grpc.Server, menu menu.Workflow) client.MenuServer {
 	s := service{
-		menu:   menu,
-		stocks: stocks,
+		menu: menu,
 	}
 
 	client.RegisterMenuServer(server, s)

@@ -15,7 +15,7 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Mo
 	const script = `
 		insert into movements (
 			id,
-			stock_id,
+			product_id,
 			type,
 			date,
 			quantity,
@@ -28,7 +28,7 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Mo
 
 	_, err := transaction.ExecFromContext(ctx, script,
 		mov.ID,
-		mov.StockID,
+		mov.ProductID,
 		mov.Type,
 		mov.Date,
 		mov.Quantity,
@@ -38,11 +38,11 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Mo
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
-			params := map[string]interface{}{"id": mov.ID, "stock_id": mov.StockID}
+			params := map[string]interface{}{"id": mov.ID, "product_id": mov.ProductID}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.MovementStockIDFK {
 				return movement.Movement{}, throw.Error(throw.ErrNotFound).
-					Describe("the stock id provided seems to not exist").Params(params)
+					Describe("the product id provided seems to not exist").Params(params)
 			}
 
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.MovementIDPK {

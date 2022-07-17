@@ -15,6 +15,8 @@ type (
 		Type Type
 
 		Sale
+
+		Stock
 	}
 
 	Sale struct {
@@ -31,12 +33,21 @@ type (
 		MinimumSale types.Quantity
 	}
 
+	Stock struct {
+		// MaximumQuantity is how many unities of this resource the stock can support
+		MaximumQuantity types.Quantity
+		// MinimumQuantity is the lowest quantity of this resource the stock can have
+		MinimumQuantity types.Quantity
+		// Location is a brief description of where this stock is located
+		Location string
+	}
+
 	Type string
 )
 
 const (
-	OutputType Type = "INPUT"
-	InputType  Type = "OUTPUT"
+	OutputType Type = "OUTPUT"
+	InputType  Type = "INPUT"
 )
 
 func (p Product) Validate() error {

@@ -8,11 +8,11 @@ import (
 	"context"
 )
 
-func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filter movement.Filter) ([]movement.Movement, error) {
+func (a actions) ListByProductID(ctx context.Context, resourceID types.ID, filter movement.Filter) ([]movement.Movement, error) {
 	const script = `
 		select
 			m.id,
-			m.stock_id,
+			m.product_id,
 			m.type,
 			m.date,
 			m.quantity,
@@ -21,7 +21,7 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 		from
 			movements m
 		inner join
-			stocks s on s.id = m.stock_id
+			stocks s on s.id = m.product_id
 		where
 			%query%
 	`
@@ -41,7 +41,7 @@ func (a actions) ListByResourceID(ctx context.Context, resourceID types.ID, filt
 		var m movement.Movement
 		if err := rows.Scan(
 			&m.ID,
-			&m.StockID,
+			&m.ProductID,
 			&m.Type,
 			&m.Date,
 			&m.Quantity,

@@ -10,6 +10,9 @@ create table products
     sale_price   bigint      not null,
     minimum_sale bigint      not null,
     sale_unit    varchar(3)  not null,
+    maximum_quantity bigint not null,
+    minimum_quantity bigint not null,
+    location         text,
 
     constraint products_pk primary key (id),
     constraint code_store_id_uk unique (code)
@@ -89,22 +92,10 @@ create table item_details
     constraint item_id_fk foreign key (item_id) references items (id)
 );
 
-create table stocks
-(
-    id               bigint not null,
-    target_id        bigint not null,
-    maximum_quantity bigint not null,
-    minimum_quantity bigint not null,
-    location         text,
-
-    constraint stocks_id primary key (id),
-    constraint target_store_uk unique (target_id)
-);
-
 create table movements
 (
     id       bigint                   not null,
-    stock_id bigint                   not null,
+    product_id bigint                   not null,
     type     varchar(30)              not null,
     date     timestamp with time zone not null,
     quantity bigint                   not null,
@@ -112,7 +103,7 @@ create table movements
     agent_id bigint                   not null,
 
     constraint movements_id primary key (id),
-    constraint stock_id_fk foreign key (stock_id) references stocks (id)
+    constraint stock_id_fk foreign key (product_id) references products (id)
 );
 
 end;

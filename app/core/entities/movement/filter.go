@@ -8,14 +8,14 @@ import (
 
 type (
 	Filter struct {
-		ResourceID  types.ID
+		ProductID   types.ID
 		InitialDate time.Time
 		FinalDate   time.Time
 	}
 )
 
 func (f Filter) Validate() error {
-	if f.ResourceID.Empty() {
+	if f.ProductID.Empty() {
 		return throw.ErrMissingID
 	}
 

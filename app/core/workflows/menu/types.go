@@ -32,4 +32,9 @@ type (
 		Got       types.Quantity
 		Error     error
 	}
+
+	ActualBalance struct {
+		ID    types.ID
+		Count types.Quantity
+	}
 )

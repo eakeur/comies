@@ -2,9 +2,7 @@ package menu
 
 import (
 	"comies/app/gateway/api/gen/menu"
-	"comies/app/gateway/api/tests"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc/codes"
 	"testing"
 )
 
@@ -31,23 +29,6 @@ func TestProductCrud(t *testing.T) {
 		}
 
 		id = prd.Id
-	})
-
-	t.Run("should fail creating a product for repeated code", func(t *testing.T) {
-		_, err := client.CreateProduct(ctx, &menu.CreateProductRequest{
-			Code:         "COCZ",
-			Name:         "Coca Cola zero 3L",
-			Type:         menu.ProductType_OUTPUT,
-			Cost:         750,
-			Price:        1000,
-			Unit:         "un",
-			Minimum:      1,
-			StockMinimum: 5,
-			StockMaximum: 20,
-			Location:     "Fridge",
-		})
-
-		tests.ExpectError(t, err, codes.AlreadyExists, "Ops! The code assigned to this product seems to belong to another product already")
 	})
 
 	t.Run("should fetch product by id", func(t *testing.T) {
@@ -77,11 +58,6 @@ func TestProductCrud(t *testing.T) {
 			StockMaximum: prd.StockMaximum,
 			Location:     prd.Location,
 		})
-	})
-
-	t.Run("should fail fetching product by id for nonexistent product", func(t *testing.T) {
-		_, err := client.GetProductByID(ctx, &menu.GetProductByIDRequest{Id: 0})
-		tests.ExpectError(t, err, codes.NotFound, "Ops! This product does not exist or could not be found")
 	})
 
 	t.Run("should update product by id", func(t *testing.T) {
@@ -133,10 +109,5 @@ func TestProductCrud(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-	})
-
-	t.Run("should fail deletion of nonexistent product", func(t *testing.T) {
-		_, err := client.RemoveProduct(ctx, &menu.RemoveProductRequest{Id: id})
-		tests.ExpectError(t, err, codes.NotFound, "Ops! This product does not exist or could not be found")
 	})
 }
