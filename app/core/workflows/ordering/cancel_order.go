@@ -30,7 +30,7 @@ func (w workflow) CancelOrder(ctx context.Context, id types.ID) error {
 	}
 
 	for _, item := range items {
-		err := w.products.UpdateResources(ctx, item.ID, false)
+		err := w.products.UpdateReservation(ctx, item.ID, false)
 		if err != nil {
 			return throw.Error(err).Params(map[string]interface{}{
 				"item_id": item.ID,

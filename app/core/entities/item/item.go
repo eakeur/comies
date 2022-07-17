@@ -26,15 +26,8 @@ type (
 	}
 
 	Details struct {
-		IgnoreIngredients  []Ignoring
-		ReplaceIngredients []Replacement
-	}
-
-	Ignoring types.ID
-
-	Replacement struct {
-		From types.ID
-		To   types.ID
+		IgnoreIngredients  []types.ID
+		ReplaceIngredients map[types.ID]types.ID
 	}
 )
 

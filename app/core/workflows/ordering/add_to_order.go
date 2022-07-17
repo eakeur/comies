@@ -2,6 +2,7 @@ package ordering
 
 import (
 	"comies/app/core/entities/item"
+	"comies/app/core/entities/reservation"
 	"comies/app/sdk/throw"
 	"context"
 )
@@ -18,7 +19,7 @@ func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResu
 		return ItemAdditionResult{}, throw.Error(err)
 	}
 
-	res, err := w.products.ReserveResources(ctx, i.ID, Reservation{
+	res, err := w.products.Reserve(ctx, reservation.Reservation{
 		ID:        i.ID,
 		ProductID: i.ProductID,
 		Quantity:  i.Quantity,
@@ -29,11 +30,9 @@ func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResu
 		return ItemAdditionResult{}, throw.Error(err)
 	}
 
-	result := ItemAdditionResult{Item: i}
-	if len(res.Failures) > 0 {
-		result.Failed = []Reservation{res}
-	} else {
-		result.Succeeded = []Reservation{res}
+	result := ItemAdditionResult{}
+	if len(res) > 0 {
+		result.Failed = res
 	}
 
 	return result, nil

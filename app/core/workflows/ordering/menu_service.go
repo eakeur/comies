@@ -1,6 +1,7 @@
 package ordering
 
 import (
+	"comies/app/core/entities/reservation"
 	"comies/app/sdk/types"
 	"context"
 )
@@ -9,7 +10,7 @@ import (
 
 type (
 	MenuService interface {
-		ReserveResources(ctx context.Context, reservationID types.ID, reservation Reservation) (Reservation, error)
-		UpdateResources(ctx context.Context, reservationID types.ID, consume bool) error
+		Reserve(ctx context.Context, reservation reservation.Reservation) ([]reservation.Failure, error)
+		UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error
 	}
 )

@@ -9,7 +9,6 @@ import (
 	"comies/app/gateway/persistence/postgres/order"
 	"comies/app/gateway/persistence/postgres/product"
 	"comies/app/gateway/persistence/postgres/transaction"
-	menuService "comies/app/gateway/services/ordering/menu"
 	"comies/app/sdk/id"
 )
 
@@ -28,14 +27,11 @@ func NewApplication(gateways Gateways) Application {
 			Transactions: transaction.NewManager(gateways.Database),
 			ID:           id.NewManager(gateways.SnowflakeNode),
 		}
-
-		services = Services{}
 	)
 
 	menus := menu.NewWorkflow(actions.Products, actions.Ingredients, actions.Movements, managers.ID)
-	services.Products = menuService.NewService(menus)
 
-	orders := ordering.NewWorkflow(actions.Orders, actions.Items, services.Products, managers.ID)
+	orders := ordering.NewWorkflow(actions.Orders, actions.Items, menus, managers.ID)
 
 	return Application{
 		Managers: managers,

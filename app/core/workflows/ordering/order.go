@@ -40,7 +40,7 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 	defer func() {
 		go func() {
 			for _, item := range items {
-				err := w.products.UpdateResources(ctx, item.ID, consume)
+				err := w.products.UpdateReservation(ctx, item.ID, consume)
 				if err != nil {
 					err = throw.Error(err).Params(map[string]interface{}{
 						"item_id": item.ID,

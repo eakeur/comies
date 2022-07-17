@@ -1,32 +1,19 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
+	"comies/app/core/entities/reservation"
 	"comies/app/sdk/types"
 )
 
 type (
-	Reservation struct {
-		ID        types.ID
+	ReservationFailure struct {
 		ProductID types.ID
-		Quantity  types.Quantity
-		Ignore    []item.Ignoring
-		Replace   []item.Replacement
-		Failures  []ItemFailed
-	}
-
-	ItemFailed struct {
-		ProductID types.ID
-		Want      types.Quantity
-		Got       types.Quantity
 		Error     error
 	}
 
 	ItemAdditionResult struct {
-		Item      item.Item
-		Succeeded []Reservation
-		Failed    []Reservation
+		Failed []reservation.Failure
 	}
 
 	OrderConfirmation struct {

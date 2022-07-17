@@ -29,10 +29,6 @@ type (
 		Items       item.Actions
 	}
 
-	Services struct {
-		Products ordering.MenuService
-	}
-
 	Managers struct {
 		Transactions transaction.Manager
 		ID           id.Manager

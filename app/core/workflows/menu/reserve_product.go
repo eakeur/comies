@@ -3,14 +3,16 @@ package menu
 import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/movement"
+	"comies/app/core/entities/product"
+	"comies/app/core/entities/reservation"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
+	"errors"
 	"sync"
-	"time"
 )
 
-func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservation, error) {
+func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failures []reservation.Failure, err error) {
 
 	var (
 		params = map[string]interface{}{
@@ -21,68 +23,45 @@ func (w workflow) ReserveProduct(ctx context.Context, r Reservation) (Reservatio
 
 	ingredients, err := w.ingredients.List(ctx, r.ProductID)
 	if err != nil {
-		return Reservation{}, throw.Error(err).Params(params)
+		return nil, throw.Error(err).Params(params)
+	}
+
+	wg := sync.WaitGroup{}
+	errs := make(chan error, len(ingredients))
+	creator := func(productID types.ID, quantity types.Quantity) {
+		defer wg.Done()
+		if _, err := w.CreateMovement(ctx, movement.Movement{
+			ProductID: productID,
+			Quantity:  quantity,
+			AgentID:   r.ID,
+			Type:      movement.ReservedMovement,
+		}); err != nil {
+			if errors.Is(err, product.ErrStockAlreadyFull) || errors.Is(err, product.ErrStockNegative) {
+				failures = append(failures, reservation.Failure{ProductID: r.ProductID, Error: err})
+				err = nil
+			}
+
+			errs <- throw.Error(err)
+		}
 	}
 
 	if len(ingredients) == 0 {
-		failures, err := w.createReservedMovements(ctx, r.ID, ingredient.Ingredient{
-			Quantity:     r.Quantity,
-			IngredientID: r.ProductID,
-		})
-		if err != nil {
-			return Reservation{}, throw.Error(err).Params(params)
-		}
-		r.Failures = failures
-
-		return r, nil
-	}
-
-	failures, err := w.createReservedMovements(ctx, r.ID, ingredient.IgnoreAndReplace(
-		ingredients, r.Ignore, r.Replace,
-		func(i ingredient.Ingredient) ingredient.Ingredient {
+		wg.Add(1)
+		creator(r.ProductID, r.Quantity)
+	} else {
+		for _, ing := range ingredient.IgnoreAndReplace(ingredients, r.Ignore, r.Replace, func(i ingredient.Ingredient) ingredient.Ingredient {
 			i.Quantity *= r.Quantity
 			return i
-		},
-	)...)
-
-	r.Failures = failures
-
-	return r, nil
-}
-
-func (w workflow) createReservedMovements(ctx context.Context, reservationID types.ID, ingredients ...ingredient.Ingredient) ([]ItemFailed, error) {
-
-	var (
-		errors   = make(chan error, len(ingredients))
-		failures []ItemFailed
-		wg       sync.WaitGroup
-	)
-
-	for _, ing := range ingredients {
-		ing := ing
-		wg.Add(1)
-
-		go func() {
-			defer wg.Done()
-			if _, err := w.CreateMovement(ctx, movement.Movement{
-				ProductID: ing.IngredientID,
-				Type:      movement.ReservedMovement,
-				Date:      time.Now(),
-				Quantity:  ing.Quantity,
-				AgentID:   reservationID,
-			}); err != nil {
-				errors <- throw.Error(err)
-				failures = append(failures, ItemFailed{
-					ProductID: ing.IngredientID,
-					Error:     err,
-				})
-			}
-		}()
+		}) {
+			ing := ing
+			wg.Add(1)
+			go creator(ing.IngredientID, ing.Quantity)
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 
-	if len(errors) > 0 {
-		return nil, throw.Error(<-errors)
+	if len(errs) > 0 {
+		return nil, throw.Error(<-errs).Params(params)
 	}
 
 	return failures, nil

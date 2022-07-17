@@ -4,6 +4,7 @@ import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
+	"comies/app/core/entities/reservation"
 	"comies/app/sdk/id"
 	"comies/app/sdk/types"
 	"context"
@@ -11,7 +12,7 @@ import (
 
 //go:generate moq -fmt goimports -out workflow_mock.go . Workflow:WorkflowMock
 type Workflow interface {
-	ReserveProduct(ctx context.Context, reservation Reservation) (Reservation, error)
+	Reserve(ctx context.Context, reservation reservation.Reservation) ([]reservation.Failure, error)
 	UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error
 
 	CreateProduct(ctx context.Context, prd product.Product) (product.Product, error)
