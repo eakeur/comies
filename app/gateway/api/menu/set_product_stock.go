@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-func (s service) SetProductStock(ctx context.Context, in *menu.SetProductStockRequest) (*menu.Empty, error) {
+func (s service) UpdateStock(ctx context.Context, in *menu.UpdateStockRequest) (*menu.Empty, error) {
 	//TODO implement me
 	panic("implement me")
 }

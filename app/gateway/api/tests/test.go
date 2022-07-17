@@ -3,7 +3,9 @@ package tests
 import (
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 	"log"
 	"net"
 	"testing"
@@ -32,6 +34,17 @@ func NewTestServer(t *testing.T, server *grpc.Server) *grpc.ClientConn {
 
 	return conn
 
+}
+
+func ExpectError(t *testing.T, err error, code codes.Code, msg string) {
+	if err == nil {
+		t.Errorf("test failed because it was expected to receive error")
+	}
+
+	st, _ := status.FromError(err)
+	if st.Code() != code && st.Message() != msg {
+		t.Errorf("test failed because it was expected to receive %v error, but received: %v ", st.Code().String(), err)
+	}
 }
 
 func listener() (net.Listener, string, error) {

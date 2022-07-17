@@ -2,11 +2,9 @@ package menu
 
 import (
 	"comies/app/gateway/api/gen/menu"
-	"comies/app/sdk/throw"
-	"errors"
+	"comies/app/gateway/api/tests"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"testing"
 )
 
@@ -49,16 +47,7 @@ func TestProductCrud(t *testing.T) {
 			Location:     "Fridge",
 		})
 
-		if err == nil {
-			t.Errorf("test failed because it was expected to receive error")
-		}
-
-		st, _ := status.FromError(err)
-		c := st.Code()
-		msg := st.Message()
-		if c != codes.AlreadyExists && msg != "The code provided is already assigned to another product" {
-			t.Errorf("test failed because it was expected to receive AlreadyExists error, but received: %v - %v", c, msg)
-		}
+		tests.ExpectError(t, err, codes.AlreadyExists, "Ops! The code assigned to this product seems to belong to another product already")
 	})
 
 	t.Run("should fetch product by id", func(t *testing.T) {
@@ -80,7 +69,6 @@ func TestProductCrud(t *testing.T) {
 			Code:         prd.Code,
 			Name:         prd.Name,
 			Type:         prd.Type,
-			Active:       prd.Active,
 			Cost:         prd.Cost,
 			Price:        prd.Price,
 			Unit:         prd.Unit,
@@ -93,8 +81,62 @@ func TestProductCrud(t *testing.T) {
 
 	t.Run("should fail fetching product by id for nonexistent product", func(t *testing.T) {
 		_, err := client.GetProductByID(ctx, &menu.GetProductByIDRequest{Id: 0})
-		if err == nil || !errors.Is(err, throw.ErrNotFound) {
-			t.Errorf("test failed because it was expected to receive ErrNotFound: %v", err)
+		tests.ExpectError(t, err, codes.NotFound, "Ops! This product does not exist or could not be found")
+	})
+
+	t.Run("should update product by id", func(t *testing.T) {
+		_, err := client.UpdateProduct(ctx, &menu.UpdateProductRequest{
+			Id:      id,
+			Code:    "COCXT",
+			Name:    "Coca Cola zero 2XL",
+			Type:    menu.ProductType_OUTPUT,
+			Cost:    600,
+			Price:   850,
+			Minimum: 1,
+		})
+		if err != nil {
+			t.Error(err)
 		}
+	})
+
+	t.Run("should fetch updated product by code", func(t *testing.T) {
+		prd, err := client.GetProductByCode(ctx, &menu.GetProductByCodeRequest{Code: "COCXT"})
+		if err != nil {
+			t.Error(err)
+		}
+
+		assert.EqualValues(t, &menu.GetProductByIDResponse{
+			Id:      id,
+			Code:    "COCXT",
+			Name:    "Coca Cola zero 2XL",
+			Type:    menu.ProductType_OUTPUT,
+			Cost:    600,
+			Price:   850,
+			Minimum: 1,
+		}, &menu.GetProductByCodeResponse{
+			Id:           prd.Id,
+			Code:         prd.Code,
+			Name:         prd.Name,
+			Type:         prd.Type,
+			Cost:         prd.Cost,
+			Price:        prd.Price,
+			Unit:         prd.Unit,
+			Minimum:      prd.Minimum,
+			StockMinimum: prd.StockMinimum,
+			StockMaximum: prd.StockMaximum,
+			Location:     prd.Location,
+		})
+	})
+
+	t.Run("should remove product by id", func(t *testing.T) {
+		_, err := client.RemoveProduct(ctx, &menu.RemoveProductRequest{Id: id})
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("should fail deletion of nonexistent product", func(t *testing.T) {
+		_, err := client.RemoveProduct(ctx, &menu.RemoveProductRequest{Id: id})
+		tests.ExpectError(t, err, codes.NotFound, "Ops! This product does not exist or could not be found")
 	})
 }

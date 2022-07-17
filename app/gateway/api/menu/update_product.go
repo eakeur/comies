@@ -7,8 +7,10 @@ import (
 	"context"
 )
 
-func (s service) RemoveProduct(ctx context.Context, in *menu.RemoveProductRequest) (*menu.Empty, error) {
-	err := s.menu.RemoveProduct(ctx, types.ID(in.Id))
+func (s service) UpdateProduct(ctx context.Context, in *menu.UpdateProductRequest) (*menu.Empty, error) {
+	prd := InternalProduct(in)
+	prd.ID = types.ID(in.Id)
+	err := s.menu.UpdateProduct(ctx, prd)
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
 	}

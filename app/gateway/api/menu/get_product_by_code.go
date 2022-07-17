@@ -3,17 +3,16 @@ package menu
 import (
 	"comies/app/gateway/api/gen/menu"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 )
 
-func (s service) GetProductByID(ctx context.Context, in *menu.GetProductByIDRequest) (*menu.GetProductByIDResponse, error) {
-	prd, err := s.menu.GetProductByID(ctx, types.ID(in.Id))
+func (s service) GetProductByCode(ctx context.Context, request *menu.GetProductByCodeRequest) (*menu.GetProductByCodeResponse, error) {
+	prd, err := s.menu.GetProductByCode(ctx, request.Code)
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
 	}
 
-	return &menu.GetProductByIDResponse{
+	return &menu.GetProductByCodeResponse{
 		Id:      int64(prd.ID),
 		Code:    prd.Code,
 		Name:    prd.Name,
