@@ -17,7 +17,10 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 			cost_price,
 			sale_price,
 			sale_unit,
-			minimum_sale
+			minimum_sale,
+			minimum_quantity,
+			maximum_quantity,
+			location
 		from
 			products p
 		%where_query%
@@ -45,6 +48,9 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 			&p.SalePrice,
 			&p.SaleUnit,
 			&p.MinimumSale,
+			&p.MinimumQuantity,
+			&p.MaximumQuantity,
+			&p.Location,
 		); err != nil {
 			continue
 		}

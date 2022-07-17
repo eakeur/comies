@@ -124,9 +124,12 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 			cost_price,
 			sale_price,
 			sale_unit,
-			minimum_sale
+			minimum_sale,
+			minimum_quantity,
+			maximum_quantity,
+			location
 		) values (
-			$1, $2, $3, $4, $5, $6, $7, $8
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 		)
 	`
 
@@ -140,6 +143,9 @@ func (d *Database) InsertProducts(ctx context.Context, products ...product.Produ
 			p.SalePrice,
 			p.SaleUnit,
 			p.MinimumSale,
+			p.MinimumQuantity,
+			p.MaximumQuantity,
+			p.Location,
 		)
 		if err != nil {
 			return nil, err

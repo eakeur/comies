@@ -2,7 +2,7 @@ package movement
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/core/entities/stock"
+	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
 	"comies/app/sdk/throw"
 	"context"
@@ -51,12 +51,13 @@ func Test_actions_Create(t *testing.T) {
 				AgentID:   1544474558856547556,
 			},
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
-				_, err := db.InsertStocks(ctx, stock.Stock{
-					ID:              1,
-					TargetID:        1,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
+				_, err := db.InsertProducts(ctx, product.Product{
+					ID: 1,
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
 				})
 				if err != nil {
 					t.Error(err)
@@ -92,46 +93,6 @@ func Test_actions_Create(t *testing.T) {
 				},
 			},
 			wantErr: throw.ErrNotFound,
-		},
-		{
-			name: "should fail for repeated movement id",
-			args: args{
-				movement: movement.Movement{
-					ID:        1,
-					ProductID: 1,
-					Type:      movement.OutputMovement,
-					Date:      date,
-					Quantity:  100,
-					PaidValue: 50,
-					AgentID:   1544474558856547556,
-				},
-			},
-			wantErr: throw.ErrAlreadyExists,
-			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
-				_, err := db.InsertStocks(ctx, stock.Stock{
-					ID:              1,
-					TargetID:        1,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
-				})
-				if err != nil {
-					t.Error(err)
-				}
-
-				_, err = db.InsertMovements(ctx, movement.Movement{
-					ID:        1,
-					ProductID: 1,
-					Type:      movement.OutputMovement,
-					Date:      date,
-					Quantity:  100,
-					PaidValue: 50,
-					AgentID:   1544474558856547556,
-				})
-				if err != nil {
-					t.Error(err)
-				}
-			},
 		},
 	}
 	for _, tt := range cases {

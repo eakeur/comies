@@ -21,9 +21,12 @@ func (a actions) Create(ctx context.Context, p product.Product) (product.Product
 			cost_price,
 			sale_price,
 			sale_unit,
-			minimum_sale
+			minimum_sale,
+			minimum_quantity,
+			maximum_quantity,
+			location
 		) values (
-			$1, $2, $3, $4, $5, $6, $7, $8
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 		)
 	`
 
@@ -36,6 +39,9 @@ func (a actions) Create(ctx context.Context, p product.Product) (product.Product
 		p.SalePrice,
 		p.SaleUnit,
 		p.MinimumSale,
+		p.MinimumQuantity,
+		p.MaximumQuantity,
+		p.Location,
 	); err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {

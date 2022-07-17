@@ -6,17 +6,6 @@ import (
 )
 
 type (
-	IngredientInput struct {
-		Quantity     types.Quantity
-		IngredientID types.ID
-	}
-
-	Check struct {
-		ProductID types.ID
-		Quantity  types.Quantity
-		Price     types.Currency
-	}
-
 	Reservation struct {
 		ID        types.ID
 		ProductID types.ID
@@ -28,8 +17,6 @@ type (
 
 	ItemFailed struct {
 		ProductID types.ID
-		Want      types.Quantity
-		Got       types.Quantity
 		Error     error
 	}
 

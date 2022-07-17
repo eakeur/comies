@@ -19,7 +19,10 @@ func (a actions) GetByCode(ctx context.Context, code string) (product.Product, e
 			cost_price,
 			sale_price,
 			sale_unit,
-			minimum_sale
+			minimum_sale,
+			minimum_quantity,
+			maximum_quantity,
+			location
 		from
 			products p
 		where
@@ -38,6 +41,9 @@ func (a actions) GetByCode(ctx context.Context, code string) (product.Product, e
 		&p.SalePrice,
 		&p.SaleUnit,
 		&p.MinimumSale,
+		&p.MinimumQuantity,
+		&p.MaximumQuantity,
+		&p.Location,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return product.Product{}, throw.Error(product.ErrNotFound).

@@ -21,7 +21,7 @@ func (a actions) ListByProductID(ctx context.Context, resourceID types.ID, filte
 		from
 			movements m
 		inner join
-			stocks s on s.id = m.product_id
+			products p on p.id = m.product_id
 		where
 			%query%
 	`
@@ -29,7 +29,7 @@ func (a actions) ListByProductID(ctx context.Context, resourceID types.ID, filte
 	q, err := query.NewQuery(script).
 		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
 		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
-		OnlyWhere(resourceID != 0, "s.target_id = $%v", resourceID)
+		OnlyWhere(resourceID != 0, "p.id = $%v", resourceID)
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {

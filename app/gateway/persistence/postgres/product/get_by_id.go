@@ -20,7 +20,10 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 			p.cost_price,
 			p.sale_price,
 			p.sale_unit,
-			p.minimum_sale
+			p.minimum_sale,
+			minimum_quantity,
+			maximum_quantity,
+			location
 		from
 			products p
 		where
@@ -39,6 +42,9 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 		&p.SalePrice,
 		&p.SaleUnit,
 		&p.MinimumSale,
+		&p.MinimumQuantity,
+		&p.MaximumQuantity,
+		&p.Location,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return product.Product{}, throw.Error(product.ErrNotFound).

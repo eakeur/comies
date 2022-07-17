@@ -2,7 +2,7 @@ package movement
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/core/entities/stock"
+	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -34,16 +34,14 @@ func Test_actions_SetOutputType(t *testing.T) {
 				movementID: 1,
 			},
 			before: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				_, err := d.InsertStocks(ctx, stock.Stock{
-					ID:              1,
-					TargetID:        1,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
+				_, err := d.InsertProducts(ctx, product.Product{
+					ID: 1,
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
 				})
-				if err != nil {
-					t.Error(err)
-				}
 
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,

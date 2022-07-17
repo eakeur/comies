@@ -2,7 +2,7 @@ package movement
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/core/entities/stock"
+	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
 	"comies/app/sdk/types"
 	"context"
@@ -32,17 +32,18 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 		{
 			name: "should return sum of movements",
 			args: args{
-				resourceID: 22345666,
+				resourceID: 1,
 			},
 
 			want: 500,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
-				_, err := db.InsertStocks(ctx, stock.Stock{
-					ID:              1,
-					TargetID:        22345666,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
+				_, err := db.InsertProducts(ctx, product.Product{
+					ID: 1,
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
 				})
 				if err != nil {
 					t.Error(err)

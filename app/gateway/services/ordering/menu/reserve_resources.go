@@ -15,7 +15,7 @@ func (s service) ReserveResources(ctx context.Context, reservationID types.ID, r
 		ignoreInput = append(ignoreInput, types.ID(ignoring))
 	}
 
-	var replaceInput ingredient.ReplacedList
+	replaceInput := ingredient.ReplacedList{}
 	for _, r := range reservation.Replace {
 		replaceInput[r.From] = r.To
 	}
@@ -35,8 +35,6 @@ func (s service) ReserveResources(ctx context.Context, reservationID types.ID, r
 	for _, f := range result.Failures {
 		failures = append(failures, ordering.ItemFailed{
 			ProductID: f.ProductID,
-			Want:      f.Want,
-			Got:       f.Got,
 			Error:     f.Error,
 		})
 	}

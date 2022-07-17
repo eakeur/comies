@@ -2,7 +2,7 @@ package movement
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/core/entities/stock"
+	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -34,36 +34,46 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				agentID: 1544474558856547556,
 			},
 			before: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				_, err := d.InsertStocks(ctx, stock.Stock{
-					ID:              1,
-					TargetID:        22345666,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
-				}, stock.Stock{
-					ID:              2,
-					TargetID:        765434,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
-				}, stock.Stock{
-					ID:              3,
-					TargetID:        223345,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
-				}, stock.Stock{
-					ID:              4,
-					TargetID:        3232323,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
-				}, stock.Stock{
-					ID:              5,
-					TargetID:        334455,
-					MaximumQuantity: 10,
-					MinimumQuantity: 100,
-					Location:        "Under the table",
+				_, err := d.InsertProducts(ctx, product.Product{
+					ID:   1,
+					Code: "A",
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
+				}, product.Product{
+					ID:   2,
+					Code: "B",
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
+				}, product.Product{
+					ID:   3,
+					Code: "C",
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
+				}, product.Product{
+					ID:   4,
+					Code: "D",
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
+				}, product.Product{
+					ID:   5,
+					Code: "E",
+					Stock: product.Stock{
+						MaximumQuantity: 10,
+						MinimumQuantity: 100,
+						Location:        "Under the table",
+					},
 				})
 				if err != nil {
 					t.Error(err)
