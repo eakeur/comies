@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
 	"comies/app/gateway/api/gen/menu"
 	"comies/app/sdk/types"
@@ -14,6 +15,9 @@ type (
 		GetCost() int64
 		GetPrice() int64
 		GetMinimum() int64
+		GetStockMaximum() int64
+		GetStockMinimum() int64
+		GetLocation() string
 	}
 )
 
@@ -26,6 +30,11 @@ func InternalProduct(p ProductInfoGetter) product.Product {
 			CostPrice:   types.Currency(p.GetCost()),
 			SalePrice:   types.Currency(p.GetPrice()),
 			MinimumSale: types.Quantity(p.GetMinimum()),
+		},
+		Stock: product.Stock{
+			MaximumQuantity: types.Quantity(p.GetStockMaximum()),
+			MinimumQuantity: types.Quantity(p.GetStockMinimum()),
+			Location:        p.GetLocation(),
 		},
 	}
 
@@ -45,4 +54,28 @@ func ExternalProductType(p product.Type) menu.ProductType {
 
 func InternalProductType(p menu.ProductType) product.Type {
 	return product.Type(p.Descriptor().Name())
+}
+
+func ExternalMovementType(p movement.Type) (t menu.MovementType) {
+	switch p {
+	case movement.InputMovement:
+		return menu.MovementType_INPUT_MOVEMENT_TYPE
+	case movement.OutputMovement:
+		return menu.MovementType_OUTPUT_MOVEMENT_TYPE
+	case movement.ReservedMovement:
+		return menu.MovementType_RESERVED_MOVEMENT_TYPE
+	}
+	return t
+}
+
+func InternalMovementType(p menu.MovementType) (t movement.Type) {
+	switch p {
+	case menu.MovementType_INPUT_MOVEMENT_TYPE:
+		return movement.InputMovement
+	case menu.MovementType_OUTPUT_MOVEMENT_TYPE:
+		return movement.OutputMovement
+	case menu.MovementType_RESERVED_MOVEMENT_TYPE:
+		return movement.ReservedMovement
+	}
+	return t
 }
