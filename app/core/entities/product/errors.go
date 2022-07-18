@@ -19,14 +19,6 @@ var (
 
 	ErrInvalidSaleQuantity = errors.New("the sale quantity requested for this product is invalid. please check the correct one")
 
-	ErrNotEnoughStocked = errors.New("the stock for this product cannot afford this sale")
-
-	ErrInvalidIngredient = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
-
-	ErrInvalidIngredientProductID = errors.New("the ingredient for this product is invalid. please check if you assigned it an id")
-
-	ErrInvalidIngredientQuantity = errors.New("the ingredient quantity for this product is invalid. please check if it is greater than 0")
-
 	ErrStockAlreadyFull = errors.New("the stock is already full")
 
 	ErrStockNegative = errors.New("the stock, after this output, would be negative. that cannot happen")
