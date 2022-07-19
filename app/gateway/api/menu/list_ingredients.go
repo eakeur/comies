@@ -13,9 +13,9 @@ func (s service) ListIngredients(ctx context.Context, in *menu.ListIngredientsRe
 		return nil, throw.Error(err)
 	}
 
-	var ingredients []*menu.IngredientsListItem
+	var ingredients []*menu.Ingredient
 	for _, p := range list {
-		ingredients = append(ingredients, &menu.IngredientsListItem{
+		ingredients = append(ingredients, &menu.Ingredient{
 			Id:           int64(p.ID),
 			ProductID:    int64(p.ProductID),
 			IngredientID: int64(p.IngredientID),

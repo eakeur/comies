@@ -1,54 +1,51 @@
-package menu
+package test
 
 import (
 	"comies/app/gateway/api/gen/menu"
+	"comies/app/test/tests"
+	"context"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestProductCrud(t *testing.T) {
+func TestMenuFunctions(t *testing.T) {
 	t.Parallel()
-	ctx, client := NewClient(t)
+	srv := tests.NewTestApp(t)
+	ctx, client := context.Background(), menu.NewMenuClient(srv)
 
-	var id int64
+	var (
+		product = &menu.Product{
+			Code:         "COCZ",
+			Name:         "Coca Cola zero 2L",
+			Type:         menu.ProductType_PRODUCT_TYPE_OUTPUT,
+			Cost:         550,
+			Price:        800,
+			Unit:         "un",
+			Minimum:      1,
+			StockMinimum: 10,
+			StockMaximum: 100,
+			Location:     "Fridge",
+		}
+	)
 	t.Run("should create a product successfully", func(t *testing.T) {
 		prd, err := client.CreateProduct(ctx, &menu.CreateProductRequest{
-			Product: &menu.Product{
-				Code:         "COCZ",
-				Name:         "Coca Cola zero 2L",
-				Type:         menu.ProductType_PRODUCT_TYPE_OUTPUT,
-				Cost:         550,
-				Price:        800,
-				Unit:         "un",
-				Minimum:      1,
-				StockMinimum: 10,
-				StockMaximum: 100,
-				Location:     "Fridge",
-			},
+			Product: product,
 		})
 		if err != nil {
 			t.Error(err)
 		}
 
-		id = prd.Id
+		product.Id = prd.Id
 	})
 
 	t.Run("should fetch product by id", func(t *testing.T) {
-		prd, err := client.GetProductById(ctx, &menu.GetProductByIdRequest{Id: id})
+		prd, err := client.GetProductById(ctx, &menu.GetProductByIdRequest{Id: product.Id})
 		if err != nil {
 			t.Error(err)
 		}
 
 		assert.EqualValues(t, &menu.GetProductByIdResponse{
-			Product: &menu.Product{
-				Id:      id,
-				Code:    "COCZ",
-				Name:    "Coca Cola zero 2L",
-				Type:    menu.ProductType_PRODUCT_TYPE_OUTPUT,
-				Cost:    550,
-				Price:   800,
-				Minimum: 1,
-			},
+			Product: product,
 		}, &menu.GetProductByIdResponse{
 			Product: &menu.Product{
 				Id:           prd.Product.Id,
@@ -67,16 +64,14 @@ func TestProductCrud(t *testing.T) {
 	})
 
 	t.Run("should update product by id", func(t *testing.T) {
+		product.Code = "COCXT"
+		product.Name = "Coca Cola zero 2XL"
+		product.Type = menu.ProductType_PRODUCT_TYPE_OUTPUT
+		product.Cost = 600
+		product.Price = 850
+		product.Minimum = 1
 		_, err := client.UpdateProduct(ctx, &menu.UpdateProductRequest{
-			Product: &menu.Product{
-				Id:      id,
-				Code:    "COCXT",
-				Name:    "Coca Cola zero 2XL",
-				Type:    menu.ProductType_PRODUCT_TYPE_OUTPUT,
-				Cost:    600,
-				Price:   850,
-				Minimum: 1,
-			},
+			Product: product,
 		})
 		if err != nil {
 			t.Error(err)
@@ -84,21 +79,13 @@ func TestProductCrud(t *testing.T) {
 	})
 
 	t.Run("should fetch updated product by code", func(t *testing.T) {
-		prd, err := client.GetProductByCode(ctx, &menu.GetProductByCodeRequest{Code: "COCXT"})
+		prd, err := client.GetProductByCode(ctx, &menu.GetProductByCodeRequest{Code: product.Code})
 		if err != nil {
 			t.Error(err)
 		}
 
 		assert.EqualValues(t, &menu.GetProductByIdResponse{
-			Product: &menu.Product{
-				Id:      id,
-				Code:    "COCXT",
-				Name:    "Coca Cola zero 2XL",
-				Type:    menu.ProductType_PRODUCT_TYPE_OUTPUT,
-				Cost:    600,
-				Price:   850,
-				Minimum: 1,
-			},
+			Product: product,
 		}, &menu.GetProductByCodeResponse{
 			Product: &menu.Product{
 				Id:           prd.Product.Id,
@@ -117,7 +104,7 @@ func TestProductCrud(t *testing.T) {
 	})
 
 	t.Run("should remove product by id", func(t *testing.T) {
-		_, err := client.RemoveProduct(ctx, &menu.RemoveProductRequest{Id: id})
+		_, err := client.RemoveProduct(ctx, &menu.RemoveProductRequest{Id: product.Id})
 		if err != nil {
 			t.Error(err)
 		}

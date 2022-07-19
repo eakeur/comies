@@ -20,10 +20,10 @@ func (s service) ListMovements(ctx context.Context, in *menu.ListMovementsReques
 		return nil, throw.Error(err)
 	}
 
-	var movements []*menu.MovementsListItem
+	var movements []*menu.Movement
 	for _, p := range list {
-		movements = append(movements, &menu.MovementsListItem{
-			ID:        int64(p.ID),
+		movements = append(movements, &menu.Movement{
+			Id:        int64(p.ID),
 			ProductID: int64(p.ProductID),
 			Type:      menu.MovementType(p.Type),
 			Date:      timestamppb.New(p.Date),

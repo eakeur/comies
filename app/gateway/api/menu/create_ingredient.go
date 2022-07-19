@@ -10,10 +10,10 @@ import (
 
 func (s service) CreateIngredient(ctx context.Context, in *menu.CreateIngredientRequest) (*menu.CreateIngredientResponse, error) {
 	ing, err := s.menu.AddProductIngredient(ctx, ingredient.Ingredient{
-		ProductID:    types.ID(in.ProductID),
-		IngredientID: types.ID(in.IngredientID),
-		Quantity:     types.Quantity(in.Quantity),
-		Optional:     in.Optional,
+		ProductID:    types.ID(in.Ingredient.ProductID),
+		IngredientID: types.ID(in.Ingredient.IngredientID),
+		Quantity:     types.Quantity(in.Ingredient.Quantity),
+		Optional:     in.Ingredient.Optional,
 	})
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
