@@ -39,6 +39,10 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 
 	defer func() {
 		go func() {
+			w.sendToChannel(OrderNotification{
+				Order: ord,
+				Items: items,
+			})
 			for _, item := range items {
 				err := w.products.UpdateReservation(ctx, item.ID, consume)
 				if err != nil {

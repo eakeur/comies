@@ -9,8 +9,6 @@ import (
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
-	"time"
-
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -22,6 +20,42 @@ var failures = errors.ErrorBinding{}
 type service struct {
 	protos.UnimplementedOrderingServer
 	ordering ordering.Workflow
+}
+
+func (s service) ListItems(ctx context.Context, request *protos.ListItemsRequest) (*protos.ListItemsResponse, error) {
+	items, err := s.ordering.ListItems(ctx, types.ID(request.OrderId))
+	if err != nil {
+		return nil, failures.HandleError(throw.Error(err))
+	}
+
+	list := make([]*protos.Item, len(items))
+	for i, it := range items {
+		ignore := make([]int64, len(it.Details.IgnoreIngredients))
+		replacements := make(map[int64]int64, len(it.Details.ReplaceIngredients))
+		for i, id := range it.Details.IgnoreIngredients {
+			ignore[i] = int64(id)
+		}
+		for from, to := range it.Details.ReplaceIngredients {
+			replacements[int64(from)] = int64(to)
+		}
+
+		list[i] = &protos.Item{
+			Id:           int64(it.ID),
+			OrderId:      int64(it.OrderID),
+			ProductId:    int64(it.ProductID),
+			Price:        int64(it.Price),
+			Status:       protos.ItemStatus(it.Status),
+			Quantity:     int64(it.Quantity),
+			Observations: it.Observations,
+			Ignored:      ignore,
+			Replacements: replacements,
+		}
+	}
+
+	return &protos.ListItemsResponse{
+		Items: list,
+	}, nil
+
 }
 
 func (s service) RequestOrderTicket(ctx context.Context, _ *protos.Empty) (*protos.RequestOrderTicketResponse, error) {
@@ -148,7 +182,7 @@ func (s service) ListOrders(ctx context.Context, request *protos.ListOrdersReque
 	}, nil
 }
 
-func (s service) GetOrderByID(ctx context.Context, request *protos.GetOrderByIdRequest) (*protos.GetOrderByIdResponse, error) {
+func (s service) GetOrderById(ctx context.Context, request *protos.GetOrderByIdRequest) (*protos.GetOrderByIdResponse, error) {
 	o, err := s.ordering.GetOrderByID(ctx, types.ID(request.Id))
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
@@ -172,42 +206,60 @@ func (s service) GetOrderByID(ctx context.Context, request *protos.GetOrderByIdR
 func (s service) CancelOrder(ctx context.Context, request *protos.CancelOrderRequest) (*protos.Empty, error) {
 	err := s.ordering.CancelOrder(ctx, types.ID(request.Id))
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, failures.HandleError(throw.Error(err))
 	}
 
 	return &protos.Empty{}, nil
 }
 
 func (s service) ListOrdersInFlow(_ *protos.Empty, server protos.Ordering_ListOrdersInFlowServer) error {
-	var lastRun time.Time
+	channel, err := s.ordering.Channel(server.Context())
+	if err != nil {
+		return failures.HandleError(throw.Error(err))
+	}
 
 	for {
-		lastRun = time.Now()
-		orders, err := s.ordering.ListOrders(server.Context(), order.Filter{
-			PlacedAfter: lastRun,
-		})
-		if err != nil {
-			return throw.Error(err)
-		}
+		select {
+		case not := <-channel:
+			items := make([]*protos.Item, len(not.Items))
+			for ind, it := range not.Items {
+				ignore := make([]int64, len(it.Details.IgnoreIngredients))
+				replacements := make(map[int64]int64, len(it.Details.ReplaceIngredients))
+				for i, id := range it.Details.IgnoreIngredients {
+					ignore[i] = int64(id)
+				}
+				for from, to := range it.Details.ReplaceIngredients {
+					replacements[int64(from)] = int64(to)
+				}
 
-		for _, o := range orders {
+				items[ind] = &protos.Item{
+					Id:           int64(it.ID),
+					OrderId:      int64(it.OrderID),
+					ProductId:    int64(it.ProductID),
+					Price:        int64(it.Price),
+					Status:       protos.ItemStatus(it.Status),
+					Quantity:     int64(it.Quantity),
+					Observations: it.Observations,
+					Ignored:      ignore,
+					Replacements: replacements,
+				}
+			}
 			err := server.Send(&protos.ListOrdersInFlowResponse{
 				Order: &protos.Order{
-					Id:             int64(o.ID),
-					Identification: o.Identification,
-					PlacedAt:       timestamppb.New(o.PlacedAt),
-					Observation:    o.Observations,
-					FinalPrice:     int64(o.FinalPrice),
-					Address:        o.Address,
-					Phone:          o.Phone,
+					Id:             int64(not.ID),
+					Identification: not.Identification,
+					PlacedAt:       timestamppb.New(not.PlacedAt),
+					Observation:    not.Observations,
+					FinalPrice:     int64(not.FinalPrice),
+					Address:        not.Address,
+					Phone:          not.Phone,
 				},
+				Items: items,
 			})
 			if err != nil {
-				return throw.Error(err)
+				return failures.HandleError(throw.Error(err))
 			}
 		}
-
-		time.Sleep(time.Second * 5)
 	}
 }
 

@@ -20,8 +20,11 @@ type (
 		SetOrderStatus(ctx context.Context, id types.ID, st order.Status) error
 
 		ListOrders(ctx context.Context, f order.Filter) ([]order.Order, error)
+		ListItems(ctx context.Context, orderID types.ID) ([]item.Item, error)
 		GetOrderByID(ctx context.Context, id types.ID) (order.Order, error)
 		CancelOrder(ctx context.Context, id types.ID) error
+
+		Channel(ctx context.Context) (chan OrderNotification, error)
 	}
 
 	workflow struct {
@@ -29,11 +32,13 @@ type (
 		orders   order.Actions
 		items    item.Actions
 		id       id.Manager
+		channel  map[types.ID]chan OrderNotification
 	}
 )
 
 func NewWorkflow(orders order.Actions, items item.Actions, products MenuService, id id.Manager) Workflow {
 	return workflow{
+		channel:  make(map[types.ID]chan OrderNotification),
 		products: products,
 		orders:   orders,
 		items:    items,
