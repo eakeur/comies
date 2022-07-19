@@ -9,7 +9,7 @@ import (
 )
 
 func (s service) CreateIngredient(ctx context.Context, in *menu.CreateIngredientRequest) (*menu.CreateIngredientResponse, error) {
-	ing, err := s.menu.AddProductIngredient(ctx, ingredient.Ingredient{
+	ing, err := s.menu.CreateIngredient(ctx, ingredient.Ingredient{
 		ProductID:    types.ID(in.Ingredient.ProductID),
 		IngredientID: types.ID(in.Ingredient.IngredientID),
 		Quantity:     types.Quantity(in.Ingredient.Quantity),

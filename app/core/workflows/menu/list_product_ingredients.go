@@ -7,7 +7,7 @@ import (
 	"context"
 )
 
-func (w workflow) ListProductIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+func (w workflow) ListIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 
 	if productID.Empty() {
 		return []ingredient.Ingredient{}, throw.Error(throw.ErrMissingID)

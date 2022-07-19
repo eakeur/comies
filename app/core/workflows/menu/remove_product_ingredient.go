@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-func (w workflow) RemoveProductIngredient(ctx context.Context, id types.ID) error {
+func (w workflow) RemoveIngredient(ctx context.Context, id types.ID) error {
 
 	if id.Empty() {
 		return throw.Error(throw.ErrMissingID)

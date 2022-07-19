@@ -8,7 +8,7 @@ import (
 )
 
 func (s service) RemoveIngredient(ctx context.Context, in *menu.RemoveIngredientRequest) (*menu.Empty, error) {
-	err := s.menu.RemoveProductIngredient(ctx, types.ID(in.Id))
+	err := s.menu.RemoveIngredient(ctx, types.ID(in.Id))
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 func (s service) ListIngredients(ctx context.Context, in *menu.ListIngredientsRequest) (*menu.ListIngredientsResponse, error) {
-	list, err := s.menu.ListProductIngredients(ctx, types.ID(in.ProductID))
+	list, err := s.menu.ListIngredients(ctx, types.ID(in.ProductID))
 	if err != nil {
 		return nil, throw.Error(err)
 	}

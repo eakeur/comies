@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-func (w workflow) AddProductIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
+func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
 
 	w.id.Create(&i.ID)
 
