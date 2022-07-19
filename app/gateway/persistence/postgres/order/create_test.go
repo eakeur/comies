@@ -39,7 +39,7 @@ func Test_actions_Create(t *testing.T) {
 				ID:       1,
 				PlacedAt: placed,
 			},
-			after: func(ctx context.Context, db *tests.Database, t *testing.T) {
+			after: func(ctx context.Context, db *tests.Database, _ *testing.T) {
 				db.CheckValue(ctx, "select count(id) from orders", int64(1))
 			},
 		},

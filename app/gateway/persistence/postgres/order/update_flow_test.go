@@ -48,7 +48,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 					t.Error(err)
 				}
 			},
-			after: func(ctx context.Context, db *tests.Database, t *testing.T) {
+			after: func(ctx context.Context, db *tests.Database, _ *testing.T) {
 				db.CheckValue(ctx, "select count(id) from orders_flow", int64(1))
 			},
 		},

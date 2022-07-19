@@ -34,7 +34,7 @@ func Test_actions_Remove(t *testing.T) {
 					t.Error(err)
 				}
 			},
-			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
+			after: func(ctx context.Context, d *tests.Database, _ *testing.T) {
 				d.CheckValue(ctx, "select count(id) from orders", int64(0))
 			},
 		},

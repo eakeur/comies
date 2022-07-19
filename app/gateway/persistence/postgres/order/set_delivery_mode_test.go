@@ -37,7 +37,7 @@ func Test_actions_SetDeliveryMode(t *testing.T) {
 					t.Error(err)
 				}
 			},
-			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
+			after: func(ctx context.Context, d *tests.Database, _ *testing.T) {
 				d.CheckValue(ctx, "select max(delivery_mode) from orders", order.DeliveryDeliveryMode)
 			},
 		},
