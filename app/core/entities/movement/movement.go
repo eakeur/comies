@@ -6,12 +6,13 @@ import (
 )
 
 const (
-	InputMovement    Type = "INPUT"
-	OutputMovement   Type = "OUTPUT"
-	ReservedMovement Type = "RESERVED"
+	NoType       Type = 0
+	InputType    Type = 10
+	OutputType   Type = 20
+	ReservedType Type = 30
 )
 
-type Type string
+type Type int
 
 type Movement struct {
 	ID types.ID
@@ -36,7 +37,7 @@ type Movement struct {
 }
 
 func (m Movement) Value() types.Quantity {
-	if m.Type == OutputMovement || m.Type == ReservedMovement {
+	if m.Type == OutputType || m.Type == ReservedType {
 		return m.Quantity * -1
 	}
 

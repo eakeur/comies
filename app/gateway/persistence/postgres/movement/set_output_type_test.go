@@ -46,7 +46,7 @@ func Test_actions_SetOutputType(t *testing.T) {
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -57,7 +57,7 @@ func Test_actions_SetOutputType(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				d.CheckValue(ctx, "select type from movements where id = $1", movement.OutputMovement, 1)
+				d.CheckValue(ctx, "select type from movements where id = $1", movement.OutputType, 1)
 			},
 		},
 		{

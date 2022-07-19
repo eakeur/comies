@@ -6,6 +6,7 @@ import (
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
+
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -24,7 +25,7 @@ func (s service) ListMovements(ctx context.Context, in *menu.ListMovementsReques
 		movements = append(movements, &menu.MovementsListItem{
 			ID:        int64(p.ID),
 			ProductID: int64(p.ProductID),
-			Type:      ExternalMovementType(p.Type),
+			Type:      menu.MovementType(p.Type),
 			Date:      timestamppb.New(p.Date),
 			Quantity:  int64(p.Quantity),
 			Value:     int64(p.PaidValue),

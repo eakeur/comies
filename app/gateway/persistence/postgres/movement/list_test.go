@@ -47,7 +47,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				{
 					ID:        3,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -55,7 +55,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, {
 					ID:        4,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -78,7 +78,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2019, 12, 31, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -86,7 +86,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        2,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2019, 12, 31, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -94,7 +94,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        3,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -102,7 +102,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        4,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -110,7 +110,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        5,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 02, 01, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -131,7 +131,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2019, 12, 31, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -139,7 +139,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, {
 					ID:        2,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2019, 12, 31, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -147,7 +147,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, {
 					ID:        3,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -155,7 +155,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, {
 					ID:        4,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -163,7 +163,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, {
 					ID:        5,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 02, 01, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -186,7 +186,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2019, 12, 31, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -194,7 +194,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        2,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2019, 12, 31, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -202,7 +202,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        3,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      time.Date(2020, 01, 01, 00, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -210,7 +210,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        4,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 01, 15, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,
@@ -218,7 +218,7 @@ func Test_actions_ListByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        5,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      time.Date(2020, 01, 02, 01, 00, 00, 00, time.UTC),
 					Quantity:  100,
 					PaidValue: 50,

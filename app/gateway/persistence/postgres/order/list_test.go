@@ -34,11 +34,15 @@ func Test_actions_List(t *testing.T) {
 
 			args: args{
 				filter: order.Filter{
-					Status: order.WaitingDeliveryStatus,
+					Status: []order.Status{
+						order.WaitingDeliveryStatus,
+						order.CanceledStatus,
+					},
 				},
 			},
 			want: []order.Order{
 				{ID: 1, Status: order.WaitingDeliveryStatus, FinalPrice: 20},
+				{ID: 3, Status: order.CanceledStatus},
 				{ID: 4, Status: order.WaitingDeliveryStatus, FinalPrice: 30},
 			},
 			before: func(ctx context.Context, d *tests.Database, t *testing.T) {

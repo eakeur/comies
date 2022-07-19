@@ -42,12 +42,13 @@ type (
 		Location string
 	}
 
-	Type string
+	Type int
 )
 
 const (
-	OutputType Type = "OUTPUT"
-	InputType  Type = "INPUT"
+	NoType     Type = 0
+	OutputType Type = 10
+	InputType  Type = 20
 )
 
 func (p Product) Validate() error {

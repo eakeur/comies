@@ -7,13 +7,13 @@ import (
 	"context"
 )
 
-func (s service) GetProductNameByID(ctx context.Context, in *menu.GetProductNameByIDRequest) (*menu.GetProductNameByIDResponse, error) {
+func (s service) GetProductNameById(ctx context.Context, in *menu.GetProductNameByIdRequest) (*menu.GetProductNameByIdResponse, error) {
 	prd, err := s.menu.GetProductNameByID(ctx, types.ID(in.Id))
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
 	}
 
-	return &menu.GetProductNameByIDResponse{
+	return &menu.GetProductNameByIdResponse{
 		Name: prd,
 	}, nil
 }

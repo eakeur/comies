@@ -18,7 +18,7 @@ func (a actions) SetOutputType(ctx context.Context, agentID types.ID) error {
 			id = $2
 	`
 
-	cmd, err := transaction.ExecFromContext(ctx, script, movement.OutputMovement, agentID)
+	cmd, err := transaction.ExecFromContext(ctx, script, movement.OutputType, agentID)
 	if err != nil {
 		return throw.Error(err)
 	}

@@ -52,7 +52,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 				_, err = db.InsertMovements(ctx, movement.Movement{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -60,7 +60,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        2,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -68,7 +68,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        3,
 					ProductID: 1,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -76,7 +76,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        4,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -84,7 +84,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 				}, movement.Movement{
 					ID:        5,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,

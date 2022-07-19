@@ -11,7 +11,7 @@ func (s service) ListProducts(ctx context.Context, in *menu.ListProductsRequest)
 	prd, err := s.menu.ListProducts(ctx, product.Filter{
 		Code: in.Code,
 		Name: in.Name,
-		Type: InternalProductType(in.Type),
+		Type: product.Type(in.Type),
 	})
 	if err != nil {
 		return nil, throw.Error(err)
@@ -23,7 +23,7 @@ func (s service) ListProducts(ctx context.Context, in *menu.ListProductsRequest)
 			Id:   int64(p.ID),
 			Code: p.Code,
 			Name: p.Name,
-			Type: ExternalProductType(p.Type),
+			Type: menu.ProductType(p.Type),
 		})
 	}
 

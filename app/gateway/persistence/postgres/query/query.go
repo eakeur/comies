@@ -86,6 +86,17 @@ func (q Query) append(input string, values ...interface{}) Query {
 		placeholders[i] = len(q.Args)
 	}
 
+	if !strings.Contains(input, "$") {
+		stringPlaceholders := make([]string, len(values))
+
+		for i, value := range placeholders {
+			stringPlaceholders[i] = fmt.Sprintf("$%d", value)
+		}
+
+		q.query += fmt.Sprintf(q.nextConjunction()+input+" ", strings.Join(stringPlaceholders, ", "))
+		return q
+	}
+
 	q.query += fmt.Sprintf(q.nextConjunction()+input+" ", placeholders...)
 
 	return q

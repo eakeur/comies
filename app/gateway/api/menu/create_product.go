@@ -8,7 +8,7 @@ import (
 
 func (s service) CreateProduct(ctx context.Context, in *menu.CreateProductRequest) (*menu.CreateProductResponse, error) {
 
-	prd, err := s.menu.CreateProduct(ctx, InternalProduct(in))
+	prd, err := s.menu.CreateProduct(ctx, InternalProduct(in.Product))
 	if err != nil {
 		return nil, failures.HandleError(throw.Error(err))
 	}

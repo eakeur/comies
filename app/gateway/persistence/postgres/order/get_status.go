@@ -27,12 +27,12 @@ func (a actions) GetStatus(ctx context.Context, orderID types.ID) (order.Status,
 		&o,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return "", throw.Error(throw.ErrNotFound).
+			return 0, throw.Error(throw.ErrNotFound).
 				Describe("the order id provided seems to not exist").Params(map[string]interface{}{
 				"order_id": orderID,
 			})
 		}
-		return "", throw.Error(err)
+		return 0, throw.Error(err)
 	}
 
 	return o, nil

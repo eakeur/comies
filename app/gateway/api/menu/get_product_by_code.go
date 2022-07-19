@@ -13,12 +13,14 @@ func (s service) GetProductByCode(ctx context.Context, request *menu.GetProductB
 	}
 
 	return &menu.GetProductByCodeResponse{
-		Id:      int64(prd.ID),
-		Code:    prd.Code,
-		Name:    prd.Name,
-		Type:    ExternalProductType(prd.Type),
-		Cost:    int64(prd.CostPrice),
-		Price:   int64(prd.SalePrice),
-		Minimum: int64(prd.MinimumSale),
+		Product: &menu.Product{
+			Id:      int64(prd.ID),
+			Code:    prd.Code,
+			Name:    prd.Name,
+			Type:    menu.ProductType(prd.Type),
+			Cost:    int64(prd.CostPrice),
+			Price:   int64(prd.SalePrice),
+			Minimum: int64(prd.MinimumSale),
+		},
 	}, nil
 }

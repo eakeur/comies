@@ -26,11 +26,19 @@ func (a actions) List(ctx context.Context, filter order.Filter) ([]order.Order, 
 		group by 
 			o.id
 	`
+	var statuses []interface{}
+	if l := len(filter.Status); l > 0 {
+		statuses = make([]interface{}, l)
+		for i, status := range filter.Status {
+			statuses[i] = status
+		}
+	}
+
 	q := query.NewQuery(script).
 		Where(!filter.PlacedAfter.IsZero(), "o.placed_at >= $%v", filter.PlacedAfter).And().
 		Where(!filter.PlacedBefore.IsZero(), "o.placed_at <= $%v", filter.PlacedBefore).And().
-		Where(filter.Status != "", "s.status = $%v", filter.Status).And().
-		Where(filter.DeliveryMode != "", "o.delivery_mode = $%v", filter.DeliveryMode)
+		Where(len(statuses) > 0, "s.status in (%v)", statuses...).And().
+		Where(filter.DeliveryMode != 0, "o.delivery_mode = $%v", filter.DeliveryMode)
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {

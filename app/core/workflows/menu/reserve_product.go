@@ -34,7 +34,7 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 			ProductID: productID,
 			Quantity:  quantity,
 			AgentID:   r.ID,
-			Type:      movement.ReservedMovement,
+			Type:      movement.ReservedType,
 		}); err != nil {
 			if errors.Is(err, product.ErrStockAlreadyFull) || errors.Is(err, product.ErrStockNegative) {
 				failures = append(failures, reservation.Failure{ProductID: r.ProductID, Error: err})

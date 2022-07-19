@@ -38,7 +38,7 @@ func Test_actions_SetDeliveryMode(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				d.CheckValue(ctx, "select max(delivery_mode) from orders", string(order.DeliveryDeliveryMode))
+				d.CheckValue(ctx, "select max(delivery_mode) from orders", order.DeliveryDeliveryMode)
 			},
 		},
 		{

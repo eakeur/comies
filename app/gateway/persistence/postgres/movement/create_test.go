@@ -34,7 +34,7 @@ func Test_actions_Create(t *testing.T) {
 				movement: movement.Movement{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -44,7 +44,7 @@ func Test_actions_Create(t *testing.T) {
 			want: movement.Movement{
 				ID:        1,
 				ProductID: 1,
-				Type:      movement.OutputMovement,
+				Type:      movement.OutputType,
 				Date:      date,
 				Quantity:  100,
 				PaidValue: 50,
@@ -76,7 +76,7 @@ func Test_actions_Create(t *testing.T) {
 					as equal
 					from movements where id = $1
 				`
-				db.CheckValue(ctx, script, true, 1, 1, movement.OutputMovement, date, 100, 50, 1544474558856547556)
+				db.CheckValue(ctx, script, true, 1, 1, movement.OutputType, date, 100, 50, 1544474558856547556)
 			},
 		},
 		{
@@ -85,7 +85,7 @@ func Test_actions_Create(t *testing.T) {
 				movement: movement.Movement{
 					ID:        1,
 					ProductID: 1,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,

@@ -29,7 +29,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 	q := query.NewQuery(script).
 		Where(filter.Code != "", "p.code like $%v", filter.Code+"%").And().
 		Where(filter.Name != "", "p.name like $%v", "%"+filter.Name+"%").And().
-		Where(filter.Type != "", "p.type = $%v", filter.Type)
+		Where(filter.Type != 0, "p.type = $%v", filter.Type)
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {

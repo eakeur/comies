@@ -6,24 +6,26 @@ import (
 )
 
 const (
-	InTheCartStatus       Status = "IN_THE_CART"
-	PendingStatus         Status = "PENDING"
-	PreparingStatus       Status = "PREPARING"
-	WaitingTakeoutStatus  Status = "WAITING_TAKEOUT"
-	WaitingDeliveryStatus Status = "WAITING_DELIVERY"
-	DeliveringStatus      Status = "DELIVERING"
-	FinishedStatus        Status = "FINISHED"
-	CanceledStatus        Status = "CANCELED"
+	NoStatus              Status = 0
+	InTheCartStatus       Status = 10 // "IN_THE_CART"
+	PendingStatus         Status = 20 // "PENDING"
+	PreparingStatus       Status = 30 // "PREPARING"
+	WaitingTakeoutStatus  Status = 40 // "WAITING_TAKEOUT"
+	WaitingDeliveryStatus Status = 50 // "WAITING_DELIVERY"
+	DeliveringStatus      Status = 60 // "DELIVERING"
+	FinishedStatus        Status = 70 // "FINISHED"
+	CanceledStatus        Status = 80 // "CANCELED"
 )
 
 const (
-	TakeoutDeliveryMode  DeliveryMode = "TAKEOUT"
-	DeliveryDeliveryMode DeliveryMode = "DELIVERY"
+	NoDeliveryMode       DeliveryMode = 0
+	TakeoutDeliveryMode  DeliveryMode = 10 // "TAKEOUT"
+	DeliveryDeliveryMode DeliveryMode = 20 // "DELIVERY"
 )
 
 type (
-	Status       string
-	DeliveryMode string
+	Status       int
+	DeliveryMode int
 
 	Order struct {
 		ID             types.ID
@@ -45,7 +47,7 @@ type (
 	}
 
 	Filter struct {
-		Status       Status
+		Status       []Status
 		PlacedBefore time.Time
 		PlacedAfter  time.Time
 		DeliveryMode DeliveryMode

@@ -82,7 +82,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				_, err = d.InsertMovements(ctx, movement.Movement{
 					ID:        1,
 					ProductID: 5,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -90,7 +90,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				}, movement.Movement{
 					ID:        2,
 					ProductID: 4,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -98,7 +98,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				}, movement.Movement{
 					ID:        3,
 					ProductID: 5,
-					Type:      movement.ReservedMovement,
+					Type:      movement.ReservedType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -106,7 +106,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				}, movement.Movement{
 					ID:        4,
 					ProductID: 3,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,
@@ -114,7 +114,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				}, movement.Movement{
 					ID:        5,
 					ProductID: 2,
-					Type:      movement.OutputMovement,
+					Type:      movement.OutputType,
 					Date:      date,
 					Quantity:  100,
 					PaidValue: 50,

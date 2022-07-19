@@ -5,7 +5,7 @@ create table products
     id           bigint      not null,
     code         varchar(12) not null,
     name         varchar(60) not null,
-    type         varchar(30) not null,
+    type         int not null,
     cost_price   bigint      not null,
     sale_price   bigint      not null,
     minimum_sale bigint      not null,
@@ -37,7 +37,7 @@ create table orders
     id             bigint                   not null,
     identification text                     not null,
     placed_at      timestamp with time zone not null,
-    delivery_mode  varchar(30)              not null,
+    delivery_mode  int              not null,
     observations   text,
     address        text                     not null,
     phone          varchar(11)              not null,
@@ -49,7 +49,7 @@ create table orders_flow
 (
     id          bigint                   not null,
     order_id    bigint                   not null,
-    status      varchar(30)              not null,
+    status      int              not null,
     occurred_at timestamp with time zone not null,
 
     constraint flow_pk primary key (id),
@@ -71,7 +71,7 @@ create table items
 (
     id           bigint      not null,
     order_id     bigint      not null,
-    status       varchar(30) not null,
+    status       int not null,
     price        bigint      not null,
     product_id   bigint      not null,
     quantity     bigint      not null,
@@ -82,21 +82,11 @@ create table items
     constraint product_order_uk unique (product_id, order_id)
 );
 
-create table item_details
-(
-    item_id   bigint not null,
-    ignored   bigint,
-    replacing bigint,
-    replaced  bigint,
-
-    constraint item_id_fk foreign key (item_id) references items (id)
-);
-
 create table movements
 (
     id       bigint                   not null,
     product_id bigint                   not null,
-    type     varchar(30)              not null,
+    type     int              not null,
     date     timestamp with time zone not null,
     quantity bigint                   not null,
     value    bigint                   not null,

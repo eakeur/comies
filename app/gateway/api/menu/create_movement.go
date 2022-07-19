@@ -12,7 +12,7 @@ func (s service) CreateMovement(ctx context.Context, in *menu.CreateMovementRequ
 	ing, err := s.menu.CreateMovement(ctx, movement.Movement{
 		ID:        0,
 		ProductID: types.ID(in.ProductID),
-		Type:      InternalMovementType(in.Type),
+		Type:      movement.Type(in.Type),
 		Date:      in.Date.AsTime().UTC(),
 		Quantity:  types.Quantity(in.Quantity),
 		PaidValue: types.Currency(in.Value),

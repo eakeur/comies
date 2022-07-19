@@ -16,7 +16,7 @@ func (a actions) RemoveReserved(ctx context.Context, agentID types.ID) error {
 			m.agent_id = $1 and m.type = $2
 	`
 
-	cmd, err := transaction.ExecFromContext(ctx, script, agentID, movement.ReservedMovement)
+	cmd, err := transaction.ExecFromContext(ctx, script, agentID, movement.ReservedType)
 	if err != nil {
 		return throw.Error(err)
 	}
