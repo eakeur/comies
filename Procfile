@@ -1,1 +1,1 @@
-web: go build ./cmd/api/main.go
+web: main
