@@ -14,18 +14,17 @@ type Access struct {
 }
 
 type Database struct {
-	User           string
-	Password       string
-	Host           string
-	Port           string
-	Name           string
-	SSLMode        string
-	MigrationsPath string
+	User     string
+	Password string
+	Host     string
+	Port     string
+	Name     string
+	SSLMode  string
+	URL      string
 }
 
 type Server struct {
 	ListenPort string
-	Hostname   string
 }
 
 type IDGeneration struct {

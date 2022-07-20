@@ -18,13 +18,12 @@ import (
 )
 
 type Config struct {
-	User      string
-	Password  string
-	Host      string
-	Port      string
-	Name      string
-	SSLMode   string
-	Migration string
+	User     string
+	Password string
+	Host     string
+	Port     string
+	Name     string
+	SSLMode  string
 }
 
 const MigrationPath = "migrations"
@@ -38,6 +37,10 @@ func CreateDatabaseURL(user, password, host, port, name, SSLMode string) string 
 
 func ConnectAndMount(ctx context.Context, c Config) (*pgxpool.Pool, error) {
 	url := CreateDatabaseURL(c.User, c.Password, c.Host, c.Port, c.Name, c.SSLMode)
+	return ConnectAndMountURL(ctx, url)
+}
+
+func ConnectAndMountURL(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	conn, err := NewConnection(ctx, url)
 	if err != nil {
 		return nil, err

@@ -7,6 +7,7 @@ import (
 	"comies/app/gateway/persistence/postgres"
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
 	"net"
 	"strconv"
@@ -22,15 +23,20 @@ func main() {
 		log.Fatalf("Could not load configurations from environment: %v", err)
 	}
 
-	db, err := postgres.ConnectAndMount(ctx, postgres.Config{
-		User:      cfg.Database.User,
-		Password:  cfg.Database.Password,
-		Host:      cfg.Database.Host,
-		Port:      cfg.Database.Port,
-		Name:      cfg.Database.Name,
-		SSLMode:   cfg.Database.SSLMode,
-		Migration: cfg.Database.MigrationsPath,
-	})
+	var db *pgxpool.Pool
+	if cfg.Database.URL != "" {
+		db, err = postgres.ConnectAndMountURL(ctx, cfg.Database.URL)
+	} else {
+		db, err = postgres.ConnectAndMount(ctx, postgres.Config{
+			User:     cfg.Database.User,
+			Password: cfg.Database.Password,
+			Host:     cfg.Database.Host,
+			Port:     cfg.Database.Port,
+			Name:     cfg.Database.Name,
+			SSLMode:  cfg.Database.SSLMode,
+		})
+	}
+
 	if err != nil {
 		log.Fatalf("Could not connect and populate postgres database: %v", err)
 	}
