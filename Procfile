@@ -1,1 +1,1 @@
-web: ls bin/api
+web: bin/api
