@@ -50,15 +50,15 @@ func main() {
 		SnowflakeNode: snflake,
 	})
 
-	address := fmt.Sprintf("%v:%v", cfg.Server.Hostname, cfg.Server.ListenPort)
+	address := fmt.Sprintf(":%v", cfg.Server.ListenPort)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("Could not listen to port %v: %v", cfg.Server.ListenPort, err)
 	}
 
-	srv := api.NewAPI(application)
+	srv := api.NewAPI(application, nil)
 
-	log.Printf("Listening on address %v", address)
+	log.Printf("Listening on address https://%v", address)
 	if err := srv.Serve(lis); err != nil {
 		log.Fatalf("Server stopped listenin on port %v: %v", cfg.Server.ListenPort, err)
 	}

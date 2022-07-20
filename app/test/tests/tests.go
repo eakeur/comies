@@ -30,7 +30,7 @@ func NewTestApp(t *testing.T) *grpc.ClientConn {
 		SnowflakeNode: flake,
 	})
 
-	srv := api.NewAPI(application)
+	srv := api.NewAPI(application, nil)
 
 	t.Cleanup(func() {
 		srv.GracefulStop()

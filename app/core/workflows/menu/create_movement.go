@@ -8,12 +8,17 @@ import (
 )
 
 func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (ActualBalance, error) {
-	actual, err := w.movements.GetBalanceByProductID(ctx, mv.ProductID, movement.Filter{})
+	prd, err := w.products.GetByID(ctx, mv.ProductID)
 	if err != nil {
 		return ActualBalance{}, throw.Error(err)
 	}
 
-	stk, err := w.products.GetStockInfoByID(ctx, mv.ProductID)
+	if (prd.Type == product.InputType && mv.Type == movement.OutputType) ||
+		(prd.Type == product.OutputCompositeType) || (prd.Type == product.InputCompositeType) {
+		return ActualBalance{}, movement.ErrInvalidProductType
+	}
+
+	actual, err := w.movements.GetBalanceByProductID(ctx, mv.ProductID, movement.Filter{})
 	if err != nil {
 		return ActualBalance{}, throw.Error(err)
 	}
@@ -25,11 +30,11 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 	}
 
 	actual += mv.Value()
-	if actual > stk.MaximumQuantity {
+	if actual > prd.MaximumQuantity {
 		return ActualBalance{}, throw.Error(product.ErrStockAlreadyFull)
 	}
 
-	if actual < stk.MinimumQuantity {
+	if actual < prd.MinimumQuantity {
 		return ActualBalance{}, throw.Error(product.ErrStockNegative)
 	}
 

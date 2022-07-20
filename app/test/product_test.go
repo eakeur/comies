@@ -100,7 +100,7 @@ func TestMenuFunctions(t *testing.T) {
 	})
 
 	t.Run("should create movements for products", func(t *testing.T) {
-		for _, mv := range []*menu.Movement{
+		for i, mv := range []*menu.Movement{
 			{
 				ProductID: waterInputProduct.Id,
 				Type:      menu.MovementType_MOVEMENT_TYPE_INPUT_MOVEMENT_TYPE,
@@ -162,7 +162,7 @@ func TestMenuFunctions(t *testing.T) {
 				Movement: mv,
 			})
 			if err != nil {
-				t.Errorf("error creating movements for product %d: %v", mv.ProductID, err)
+				t.Errorf("error creating movements for product[%d] %d:  %v", i, mv.ProductID, err)
 			}
 		}
 	})

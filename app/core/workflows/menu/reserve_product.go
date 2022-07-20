@@ -6,7 +6,6 @@ import (
 	"comies/app/core/entities/product"
 	"comies/app/core/entities/reservation"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 	"errors"
 	"sync"
@@ -28,26 +27,24 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 
 	wg := sync.WaitGroup{}
 	errs := make(chan error, len(ingredients))
-	creator := func(productID types.ID, quantity types.Quantity) {
-		defer wg.Done()
+
+	if len(ingredients) == 0 {
 		if _, err := w.CreateMovement(ctx, movement.Movement{
-			ProductID: productID,
-			Quantity:  quantity,
+			ProductID: r.ProductID,
+			Quantity:  r.Quantity,
 			AgentID:   r.ID,
 			Type:      movement.ReservedType,
 		}); err != nil {
 			if errors.Is(err, product.ErrStockNegative) {
-				failures = append(failures, reservation.Failure{ProductID: r.ProductID, Error: err})
-				err = nil
+				failures = append(failures, reservation.Failure{
+					For:       r.ReserveFor,
+					ProductID: r.ProductID,
+					Error:     err,
+				})
 			}
 
-			errs <- throw.Error(err)
+			return nil, throw.Error(err)
 		}
-	}
-
-	if len(ingredients) == 0 {
-		wg.Add(1)
-		creator(r.ProductID, r.Quantity)
 	} else {
 		for _, ing := range ingredient.IgnoreAndReplace(ingredients, r.Ignore, r.Replace, func(i ingredient.Ingredient) ingredient.Ingredient {
 			i.Quantity *= r.Quantity
@@ -55,7 +52,23 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 		}) {
 			ing := ing
 			wg.Add(1)
-			go creator(ing.IngredientID, ing.Quantity)
+			go func() {
+				defer wg.Done()
+				f, err := w.Reserve(ctx, reservation.Reservation{
+					ID:         r.ID,
+					ReserveFor: ing.ProductID,
+					ProductID:  ing.IngredientID,
+					Quantity:   ing.Quantity,
+					Ignore:     r.Ignore,
+					Replace:    r.Replace,
+				})
+				if err != nil {
+					errs <- err
+				}
+
+				failures = append(failures, f...)
+			}()
+
 		}
 		wg.Wait()
 	}

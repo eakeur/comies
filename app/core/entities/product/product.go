@@ -46,9 +46,11 @@ type (
 )
 
 const (
-	NoType     Type = 0
-	OutputType Type = 10
-	InputType  Type = 20
+	NoType              Type = 0
+	OutputType          Type = 10
+	OutputCompositeType Type = 20
+	InputType           Type = 30
+	InputCompositeType  Type = 40
 )
 
 func (p Product) Validate() error {
