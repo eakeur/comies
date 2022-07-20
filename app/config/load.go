@@ -23,7 +23,7 @@ func Load() (Config, error) {
 			URL:      os.Getenv("DATABASE_URL"),
 		},
 		Server: Server{
-			ListenPort: os.Getenv("API_PORT"),
+			ListenPort: os.Getenv("PORT"),
 		},
 		Logger: Logger{
 			Environment: os.Getenv("ENVIRONMENT"),
