@@ -25,6 +25,7 @@ func main() {
 
 	var db *pgxpool.Pool
 	if cfg.Database.URL != "" {
+		fmt.Println(cfg.Database.URL)
 		db, err = postgres.ConnectAndMountURL(ctx, cfg.Database.URL)
 	} else {
 		db, err = postgres.ConnectAndMount(ctx, postgres.Config{
