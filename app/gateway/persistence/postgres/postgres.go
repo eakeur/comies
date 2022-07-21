@@ -17,14 +17,18 @@ import (
 	"net/http"
 )
 
-type Config struct {
-	User     string
-	Password string
-	Host     string
-	Port     string
-	Name     string
-	SSLMode  string
-}
+type (
+	Config struct {
+		User     string
+		Password string
+		Host     string
+		Port     string
+		Name     string
+		SSLMode  string
+	}
+
+	logger struct{}
+)
 
 const MigrationPath = "migrations"
 
@@ -73,6 +77,8 @@ func Migrate(cfg *pgx.ConnConfig) error {
 		return fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
 	}
 
+	migration.Log = logger{}
+
 	if err != nil {
 		return err
 	}
@@ -108,4 +114,12 @@ func NewConnection(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	}
 
 	return db, nil
+}
+
+func (l logger) Printf(format string, v ...interface{}) {
+	log.Printf(format, v...)
+}
+
+func (l logger) Verbose() bool {
+	return true
 }
