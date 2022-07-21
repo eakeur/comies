@@ -55,4 +55,5 @@ func main() {
 		log.Fatalf("Server stopped listenin on port %v: %v", cfg.Server.ListenPort, err)
 	}
 
+	log.Printf("Stopping", address)
 }
