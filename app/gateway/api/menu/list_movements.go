@@ -2,37 +2,49 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
-
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"net/http"
+	"net/url"
+	"time"
 )
 
-func (s service) ListMovements(ctx context.Context, in *menu.ListMovementsRequest) (*menu.ListMovementsResponse, error) {
-	list, err := s.menu.ListMovements(ctx, movement.Filter{
-		ProductID:   types.ID(in.ProductID),
-		InitialDate: in.Start.AsTime(),
-		FinalDate:   in.End.AsTime(),
-	})
+func (s Service) GetProductMovements(ctx context.Context, params handler.RouteParams, query url.Values) response.Response {
+	id, err, res := convertToID(params["product_id"])
 	if err != nil {
-		return nil, throw.Error(err)
+		return res
 	}
 
-	var movements []*menu.Movement
-	for _, p := range list {
-		movements = append(movements, &menu.Movement{
-			Id:        int64(p.ID),
-			ProductID: int64(p.ProductID),
-			Type:      menu.MovementType(p.Type),
-			Date:      timestamppb.New(p.Date),
-			Quantity:  int64(p.Quantity),
-			Value:     int64(p.PaidValue),
-		})
+	var filter movement.Filter
+	filter.ProductID = id
+
+	if parse, err := time.Parse(time.RFC3339, query.Get("start")); err == nil {
+		filter.InitialDate = parse
 	}
 
-	return &menu.ListMovementsResponse{
-		Movements: movements,
-	}, nil
+	if parse, err := time.Parse(time.RFC3339, query.Get("end")); err == nil {
+		filter.FinalDate = parse
+	}
+
+	list, err := s.menu.ListMovements(ctx, filter)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	movements := make([]Movement, len(list))
+	for i, p := range list {
+		movements[i] = Movement{
+			ID:        p.ID,
+			ProductID: p.ProductID,
+			Type:      p.Type,
+			Date:      p.Date,
+			Quantity:  p.Quantity,
+			PaidValue: p.PaidValue,
+			AgentID:   p.AgentID,
+		}
+	}
+
+	return response.WithData(http.StatusOK, movements)
 }

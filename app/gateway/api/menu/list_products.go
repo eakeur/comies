@@ -2,32 +2,40 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
 	"context"
+	"net/http"
+	"net/url"
+	"strconv"
 )
 
-func (s service) ListProducts(ctx context.Context, in *menu.ListProductsRequest) (*menu.ListProductsResponse, error) {
-	prd, err := s.menu.ListProducts(ctx, product.Filter{
-		Code: in.Code,
-		Name: in.Name,
-		Type: product.Type(in.Type),
-	})
-	if err != nil {
-		return nil, throw.Error(err)
+func (s Service) ListProducts(ctx context.Context, query url.Values) response.Response {
+	filter := product.Filter{
+		Code: query.Get("code"),
+		Name: query.Get("name"),
+		Type: 0,
 	}
 
-	var products []*menu.ProductsListItem
-	for _, p := range prd {
-		products = append(products, &menu.ProductsListItem{
-			Id:   int64(p.ID),
+	t, err := strconv.Atoi(query.Get("type"))
+	if err == nil {
+		filter.Type = product.Type(t)
+	}
+
+	prd, err := s.menu.ListProducts(ctx, filter)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	products := make([]Product, len(prd))
+	for i, p := range prd {
+		products[i] = Product{
+			ID:   p.ID,
 			Code: p.Code,
 			Name: p.Name,
-			Type: menu.ProductType(p.Type),
-		})
+			Type: p.Type,
+		}
 	}
 
-	return &menu.ListProductsResponse{
-		Products: products,
-	}, nil
+	return response.WithData(http.StatusOK, products)
 }

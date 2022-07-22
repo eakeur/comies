@@ -1,44 +1,37 @@
 package ordering
 
 import (
-	"comies/app/gateway/api/gen/ordering/protos"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) ListItems(ctx context.Context, request *protos.ListItemsRequest) (*protos.ListItemsResponse, error) {
-	items, err := s.ordering.ListItems(ctx, types.ID(request.OrderId))
+func (s Service) ListItems(ctx context.Context, params handler.RouteParams) response.Response {
+	id, err, res := convertToID(params["order_id"])
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return res
 	}
 
-	list := make([]*protos.Item, len(items))
+	items, err := s.ordering.ListItems(ctx, id)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	list := make([]Item, len(items))
 	for i, it := range items {
-		ignore := make([]int64, len(it.Details.IgnoreIngredients))
-		replacements := make(map[int64]int64, len(it.Details.ReplaceIngredients))
-		for i, id := range it.Details.IgnoreIngredients {
-			ignore[i] = int64(id)
-		}
-		for from, to := range it.Details.ReplaceIngredients {
-			replacements[int64(from)] = int64(to)
-		}
-
-		list[i] = &protos.Item{
-			Id:           int64(it.ID),
-			OrderId:      int64(it.OrderID),
-			ProductId:    int64(it.ProductID),
-			Price:        int64(it.Price),
-			Status:       protos.ItemStatus(it.Status),
-			Quantity:     int64(it.Quantity),
+		list[i] = Item{
+			ID:           it.ID,
+			OrderID:      it.OrderID,
+			ProductID:    it.ProductID,
+			Price:        it.Price,
+			Status:       it.Status,
+			Quantity:     it.Quantity,
 			Observations: it.Observations,
-			Ignored:      ignore,
-			Replacements: replacements,
 		}
 	}
 
-	return &protos.ListItemsResponse{
-		Items: list,
-	}, nil
+	return response.WithData(http.StatusOK, list)
 
 }

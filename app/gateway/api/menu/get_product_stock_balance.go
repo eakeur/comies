@@ -2,21 +2,25 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) GetProductBalance(ctx context.Context, in *menu.GetProductBalanceRequest) (*menu.GetProductBalanceResponse, error) {
-	bal, err := s.menu.GetMovementsBalance(ctx, movement.Filter{
-		ProductID: types.ID(in.Id),
-	})
+func (s Service) GetProductBalance(ctx context.Context, params handler.RouteParams) response.Response {
+	id, err, res := convertToID(params["product_id"])
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return res
 	}
 
-	return &menu.GetProductBalanceResponse{
-		Balance: int64(bal),
-	}, nil
+	bal, err := s.menu.GetMovementsBalance(ctx, movement.Filter{
+		ProductID: id,
+	})
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	return response.WithData(http.StatusOK, ProductStockBalanceResult{Balance: bal})
 }

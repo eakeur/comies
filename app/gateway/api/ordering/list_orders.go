@@ -2,46 +2,55 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/gateway/api/gen/ordering/protos"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
 	"context"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+	"time"
 )
 
-func (s service) ListOrders(ctx context.Context, request *protos.ListOrdersRequest) (*protos.ListOrdersResponse, error) {
-	var statuses []order.Status
-	if l := len(request.Filter.Statuses); l > 0 {
-		statuses = make([]order.Status, l)
-		for i, o := range request.Filter.Statuses {
-			statuses[i] = order.Status(o)
+func (s Service) ListOrders(ctx context.Context, query url.Values) response.Response {
+	var filter order.Filter
+	if sts := strings.Split(query.Get("status"), ","); len(sts) > 0 {
+		filter.Status = make([]order.Status, len(sts))
+		for i, o := range sts {
+			s, err := strconv.Atoi(o)
+			if err != nil {
+				continue
+			}
+			filter.Status[i] = order.Status(s)
 		}
 	}
-	list, err := s.ordering.ListOrders(ctx, order.Filter{
-		Status:       statuses,
-		PlacedBefore: request.Filter.PlacedBefore.AsTime(),
-		PlacedAfter:  request.Filter.PlacedAfter.AsTime(),
-		DeliveryMode: order.DeliveryMode(request.Filter.DeliveryMode),
-	})
-	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+	if parse, err := time.Parse(time.RFC3339, query.Get("before")); err == nil {
+		filter.PlacedBefore = parse
 	}
 
-	orders := make([]*protos.Order, len(list))
+	if parse, err := time.Parse(time.RFC3339, query.Get("after")); err == nil {
+		filter.PlacedAfter = parse
+	}
+
+	list, err := s.ordering.ListOrders(ctx, filter)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	orders := make([]Order, len(list))
 	for i, o := range list {
-		orders[i] = &protos.Order{
-			Id:             int64(o.ID),
+		orders[i] = Order{
+			ID:             o.ID,
 			Identification: o.Identification,
-			PlacedAt:       timestamppb.New(o.PlacedAt),
-			Status:         protos.OrderStatus(o.Status),
-			DeliveryMode:   protos.DeliveryMode(o.DeliveryMode),
-			Observation:    o.Observations,
-			FinalPrice:     int64(o.FinalPrice),
+			PlacedAt:       o.PlacedAt,
+			Status:         o.Status,
+			DeliveryMode:   o.DeliveryMode,
+			Observations:   o.Observations,
+			FinalPrice:     o.FinalPrice,
 			Address:        o.Address,
 			Phone:          o.Phone,
 		}
 	}
 
-	return &protos.ListOrdersResponse{
-		Orders: orders,
-	}, nil
+	return response.WithData(http.StatusOK, list)
 }

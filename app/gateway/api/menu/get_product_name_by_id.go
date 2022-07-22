@@ -1,19 +1,26 @@
 package menu
 
 import (
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) GetProductNameById(ctx context.Context, in *menu.GetProductNameByIdRequest) (*menu.GetProductNameByIdResponse, error) {
-	prd, err := s.menu.GetProductNameByID(ctx, types.ID(in.Id))
+func (s Service) GetProductNameByID(ctx context.Context, params handler.RouteParams) response.Response {
+	id, err, res := convertToID(params["product_id"])
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return res
 	}
 
-	return &menu.GetProductNameByIdResponse{
-		Name: prd,
-	}, nil
+	name, err := s.menu.GetProductNameByID(ctx, id)
+	if err != nil {
+		return response.Response{}
+	}
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	return response.WithData(http.StatusOK, ProductNameResult{Name: name})
 }

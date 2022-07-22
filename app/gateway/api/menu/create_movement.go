@@ -2,26 +2,17 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) CreateMovement(ctx context.Context, in *menu.CreateMovementRequest) (*menu.CreateMovementResponse, error) {
-	ing, err := s.menu.CreateMovement(ctx, movement.Movement{
-		ID:        0,
-		ProductID: types.ID(in.Movement.ProductID),
-		Type:      movement.Type(in.Movement.Type),
-		Date:      in.Movement.Date.AsTime().UTC(),
-		Quantity:  types.Quantity(in.Movement.Quantity),
-		PaidValue: types.Currency(in.Movement.Value),
-	})
+func (s Service) CreateMovement(ctx context.Context, mov movement.Movement) response.Response {
+	bal, err := s.menu.CreateMovement(ctx, mov)
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return failures.Handle(throw.Error(err))
 	}
 
-	return &menu.CreateMovementResponse{
-		Id: int64(ing.ID),
-	}, nil
+	return response.WithData(http.StatusCreated, MovementAdditionResult{ID: bal.ID})
 }

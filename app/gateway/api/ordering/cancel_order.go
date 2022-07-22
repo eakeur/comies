@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-func (s Service) SetOrderDeliveryMode(ctx context.Context, params handler.RouteParams, req SetItemStatusRequest) response.Response {
+func (s Service) CancelOrder(ctx context.Context, params handler.RouteParams) response.Response {
 	id, err, res := convertToID(params["order_id"])
 	if err != nil {
 		return res
 	}
 
-	err = s.ordering.SetItemStatus(ctx, id, req.Status)
+	err = s.ordering.CancelOrder(ctx, id)
 	if err != nil {
 		return failures.Handle(throw.Error(err))
 	}

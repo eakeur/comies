@@ -1,18 +1,23 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
-	"comies/app/gateway/api/gen/ordering/protos"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) SetItemStatus(ctx context.Context, request *protos.SetItemStatusRequest) (*protos.Empty, error) {
-	err := s.ordering.SetItemStatus(ctx, types.ID(request.ItemId), item.Status(request.Status))
+func (s Service) SetItemStatus(ctx context.Context, params handler.RouteParams, req SetItemStatusRequest) response.Response {
+	id, err, res := convertToID(params["item_id"])
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return res
 	}
 
-	return &protos.Empty{}, nil
+	err = s.ordering.SetItemStatus(ctx, id, req.Status)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	return response.WithData(http.StatusNoContent, nil)
 }

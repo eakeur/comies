@@ -1,30 +1,34 @@
 package menu
 
 import (
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) ListIngredients(ctx context.Context, in *menu.ListIngredientsRequest) (*menu.ListIngredientsResponse, error) {
-	list, err := s.menu.ListIngredients(ctx, types.ID(in.ProductID))
+func (s Service) GetProductIngredients(ctx context.Context, params handler.RouteParams) response.Response {
+	id, err, res := convertToID(params["product_id"])
 	if err != nil {
-		return nil, throw.Error(err)
+		return res
 	}
 
-	var ingredients []*menu.Ingredient
-	for _, p := range list {
-		ingredients = append(ingredients, &menu.Ingredient{
-			Id:           int64(p.ID),
-			ProductID:    int64(p.ProductID),
-			IngredientID: int64(p.IngredientID),
-			Quantity:     int64(p.Quantity),
+	list, err := s.menu.ListIngredients(ctx, id)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	ingredients := make([]Ingredient, len(list))
+	for i, p := range list {
+		ingredients[i] = Ingredient{
+			ID:           p.ID,
+			ProductID:    p.ProductID,
+			IngredientID: p.IngredientID,
+			Quantity:     p.Quantity,
 			Optional:     p.Optional,
-		})
+		}
 	}
 
-	return &menu.ListIngredientsResponse{
-		Ingredients: ingredients,
-	}, nil
+	return response.WithData(http.StatusOK, ingredients)
 }

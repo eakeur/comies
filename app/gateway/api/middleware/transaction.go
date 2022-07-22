@@ -1,15 +1,15 @@
 package middleware
 
 import (
-	"context"
-	"google.golang.org/grpc"
+	"net/http"
 )
 
-func (m middleware) Transaction() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		ctx = m.managers.Transactions.Begin(ctx)
+func (m Middlewares) Transaction(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := m.managers.Transactions.Begin(request.Context())
 		defer m.managers.Transactions.End(ctx)
 
-		return handler(ctx, req)
-	}
+		handler.ServeHTTP(writer, request.WithContext(ctx))
+	})
+
 }

@@ -2,30 +2,28 @@ package api
 
 import (
 	"comies/app"
+	"comies/app/gateway/api/handler"
 	"comies/app/gateway/api/menu"
 	"comies/app/gateway/api/middleware"
-	"comies/app/gateway/api/ordering"
-	"crypto/tls"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
-
-	"google.golang.org/grpc"
+	"github.com/go-chi/chi/v5"
 )
 
-func NewAPI(application app.Application, cert *tls.Certificate) *grpc.Server {
+type (
+	StatusCodeLoggingKey struct{}
+)
 
-	cred := grpc.Creds(insecure.NewCredentials())
-	if cert != nil {
-		cred = grpc.Creds(credentials.NewTLS(&tls.Config{
-			Certificates: []tls.Certificate{*cert},
-			ClientAuth:   tls.NoClientCert,
-		}))
-	}
+func NewAPI(application app.Application) chi.Router {
 
-	srv := grpc.NewServer(middleware.NewMiddlewares(application.Managers), cred)
+	mdl := middleware.NewMiddlewares(application.Managers)
+	h := handler.NewHandler(map[string]handler.Middleware{
+		"tx": mdl.Transaction,
+	})
 
-	menu.NewService(srv, application.Menu)
-	ordering.NewService(srv, application.Ordering)
+	r := chi.NewRouter().With(mdl.Logging)
 
-	return srv
+	r.Route("/menu", func(r chi.Router) {
+		r = h.RegisterService(r, menu.NewService(application.Menu))
+	})
+
+	return r
 }

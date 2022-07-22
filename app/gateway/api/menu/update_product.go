@@ -1,19 +1,19 @@
 package menu
 
 import (
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/core/entities/product"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) UpdateProduct(ctx context.Context, in *menu.UpdateProductRequest) (*menu.Empty, error) {
-	prd := InternalProduct(in.Product)
-	prd.ID = types.ID(in.Product.Id)
-	err := s.menu.UpdateProduct(ctx, prd)
+func (s Service) UpdateProduct(ctx context.Context, prod product.Product) response.Response {
+
+	err := s.menu.UpdateProduct(ctx, prod)
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return failures.Handle(throw.Error(err))
 	}
 
-	return &menu.Empty{}, nil
+	return response.WithData(http.StatusNoContent, nil)
 }

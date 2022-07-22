@@ -1,22 +1,21 @@
 package middleware
 
 import (
-	"context"
-	"google.golang.org/grpc"
 	"log"
+	"net/http"
 	"time"
 )
 
-func (m middleware) Logging() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+func (m Middlewares) Logging(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		at := time.Now()
 
-		res, err := handler(ctx, req)
-		log.Printf("Request - Method:%s\tDuration:%s\tError:%v\n",
-			info.FullMethod,
-			time.Since(at),
-			err)
+		handler.ServeHTTP(writer, request)
 
-		return res, err
-	}
+		log.Printf("[%s] Route:%s\tDuration:%s\n",
+			request.Method,
+			request.URL.Path,
+			time.Since(at))
+	})
+
 }

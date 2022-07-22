@@ -1,17 +1,23 @@
 package menu
 
 import (
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/handler"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) RemoveMovement(ctx context.Context, in *menu.RemoveMovementRequest) (*menu.Empty, error) {
-	err := s.menu.RemoveMovement(ctx, types.ID(in.Id))
+func (s Service) RemoveMovement(ctx context.Context, params handler.RouteParams) response.Response {
+	id, err, res := convertToID(params["movement_id"])
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return res
 	}
 
-	return &menu.Empty{}, nil
+	err = s.menu.RemoveMovement(ctx, id)
+	if err != nil {
+		return failures.Handle(throw.Error(err))
+	}
+
+	return response.WithData(http.StatusNoContent, nil)
 }

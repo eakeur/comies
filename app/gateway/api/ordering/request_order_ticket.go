@@ -1,16 +1,17 @@
 package ordering
 
 import (
-	"comies/app/gateway/api/gen/ordering/protos"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
 	"context"
+	"net/http"
 )
 
-func (s service) RequestOrderTicket(ctx context.Context, _ *protos.Empty) (*protos.RequestOrderTicketResponse, error) {
+func (s Service) RequestOrderTicket(ctx context.Context) response.Response {
 	ticket, err := s.ordering.RequestOrderTicket(ctx)
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return failures.Handle(throw.Error(err))
 	}
 
-	return &protos.RequestOrderTicketResponse{OrderId: int64(ticket)}, nil
+	return response.WithData(http.StatusCreated, AdditionResult{ID: ticket})
 }

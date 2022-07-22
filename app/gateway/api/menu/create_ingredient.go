@@ -2,24 +2,17 @@ package menu
 
 import (
 	"comies/app/core/entities/ingredient"
-	"comies/app/gateway/api/gen/menu"
+	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
+	"net/http"
 )
 
-func (s service) CreateIngredient(ctx context.Context, in *menu.CreateIngredientRequest) (*menu.CreateIngredientResponse, error) {
-	ing, err := s.menu.CreateIngredient(ctx, ingredient.Ingredient{
-		ProductID:    types.ID(in.Ingredient.ProductID),
-		IngredientID: types.ID(in.Ingredient.IngredientID),
-		Quantity:     types.Quantity(in.Ingredient.Quantity),
-		Optional:     in.Ingredient.Optional,
-	})
+func (s Service) CreateIngredient(ctx context.Context, ing ingredient.Ingredient) response.Response {
+	ing, err := s.menu.CreateIngredient(ctx, ing)
 	if err != nil {
-		return nil, failures.HandleError(throw.Error(err))
+		return failures.Handle(throw.Error(err))
 	}
 
-	return &menu.CreateIngredientResponse{
-		Id: int64(ing.ID),
-	}, nil
+	return response.WithData(http.StatusCreated, AdditionResult{ID: ing.ID})
 }

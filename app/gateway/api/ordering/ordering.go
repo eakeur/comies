@@ -2,25 +2,17 @@ package ordering
 
 import (
 	"comies/app/core/workflows/ordering"
-	"comies/app/gateway/api/errors"
-	"comies/app/gateway/api/gen/ordering/protos"
-	"google.golang.org/grpc"
+	"comies/app/gateway/api/response"
 )
 
-var _ protos.OrderingServer = service{}
+var failures = response.ErrorBinding{}
 
-var failures = errors.ErrorBinding{}
-
-type service struct {
-	protos.UnimplementedOrderingServer
+type Service struct {
 	ordering ordering.Workflow
 }
 
-func NewService(server *grpc.Server, ordering ordering.Workflow) protos.OrderingServer {
-	s := service{
+func NewService(ordering ordering.Workflow) *Service {
+	return &Service{
 		ordering: ordering,
 	}
-
-	protos.RegisterOrderingServer(server, s)
-	return s
 }

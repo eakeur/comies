@@ -45,26 +45,15 @@ func main() {
 		SnowflakeNode: snflake,
 	})
 
-	address := fmt.Sprintf(":%v", cfg.Server.ListenPort)
+	address := fmt.Sprintf(":%v", "8080")
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("Could not listen to port %v: %v", cfg.Server.ListenPort, err)
 	}
 	log.Printf("Listening on %s", lis.Addr())
 
-	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		_, _ = writer.Write([]byte("Hello world, I'm up"))
-	})
-
-	err = http.Serve(lis, nil)
+	err = http.Serve(lis, api.NewAPI(application))
 	if err != nil {
 		log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, err)
 	}
-
-	srv := api.NewAPI(application, nil)
-	if err := srv.Serve(lis); err != nil {
-		log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, err)
-	}
-
-	log.Printf("Stopping", address)
 }
