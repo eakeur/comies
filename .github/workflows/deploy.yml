@@ -24,7 +24,7 @@ jobs:
     - id: 'Deploy'
       uses: 'google-github-actions/deploy-appengine@v0'
       with:
-        deliverables: cmd/apihml.yaml
+        deliverables: cmd/api/hml.yaml
 
     - id: 'Test'
       run: 'curl "${{ steps.deploy.outputs.url }}"'
