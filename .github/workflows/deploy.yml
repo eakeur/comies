@@ -1,0 +1,25 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  job_id:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        service_account: 'github-actions-workflow@comies-hml.iam.gserviceaccount.com'
+
+    - id: 'deploy'
+      uses: 'google-github-actions/deploy-appengine@v0'
+      with:
+        deliverables: cmd/api/hml.yaml
+
+    - id: 'test'
+      run: 'curl "${{ steps.deploy.outputs.url }}"'
