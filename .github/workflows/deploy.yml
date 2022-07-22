@@ -15,6 +15,7 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
+        workload_identity_provider: projects/630537661492/locations/global/workloadIdentityPools/gh-actions-pool/providers/github
         service_account: 'github-actions-workflow@comies-hml.iam.gserviceaccount.com'
 
     - id: 'deploy'
