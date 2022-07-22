@@ -10,7 +10,7 @@ test:
 setup:
 	docker-compose up -d
 
-deploy-api-homolog: 
-	gcloud app deploy ./../../deploy/hml/api.yaml 
+deploy-api-homolog:
+	gcloud app deploy hml.yaml
 
 
