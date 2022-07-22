@@ -5,7 +5,6 @@ env_variables:
   DB_USER: comies
   DB_PASS: a2346702-2db8-4717-98ee-1f7818a2f96c
   DB_HOST: 34.95.171.13
-  DB_PORT: 5432
   DB_NAME: comies
   DB_SSL: require
   ID_GENERATION_NODE_NUMBER: 1

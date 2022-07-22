@@ -24,12 +24,11 @@ func main() {
 	}
 
 	db, err := postgres.ConnectAndMount(ctx, postgres.Config{
-		User:      cfg.Database.User,
-		Password:  cfg.Database.Password,
-		Host:      cfg.Database.Host,
-		Port:      cfg.Database.Port,
-		Name:      cfg.Database.Name,
-		SSLMode:   cfg.Database.SSLMode,
+		User:     cfg.Database.User,
+		Password: cfg.Database.Password,
+		Host:     cfg.Database.Host,
+		Name:     cfg.Database.Name,
+		SSLMode:  cfg.Database.SSLMode,
 	})
 	if err != nil {
 		log.Fatalf("Could not connect and populate postgres database: %v", err)
