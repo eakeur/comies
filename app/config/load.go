@@ -1,15 +1,15 @@
 package config
 
 import (
+	"log"
 	"os"
-
 	"github.com/joho/godotenv"
 )
 
 func Load() (Config, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
-		return Config{}, err
+		log.Println("Could not load .env file: continuing fetching variables from environment")
 	}
 
 	return Config{
