@@ -28,4 +28,5 @@
 *.out
 
 # Other random files and folders
+.env
 .env-example
