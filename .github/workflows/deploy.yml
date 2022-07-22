@@ -17,6 +17,8 @@ jobs:
       with:
         workload_identity_provider: projects/630537661492/locations/global/workloadIdentityPools/gh-actions-pool/providers/github
         service_account: 'github-actions-workflow@comies-hml.iam.gserviceaccount.com'
+    - id: 'aaa'
+      run: 'ls'
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-appengine@v0'
