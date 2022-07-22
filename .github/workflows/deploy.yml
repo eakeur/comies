@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  job_id:
+  Deployment:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
