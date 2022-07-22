@@ -1,9 +1,9 @@
 package config
 
 import (
+	"github.com/joho/godotenv"
 	"log"
 	"os"
-	"github.com/joho/godotenv"
 )
 
 func Load() (Config, error) {
@@ -20,7 +20,7 @@ func Load() (Config, error) {
 			Port:     os.Getenv("DB_PORT"),
 			Name:     os.Getenv("DB_NAME"),
 			SSLMode:  os.Getenv("DB_SSL"),
-			URL:      os.Getenv("DATABASE_URL"),
+			URL:      os.Getenv("DB_URL"),
 		},
 		Server: Server{
 			ListenPort: os.Getenv("PORT"),
