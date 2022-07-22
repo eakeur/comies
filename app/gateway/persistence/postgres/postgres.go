@@ -22,7 +22,6 @@ type (
 		User     string
 		Password string
 		Host     string
-		Port     string
 		Name     string
 		SSLMode  string
 	}
@@ -35,12 +34,12 @@ const MigrationPath = "migrations"
 //go:embed migrations
 var MigrationsFS embed.FS
 
-func CreateDatabaseURL(user, password, host, port, name, SSLMode string) string {
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", user, password, host, port, name, SSLMode)
+func CreateDatabaseURL(user, password, host, name, SSLMode string) string {
+	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", user, password, host, name, SSLMode)
 }
 
 func ConnectAndMount(ctx context.Context, c Config) (*pgxpool.Pool, error) {
-	url := CreateDatabaseURL(c.User, c.Password, c.Host, c.Port, c.Name, c.SSLMode)
+	url := CreateDatabaseURL(c.User, c.Password, c.Host, c.Name, c.SSLMode)
 	return ConnectAndMountURL(ctx, url)
 }
 

@@ -43,7 +43,7 @@ func (c *Container) create() error {
 
 	c.pool = pool
 	c.resource = resource
-	c.config.Port = c.resource.GetPort("5432/tcp")
+	c.config.Host += ":" + c.resource.GetPort("5432/tcp")
 	err = resource.Expire(ContainerExpirationSeconds)
 	if err != nil {
 		return errors.Wrap(err, "could not set an expiration time")

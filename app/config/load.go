@@ -17,7 +17,6 @@ func Load() (Config, error) {
 			User:     os.Getenv("DB_USER"),
 			Password: os.Getenv("DB_PASS"),
 			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
 			Name:     os.Getenv("DB_NAME"),
 			SSLMode:  os.Getenv("DB_SSL"),
 			URL:      os.Getenv("DB_URL"),
