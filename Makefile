@@ -13,4 +13,6 @@ setup:
 deploy-api-homolog:
 	gcloud app deploy hml.yaml
 
+log-api-homolog:
+	gcloud app logs tail -s api-homolog
 
