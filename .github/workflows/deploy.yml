@@ -12,7 +12,7 @@ jobs:
       id-token: 'write'
 
     steps:
-    - id: 'Authenticate to GAE'
+    - id: 'Authentication'
       uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: projects/630537661492/locations/global/workloadIdentityPools/gh-actions-pool/providers/github
@@ -21,10 +21,10 @@ jobs:
     - id: 'Checkout'
       uses: actions/checkout@v2
 
-    - id: 'Deploy to GAE'
+    - id: 'Deploy'
       uses: 'google-github-actions/deploy-appengine@v0'
       with:
         deliverables: hml.yaml
 
-    - id: 'Test deployment'
+    - id: 'Test'
       run: 'curl "${{ steps.deploy.outputs.url }}"'
