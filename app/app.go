@@ -10,6 +10,7 @@ import (
 	"comies/app/core/workflows/ordering"
 	"comies/app/gateway/persistence/postgres/transaction"
 	"comies/app/sdk/id"
+	"go.uber.org/zap"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -17,6 +18,7 @@ import (
 
 type (
 	Gateways struct {
+		Logger        *zap.SugaredLogger
 		Database      *pgxpool.Pool
 		SnowflakeNode *snowflake.Node
 	}
@@ -30,6 +32,7 @@ type (
 	}
 
 	Managers struct {
+		Logger       *zap.SugaredLogger
 		Transactions transaction.Manager
 		ID           id.Manager
 	}

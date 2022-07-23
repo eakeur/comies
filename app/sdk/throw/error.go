@@ -1,7 +1,9 @@
 package throw
 
 import (
+	"errors"
 	"fmt"
+	"strconv"
 )
 
 type (
@@ -15,6 +17,7 @@ type (
 	}
 
 	DetailedError interface {
+		Stacked() []map[string]string
 		Describe(description string) DetailedError
 		DescribeF(description string, a ...interface{}) DetailedError
 		Params(params map[string]interface{}) DetailedError
@@ -23,6 +26,43 @@ type (
 		Unwrap() error
 	}
 )
+
+func (e fault) Stacked() []map[string]string {
+	var (
+		errs []map[string]string
+		err  error = e
+	)
+
+	for err != nil {
+		var fault fault
+		if errors.As(err, &fault) {
+			m := map[string]string{
+				"operation": fault.operation,
+				"line":      strconv.Itoa(fault.line),
+			}
+
+			if e.parameters != nil {
+				params := fmt.Sprint(e.parameters)
+				m["parameters"] = params[4 : len(params)-1]
+			}
+
+			if len(e.description) > 0 {
+				m["description"] = e.description
+			}
+
+			errs = append(errs, m)
+			err = fault.child
+		} else {
+			errs = append(errs, map[string]string{
+				"description": err.Error(),
+			})
+			err = nil
+		}
+	}
+
+	return errs
+
+}
 
 func (e fault) Describe(description string) DetailedError {
 	if e.description == "" {

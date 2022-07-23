@@ -21,8 +21,8 @@ func (s Service) GetProductByKey(ctx context.Context, params handler.RouteParams
 	if flag := query.Get("code"); flag == "true" {
 		prd, err = s.menu.GetProductByCode(ctx, key)
 	} else {
-		id, err, res := convertToID(key)
-		if err != nil {
+		id, e, res := convertToID(key)
+		if e != nil {
 			return res
 		}
 		prd, err = s.menu.GetProductByID(ctx, id)

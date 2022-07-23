@@ -24,8 +24,8 @@ type (
 
 	Middleware func(handler http.Handler) http.Handler
 
-	ResponseWriter interface {
-		Write(w http.ResponseWriter)
+	Response interface {
+		Write(w http.ResponseWriter, r *http.Request)
 	}
 )
 

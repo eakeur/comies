@@ -24,6 +24,7 @@ func NewApplication(gateways Gateways) Application {
 		}
 
 		managers = Managers{
+			Logger:       gateways.Logger,
 			Transactions: transaction.NewManager(gateways.Database),
 			ID:           id.NewManager(gateways.SnowflakeNode),
 		}

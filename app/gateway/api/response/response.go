@@ -1,9 +1,13 @@
 package response
 
 import (
+	"comies/app/gateway/api/middleware"
+	"comies/app/sdk/throw"
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -33,9 +37,16 @@ func (r Response) Err(err error) Response {
 	return r
 }
 
-func (r Response) Write(w http.ResponseWriter) {
-	if r.inner != nil {
-		log.Println(r.inner)
+func (r Response) Write(w http.ResponseWriter, req *http.Request) {
+	logger := LoggerFromContext(req.Context()).With("code", r.code)
+
+	var innErr throw.DetailedError
+	if r.inner != nil && errors.As(r.inner, &innErr) {
+		logger.Desugar().With(zap.Any("errors", innErr.Stacked())).Error("failed request")
+	} else if r.inner != nil {
+		logger.Error("errors", r.inner.Error())
+	} else {
+		logger.Info("finished request")
 	}
 
 	w.WriteHeader(r.code)
@@ -44,4 +55,8 @@ func (r Response) Write(w http.ResponseWriter) {
 
 func (e Error) Error() string {
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
+}
+
+func LoggerFromContext(ctx context.Context) *zap.SugaredLogger {
+	return ctx.Value(middleware.LoggerContextKey{}).(*zap.SugaredLogger)
 }

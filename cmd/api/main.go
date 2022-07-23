@@ -7,6 +7,8 @@ import (
 	"comies/app/gateway/persistence/postgres"
 	"context"
 	"fmt"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"log"
 	"net"
 	"net/http"
@@ -46,9 +48,25 @@ func main() {
 	}
 	log.Println("Successfully created snowflake node")
 
+	var logger *zap.Logger
+	if cfg.Logger.Environment == "development" {
+		logger, err = zap.NewDevelopment()
+		if err != nil {
+			log.Fatalf("Could not create logger instance: %v", err)
+		}
+		log.Println("Successfully created logger instance in development mode")
+	} else {
+		logger, err = zap.NewProduction(zap.AddStacktrace(zapcore.PanicLevel))
+		if err != nil {
+			log.Fatalf("Could not create logger instance: %v", err)
+		}
+		log.Println("Successfully created logger instance in production mode")
+	}
+
 	application := app.NewApplication(app.Gateways{
 		Database:      db,
 		SnowflakeNode: snflake,
+		Logger:        logger.Sugar(),
 	})
 
 	address := fmt.Sprintf(":%v", "8080")

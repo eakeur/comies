@@ -34,7 +34,7 @@ func (r Route) unmarshalJSON(reader io.ReadCloser, to reflect.Type) (reflect.Val
 	return instance.Elem(), nil
 }
 
-func (r Route) params(_ http.ResponseWriter, request *http.Request) ([]reflect.Value, error) {
+func (r Route) params(w http.ResponseWriter, request *http.Request) ([]reflect.Value, error) {
 	var (
 		routeSignature     = r.routine.Type()
 		numberOfParameters = routeSignature.NumIn()
@@ -65,6 +65,11 @@ func (r Route) params(_ http.ResponseWriter, request *http.Request) ([]reflect.V
 			continue
 		}
 
+		if parameter.Implements(reflect.TypeOf(&w).Elem()) {
+			parameters[i] = reflect.ValueOf(w)
+			continue
+		}
+
 		params := RouteParams{}
 		if parameter.AssignableTo(reflect.TypeOf(params)) {
 			for _, v := range strings.Split(r.urlParams, ",") {
@@ -85,7 +90,7 @@ func (r Route) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusInternalServerError)
 	}
 
-	res := r.routine.Call(params)[0].Interface().(ResponseWriter)
-	res.Write(writer)
+	res := r.routine.Call(params)[0].Interface().(Response)
+	res.Write(writer, request)
 
 }
