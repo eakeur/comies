@@ -15,7 +15,7 @@ type (
 	Product struct {
 
 		// ID is the unique identifier of this product
-		ID string `json:"id,omitempty"`
+		ID string `json:"id"`
 
 		// Code represents how the store's crew call this product internally
 		Code string `json:"code"`
@@ -28,30 +28,30 @@ type (
 		Type product.Type `json:"type"`
 
 		// CostPrice is how much the store pays to make or store this product
-		CostPrice types.Currency `json:"cost_price,omitempty"`
+		CostPrice types.Currency `json:"cost_price"`
 
 		// Price is how much the customer pays for this product
-		SalePrice types.Currency `json:"sale_price,omitempty"`
+		SalePrice types.Currency `json:"sale_price"`
 
 		// Unit is the measure type that this product is sold
-		SaleUnit types.UnitType `json:"sale_unit,omitempty"`
+		SaleUnit types.UnitType `json:"sale_unit"`
 
 		// MinimumSale is the lowest number of unities of this product that can be sold
-		MinimumSale types.Quantity `json:"minimum_sale,omitempty"`
+		MinimumSale types.Quantity `json:"minimum_sale"`
 
 		// MaximumQuantity is how many unities of this resource the stock can support
-		MaximumQuantity types.Quantity `json:"maximum_quantity,omitempty"`
+		MaximumQuantity types.Quantity `json:"maximum_quantity"`
 
 		// MinimumQuantity is the lowest quantity of this resource the stock can have
-		MinimumQuantity types.Quantity `json:"minimum_quantity,omitempty"`
+		MinimumQuantity types.Quantity `json:"minimum_quantity"`
 
 		// Location is a brief description of where this stock is located
-		Location string `json:"location,omitempty"`
+		Location string `json:"location"`
 	}
 
 	Ingredient struct {
 		// ID is the unique identifier of this ingredient
-		ID           string         `json:"id,omitempty"`
+		ID           string         `json:"id"`
 		ProductID    string         `json:"product_id"`
 		IngredientID string         `json:"ingredient_id"`
 		Quantity     types.Quantity `json:"quantity"`
@@ -60,25 +60,25 @@ type (
 
 	Movement struct {
 		// ID is the unique identifier of this movement
-		ID string `json:"id,omitempty"`
+		ID string `json:"id"`
 
 		// ProductID is an identifier for the stock this movement references to
-		ProductID string `json:"product_id,omitempty"`
+		ProductID string `json:"product_id"`
 
 		// Type points out if this movement is input or output
-		Type movement.Type `json:"type,omitempty"`
+		Type movement.Type `json:"type"`
 
 		// Date is when the object got into the stock effectively
 		Date time.Time `json:"date"`
 
 		// Quantity is the amount being inserted or removed from this stock
-		Quantity types.Quantity `json:"quantity,omitempty"`
+		Quantity types.Quantity `json:"quantity"`
 
 		// PaidValue is how much was paid/received for this resource
-		PaidValue types.Currency `json:"paid_value,omitempty"`
+		PaidValue types.Currency `json:"paid_value"`
 
 		// AgentID is the entity from this resource came from or is going to
-		AgentID string `json:"agent_id,omitempty"`
+		AgentID string `json:"agent_id"`
 	}
 
 	AdditionResult struct {
