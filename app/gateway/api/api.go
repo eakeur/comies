@@ -19,7 +19,7 @@ func NewAPI(application app.Application) chi.Router {
 		"tx": mdl.Transaction,
 	})
 
-	r := chi.NewRouter().With(mdl.Logging)
+	r := chi.NewRouter().With(mdl.Logging, mdl.CORS)
 
 	r.Route("/menu", func(r chi.Router) {
 		r = h.RegisterService(r, menu.NewService(application.Menu))
