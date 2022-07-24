@@ -37,12 +37,12 @@ func (s Service) GetProductMovements(ctx context.Context, params handler.RoutePa
 	for i, p := range list {
 		movements[i] = Movement{
 			ID:        p.ID.String(),
-			ProductID: p.ProductID,
+			ProductID: p.ProductID.String(),
 			Type:      p.Type,
 			Date:      p.Date,
 			Quantity:  p.Quantity,
 			PaidValue: p.PaidValue,
-			AgentID:   p.AgentID,
+			AgentID:   p.AgentID.String(),
 		}
 	}
 

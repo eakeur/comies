@@ -52,8 +52,8 @@ type (
 	Ingredient struct {
 		// ID is the unique identifier of this ingredient
 		ID           string         `json:"id,omitempty"`
-		ProductID    types.ID       `json:"product_id"`
-		IngredientID types.ID       `json:"ingredient_id"`
+		ProductID    string         `json:"product_id"`
+		IngredientID string         `json:"ingredient_id"`
 		Quantity     types.Quantity `json:"quantity"`
 		Optional     bool           `json:"optional"`
 	}
@@ -63,7 +63,7 @@ type (
 		ID string `json:"id,omitempty"`
 
 		// ProductID is an identifier for the stock this movement references to
-		ProductID types.ID `json:"product_id,omitempty"`
+		ProductID string `json:"product_id,omitempty"`
 
 		// Type points out if this movement is input or output
 		Type movement.Type `json:"type,omitempty"`
@@ -78,15 +78,15 @@ type (
 		PaidValue types.Currency `json:"paid_value,omitempty"`
 
 		// AgentID is the entity from this resource came from or is going to
-		AgentID types.ID `json:"agent_id,omitempty"`
+		AgentID string `json:"agent_id,omitempty"`
 	}
 
 	AdditionResult struct {
-		ID types.ID `json:"id"`
+		ID string `json:"id"`
 	}
 
 	MovementAdditionResult struct {
-		ID      types.ID       `json:"id"`
+		ID      string         `json:"id"`
 		Balance types.Quantity `json:"balance"`
 	}
 
