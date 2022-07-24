@@ -50,7 +50,7 @@ func main() {
 
 	var logger *zap.Logger
 	if cfg.Logger.Environment == "development" {
-		logger, err = zap.NewDevelopment()
+		logger, err = zap.NewDevelopment(zap.AddStacktrace(zapcore.PanicLevel))
 		if err != nil {
 			log.Fatalf("Could not create logger instance: %v", err)
 		}

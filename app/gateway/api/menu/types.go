@@ -15,7 +15,7 @@ type (
 	Product struct {
 
 		// ID is the unique identifier of this product
-		ID types.ID `json:"id,omitempty"`
+		ID string `json:"id,omitempty"`
 
 		// Code represents how the store's crew call this product internally
 		Code string `json:"code"`
@@ -51,7 +51,7 @@ type (
 
 	Ingredient struct {
 		// ID is the unique identifier of this ingredient
-		ID           types.ID       `json:"id,omitempty"`
+		ID           string         `json:"id,omitempty"`
 		ProductID    types.ID       `json:"product_id"`
 		IngredientID types.ID       `json:"ingredient_id"`
 		Quantity     types.Quantity `json:"quantity"`
@@ -60,7 +60,7 @@ type (
 
 	Movement struct {
 		// ID is the unique identifier of this movement
-		ID types.ID `json:"id,omitempty"`
+		ID string `json:"id,omitempty"`
 
 		// ProductID is an identifier for the stock this movement references to
 		ProductID types.ID `json:"product_id,omitempty"`

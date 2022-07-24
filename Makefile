@@ -11,7 +11,7 @@ setup:
 	docker-compose up -d
 
 deploy-api-homolog:
-	gcloud app deploy hml.yaml
+	gcloud app deploy cmd/api/hml.yaml
 
 log-api-homolog:
 	gcloud app logs tail -s api-homolog

@@ -30,7 +30,7 @@ func (s Service) ListProducts(ctx context.Context, query url.Values) response.Re
 	products := make([]Product, len(prd))
 	for i, p := range prd {
 		products[i] = Product{
-			ID:   p.ID,
+			ID:   p.ID.String(),
 			Code: p.Code,
 			Name: p.Name,
 			Type: p.Type,

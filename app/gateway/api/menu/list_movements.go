@@ -36,7 +36,7 @@ func (s Service) GetProductMovements(ctx context.Context, params handler.RoutePa
 	movements := make([]Movement, len(list))
 	for i, p := range list {
 		movements[i] = Movement{
-			ID:        p.ID,
+			ID:        p.ID.String(),
 			ProductID: p.ProductID,
 			Type:      p.Type,
 			Date:      p.Date,

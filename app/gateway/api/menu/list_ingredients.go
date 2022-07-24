@@ -22,7 +22,7 @@ func (s Service) GetProductIngredients(ctx context.Context, params handler.Route
 	ingredients := make([]Ingredient, len(list))
 	for i, p := range list {
 		ingredients[i] = Ingredient{
-			ID:           p.ID,
+			ID:           p.ID.String(),
 			ProductID:    p.ProductID,
 			IngredientID: p.IngredientID,
 			Quantity:     p.Quantity,

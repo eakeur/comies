@@ -33,7 +33,7 @@ func (s Service) GetProductByKey(ctx context.Context, params handler.RouteParams
 	}
 
 	return response.WithData(http.StatusOK, Product{
-		ID:              prd.ID,
+		ID:              prd.ID.String(),
 		Code:            prd.Code,
 		Name:            prd.Name,
 		Type:            prd.Type,
