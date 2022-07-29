@@ -75,7 +75,7 @@ func main() {
 		Logger:        logger.Sugar(),
 	})
 
-	address := fmt.Sprintf(":%v", "8080")
+	address := fmt.Sprintf(":%v", cfg.Server.ListenPort)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("Could not listen to port %v: %v", cfg.Server.ListenPort, err)
