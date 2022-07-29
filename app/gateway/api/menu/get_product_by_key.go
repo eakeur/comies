@@ -39,8 +39,10 @@ func (s Service) GetProductByKey(ctx context.Context, params handler.RouteParams
 		Type:            prd.Type,
 		CostPrice:       prd.CostPrice,
 		SalePrice:       prd.SalePrice,
+		SaleUnit:        prd.SaleUnit,
 		MinimumSale:     prd.MinimumSale,
 		MaximumQuantity: prd.MaximumQuantity,
 		MinimumQuantity: prd.MinimumQuantity,
+		Location:        prd.Location,
 	})
 }

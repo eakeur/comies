@@ -21,7 +21,7 @@ type Service struct {
 	RemoveProductMovementRoute   handler.Route `path:"/products/{product_id}/movements/{movement_id}" method:"DELETE" url:"product_id"`
 	RemoveProductIngredientRoute handler.Route `path:"/products/{product_id}/ingredients/{ingredient_id}" method:"DELETE" url:"product_id"`
 
-	UpdateProductRoute handler.Route `path:"/products/{product_id}" method:"PUT"`
+	UpdateProductRoute handler.Route `path:"/products/{product_id}" method:"PUT" body:"Product" middleware:"tx"`
 
 	menu menu.Workflow
 }

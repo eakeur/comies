@@ -8,6 +8,9 @@ func (m Middlewares) CORS(next http.Handler) http.Handler {
 		header.Add("Access-Control-Allow-Origin", "*")
 		header.Add("Access-Control-Allow-Methods", "*")
 		header.Add("Access-Control-Allow-Headers", "*")
+		if req.Method == "OPTIONS" {
+			return
+		}
 		next.ServeHTTP(rw, req)
 	})
 }

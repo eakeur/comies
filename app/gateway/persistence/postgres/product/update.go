@@ -22,9 +22,12 @@ func (a actions) Update(ctx context.Context, prd product.Product) error {
 			cost_price = $4,
 			sale_price = $5,
 			sale_unit = $6,
-			minimum_sale = $7
+			minimum_sale = $7,
+			minimum_quantity = $8,
+			maximum_quantity = $9,
+			location = $10
 		where 
-			id = $8
+			id = $11
 	`
 
 	cmd, err := transaction.ExecFromContext(ctx, script,
@@ -35,6 +38,9 @@ func (a actions) Update(ctx context.Context, prd product.Product) error {
 		prd.SalePrice,
 		prd.SaleUnit,
 		prd.MinimumSale,
+		prd.MinimumQuantity,
+		prd.MaximumQuantity,
+		prd.Location,
 		prd.ID,
 	)
 	if err != nil {
