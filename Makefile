@@ -10,9 +10,9 @@ test:
 setup:
 	docker-compose up -d
 
-deploy-api-homolog:
-	gcloud app deploy cmd/api/hml.yaml
+dah:
+	git push heroku main
 
-log-api-homolog:
-	gcloud app logs tail -s api-homolog
+lah:
+	heroku logs --tail
 
