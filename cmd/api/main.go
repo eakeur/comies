@@ -7,6 +7,7 @@ import (
 	"comies/app/gateway/persistence/postgres"
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
@@ -25,13 +26,18 @@ func main() {
 		log.Fatalf("Could not load configurations from environment: %v", err)
 	}
 
-	db, err := postgres.ConnectAndMount(ctx, postgres.Config{
-		User:     cfg.Database.User,
-		Password: cfg.Database.Password,
-		Host:     cfg.Database.Host,
-		Name:     cfg.Database.Name,
-		SSLMode:  cfg.Database.SSLMode,
-	})
+	var db *pgxpool.Pool
+	if cfg.Database.URL == "" {
+		db, err = postgres.ConnectAndMount(ctx, postgres.Config{
+			User:     cfg.Database.User,
+			Password: cfg.Database.Password,
+			Host:     cfg.Database.Host,
+			Name:     cfg.Database.Name,
+			SSLMode:  cfg.Database.SSLMode,
+		})
+	} else {
+		db, err = postgres.ConnectAndMountURL(ctx, cfg.Database.URL)
+	}
 	if err != nil {
 		log.Fatalf("Could not connect and populate postgres database: %v", err)
 	}

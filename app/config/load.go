@@ -19,7 +19,7 @@ func Load() (Config, error) {
 			Host:     os.Getenv("DB_HOST"),
 			Name:     os.Getenv("DB_NAME"),
 			SSLMode:  os.Getenv("DB_SSL"),
-			URL:      os.Getenv("DB_URL"),
+			URL:      os.Getenv("DATABASE_URL"),
 		},
 		Server: Server{
 			ListenPort: os.Getenv("PORT"),
