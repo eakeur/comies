@@ -7,6 +7,9 @@ clean:
 test:
 	go test ./...
 
+build:
+	go build ./...
+
 setup:
 	docker-compose up -d
 
