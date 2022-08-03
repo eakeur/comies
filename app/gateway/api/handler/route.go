@@ -29,11 +29,13 @@ func (r Route) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	if callee, ok := r.routine.(func(ctx context.Context, r *http.Request) Response); ok {
 		res := callee(request.Context(), request)
 		res.Write(writer, request)
+		return
 	}
 
 	if callee, ok := r.routine.(func(ctx context.Context, w http.ResponseWriter, r *http.Request) Response); ok {
 		res := callee(request.Context(), writer, request)
 		res.Write(writer, request)
+		return
 	}
 
 	writer.WriteHeader(500)
