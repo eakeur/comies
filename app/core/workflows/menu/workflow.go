@@ -20,6 +20,7 @@ type Workflow interface {
 	GetProductByCode(ctx context.Context, code string) (product.Product, error)
 	GetProductNameByID(ctx context.Context, id types.ID) (string, error)
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
+	ListProductsRunningOut(ctx context.Context) ([]product.Product, error)
 	RemoveProduct(ctx context.Context, id types.ID) error
 	UpdateProduct(ctx context.Context, prd product.Product) error
 
