@@ -1,15 +1,15 @@
 package ordering
 
 import (
+	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
-	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
 	"context"
 	"net/http"
 )
 
-func (s Service) ListItems(ctx context.Context, params handler.RouteParams) response.Response {
-	id, err, res := convertToID(params["order_id"])
+func (s Service) ListItems(ctx context.Context, r *http.Request) handler.Response {
+	id, err, res := handler.GetResourceIDFromURL(r, "order_id")
 	if err != nil {
 		return res
 	}
@@ -32,6 +32,6 @@ func (s Service) ListItems(ctx context.Context, params handler.RouteParams) resp
 		}
 	}
 
-	return response.WithData(http.StatusOK, list)
+	return handler.ResponseWithData(http.StatusOK, list)
 
 }

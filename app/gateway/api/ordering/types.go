@@ -3,11 +3,7 @@ package ordering
 import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
-	"comies/app/gateway/api/response"
-	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
-	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -64,14 +60,3 @@ type (
 		ID types.ID `json:"id"`
 	}
 )
-
-func convertToID(in string) (types.ID, error, response.Response) {
-	id, err := strconv.Atoi(in)
-	if err != nil {
-		return 0, err, response.WithError(http.StatusBadRequest, response.Error{
-			Code: "INVALID_ID", Message: "The id provided is invalid",
-		}).Err(throw.Error(err))
-	}
-
-	return types.ID(id), nil, response.Response{}
-}

@@ -3,11 +3,7 @@ package menu
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/response"
-	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
-	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -101,14 +97,3 @@ type (
 		Balance types.Quantity `json:"balance"`
 	}
 )
-
-func convertToID(in string) (types.ID, error, response.Response) {
-	id, err := strconv.Atoi(in)
-	if err != nil {
-		return 0, err, response.WithError(http.StatusBadRequest, response.Error{
-			Code: "INVALID_ID", Message: "The id provided is invalid",
-		}).Err(throw.Error(err))
-	}
-
-	return types.ID(id), nil, response.Response{}
-}

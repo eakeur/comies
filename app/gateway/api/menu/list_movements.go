@@ -2,17 +2,16 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
+	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
-	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
 	"context"
 	"net/http"
-	"net/url"
 	"time"
 )
 
-func (s Service) GetProductMovements(ctx context.Context, params handler.RouteParams, query url.Values) response.Response {
-	id, err, res := convertToID(params["product_id"])
+func (s Service) GetProductMovements(ctx context.Context, r *http.Request) handler.Response {
+	id, err, res := handler.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
 		return res
 	}
@@ -20,6 +19,7 @@ func (s Service) GetProductMovements(ctx context.Context, params handler.RoutePa
 	var filter movement.Filter
 	filter.ProductID = id
 
+	var query = r.URL.Query()
 	if parse, err := time.Parse(time.RFC3339, query.Get("start")); err == nil {
 		filter.InitialDate = parse
 	}
@@ -46,5 +46,5 @@ func (s Service) GetProductMovements(ctx context.Context, params handler.RoutePa
 		}
 	}
 
-	return response.WithData(http.StatusOK, movements)
+	return handler.ResponseWithData(http.StatusOK, movements)
 }
