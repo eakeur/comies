@@ -47,6 +47,9 @@ type (
 
 		// Location is a brief description of where this stock is located
 		Location string `json:"location"`
+
+		//Balance is the amount stocked
+		Balance types.Quantity `json:"balance"`
 	}
 
 	Ingredient struct {
