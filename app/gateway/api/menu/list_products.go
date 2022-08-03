@@ -17,12 +17,19 @@ func (s Service) ListProducts(ctx context.Context, query url.Values) response.Re
 		Type: 0,
 	}
 
+	runningOut := query.Get("out") == "true"
+
 	t, err := strconv.Atoi(query.Get("type"))
 	if err == nil {
 		filter.Type = product.Type(t)
 	}
 
-	prd, err := s.menu.ListProducts(ctx, filter)
+	var prd []product.Product
+	if runningOut {
+		prd, err = s.menu.ListProductsRunningOut(ctx)
+	} else {
+		prd, err = s.menu.ListProducts(ctx, filter)
+	}
 	if err != nil {
 		return failures.Handle(throw.Error(err))
 	}
@@ -30,10 +37,11 @@ func (s Service) ListProducts(ctx context.Context, query url.Values) response.Re
 	products := make([]Product, len(prd))
 	for i, p := range prd {
 		products[i] = Product{
-			ID:   p.ID.String(),
-			Code: p.Code,
-			Name: p.Name,
-			Type: p.Type,
+			ID:      p.ID.String(),
+			Code:    p.Code,
+			Name:    p.Name,
+			Type:    p.Type,
+			Balance: p.Balance,
 		}
 	}
 

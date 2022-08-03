@@ -14,6 +14,8 @@ type (
 
 		Type Type
 
+		Balance types.Quantity
+
 		Sale
 
 		Stock
