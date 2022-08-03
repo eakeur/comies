@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/go-chi/chi/v5"
+	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -44,11 +45,16 @@ func (h *Handler) RegisterService(router chi.Router, service interface{}) chi.Ro
 		tag := routeFieldType.Tag
 		method := strings.TrimSuffix(routeFieldType.Name, "Route")
 
+		routine := handlerVal.MethodByName(method)
+		if !routine.IsValid() {
+			log.Fatalf("Could not find a routine to run for route %v. The routine and route name must be strictly the same", method)
+		}
+
 		routeFieldValue.Set(reflect.ValueOf(Route{
 			methods:     strings.Split(tag.Get(MethodTag), ","),
 			path:        tag.Get(PatternTag),
 			middlewares: strings.Split(tag.Get(MiddlewareTag), ","),
-			routine:     handlerVal.MethodByName(method).Interface().(Routine),
+			routine:     routine.Interface(),
 		}))
 
 		ru := routeFieldValue.Interface().(Route)

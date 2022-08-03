@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (s Service) RemoveIngredient(ctx context.Context, r *http.Request) handler.Response {
+func (s Service) RemoveProductIngredient(ctx context.Context, r *http.Request) handler.Response {
 	id, err, res := handler.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
 		return res
