@@ -2,13 +2,22 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/response"
+	"comies/app/gateway/api/failures"
+	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
+	"encoding/json"
 	"net/http"
 )
 
-func (s Service) CreateProduct(ctx context.Context, p Product) response.Response {
+func (s Service) CreateProduct(ctx context.Context, r *http.Request) handler.Response {
+
+	var p Product
+	err := json.NewDecoder(r.Body).Decode(&p)
+	if err != nil {
+		return handler.JSONParsingErrorResponse(err)
+	}
+
 	prd, err := s.menu.CreateProduct(ctx, product.Product{
 		Code: p.Code,
 		Name: p.Name,
@@ -29,6 +38,5 @@ func (s Service) CreateProduct(ctx context.Context, p Product) response.Response
 		return failures.Handle(throw.Error(err))
 	}
 
-	return response.
-		WithData(http.StatusCreated, AdditionResult{ID: prd.ID.String()})
+	return handler.ResponseWithData(http.StatusCreated, AdditionResult{ID: prd.ID.String()})
 }

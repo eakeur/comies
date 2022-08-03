@@ -1,96 +1,43 @@
 package handler
 
 import (
-	"encoding/json"
+	"comies/app/sdk/throw"
+	"comies/app/sdk/types"
+	"context"
 	"github.com/go-chi/chi/v5"
-	"io"
 	"net/http"
-	"reflect"
-	"strings"
+	"strconv"
 )
 
-type Route struct {
-	middlewares []string
-	methods     []string
-	path        string
-	bodyStruct  string
-	query       string
-	name        string
-	urlParams   string
-	routine     reflect.Value
-}
-
-type RouteParams map[string]string
-
-func (r Route) unmarshalJSON(reader io.ReadCloser, to reflect.Type) (reflect.Value, error) {
-	instance := reflect.New(to)
-	ptr := instance.Interface()
-
-	err := json.NewDecoder(reader).Decode(&ptr)
-	if err != nil {
-		return reflect.Value{}, err
+type (
+	Routine func(ctx context.Context, r *http.Request) Response
+	Route   struct {
+		middlewares []string
+		methods     []string
+		path        string
+		routine     Routine
 	}
-
-	return instance.Elem(), nil
-}
-
-func (r Route) params(w http.ResponseWriter, request *http.Request) ([]reflect.Value, error) {
-	var (
-		routeSignature     = r.routine.Type()
-		numberOfParameters = routeSignature.NumIn()
-		parameters         = make([]reflect.Value, numberOfParameters)
-	)
-
-	parameters[0] = reflect.ValueOf(request.Context())
-	for i := 1; i < numberOfParameters; i++ {
-		parameter := routeSignature.In(i)
-
-		if parameter.AssignableTo(reflect.TypeOf(request)) {
-			parameters[i] = reflect.ValueOf(request)
-			continue
-		}
-
-		if q := request.URL.Query(); parameter.AssignableTo(reflect.TypeOf(q)) {
-			parameters[i] = reflect.ValueOf(q)
-			continue
-		}
-
-		if parameter.Name() == r.bodyStruct && parameter.Kind() == reflect.Struct {
-			val, err := r.unmarshalJSON(request.Body, parameter)
-			if err != nil {
-				return nil, err
-			}
-
-			parameters[i] = val
-			continue
-		}
-
-		if parameter.Implements(reflect.TypeOf(&w).Elem()) {
-			parameters[i] = reflect.ValueOf(w)
-			continue
-		}
-
-		params := RouteParams{}
-		if parameter.AssignableTo(reflect.TypeOf(params)) {
-			for _, v := range strings.Split(r.urlParams, ",") {
-				params[v] = chi.URLParam(request, v)
-			}
-			parameters[i] = reflect.ValueOf(params)
-			continue
-		}
-	}
-
-	return parameters, nil
-}
+)
 
 func (r Route) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
-	params, err := r.params(writer, request)
-	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-	}
-
-	res := r.routine.Call(params)[0].Interface().(Response)
+	res := r.routine(request.Context(), request)
 	res.Write(writer, request)
 
+}
+
+func GetResourceIDFromURL(r *http.Request, name string) (types.ID, error, Response) {
+	v := chi.URLParam(r, name)
+	return ConvertToID(v)
+}
+
+func ConvertToID(in string) (types.ID, error, Response) {
+	id, err := strconv.Atoi(in)
+	if err != nil {
+		return 0, err, ResponseWithError(http.StatusBadRequest, Error{
+			Code: "INVALID_ID", Message: "The id provided is invalid", Target: in,
+		}).Err(throw.Error(err))
+	}
+
+	return types.ID(id), nil, Response{}
 }

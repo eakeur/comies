@@ -2,18 +2,20 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/gateway/api/response"
+	"comies/app/gateway/api/failures"
+	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func (s Service) ListOrders(ctx context.Context, query url.Values) response.Response {
+func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Response {
 	var filter order.Filter
+
+	query := r.URL.Query()
 	if sts := strings.Split(query.Get("status"), ","); len(sts) > 0 {
 		filter.Status = make([]order.Status, len(sts))
 		for i, o := range sts {
@@ -52,5 +54,5 @@ func (s Service) ListOrders(ctx context.Context, query url.Values) response.Resp
 		}
 	}
 
-	return response.WithData(http.StatusOK, list)
+	return handler.ResponseWithData(http.StatusOK, list)
 }

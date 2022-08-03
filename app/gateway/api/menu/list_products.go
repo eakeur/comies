@@ -2,15 +2,16 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/response"
+	"comies/app/gateway/api/failures"
+	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
 	"net/http"
-	"net/url"
 	"strconv"
 )
 
-func (s Service) ListProducts(ctx context.Context, query url.Values) response.Response {
+func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Response {
+	query := r.URL.Query()
 	filter := product.Filter{
 		Code: query.Get("code"),
 		Name: query.Get("name"),
@@ -45,5 +46,5 @@ func (s Service) ListProducts(ctx context.Context, query url.Values) response.Re
 		}
 	}
 
-	return response.WithData(http.StatusOK, products)
+	return handler.ResponseWithData(http.StatusOK, products)
 }

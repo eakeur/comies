@@ -2,21 +2,27 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/response"
+	"comies/app/gateway/api/failures"
+	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
+	"encoding/json"
 	"net/http"
 )
 
-func (s Service) CreateMovement(ctx context.Context, mov Movement) response.Response {
-	productID, e, res := convertToID(mov.ProductID)
+func (s Service) CreateMovement(ctx context.Context, r *http.Request) handler.Response {
+
+	var mov Movement
+	err := json.NewDecoder(r.Body).Decode(&mov)
+	if err != nil {
+		return handler.JSONParsingErrorResponse(err)
+	}
+
+	productID, e, res := handler.ConvertToID(mov.ProductID)
 	if e != nil {
 		return res
 	}
-	agentID, e, res := convertToID(mov.AgentID)
-	if e != nil {
-		return res
-	}
+	agentID, _, _ := handler.ConvertToID(mov.AgentID)
 
 	bal, err := s.menu.CreateMovement(ctx, movement.Movement{
 		ProductID: productID,
@@ -30,5 +36,5 @@ func (s Service) CreateMovement(ctx context.Context, mov Movement) response.Resp
 		return failures.Handle(throw.Error(err))
 	}
 
-	return response.WithData(http.StatusCreated, MovementAdditionResult{ID: bal.ID.String()})
+	return handler.ResponseWithData(http.StatusCreated, MovementAdditionResult{ID: bal.ID.String(), Balance: bal.Count})
 }

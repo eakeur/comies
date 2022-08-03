@@ -8,12 +8,9 @@ import (
 )
 
 const (
-	MethodTag                 = "method"
-	MiddlewareTag             = "middleware"
-	PatternTag                = "path"
-	URLTag                    = "url"
-	QueryParamsPlaceholderTag = "params"
-	BodyPlaceholderTag        = "body"
+	MethodTag     = "method"
+	MiddlewareTag = "middleware"
+	PatternTag    = "path"
 )
 
 type (
@@ -23,10 +20,6 @@ type (
 	}
 
 	Middleware func(handler http.Handler) http.Handler
-
-	Response interface {
-		Write(w http.ResponseWriter, r *http.Request)
-	}
 )
 
 func NewHandler(middlewares map[string]Middleware) *Handler {
@@ -52,14 +45,10 @@ func (h *Handler) RegisterService(router chi.Router, service interface{}) chi.Ro
 		method := strings.TrimSuffix(routeFieldType.Name, "Route")
 
 		routeFieldValue.Set(reflect.ValueOf(Route{
-			name:        routeFieldType.Name,
 			methods:     strings.Split(tag.Get(MethodTag), ","),
 			path:        tag.Get(PatternTag),
-			bodyStruct:  tag.Get(BodyPlaceholderTag),
-			query:       tag.Get(QueryParamsPlaceholderTag),
-			urlParams:   tag.Get(URLTag),
 			middlewares: strings.Split(tag.Get(MiddlewareTag), ","),
-			routine:     handlerVal.MethodByName(method),
+			routine:     handlerVal.MethodByName(method).Interface().(Routine),
 		}))
 
 		ru := routeFieldValue.Interface().(Route)

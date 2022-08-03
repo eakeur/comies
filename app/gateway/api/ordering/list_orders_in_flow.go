@@ -1,7 +1,8 @@
 package ordering
 
 import (
-	"comies/app/gateway/api/response"
+	"comies/app/gateway/api/failures"
+	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
 	"github.com/gorilla/websocket"
@@ -11,7 +12,7 @@ import (
 
 var ws = websocket.Upgrader{}
 
-func (s Service) ListOrdersInFlow(ctx context.Context, w http.ResponseWriter, r *http.Request) response.Response {
+func (s Service) ListOrdersInFlow(ctx context.Context, w http.ResponseWriter, r *http.Request) handler.Response {
 	server, err := ws.Upgrade(w, r, nil)
 	if err != nil {
 		return failures.Handle(throw.Error(err))

@@ -1,15 +1,15 @@
 package menu
 
 import (
+	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
-	"comies/app/gateway/api/response"
 	"comies/app/sdk/throw"
 	"context"
 	"net/http"
 )
 
-func (s Service) GetProductIngredients(ctx context.Context, params handler.RouteParams) response.Response {
-	id, err, res := convertToID(params["product_id"])
+func (s Service) GetProductIngredients(ctx context.Context, r *http.Request) handler.Response {
+	id, err, res := handler.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
 		return res
 	}
@@ -30,5 +30,5 @@ func (s Service) GetProductIngredients(ctx context.Context, params handler.Route
 		}
 	}
 
-	return response.WithData(http.StatusOK, ingredients)
+	return handler.ResponseWithData(http.StatusOK, ingredients)
 }
