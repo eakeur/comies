@@ -15,15 +15,28 @@ type (
 		middlewares []string
 		methods     []string
 		path        string
-		routine     Routine
+		routine     interface{}
 	}
 )
 
 func (r Route) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
-	res := r.routine(request.Context(), request)
-	res.Write(writer, request)
+	if r.routine == nil {
+		writer.WriteHeader(500)
+		return
+	}
 
+	if callee, ok := r.routine.(func(ctx context.Context, r *http.Request) Response); ok {
+		res := callee(request.Context(), request)
+		res.Write(writer, request)
+	}
+
+	if callee, ok := r.routine.(func(ctx context.Context, w http.ResponseWriter, r *http.Request) Response); ok {
+		res := callee(request.Context(), writer, request)
+		res.Write(writer, request)
+	}
+
+	writer.WriteHeader(500)
 }
 
 func GetResourceIDFromURL(r *http.Request, name string) (types.ID, error, Response) {

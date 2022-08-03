@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (s Service) RequestOrderTicket(ctx context.Context) handler.Response {
+func (s Service) RequestOrderTicket(ctx context.Context, _ *http.Request) handler.Response {
 	ticket, err := s.ordering.RequestOrderTicket(ctx)
 	if err != nil {
 		return failures.Handle(throw.Error(err))

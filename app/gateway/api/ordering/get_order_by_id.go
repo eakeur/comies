@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (s Service) GetOrderById(ctx context.Context, r *http.Request) handler.Response {
+func (s Service) GetOrderByID(ctx context.Context, r *http.Request) handler.Response {
 	id, err, res := handler.GetResourceIDFromURL(r, "order_id")
 	if err != nil {
 		return res
