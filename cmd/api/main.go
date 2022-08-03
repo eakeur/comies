@@ -18,6 +18,9 @@ import (
 	"github.com/bwmarrin/snowflake"
 )
 
+// @title       Comies Backend API
+// @version     1.0
+// @description An API wrapping all functionalities of the ordering and menu services of Comies
 func main() {
 	ctx := context.Background()
 

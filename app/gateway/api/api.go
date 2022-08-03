@@ -6,11 +6,10 @@ import (
 	"comies/app/gateway/api/menu"
 	"comies/app/gateway/api/middleware"
 	"comies/app/gateway/api/ordering"
+	_ "comies/docs/swagger"
 	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
-
-var Logger zap.Logger
 
 func NewAPI(application app.Application) chi.Router {
 
@@ -28,6 +27,8 @@ func NewAPI(application app.Application) chi.Router {
 	r.Route("/ordering", func(r chi.Router) {
 		r = h.RegisterService(r, ordering.NewService(application.Ordering))
 	})
+
+	r.Handle("/swagger/{*}", httpSwagger.WrapHandler)
 
 	return r
 }
