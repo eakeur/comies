@@ -6,5 +6,1375 @@
         "contact": {},
         "version": "1.0"
     },
-    "paths": {}
+    "paths": {
+        "/menu/products": {
+            "get": {
+                "description": "Fetches a product by one of itd unique keys (id or code).",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetches a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Adds a filter looking for the products codes",
+                        "name": "code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Adds a filter looking for the products names",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Adds a filter looking for the products types",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Searches products running out of stock only",
+                        "name": "out",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/v1.ListRunningOutProductsResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Adds a product to the store's menu.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Create product",
+                "parameters": [
+                    {
+                        "description": "The properties to define the product",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/v1.CreateProductResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "412": {
+                        "description": "PRODUCT_CODE_ALREADY_EXISTS: Happens if the code provided is assigned to another product already",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "PRODUCT_INVALID_NAME: Happens if the product name is not longer than 2 and shorter than 60 characters",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}": {
+            "get": {
+                "description": "Fetches a product by one of itd unique keys (id or code).",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetches a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Toggles if the API should search by code",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/v1.GetProductByKeyResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "PRODUCT_NOT_FOUND: Happens if the product could not be found or does not exist",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "updates a product to the store's menu.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Updates product",
+                "parameters": [
+                    {
+                        "description": "The properties to define the product",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.UpdateProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "412": {
+                        "description": "PRODUCT_CODE_ALREADY_EXISTS: Happens if the code provided is assigned to another product already",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "PRODUCT_INVALID_NAME: Happens if the product name is not longer than 2 and shorter than 60 characters",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "removes a product from the store's menu.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}/ingredients": {
+            "get": {
+                "description": "Fetches all product ingredients.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetches ingredients",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/v1.ListRunningOutProductsResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Adds an ingredient relation to the store's menu. THe product must be of composite type",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Creates ingredient",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    },
+                    {
+                        "description": "The properties to define the ingredient",
+                        "name": "ingredient",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateIngredientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/v1.IngredientAdditionResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "412": {
+                        "description": "Possible errors: INGREDIENT_INVALID_INGREDIENT_ID, INGREDIENT_INVALID_PRODUCT_ID, INGREDIENT_ZERO_QUANTITY, INGREDIENT_INVALID_PRODUCT_TYPE, INGREDIENT_INVALID_INGREDIENT_TYPE",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}/ingredients/{id}": {
+            "delete": {
+                "description": "removes an ingredient from the store's menu.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove ingredient",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ingredient ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id or ingredient provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}/movements": {
+            "get": {
+                "description": "Fetches all product movements.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetches movements",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Adds a filter looking for the start date",
+                        "name": "start",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Adds a filter looking for the end date",
+                        "name": "end",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/v1.ListMovementsResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Adds a movement to the store's stock",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Creates movement",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    },
+                    {
+                        "description": "The properties to define the movement",
+                        "name": "movement",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateMovementRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/v1.MovementAdditionResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "412": {
+                        "description": "Possible errors: MOVEMENT_INVALID_PRODUCT_TYPE, PRODUCT_STOCK_EMPTY, PRODUCT_STOCK_FULL",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}/movements/{id}": {
+            "delete": {
+                "description": "removes a movement from the store's menu.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove movement",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The movement ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id or movement provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}/name": {
+            "get": {
+                "description": "Fetches a product name by its id.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetches a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/v1.GetProductNameResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "PRODUCT_NOT_FOUND: Happens if the product could not be found or does not exist",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/products/{product_id}/stock-balance": {
+            "get": {
+                "description": "Fetches a product name by its id.",
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetches a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The product ID",
+                        "name": "product_key",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/v1.GetProductBalanceResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "INVALID_ID: Happens if the product id provided is not a valid one",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/handler.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "target": {}
+            }
+        },
+        "handler.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {}
+            }
+        },
+        "v1.CreateIngredientRequest": {
+            "type": "object",
+            "properties": {
+                "ingredient_id": {
+                    "type": "string"
+                },
+                "optional": {
+                    "type": "boolean"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.CreateMovementRequest": {
+            "type": "object",
+            "properties": {
+                "agent_id": {
+                    "description": "AgentID is the entity from this resource came from or is going to",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "Date is when the object got into the stock effectively",
+                    "type": "string"
+                },
+                "paid_value": {
+                    "description": "PaidValue is how much was paid/received for this resource",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "description": "Quantity is the amount being inserted or removed from this stock",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type points out if this movement is input or output",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.CreateProductRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code represents how the store's crew call this product internally",
+                    "type": "string"
+                },
+                "cost_price": {
+                    "description": "CostPrice is how much the store pays to make or store this product",
+                    "type": "integer"
+                },
+                "location": {
+                    "description": "Location is a brief description of where this stock is located",
+                    "type": "string"
+                },
+                "maximum_quantity": {
+                    "description": "MaximumQuantity is how many unities of this resource the stock can support",
+                    "type": "integer"
+                },
+                "minimum_quantity": {
+                    "description": "MinimumQuantity is the lowest quantity of this resource the stock can have",
+                    "type": "integer"
+                },
+                "minimum_sale": {
+                    "description": "MinimumSale is the lowest number of unities of this product that can be sold",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name is the official name of the product, not exactly the name that the customer sees, but indeed the name\nshown in fiscal documents",
+                    "type": "string"
+                },
+                "sale_price": {
+                    "description": "Price is how much the customer pays for this product",
+                    "type": "integer"
+                },
+                "sale_unit": {
+                    "description": "Unit is the measure type that this product is sold",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type is the type of the product",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.CreateProductResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.GetProductBalanceResponse": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "description": "Balance is the amount stocked of this product",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.GetProductByKeyResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code represents how the store's crew call this product internally",
+                    "type": "string"
+                },
+                "cost_price": {
+                    "description": "CostPrice is how much the store pays to make or store this product",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID is the unique identifier of this product",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "Location is a brief description of where this stock is located",
+                    "type": "string"
+                },
+                "maximum_quantity": {
+                    "description": "MaximumQuantity is how many unities of this resource the stock can support",
+                    "type": "integer"
+                },
+                "minimum_quantity": {
+                    "description": "MinimumQuantity is the lowest quantity of this resource the stock can have",
+                    "type": "integer"
+                },
+                "minimum_sale": {
+                    "description": "MinimumSale is the lowest number of unities of this product that can be sold",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name is the official name of the product, not exactly the name that the customer sees, but indeed the name\nshown in fiscal documents",
+                    "type": "string"
+                },
+                "sale_price": {
+                    "description": "Price is how much the customer pays for this product",
+                    "type": "integer"
+                },
+                "sale_unit": {
+                    "description": "Unit is the measure type that this product is sold",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type is the type of the product",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.GetProductNameResponse": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "Name is the official name of the product, not exactly the name that the customer sees, but indeed the name\nshown in fiscal documents",
+                    "type": "string"
+                }
+            }
+        },
+        "v1.IngredientAdditionResult": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ListMovementsResponse": {
+            "type": "object",
+            "properties": {
+                "agent_id": {
+                    "description": "AgentID is the entity from this resource came from or is going to",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "Date is when the object got into the stock effectively",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID is the unique identifier of this movement",
+                    "type": "string"
+                },
+                "paid_value": {
+                    "description": "PaidValue is how much was paid/received for this resource",
+                    "type": "integer"
+                },
+                "product_id": {
+                    "description": "ProductID is an identifier for the stock this movement references to",
+                    "type": "string"
+                },
+                "quantity": {
+                    "description": "Quantity is the amount being inserted or removed from this stock",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type points out if this movement is input or output",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.ListProductsResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code represents how the store's crew call this product internally",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID is the unique identifier of this product",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name is the official name of the product, not exactly the name that the customer sees, but indeed the name\nshown in fiscal documents",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type is the type of the product",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.ListRunningOutProductsResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code represents how the store's crew call this product internally",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID is the unique identifier of this product",
+                    "type": "string"
+                },
+                "maximum_quantity": {
+                    "description": "MaximumQuantity is how many unities of this resource the stock can support",
+                    "type": "integer"
+                },
+                "minimum_quantity": {
+                    "description": "MinimumQuantity is the lowest quantity of this resource the stock can have",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name is the official name of the product, not exactly the name that the customer sees, but indeed the name\nshown in fiscal documents",
+                    "type": "string"
+                },
+                "sale_unit": {
+                    "description": "Unit is the measure type that this product is sold",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type is the type of the product",
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.MovementAdditionResult": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "description": "Quantity is the amount being inserted or removed from this stock",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.UpdateProductRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "Code represents how the store's crew call this product internally",
+                    "type": "string"
+                },
+                "cost_price": {
+                    "description": "CostPrice is how much the store pays to make or store this product",
+                    "type": "integer"
+                },
+                "location": {
+                    "description": "Location is a brief description of where this stock is located",
+                    "type": "string"
+                },
+                "maximum_quantity": {
+                    "description": "MaximumQuantity is how many unities of this resource the stock can support",
+                    "type": "integer"
+                },
+                "minimum_quantity": {
+                    "description": "MinimumQuantity is the lowest quantity of this resource the stock can have",
+                    "type": "integer"
+                },
+                "minimum_sale": {
+                    "description": "MinimumSale is the lowest number of unities of this product that can be sold",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name is the official name of the product, not exactly the name that the customer sees, but indeed the name\nshown in fiscal documents",
+                    "type": "string"
+                },
+                "sale_price": {
+                    "description": "Price is how much the customer pays for this product",
+                    "type": "integer"
+                },
+                "sale_unit": {
+                    "description": "Unit is the measure type that this product is sold",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type is the type of the product",
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }

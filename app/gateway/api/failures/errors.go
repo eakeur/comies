@@ -16,7 +16,6 @@ var (
 			Code:    "PRODUCT_NOT_FOUND",
 			Message: "Ops! This product does not exist or could not be found",
 		}),
-
 		product.ErrCodeAlreadyExists: handler.ResponseWithError(http.StatusPreconditionFailed, handler.Error{
 			Code:    "PRODUCT_CODE_ALREADY_EXISTS",
 			Message: "Ops! The code assigned to this product seems to belong to another product already",
@@ -29,13 +28,21 @@ var (
 			Code:    "PRODUCT_STOCK_FULL",
 			Message: "Ops! This product's stock is already full",
 		}),
-		product.ErrInvalidSalePrice: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
-			Code:    "PRODUCT_ZERO_SALE_PRICE",
-			Message: "Ops! This product's sale price should be greater than 0",
-		}),
-		product.ErrInvalidSaleQuantity: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+		product.ErrMinimumSaleQuantity: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
 			Code:    "PRODUCT_ZERO_SALE_QUANTITY",
 			Message: "Ops! The minimum quantity of a product sale should be greater than 0",
+		}),
+		product.ErrInvalidCode: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "PRODUCT_INVALID_CODE",
+			Message: "Ops! The product code must be longer than 2 and shorter than 12 characters",
+		}),
+		product.ErrInvalidName: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "PRODUCT_INVALID_NAME",
+			Message: "Ops! The product name must be longer than 2 and shorter than 60 characters",
+		}),
+		product.ErrInvalidPrice: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "PRODUCT_ZERO_PRICE",
+			Message: "Ops! The cost/sale price of a product should be greater than 0",
 		}),
 
 		ingredient.ErrInvalidIngredientID: handler.ResponseWithError(http.StatusPreconditionFailed, handler.Error{
