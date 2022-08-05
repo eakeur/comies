@@ -45,6 +45,15 @@ func (m Movement) Value() types.Quantity {
 
 }
 
+func (t Type) Validate() error {
+	switch t {
+	case InputType, OutputType, ReservedType:
+		return nil
+	default:
+		return ErrInvalidType
+	}
+}
+
 func (m Movement) Validate() error {
-	return nil
+	return m.Type.Validate()
 }

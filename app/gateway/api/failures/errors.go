@@ -36,6 +36,10 @@ var (
 			Code:    "PRODUCT_INVALID_CODE",
 			Message: "Ops! The product code must be longer than 2 and shorter than 12 characters",
 		}),
+		product.ErrInvalidType: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "PRODUCT_INVALID_TYPE",
+			Message: "Ops! The product type must be a valid one",
+		}),
 		product.ErrInvalidName: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
 			Code:    "PRODUCT_INVALID_NAME",
 			Message: "Ops! The product name must be longer than 2 and shorter than 60 characters",
@@ -74,11 +78,20 @@ var (
 			Code:    "MOVEMENT_INVALID_PRODUCT_TYPE",
 			Message: "output movements can not be assigned to input or composite products",
 		}),
+		movement.ErrInvalidType: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "MOVEMENT_INVALID_TYPE",
+			Message: "the movement type must be a valid one",
+		}),
 
 		item.ErrInvalidQuantity: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
 			Code:    "ITEM_INVALID_QUANTITY",
 			Message: "Ops! This item's quantity should be greater than 0 to be ordered",
 		}),
+		item.ErrInvalidStatus: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "ITEM_INVALID_STATUS",
+			Message: "Ops! The item status must be valid",
+		}),
+
 		order.ErrAlreadyOrdered: handler.ResponseWithError(http.StatusPreconditionFailed, handler.Error{
 			Code:    "ORDER_ALREADY_ORDERED",
 			Message: "Ops! This order is already in process and can not be re-ordered",
@@ -90,6 +103,14 @@ var (
 		order.ErrInvalidNumberOfItems: handler.ResponseWithError(http.StatusPreconditionFailed, handler.Error{
 			Code:    "ORDER_MUST_HAVE_ITEMS",
 			Message: "Ops! This order has no items to be ordered",
+		}),
+		order.ErrInvalidStatus: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "ORDER_INVALID_STATUS",
+			Message: "Ops! This order status is invalid",
+		}),
+		order.ErrInvalidDeliveryMode: handler.ResponseWithError(http.StatusUnprocessableEntity, handler.Error{
+			Code:    "ORDER_INVALID_DELIVERY_MODE",
+			Message: "Ops! This order delivery mode is invalid",
 		}),
 	}.Default(handler.ResponseWithError(http.StatusInternalServerError, handler.Error{
 		Code:    "ERR_INTERNAL_SERVER_ERROR",

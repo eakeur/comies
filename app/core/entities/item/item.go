@@ -32,7 +32,20 @@ type (
 	}
 )
 
+func (s Status) Validate() error {
+	switch s {
+	case PreparingStatus, DoneStatus, FailedStatus:
+		return nil
+	default:
+		return ErrInvalidStatus
+	}
+}
+
 func (i Item) Validate() error {
+	if err := i.Status.Validate(); err != nil {
+		return err
+	}
+
 	if i.Quantity <= types.QuantityMinimum {
 		return throw.Error(ErrInvalidQuantity).
 			DescribeF("the quantity should be bigger than %v", types.QuantityMinimum)
