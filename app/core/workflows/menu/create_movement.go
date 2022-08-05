@@ -30,11 +30,11 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 	}
 
 	actual += mv.Value()
-	if actual > prd.MaximumQuantity {
+	if mv.Type == movement.InputType && actual > prd.MaximumQuantity {
 		return ActualBalance{}, throw.Error(product.ErrStockAlreadyFull)
 	}
 
-	if actual < prd.MinimumQuantity {
+	if mv.Type == movement.OutputType && actual < prd.MinimumQuantity {
 		return ActualBalance{}, throw.Error(product.ErrStockNegative)
 	}
 
