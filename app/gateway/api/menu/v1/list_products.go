@@ -85,6 +85,8 @@ type (
 		MaximumQuantity types.Quantity `json:"maximum_quantity"`
 		// MinimumQuantity is the lowest quantity of this resource the stock can have
 		MinimumQuantity types.Quantity `json:"minimum_quantity"`
+		// Balance is the stock balance of this product
+		Balance types.Quantity `json:"balance"`
 	}
 )
 
@@ -112,6 +114,7 @@ func NewListRunningOutProductsResponse(list []product.Product) []ListRunningOutP
 			SaleUnit:        p.SaleUnit,
 			MaximumQuantity: p.MaximumQuantity,
 			MinimumQuantity: p.MinimumQuantity,
+			Balance:         p.Balance,
 		}
 	}
 	return products

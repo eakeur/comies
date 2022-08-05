@@ -16,7 +16,7 @@ func (a actions) ListRunningOut(ctx context.Context) ([]product.Product, error) 
 		p.sale_unit,
 		p.minimum_quantity,
 		p.maximum_quantity,
-		m.balance as balance
+		coalesce(m.balance, 0) as balance
 	from
 		products p
 		left join (
@@ -27,10 +27,10 @@ func (a actions) ListRunningOut(ctx context.Context) ([]product.Product, error) 
 			group by m.product_id
 		) m on p.id = m.product_id
 	where
-		m.balance <= (p.maximum_quantity * 0.25)
+		coalesce(m.balance, 0) <= (p.maximum_quantity * 0.25)
 		and p.type in ($1, $2)
 	order by 
-		m.balance - p.minimum_quantity
+		coalesce(m.balance, 0) - p.minimum_quantity
 	`
 
 	rows, err := a.db.Query(ctx, script, product.OutputType, product.InputType)
