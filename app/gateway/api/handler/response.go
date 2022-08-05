@@ -74,7 +74,7 @@ func JSONParsingErrorResponse(err error) Response {
 	}
 
 	return ResponseWithError(http.StatusBadRequest, Error{
-		Code:    "invalid_request_body",
+		Code:    "INVALID_REQUEST_BODY",
 		Message: "The request body could not be parsed. Please verify if it is not offending the endpoint contract",
 		Target:  target,
 	}).Err(err)

@@ -3,14 +3,13 @@ package api
 import (
 	"comies/app"
 	"comies/app/gateway/api/handler"
-	"comies/app/gateway/api/menu"
+	"comies/app/gateway/api/menu/v1"
 	"comies/app/gateway/api/middleware"
 	"comies/app/gateway/api/ordering"
+	_ "comies/docs/swagger"
 	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
-
-var Logger zap.Logger
 
 func NewAPI(application app.Application) chi.Router {
 
@@ -22,12 +21,14 @@ func NewAPI(application app.Application) chi.Router {
 	r := chi.NewRouter().With(mdl.Logging, mdl.CORS)
 
 	r.Route("/menu", func(r chi.Router) {
-		r = h.RegisterService(r, menu.NewService(application.Menu))
+		r = h.RegisterService(r, v1.NewService(application.Menu))
 	})
 
 	r.Route("/ordering", func(r chi.Router) {
 		r = h.RegisterService(r, ordering.NewService(application.Ordering))
 	})
+
+	r.Handle("/swagger/{*}", httpSwagger.WrapHandler)
 
 	return r
 }

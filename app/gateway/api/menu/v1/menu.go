@@ -1,4 +1,4 @@
-package menu
+package v1
 
 import (
 	"comies/app/core/workflows/menu"

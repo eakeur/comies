@@ -15,8 +15,6 @@ var (
 
 	ErrMinimumSaleQuantity = errors.New("the minimum sale quantity provided is not valid. please provide a value higher than 0")
 
-	ErrInvalidSalePrice = errors.New("the sale price requested for this product is invalid. please check the correct one")
-
 	ErrInvalidSaleQuantity = errors.New("the sale quantity requested for this product is invalid. please check the correct one")
 
 	ErrStockAlreadyFull = errors.New("the stock is already full")
