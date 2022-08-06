@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
-	"sync"
 	"testing"
 )
 
@@ -55,44 +54,37 @@ func TestProductIntegration(t *testing.T) {
 	)
 
 	t.Run("should create all products successfully", func(t *testing.T) {
-		wg := sync.WaitGroup{}
 		for i, prod := range products {
-			wg.Add(1)
-			go func(i int, prod menu.GetProductByKeyResponse) {
-				defer wg.Done()
+			var (
+				data menu.CreateProductResponse
 
-				var (
-					data menu.CreateProductResponse
-
-					payload = handler.Response{
-						Data: &data,
-					}
-					input = RequestInput{
-						body: menu.CreateProductRequest{
-							Code:            prod.Code,
-							Name:            prod.Name,
-							Type:            prod.Type,
-							CostPrice:       prod.CostPrice,
-							SalePrice:       prod.SalePrice,
-							SaleUnit:        prod.SaleUnit,
-							MinimumSale:     prod.MinimumSale,
-							MaximumQuantity: prod.MaximumQuantity,
-							MinimumQuantity: prod.MinimumQuantity,
-							Location:        prod.Location,
-						},
-					}
-				)
-
-				response := app.Request(t, http.MethodPost, "", input).To(&payload).Run()
-				if response.data.StatusCode != http.StatusCreated {
-					t.Errorf("Failed to create product %s: %v", prod.Code, payload.Error)
-					return
+				payload = handler.Response{
+					Data: &data,
 				}
+				input = RequestInput{
+					body: menu.CreateProductRequest{
+						Code:            prod.Code,
+						Name:            prod.Name,
+						Type:            prod.Type,
+						CostPrice:       prod.CostPrice,
+						SalePrice:       prod.SalePrice,
+						SaleUnit:        prod.SaleUnit,
+						MinimumSale:     prod.MinimumSale,
+						MaximumQuantity: prod.MaximumQuantity,
+						MinimumQuantity: prod.MinimumQuantity,
+						Location:        prod.Location,
+					},
+				}
+			)
 
-				products[i].ID = data.ID
-			}(i, prod)
+			response := app.Request(t, http.MethodPost, "", input).To(&payload).Run()
+			if response.data.StatusCode != http.StatusCreated {
+				t.Errorf("Failed to create product %s: %v", prod.Code, payload.Error)
+				return
+			}
+
+			products[i].ID = data.ID
 		}
-		wg.Wait()
 	})
 
 	t.Run("should update product successfully", func(t *testing.T) {
