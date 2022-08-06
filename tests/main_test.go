@@ -61,7 +61,7 @@ func NewTestApp(t *testing.T, defaultRoute string) Client {
 
 	return client{
 		client: &http.Client{
-			Timeout: time.Second * 20,
+			Timeout: time.Second * 120,
 		},
 		origin: origin,
 	}
