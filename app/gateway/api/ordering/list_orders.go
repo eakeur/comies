@@ -53,23 +53,5 @@ func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Respon
 		return failures.Handle(throw.Error(err))
 	}
 
-	return handler.ResponseWithData(http.StatusOK, NewListOrdersResponse(list))
-}
-
-func NewListOrdersResponse(list []order.Order) []ListOrdersResponse {
-	orders := make([]ListOrdersResponse, len(list))
-	for i, o := range list {
-		orders[i] = ListOrdersResponse{
-			ID:             o.ID,
-			Identification: o.Identification,
-			PlacedAt:       o.PlacedAt,
-			Status:         o.Status,
-			DeliveryMode:   o.DeliveryMode,
-			Observations:   o.Observations,
-			FinalPrice:     o.FinalPrice,
-			Address:        o.Address,
-			Phone:          o.Phone,
-		}
-	}
-	return orders
+	return handler.ResponseWithData(http.StatusOK, NewOrderList(list))
 }
