@@ -35,7 +35,7 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 				resourceID: 1,
 			},
 
-			want: 500,
+			want: 100,
 			before: func(ctx context.Context, db *tests.Database, t *testing.T) {
 				_, err := db.InsertProducts(ctx, product.Product{
 					ID: 1,
@@ -63,6 +63,14 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 					Type:      movement.ReservedType,
 					Date:      date,
 					Quantity:  100,
+					PaidValue: 50,
+					AgentID:   1544474558856547556,
+				}, movement.Movement{
+					ID:        6,
+					ProductID: 1,
+					Type:      movement.InputType,
+					Date:      date,
+					Quantity:  600,
 					PaidValue: 50,
 					AgentID:   1544474558856547556,
 				}, movement.Movement{

@@ -19,13 +19,7 @@ func (a actions) ListRunningOut(ctx context.Context) ([]product.Product, error) 
 		coalesce(m.balance, 0) as balance
 	from
 		products p
-		left join (
-			select
-				m.product_id,
-				sum(m.quantity) as balance
-			from movements m
-			group by m.product_id
-		) m on p.id = m.product_id
+		left join products_balances m on p.id = m.product_id
 	where
 		coalesce(m.balance, 0) <= (p.maximum_quantity * 0.25)
 		and p.type in ($1, $2)

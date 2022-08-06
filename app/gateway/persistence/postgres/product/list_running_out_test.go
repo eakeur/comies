@@ -113,7 +113,7 @@ func Test_actions_ListRunningOut(t *testing.T) {
 					ID:        4,
 					ProductID: 3,
 					Type:      movement.OutputType,
-					Quantity:  -690,
+					Quantity:  690,
 					PaidValue: 0,
 					AgentID:   0,
 				})
