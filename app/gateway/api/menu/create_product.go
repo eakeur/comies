@@ -1,8 +1,7 @@
-package v1
+package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -18,12 +17,9 @@ import (
 // @Tags        Product
 // @Param       product body     CreateProductRequest true "The properties to define the product"
 // @Success     201     {object} handler.Response{data=CreateProductResponse{}}
-// @Failure     412     {object} handler.Response{error=handler.Error{}} "PRODUCT_CODE_ALREADY_EXISTS: Happens if the code provided is assigned to another product already"
-// @Failure     422     {object} handler.Response{error=handler.Error{}} "PRODUCT_ZERO_SALE_QUANTITY: Happens if the minimum sale field is not greater than zero"
-// @Failure     422     {object} handler.Response{error=handler.Error{}} "PRODUCT_ZERO_PRICE: Happens if the sale price field is not greater than zero"
-// @Failure     422     {object} handler.Response{error=handler.Error{}} "PRODUCT_INVALID_CODE: Happens if the product code is not longer than 2 and shorter than 12 characters
-// @Failure     422     {object} handler.Response{error=handler.Error{}} "PRODUCT_INVALID_NAME: Happens if the product name is not longer than 2 and shorter than 60 characters"
-// @Failure     500     {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     412     {object} handler.Response{error=handler.Error{}} "PRODUCT_CODE_ALREADY_EXISTS"
+// @Failure     422     {object} handler.Response{error=handler.Error{}} "PRODUCT_ZERO_SALE_QUANTITY, PRODUCT_ZERO_PRICE, PRODUCT_INVALID_CODE, PRODUCT_INVALID_NAME, PRODUCT_INVALID_TYPE"
+// @Failure     500     {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [POST]
 func (s Service) CreateProduct(ctx context.Context, r *http.Request) handler.Response {
 
@@ -35,7 +31,7 @@ func (s Service) CreateProduct(ctx context.Context, r *http.Request) handler.Res
 
 	prd, err := s.menu.CreateProduct(ctx, p.ToProduct())
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusCreated, CreateProductResponse{ID: prd.ID.String()})

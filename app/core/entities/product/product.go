@@ -55,6 +55,15 @@ const (
 	InputCompositeType  Type = 40
 )
 
+func (t Type) Validate() error {
+	switch t {
+	case InputType, OutputType, InputCompositeType, OutputCompositeType:
+		return nil
+	default:
+		return ErrInvalidType
+	}
+}
+
 func (p Product) Validate() error {
 
 	if len(p.Code) < 2 || len(p.Code) > 12 {
@@ -63,6 +72,10 @@ func (p Product) Validate() error {
 
 	if len(p.Name) < 2 || len(p.Name) > 60 {
 		return ErrInvalidName
+	}
+
+	if err := p.Type.Validate(); err != nil {
+		return err
 	}
 
 	if (p.SalePrice <= 0 && p.Type == OutputType) || p.CostPrice <= 0 {

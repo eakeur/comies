@@ -2,9 +2,9 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
+	"comies/app/sdk/types"
 	"context"
 	"net/http"
 	"strconv"
@@ -12,6 +12,25 @@ import (
 	"time"
 )
 
+type ListOrdersResponse struct {
+	ID             types.ID           `json:"id"`
+	Identification string             `json:"identification,omitempty"`
+	PlacedAt       time.Time          `json:"placed_at"`
+	Status         order.Status       `json:"status,omitempty"`
+	DeliveryMode   order.DeliveryMode `json:"delivery_mode,omitempty"`
+	Observations   string             `json:"observations,omitempty"`
+	FinalPrice     types.Currency     `json:"final_price,omitempty"`
+	Address        string             `json:"address,omitempty"`
+	Phone          string             `json:"phone,omitempty"`
+	Items          []Item             `json:"items,omitempty"`
+}
+
+// ListOrders
+//
+// @Tags        Ordering
+// @Success     200         {object} handler.Response{data=[]Order{}}
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders [GET]
 func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Response {
 	var filter order.Filter
 
@@ -36,23 +55,8 @@ func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Respon
 
 	list, err := s.ordering.ListOrders(ctx, filter)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
-	orders := make([]Order, len(list))
-	for i, o := range list {
-		orders[i] = Order{
-			ID:             o.ID,
-			Identification: o.Identification,
-			PlacedAt:       o.PlacedAt,
-			Status:         o.Status,
-			DeliveryMode:   o.DeliveryMode,
-			Observations:   o.Observations,
-			FinalPrice:     o.FinalPrice,
-			Address:        o.Address,
-			Phone:          o.Phone,
-		}
-	}
-
-	return handler.ResponseWithData(http.StatusOK, list)
+	return handler.ResponseWithData(http.StatusOK, NewOrderList(list))
 }

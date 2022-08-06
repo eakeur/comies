@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
@@ -9,10 +8,18 @@ import (
 	"net/http"
 )
 
+// SetItemStatus
+// @Tags        Ordering
+// @Param       order_id path     string                  false "The order ID"
+// @Param       status  body     SetItemStatusRequest true  "The properties defining the status"
+// @Success     204
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders/{order_id}/items/{item_id} [PUT]
 func (s Service) SetItemStatus(ctx context.Context, r *http.Request) handler.Response {
-	id, err, res := handler.GetResourceIDFromURL(r, "order_id")
+	id, err := handler.GetResourceIDFromURL(r, "item_id")
 	if err != nil {
-		return res
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	var req SetItemStatusRequest
@@ -23,7 +30,7 @@ func (s Service) SetItemStatus(ctx context.Context, r *http.Request) handler.Res
 
 	err = s.ordering.SetItemStatus(ctx, id, req.Status)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusNoContent, nil)

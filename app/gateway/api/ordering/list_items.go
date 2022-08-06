@@ -1,37 +1,45 @@
 package ordering
 
 import (
-	"comies/app/gateway/api/failures"
+	"comies/app/core/entities/item"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
+	"comies/app/sdk/types"
 	"context"
 	"net/http"
 )
 
+type ListItemsResponse struct {
+	ID                 types.ID              `json:"id,omitempty"`
+	OrderID            types.ID              `json:"order_id"`
+	Status             item.Status           `json:"status"`
+	Price              types.Currency        `json:"price"`
+	ProductID          types.ID              `json:"product_id"`
+	Quantity           types.Quantity        `json:"quantity"`
+	Observations       string                `json:"observations"`
+	IgnoreIngredients  []types.ID            `json:"ignore_ingredients"`
+	ReplaceIngredients map[types.ID]types.ID `json:"replace_ingredients"`
+}
+
+// ListItems
+//
+// @Tags        Ordering
+// @Param       order_id path     string                  false "The order ID"
+// @Success     200         {object} handler.Response{data=[]Item{}}
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders/{order_id}/items [GET]
 func (s Service) ListItems(ctx context.Context, r *http.Request) handler.Response {
-	id, err, res := handler.GetResourceIDFromURL(r, "order_id")
+	id, err := handler.GetResourceIDFromURL(r, "order_id")
 	if err != nil {
-		return res
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	items, err := s.ordering.ListItems(ctx, id)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
-	list := make([]Item, len(items))
-	for i, it := range items {
-		list[i] = Item{
-			ID:           it.ID,
-			OrderID:      it.OrderID,
-			ProductID:    it.ProductID,
-			Price:        it.Price,
-			Status:       it.Status,
-			Quantity:     it.Quantity,
-			Observations: it.Observations,
-		}
-	}
-
-	return handler.ResponseWithData(http.StatusOK, list)
+	return handler.ResponseWithData(http.StatusOK, NewItemList(items))
 
 }

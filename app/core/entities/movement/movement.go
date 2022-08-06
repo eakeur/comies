@@ -36,15 +36,24 @@ type Movement struct {
 	AgentID types.ID
 }
 
-func (m Movement) Value() types.Quantity {
+func (m *Movement) Value() types.Quantity {
 	if m.Type == OutputType || m.Type == ReservedType {
-		return m.Quantity * -1
+		m.Quantity *= -1
 	}
 
 	return m.Quantity
 
 }
 
+func (t Type) Validate() error {
+	switch t {
+	case InputType, OutputType, ReservedType:
+		return nil
+	default:
+		return ErrInvalidType
+	}
+}
+
 func (m Movement) Validate() error {
-	return nil
+	return m.Type.Validate()
 }

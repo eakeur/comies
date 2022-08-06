@@ -1,14 +1,14 @@
-package v1
+package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
-	"github.com/go-chi/chi/v5"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 // GetProductByKey fetches a product by its ID or code.
@@ -19,9 +19,9 @@ import (
 // @Param       product_key path     string false "The product ID"
 // @Param       code        query    bool   false "Toggles if the API should search by code"
 // @Success     200         {object} handler.Response{data=GetProductByKeyResponse{}}
-// @Failure     404         {object} handler.Response{error=handler.Error{}} "PRODUCT_NOT_FOUND: Happens if the product could not be found or does not exist"
-// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID: Happens if the product id provided is not a valid one"
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     404         {object} handler.Response{error=handler.Error{}} "PRODUCT_NOT_FOUND"
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id} [GET]
 func (s Service) GetProductByKey(ctx context.Context, r *http.Request) handler.Response {
 	var (
@@ -34,15 +34,15 @@ func (s Service) GetProductByKey(ctx context.Context, r *http.Request) handler.R
 	if flag := r.URL.Query().Get("code"); flag == "true" {
 		prd, err = s.menu.GetProductByCode(ctx, key)
 	} else {
-		id, e, res := handler.ConvertToID(key)
-		if e != nil {
-			return res
+		id, err := handler.ConvertToID(key)
+		if err != nil {
+			return handler.IDParsingErrorResponse(err)
 		}
 		prd, err = s.menu.GetProductByID(ctx, id)
 	}
 
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewGetProductByKeyResponse(prd))

@@ -5,6 +5,7 @@ import (
 	"comies/app/core/entities/product"
 	"comies/app/sdk/throw"
 	"context"
+	"time"
 )
 
 func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (ActualBalance, error) {
@@ -24,6 +25,10 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 	}
 
 	w.id.Create(&mv.ID)
+
+	if mv.Date.IsZero() {
+		mv.Date = time.Now().UTC()
+	}
 
 	if err := mv.Validate(); err != nil {
 		return ActualBalance{}, throw.Error(err)

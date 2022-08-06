@@ -1,8 +1,7 @@
-package v1
+package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -22,7 +21,7 @@ import (
 // @Param       out  query    bool   false "Searches products running out of stock only"
 // @Success     200  {object} handler.Response{data=[]ListProductsResponse{}}
 // @Success     200  {object} handler.Response{data=[]ListRunningOutProductsResponse{}}
-// @Failure     500  {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     500  {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [GET]
 func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Response {
 	query := r.URL.Query()
@@ -42,7 +41,7 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 	if runningOut {
 		products, err := s.menu.ListProductsRunningOut(ctx)
 		if err != nil {
-			return failures.Handle(throw.Error(err))
+			return handler.Fail(throw.Error(err))
 		}
 
 		return handler.ResponseWithData(http.StatusOK, NewListRunningOutProductsResponse(products))
@@ -50,7 +49,7 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 
 	products, err := s.menu.ListProducts(ctx, filter)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
@@ -85,6 +84,8 @@ type (
 		MaximumQuantity types.Quantity `json:"maximum_quantity"`
 		// MinimumQuantity is the lowest quantity of this resource the stock can have
 		MinimumQuantity types.Quantity `json:"minimum_quantity"`
+		// Balance is the stock balance of this product
+		Balance types.Quantity `json:"balance"`
 	}
 )
 
@@ -112,6 +113,7 @@ func NewListRunningOutProductsResponse(list []product.Product) []ListRunningOutP
 			SaleUnit:        p.SaleUnit,
 			MaximumQuantity: p.MaximumQuantity,
 			MinimumQuantity: p.MinimumQuantity,
+			Balance:         p.Balance,
 		}
 	}
 	return products

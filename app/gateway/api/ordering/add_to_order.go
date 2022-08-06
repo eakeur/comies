@@ -1,8 +1,6 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
@@ -10,31 +8,39 @@ import (
 	"net/http"
 )
 
+// AddToOrder adds an item to the specified order.
+//
+// @Summary     Adds an item
+// @Description Adds an item to the specified order
+// @Tags        Ordering
+// @Param       order_id path     string                  false "The order ID"
+// @Param       item  body     ItemAdditionRequest true  "The properties defining the item"
+// @Success     201         {object} handler.Response{data=ItemAdditionResponse{}}
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     412         {object} handler.Response{data=[]Failure{}} "Returns a list with the offending items"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders/{order_id}/items [POST]
 func (s Service) AddToOrder(ctx context.Context, r *http.Request) handler.Response {
 
-	var i item.Item
+	var i ItemAdditionRequest
 	err := json.NewDecoder(r.Body).Decode(&i)
 	if err != nil {
 		return handler.JSONParsingErrorResponse(err)
 	}
 
-	res, err := s.ordering.AddToOrder(ctx, i)
+	it, err := i.ToItem(handler.GetURLParam(r, "order_id"))
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		handler.IDParsingErrorResponse(err)
 	}
 
-	if l := len(res.Failed); l > 0 {
-		failed := make([]Failure, len(res.Failed))
-		for _, f := range res.Failed {
-			failed = append(failed, Failure{
-				For:       f.For,
-				ProductID: f.ProductID,
-				Error:     f.Error,
-			})
-		}
-
-		return handler.ResponseWithData(http.StatusUnprocessableEntity, failed)
+	res, err := s.ordering.AddToOrder(ctx, it)
+	if err != nil {
+		return handler.Fail(throw.Error(err))
 	}
 
-	return handler.ResponseWithData(http.StatusCreated, nil)
+	if size := len(res.Failed); size > 0 {
+		return handler.ResponseWithData(http.StatusPreconditionFailed, NewFailureList(res.Failed))
+	}
+
+	return handler.ResponseWithData(http.StatusCreated, ItemAdditionResponse{ID: it.ID.String()})
 }

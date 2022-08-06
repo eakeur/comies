@@ -8,39 +8,50 @@ import (
 )
 
 type (
+	ItemAdditionRequest struct {
+		ProductID          types.ID          `json:"product_id"`
+		Quantity           types.Quantity    `json:"quantity"`
+		Observations       string            `json:"observations"`
+		IgnoreIngredients  []string          `json:"ignore_ingredients"`
+		ReplaceIngredients map[string]string `json:"replace_ingredients"`
+	}
+
+	ConfirmOrderRequest struct {
+		DeliveryMode order.DeliveryMode `json:"delivery_mode"`
+	}
+
 	Order struct {
-		ID             types.ID           `json:"id"`
-		Identification string             `json:"identification,omitempty"`
+		ID             string             `json:"id"`
+		Identification string             `json:"identification"`
 		PlacedAt       time.Time          `json:"placed_at"`
-		Status         order.Status       `json:"status,omitempty"`
-		DeliveryMode   order.DeliveryMode `json:"delivery_mode,omitempty"`
-		Observations   string             `json:"observations,omitempty"`
-		FinalPrice     types.Currency     `json:"final_price,omitempty"`
-		Address        string             `json:"address,omitempty"`
-		Phone          string             `json:"phone,omitempty"`
+		Status         order.Status       `json:"status"`
+		DeliveryMode   order.DeliveryMode `json:"delivery_mode"`
+		Observations   string             `json:"observations"`
+		FinalPrice     types.Currency     `json:"final_price"`
+		Address        string             `json:"address"`
+		Phone          string             `json:"phone"`
 		Items          []Item             `json:"items,omitempty"`
 	}
 
 	Item struct {
-		ID                 types.ID              `json:"id,omitempty"`
-		OrderID            types.ID              `json:"order_id"`
-		Status             item.Status           `json:"status"`
-		Price              types.Currency        `json:"price"`
-		ProductID          types.ID              `json:"product_id"`
-		Quantity           types.Quantity        `json:"quantity"`
-		Observations       string                `json:"observations"`
-		IgnoreIngredients  []types.ID            `json:"ignore_ingredients"`
-		ReplaceIngredients map[types.ID]types.ID `json:"replace_ingredients"`
+		ID                 string            `json:"id,omitempty"`
+		OrderID            string            `json:"order_id"`
+		Status             item.Status       `json:"status"`
+		Price              types.Currency    `json:"price"`
+		ProductID          types.ID          `json:"product_id"`
+		Quantity           types.Quantity    `json:"quantity"`
+		Observations       string            `json:"observations"`
+		IgnoreIngredients  []string          `json:"ignore_ingredients"`
+		ReplaceIngredients map[string]string `json:"replace_ingredients"`
 	}
 
 	Failure struct {
-		For       types.ID `json:"for"`
-		ProductID types.ID `json:"product_id"`
-		Error     error    `json:"error"`
+		For       string `json:"for"`
+		ProductID string `json:"product_id"`
+		Error     error  `json:"error"`
 	}
 
 	OrderConfirmation struct {
-		OrderID      types.ID           `json:"order_id"`
 		DeliveryMode order.DeliveryMode `json:"delivery_mode"`
 	}
 
@@ -56,7 +67,11 @@ type (
 		Mode order.DeliveryMode `json:"mode"`
 	}
 
-	AdditionResult struct {
-		ID types.ID `json:"id"`
+	OrderRequestResponse struct {
+		ID string `json:"id"`
+	}
+
+	ItemAdditionResponse struct {
+		ID string `json:"id"`
 	}
 )

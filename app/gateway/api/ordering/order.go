@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"comies/app/core/workflows/ordering"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
@@ -10,28 +9,34 @@ import (
 	"net/http"
 )
 
+// Order
+// @Tags        Ordering
+// @Param       order_id path     string                  false "The order ID"
+// @Param       confirmation  body     ConfirmOrderRequest true  "The properties defining the confirmation"
+// @Success     200         {object} handler.Response{data=Order{}}
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders/{order_id}/confirm [POST]
 func (s Service) Order(ctx context.Context, r *http.Request) handler.Response {
 
-	var c ordering.OrderConfirmation
-	err := json.NewDecoder(r.Body).Decode(&c)
+	id, err := handler.GetResourceIDFromURL(r, "order_id")
+	if err != nil {
+		return handler.IDParsingErrorResponse(err)
+	}
+
+	var c ConfirmOrderRequest
+	err = json.NewDecoder(r.Body).Decode(&c)
 	if err != nil {
 		return handler.JSONParsingErrorResponse(err)
 	}
 
-	o, err := s.ordering.Order(ctx, c)
+	o, err := s.ordering.Order(ctx, ordering.OrderConfirmation{
+		OrderID:      id,
+		DeliveryMode: c.DeliveryMode,
+	})
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
-	return handler.ResponseWithData(http.StatusCreated, Order{
-		ID:             o.ID,
-		Identification: o.Identification,
-		PlacedAt:       o.PlacedAt,
-		Status:         o.Status,
-		DeliveryMode:   o.DeliveryMode,
-		Observations:   o.Observations,
-		FinalPrice:     o.FinalPrice,
-		Address:        o.Address,
-		Phone:          o.Phone,
-	})
+	return handler.ResponseWithData(http.StatusCreated, NewOrder(o))
 }

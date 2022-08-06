@@ -11,6 +11,8 @@ var (
 
 	ErrInvalidName = errors.New("the name is not valid. please provide one longer than 2 (two) and shorter than 60 (sixty) characters")
 
+	ErrInvalidType = errors.New("the product type is invalid")
+
 	ErrInvalidPrice = errors.New("the price is not valid. please provide an amount higher than 0")
 
 	ErrMinimumSaleQuantity = errors.New("the minimum sale quantity provided is not valid. please provide a value higher than 0")

@@ -54,6 +54,24 @@ type (
 	}
 )
 
+func (s Status) Validate() error {
+	switch s {
+	case InTheCartStatus, PendingStatus, PreparingStatus, WaitingTakeoutStatus, WaitingDeliveryStatus, DeliveringStatus, FinishedStatus, CanceledStatus:
+		return nil
+	default:
+		return ErrInvalidStatus
+	}
+}
+
+func (m DeliveryMode) Validate() error {
+	switch m {
+	case TakeoutDeliveryMode, DeliveryDeliveryMode:
+		return nil
+	default:
+		return ErrInvalidDeliveryMode
+	}
+}
+
 func (o Order) Validate() error {
 	return nil
 }

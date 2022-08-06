@@ -1,8 +1,7 @@
-package v1
+package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -16,16 +15,16 @@ import (
 // @Summary     Fetches movements
 // @Description Fetches all product movements.
 // @Tags        Product
-// @Param       product_key path     string false "The product ID"
+// @Param       product_id path     string false "The product ID"
 // @Param       start       query    string false "Adds a filter looking for the start date"
 // @Param       end         query    string false "Adds a filter looking for the end date"
 // @Success     200         {object} handler.Response{data=[]ListMovementsResponse{}}
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/movements [GET]
 func (s Service) GetProductMovements(ctx context.Context, r *http.Request) handler.Response {
-	id, err, res := handler.GetResourceIDFromURL(r, "product_id")
+	id, err := handler.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
-		return res
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	var filter movement.Filter
@@ -42,7 +41,7 @@ func (s Service) GetProductMovements(ctx context.Context, r *http.Request) handl
 
 	list, err := s.menu.ListMovements(ctx, filter)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewListMovementsResponse(list))
