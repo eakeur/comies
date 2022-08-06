@@ -2,8 +2,8 @@ package order
 
 import (
 	"comies/app/core/entities/order"
+	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres/query"
-	"comies/app/sdk/throw"
 	"context"
 )
 

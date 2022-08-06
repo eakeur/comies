@@ -2,9 +2,9 @@ package movement
 
 import (
 	"comies/app/core/entities/movement"
+	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/throw"
 	"context"
 	"errors"
 

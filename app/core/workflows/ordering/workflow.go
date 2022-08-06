@@ -3,8 +3,8 @@ package ordering
 import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
-	"comies/app/sdk/id"
-	"comies/app/sdk/types"
+	"comies/app/core/id"
+	"comies/app/core/types"
 	"context"
 )
 

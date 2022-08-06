@@ -1,7 +1,7 @@
 package movement
 
 import (
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"comies/app/sdk/throw"
+	"comies/app/core/throw"
 	"context"
 
 	"github.com/jackc/pgconn"

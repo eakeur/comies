@@ -3,7 +3,7 @@ package menu
 import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/product"
-	"comies/app/sdk/throw"
+	"comies/app/core/throw"
 	"context"
 )
 

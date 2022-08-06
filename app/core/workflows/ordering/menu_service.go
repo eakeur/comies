@@ -2,7 +2,7 @@ package ordering
 
 import (
 	"comies/app/core/entities/reservation"
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 	"context"
 )
 

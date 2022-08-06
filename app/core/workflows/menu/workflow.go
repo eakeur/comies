@@ -5,8 +5,8 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
 	"comies/app/core/entities/reservation"
-	"comies/app/sdk/id"
-	"comies/app/sdk/types"
+	"comies/app/core/id"
+	"comies/app/core/types"
 	"context"
 )
 

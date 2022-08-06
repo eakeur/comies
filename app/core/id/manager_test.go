@@ -1,10 +1,11 @@
 package id
 
 import (
-	"comies/app/sdk/types"
+	"comies/app/core/types"
+	"testing"
+
 	"github.com/bwmarrin/snowflake"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func Test_manager_Create(t *testing.T) {

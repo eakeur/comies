@@ -2,7 +2,7 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/sdk/throw"
+	"comies/app/core/throw"
 	"context"
 )
 

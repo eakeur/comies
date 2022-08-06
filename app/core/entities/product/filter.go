@@ -1,7 +1,7 @@
 package product
 
 import (
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 )
 
 type (

@@ -1,14 +1,15 @@
 package handler
 
 import (
+	"comies/app/core/throw"
 	"comies/app/gateway/api/middleware"
-	"comies/app/sdk/throw"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"net/http"
+
+	"go.uber.org/zap"
 )
 
 type Error struct {

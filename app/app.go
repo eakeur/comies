@@ -6,10 +6,11 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/order"
 	"comies/app/core/entities/product"
+	"comies/app/core/id"
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/ordering"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/id"
+
 	"go.uber.org/zap"
 
 	"github.com/bwmarrin/snowflake"

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"comies/app/core/id"
 	"comies/app/core/workflows/menu"
 	"comies/app/core/workflows/ordering"
 	"comies/app/gateway/persistence/postgres/ingredient"
@@ -9,7 +10,6 @@ import (
 	"comies/app/gateway/persistence/postgres/order"
 	"comies/app/gateway/persistence/postgres/product"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/id"
 )
 
 func NewApplication(gateways Gateways) Application {

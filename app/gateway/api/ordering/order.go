@@ -1,9 +1,9 @@
 package ordering
 
 import (
+	"comies/app/core/throw"
 	"comies/app/core/workflows/ordering"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/throw"
 	"context"
 	"encoding/json"
 	"net/http"

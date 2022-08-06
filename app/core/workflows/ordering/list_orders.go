@@ -2,7 +2,7 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/sdk/throw"
+	"comies/app/core/throw"
 	"context"
 )
 

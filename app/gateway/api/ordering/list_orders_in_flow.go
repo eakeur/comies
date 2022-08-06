@@ -1,8 +1,8 @@
 package ordering
 
 import (
+	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/throw"
 	"context"
 	"net/http"
 	"time"

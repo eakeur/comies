@@ -2,9 +2,9 @@ package order
 
 import (
 	"comies/app/core/entities/order"
+	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/throw"
 	"context"
 	"errors"
 

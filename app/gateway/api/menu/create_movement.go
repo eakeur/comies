@@ -2,9 +2,9 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 	"encoding/json"
 	"net/http"

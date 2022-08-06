@@ -2,8 +2,8 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"context"
 )
 

@@ -3,9 +3,9 @@ package ingredient
 import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/product"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 	"testing"
 

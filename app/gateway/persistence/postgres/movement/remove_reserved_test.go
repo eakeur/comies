@@ -3,9 +3,9 @@ package movement
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 	"testing"
 	"time"
