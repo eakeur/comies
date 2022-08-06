@@ -1,4 +1,4 @@
-package v1
+package menu
 
 import (
 	"comies/app/gateway/api/failures"
@@ -13,15 +13,15 @@ import (
 // @Summary     Remove product
 // @Description removes a product from the store's menu.
 // @Tags        Product
-// @Param       product_key path string true "The product ID"
+// @Param       product_id path string true "The product ID"
 // @Success     204
-// @Failure     400 {object} handler.Response{error=handler.Error{}} "INVALID_ID: Happens if the product id provided is not a valid one"
-// @Failure     500 {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     400 {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500 {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id} [DELETE]
 func (s Service) RemoveProduct(ctx context.Context, r *http.Request) handler.Response {
-	id, err, res := handler.GetResourceIDFromURL(r, "product_id")
+	id, err := handler.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
-		return res
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	err = s.menu.RemoveProduct(ctx, id)

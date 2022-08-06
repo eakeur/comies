@@ -1,4 +1,4 @@
-package v1
+package menu
 
 import (
 	"comies/app/gateway/api/failures"
@@ -13,15 +13,14 @@ import (
 // @Summary     Fetches ingredients
 // @Description Fetches all product ingredients.
 // @Tags        Product
-// @Param       product_key path     string false "The product ID"
-// @Success     200         {object} handler.Response{data=[]ListProductsResponse{}}
-// @Success     200         {object} handler.Response{data=[]ListRunningOutProductsResponse{}}
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Param       product_id path     string false "The product ID"
+// @Success     200         {object} handler.Response{data=[]Ingredient{}}
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/ingredients [GET]
 func (s Service) GetProductIngredients(ctx context.Context, r *http.Request) handler.Response {
-	id, err, res := handler.GetResourceIDFromURL(r, "product_id")
+	id, err := handler.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
-		return res
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	list, err := s.menu.ListIngredients(ctx, id)

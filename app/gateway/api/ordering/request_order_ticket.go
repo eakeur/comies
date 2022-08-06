@@ -14,5 +14,5 @@ func (s Service) RequestOrderTicket(ctx context.Context, _ *http.Request) handle
 		return failures.Handle(throw.Error(err))
 	}
 
-	return handler.ResponseWithData(http.StatusCreated, AdditionResult{ID: ticket})
+	return handler.ResponseWithData(http.StatusCreated, OrderRequestResponse{ID: ticket.String()})
 }

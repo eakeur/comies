@@ -30,31 +30,10 @@ func (s Service) ListOrdersInFlow(ctx context.Context, w http.ResponseWriter, r 
 	for {
 		select {
 		case not := <-channel:
-			items := make([]Item, len(not.Items))
-			for ind, it := range not.Items {
-				items[ind] = Item{
-					ID:           it.ID,
-					OrderID:      it.OrderID,
-					ProductID:    it.ProductID,
-					Price:        it.Price,
-					Status:       it.Status,
-					Quantity:     it.Quantity,
-					Observations: it.Observations,
-				}
-			}
-			fail := server.WriteJSON(Order{
-				ID:             not.ID,
-				Identification: not.Identification,
-				PlacedAt:       not.PlacedAt,
-				Observations:   not.Observations,
-				FinalPrice:     not.FinalPrice,
-				Address:        not.Address,
-				Phone:          not.Phone,
-				Items:          items,
-			})
-			if fail != nil {
-				return failures.Handle(throw.Error(fail))
-			}
+			ord := NewOrder(not.Order)
+			ord.Items = NewItemList(not.Items)
+
+			_ = server.WriteJSON(ord)
 		}
 
 		time.Sleep(time.Second * 3)

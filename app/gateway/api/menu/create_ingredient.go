@@ -1,4 +1,4 @@
-package v1
+package menu
 
 import (
 	"comies/app/core/entities/ingredient"
@@ -16,12 +16,12 @@ import (
 // @Summary     Creates ingredient
 // @Description Adds an ingredient relation to the store's menu. THe product must be of composite type
 // @Tags        Product
-// @Param       product_key path     string                  false "The product ID"
+// @Param       product_id path     string                  false "The product ID"
 // @Param       ingredient  body     CreateIngredientRequest true  "The properties to define the ingredient"
 // @Success     201         {object} handler.Response{data=IngredientAdditionResult{}}
-// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID: Happens if the product id provided is not a valid one"
-// @Failure     412         {object} handler.Response{error=handler.Error{}} "Possible errors: INGREDIENT_INVALID_INGREDIENT_ID, INGREDIENT_INVALID_PRODUCT_ID, INGREDIENT_ZERO_QUANTITY, INGREDIENT_INVALID_PRODUCT_TYPE, INGREDIENT_INVALID_INGREDIENT_TYPE"
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     412         {object} handler.Response{error=handler.Error{}} "INGREDIENT_INVALID_INGREDIENT_ID, INGREDIENT_INVALID_PRODUCT_ID, INGREDIENT_ZERO_QUANTITY, INGREDIENT_INVALID_PRODUCT_TYPE, INGREDIENT_INVALID_INGREDIENT_TYPE"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/ingredients [POST]
 func (s Service) CreateIngredient(ctx context.Context, r *http.Request) handler.Response {
 
@@ -31,13 +31,14 @@ func (s Service) CreateIngredient(ctx context.Context, r *http.Request) handler.
 		return handler.JSONParsingErrorResponse(err)
 	}
 
-	productID, e, res := handler.GetResourceIDFromURL(r, "product_id")
-	if e != nil {
-		return res
+	productID, err := handler.GetResourceIDFromURL(r, "product_id")
+	if err != nil {
+		return handler.IDParsingErrorResponse(err)
 	}
-	ingredientID, e, res := handler.ConvertToID(i.IngredientID)
-	if e != nil {
-		return res
+
+	ingredientID, err := handler.ConvertToID(i.IngredientID)
+	if err != nil {
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	ing, err := s.menu.CreateIngredient(ctx, i.ToIngredient(productID, ingredientID))

@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
 	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
@@ -12,29 +11,25 @@ import (
 
 func (s Service) AddToOrder(ctx context.Context, r *http.Request) handler.Response {
 
-	var i item.Item
+	var i ItemAdditionRequest
 	err := json.NewDecoder(r.Body).Decode(&i)
 	if err != nil {
 		return handler.JSONParsingErrorResponse(err)
 	}
 
-	res, err := s.ordering.AddToOrder(ctx, i)
+	it, err := i.ToItem(handler.GetURLParam(r, "order_id"))
+	if err != nil {
+		handler.IDParsingErrorResponse(err)
+	}
+
+	res, err := s.ordering.AddToOrder(ctx, it)
 	if err != nil {
 		return failures.Handle(throw.Error(err))
 	}
 
-	if l := len(res.Failed); l > 0 {
-		failed := make([]Failure, len(res.Failed))
-		for _, f := range res.Failed {
-			failed = append(failed, Failure{
-				For:       f.For,
-				ProductID: f.ProductID,
-				Error:     f.Error,
-			})
-		}
-
-		return handler.ResponseWithData(http.StatusUnprocessableEntity, failed)
+	if size := len(res.Failed); size > 0 {
+		return handler.ResponseWithData(http.StatusUnprocessableEntity, NewFailureList(res.Failed))
 	}
 
-	return handler.ResponseWithData(http.StatusCreated, nil)
+	return handler.ResponseWithData(http.StatusCreated, ItemAdditionResponse{ID: it.ID.String()})
 }

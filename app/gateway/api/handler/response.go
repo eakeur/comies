@@ -80,6 +80,12 @@ func JSONParsingErrorResponse(err error) Response {
 	}).Err(err)
 }
 
+func IDParsingErrorResponse(err error) Response {
+	return ResponseWithError(http.StatusBadRequest, Error{
+		Code: "INVALID_ID", Message: "The id provided is invalid",
+	}).Err(err)
+}
+
 func LoggerFromContext(ctx context.Context) *zap.SugaredLogger {
 	return ctx.Value(middleware.LoggerContextKey{}).(*zap.SugaredLogger)
 }

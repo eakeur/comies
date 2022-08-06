@@ -1,4 +1,4 @@
-package v1
+package menu
 
 import (
 	"comies/app/core/entities/product"
@@ -22,7 +22,7 @@ import (
 // @Param       out  query    bool   false "Searches products running out of stock only"
 // @Success     200  {object} handler.Response{data=[]ListProductsResponse{}}
 // @Success     200  {object} handler.Response{data=[]ListRunningOutProductsResponse{}}
-// @Failure     500  {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR: Happens if an unexpected error happens on the API side"
+// @Failure     500  {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [GET]
 func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Response {
 	query := r.URL.Query()

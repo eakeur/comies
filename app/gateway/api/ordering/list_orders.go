@@ -5,12 +5,26 @@ import (
 	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
+	"comies/app/sdk/types"
 	"context"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 )
+
+type ListOrdersResponse struct {
+	ID             types.ID           `json:"id"`
+	Identification string             `json:"identification,omitempty"`
+	PlacedAt       time.Time          `json:"placed_at"`
+	Status         order.Status       `json:"status,omitempty"`
+	DeliveryMode   order.DeliveryMode `json:"delivery_mode,omitempty"`
+	Observations   string             `json:"observations,omitempty"`
+	FinalPrice     types.Currency     `json:"final_price,omitempty"`
+	Address        string             `json:"address,omitempty"`
+	Phone          string             `json:"phone,omitempty"`
+	Items          []Item             `json:"items,omitempty"`
+}
 
 func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Response {
 	var filter order.Filter
@@ -39,9 +53,13 @@ func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Respon
 		return failures.Handle(throw.Error(err))
 	}
 
-	orders := make([]Order, len(list))
+	return handler.ResponseWithData(http.StatusOK, NewListOrdersResponse(list))
+}
+
+func NewListOrdersResponse(list []order.Order) []ListOrdersResponse {
+	orders := make([]ListOrdersResponse, len(list))
 	for i, o := range list {
-		orders[i] = Order{
+		orders[i] = ListOrdersResponse{
 			ID:             o.ID,
 			Identification: o.Identification,
 			PlacedAt:       o.PlacedAt,
@@ -53,6 +71,5 @@ func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Respon
 			Phone:          o.Phone,
 		}
 	}
-
-	return handler.ResponseWithData(http.StatusOK, list)
+	return orders
 }

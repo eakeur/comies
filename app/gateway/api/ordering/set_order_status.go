@@ -10,9 +10,9 @@ import (
 )
 
 func (s Service) SetOrderStatus(ctx context.Context, r *http.Request) handler.Response {
-	id, err, res := handler.GetResourceIDFromURL(r, "order_id")
+	id, err := handler.GetResourceIDFromURL(r, "order_id")
 	if err != nil {
-		return res
+		return handler.IDParsingErrorResponse(err)
 	}
 
 	var req SetOrderStatusRequest

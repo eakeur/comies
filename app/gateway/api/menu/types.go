@@ -1,4 +1,4 @@
-package v1
+package menu
 
 import (
 	"comies/app/sdk/types"
