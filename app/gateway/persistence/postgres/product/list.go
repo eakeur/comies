@@ -24,6 +24,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 		from
 			products p
 		%where_query%
+		order by p.code
 	`
 
 	q := query.NewQuery(script).
