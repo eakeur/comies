@@ -7,13 +7,14 @@ import (
 	"comies/app/gateway/persistence/postgres"
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v4/pgxpool"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"log"
 	"net"
 	"net/http"
 	"strconv"
+
+	"github.com/jackc/pgx/v4/pgxpool"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"github.com/bwmarrin/snowflake"
 )
@@ -24,12 +25,13 @@ import (
 func main() {
 	ctx := context.Background()
 
-	cfg, err := config.Load()
-	if err != nil {
-		log.Fatalf("Could not load configurations from environment: %v", err)
-	}
+	cfg := config.Load()
 
-	var db *pgxpool.Pool
+	var (
+		db  *pgxpool.Pool
+		err error
+	)
+
 	if cfg.Database.URL == "" {
 		db, err = postgres.ConnectAndMount(ctx, postgres.Config{
 			User:     cfg.Database.User,
