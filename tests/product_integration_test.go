@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
+	"sync"
 	"testing"
 )
 
@@ -15,11 +16,7 @@ func TestProductIntegration(t *testing.T) {
 
 	var (
 		app      = NewTestApp(t, "/menu/products")
-		products []menu.GetProductByKeyResponse
-	)
-
-	t.Run("should create all products successfully", func(t *testing.T) {
-		for _, prod := range []menu.CreateProductRequest{
+		products = []menu.GetProductByKeyResponse{
 			{
 				Code:            "COKL",
 				Name:            "Coke 1L",
@@ -54,19 +51,60 @@ func TestProductIntegration(t *testing.T) {
 				MinimumQuantity: 0,
 				Location:        "Fridge",
 			},
-		} {
-			var payload handler.Response
-			var data menu.CreateProductResponse
-			payload.Data = &data
+		}
+	)
 
-			response := app.Request(t, http.MethodPost, "", RequestInput{body: prod}).To(&payload).Run()
-			if response.data.StatusCode != http.StatusCreated {
-				t.Errorf("Failed to create product %s: %v", prod.Code, payload.Error)
-				return
-			}
+	t.Run("should create all products successfully", func(t *testing.T) {
+		wg := sync.WaitGroup{}
+		for i, prod := range products {
+			wg.Add(1)
+			go func(i int, prod menu.GetProductByKeyResponse) {
+				defer wg.Done()
 
-			products = append(products, menu.GetProductByKeyResponse{
-				ID:              data.ID,
+				var (
+					data menu.CreateProductResponse
+
+					payload = handler.Response{
+						Data: &data,
+					}
+					input = RequestInput{
+						body: menu.CreateProductRequest{
+							Code:            prod.Code,
+							Name:            prod.Name,
+							Type:            prod.Type,
+							CostPrice:       prod.CostPrice,
+							SalePrice:       prod.SalePrice,
+							SaleUnit:        prod.SaleUnit,
+							MinimumSale:     prod.MinimumSale,
+							MaximumQuantity: prod.MaximumQuantity,
+							MinimumQuantity: prod.MinimumQuantity,
+							Location:        prod.Location,
+						},
+					}
+				)
+
+				response := app.Request(t, http.MethodPost, "", input).To(&payload).Run()
+				if response.data.StatusCode != http.StatusCreated {
+					t.Errorf("Failed to create product %s: %v", prod.Code, payload.Error)
+					return
+				}
+
+				products[i].ID = data.ID
+			}(i, prod)
+		}
+		wg.Wait()
+	})
+
+	t.Run("should update product successfully", func(t *testing.T) {
+		products[0].Name = "Coke 1 Liter"
+
+		var (
+			prod = products[0]
+			path = fmt.Sprintf("/%s", prod.ID)
+		)
+
+		response := app.Request(t, http.MethodPut, path, RequestInput{
+			body: menu.UpdateProductRequest{
 				Code:            prod.Code,
 				Name:            prod.Name,
 				Type:            prod.Type,
@@ -77,26 +115,30 @@ func TestProductIntegration(t *testing.T) {
 				MaximumQuantity: prod.MaximumQuantity,
 				MinimumQuantity: prod.MinimumQuantity,
 				Location:        prod.Location,
-			})
+			},
+		}).Run()
+		if response.data.StatusCode != http.StatusNoContent {
+			t.Errorf("Failed to update product %s: %v", products[0].Code, response.dump)
+			return
 		}
 	})
 
 	t.Run("should fetch products by id successfully", func(t *testing.T) {
-		for idx, id := range []string{
-			products[0].ID, products[1].ID, products[2].ID,
-		} {
+		for _, prod := range products {
+			var (
+				data    menu.GetProductByKeyResponse
+				payload = handler.Response{
+					Data: &data,
+				}
+			)
 
-			var payload handler.Response
-			var data menu.GetProductByKeyResponse
-			payload.Data = &data
-
-			response := app.Request(t, http.MethodGet, fmt.Sprintf("/%s", id)).To(&payload).Run()
+			response := app.Request(t, http.MethodGet, fmt.Sprintf("/%s", prod.ID)).To(&payload).Run()
 			if response.data.StatusCode != http.StatusOK {
-				t.Errorf("Failed to fetch product %s: %v", id, payload.Error)
+				t.Errorf("Failed to fetch product %s: %v", prod.ID, payload.Error)
 				return
 			}
 
-			assert.Equal(t, products[idx], data, "the product received was not as the expected for %s", idx)
+			assert.Equal(t, prod, data, "the product received was not as the expected for %s", prod)
 		}
 	})
 
@@ -117,7 +159,7 @@ func TestProductIntegration(t *testing.T) {
 					},
 					{
 						Code: "COKL",
-						Name: "Coke 1L",
+						Name: "Coke 1 Liter",
 						Type: product.OutputType,
 					},
 				},
@@ -163,48 +205,6 @@ func TestProductIntegration(t *testing.T) {
 
 			assert.Equal(t, r.want, data, "the list received was not the same as expected")
 		}
-	})
-
-	t.Run("should update product successfully", func(t *testing.T) {
-		var (
-			prod = products[0]
-			path = fmt.Sprintf("/%s", products[0].ID)
-		)
-
-		prod.Location = "In the supermarket :)"
-		prod.Code = "ANY"
-		prod.Name = "Any product"
-		response := app.Request(t, http.MethodPut, path, RequestInput{
-			body: menu.UpdateProductRequest{
-				Code:            prod.Code,
-				Name:            prod.Name,
-				Type:            prod.Type,
-				CostPrice:       prod.CostPrice,
-				SalePrice:       prod.SalePrice,
-				SaleUnit:        prod.SaleUnit,
-				MinimumSale:     prod.MinimumSale,
-				MaximumQuantity: prod.MaximumQuantity,
-				MinimumQuantity: prod.MinimumQuantity,
-				Location:        prod.Location,
-			},
-		}).Run()
-		if response.data.StatusCode != http.StatusNoContent {
-			t.Errorf("Failed to update product %s: %v", products[0].Code, response.dump)
-			return
-		}
-
-		var payload handler.Response
-		var data menu.GetProductByKeyResponse
-		payload.Data = &data
-
-		response = app.Request(t, http.MethodGet, path).To(&payload).Run()
-		if response.data.StatusCode != http.StatusOK {
-			t.Errorf("Failed to fetch updated product %s: %v", products[0].Code, payload.Error)
-			return
-		}
-
-		products[0] = prod
-		assert.Equal(t, products[0], data, "the product received was not as the expected for %s", prod.Code)
 	})
 
 	t.Run("should delete product successfully", func(t *testing.T) {
