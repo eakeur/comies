@@ -2,13 +2,13 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
 	"context"
-	"github.com/go-chi/chi/v5"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 // GetProductByKey fetches a product by its ID or code.
@@ -42,7 +42,7 @@ func (s Service) GetProductByKey(ctx context.Context, r *http.Request) handler.R
 	}
 
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewGetProductByKeyResponse(prd))

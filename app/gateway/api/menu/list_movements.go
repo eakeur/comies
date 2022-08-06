@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -42,7 +41,7 @@ func (s Service) GetProductMovements(ctx context.Context, r *http.Request) handl
 
 	list, err := s.menu.ListMovements(ctx, filter)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewListMovementsResponse(list))

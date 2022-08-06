@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/ingredient"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -43,16 +42,19 @@ func (s Service) CreateIngredient(ctx context.Context, r *http.Request) handler.
 
 	ing, err := s.menu.CreateIngredient(ctx, i.ToIngredient(productID, ingredientID))
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusCreated, IngredientAdditionResult{ID: ing.ID.String()})
 }
 
 type CreateIngredientRequest struct {
-	IngredientID string         `json:"ingredient_id"`
-	Quantity     types.Quantity `json:"quantity"`
-	Optional     bool           `json:"optional"`
+	// IngredientID
+	IngredientID string `json:"ingredient_id"`
+	// Quantity
+	Quantity types.Quantity `json:"quantity"`
+	// Optional
+	Optional bool `json:"optional"`
 }
 
 func (i *CreateIngredientRequest) ToIngredient(productID, ingredientID types.ID) ingredient.Ingredient {

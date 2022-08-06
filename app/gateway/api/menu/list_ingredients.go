@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
@@ -25,7 +24,7 @@ func (s Service) GetProductIngredients(ctx context.Context, r *http.Request) han
 
 	list, err := s.menu.ListIngredients(ctx, id)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	ingredients := make([]Ingredient, len(list))

@@ -1,20 +1,19 @@
-package failures
+package handler
 
 import (
-	"comies/app/gateway/api/handler"
 	"errors"
 )
 
-type ErrorBinding map[error]handler.Response
+type ErrorBinding map[error]Response
 
 var errUnexpected = errors.New("unexpected")
 
-func (b ErrorBinding) Default(err handler.Response) ErrorBinding {
+func (b ErrorBinding) Default(err Response) ErrorBinding {
 	b[errUnexpected] = err
 	return b
 }
 
-func Handle(err error) handler.Response {
+func Fail(err error) Response {
 	for internal, external := range failures {
 		if errors.Is(err, internal) {
 			return external.Err(err)

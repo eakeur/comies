@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"context"
@@ -27,7 +26,7 @@ func (s Service) RemoveProductMovement(ctx context.Context, r *http.Request) han
 
 	err = s.menu.RemoveMovement(ctx, id)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusNoContent, nil)

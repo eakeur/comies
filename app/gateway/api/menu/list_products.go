@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -42,7 +41,7 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 	if runningOut {
 		products, err := s.menu.ListProductsRunningOut(ctx)
 		if err != nil {
-			return failures.Handle(throw.Error(err))
+			return handler.Fail(throw.Error(err))
 		}
 
 		return handler.ResponseWithData(http.StatusOK, NewListRunningOutProductsResponse(products))
@@ -50,7 +49,7 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 
 	products, err := s.menu.ListProducts(ctx, filter)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))

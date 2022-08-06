@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -30,7 +29,7 @@ func (s Service) GetProductStockBalance(ctx context.Context, r *http.Request) ha
 		ProductID: id,
 	})
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, GetProductBalanceResponse{Balance: bal})

@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -24,6 +23,17 @@ type GetOrderByIDResponse struct {
 	Items          []Item             `json:"items,omitempty"`
 }
 
+// GetOrderByID fetches a specific order
+//
+// @Summary     Get order by ID
+// @Description Fetches an order looking for its ID
+// @Tags        Ordering
+// @Param       order_id path     string                  false "The order ID"
+// @Success     200         {object} handler.Response{data=Order{}}
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     404         {object} handler.Response{data=[]Failure{}} "ORDER_NOT_FOUND"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders/{order_id}/items [POST]
 func (s Service) GetOrderByID(ctx context.Context, r *http.Request) handler.Response {
 	id, err := handler.GetResourceIDFromURL(r, "order_id")
 	if err != nil {
@@ -32,7 +42,7 @@ func (s Service) GetOrderByID(ctx context.Context, r *http.Request) handler.Resp
 
 	o, err := s.ordering.GetOrderByID(ctx, id)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewGetOrderByIDResponse(o))

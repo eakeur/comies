@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -26,6 +25,12 @@ type ListOrdersResponse struct {
 	Items          []Item             `json:"items,omitempty"`
 }
 
+// ListOrders
+//
+// @Tags        Ordering
+// @Success     200         {object} handler.Response{data=[]Order{}}
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders [GET]
 func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Response {
 	var filter order.Filter
 
@@ -50,7 +55,7 @@ func (s Service) ListOrders(ctx context.Context, r *http.Request) handler.Respon
 
 	list, err := s.ordering.ListOrders(ctx, filter)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewOrderList(list))

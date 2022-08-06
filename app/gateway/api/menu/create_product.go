@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -32,7 +31,7 @@ func (s Service) CreateProduct(ctx context.Context, r *http.Request) handler.Res
 
 	prd, err := s.menu.CreateProduct(ctx, p.ToProduct())
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusCreated, CreateProductResponse{ID: prd.ID.String()})

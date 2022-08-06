@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"comies/app/core/entities/item"
-	"comies/app/gateway/api/failures"
 	"comies/app/gateway/api/handler"
 	"comies/app/sdk/throw"
 	"comies/app/sdk/types"
@@ -22,6 +21,14 @@ type ListItemsResponse struct {
 	ReplaceIngredients map[types.ID]types.ID `json:"replace_ingredients"`
 }
 
+// ListItems
+//
+// @Tags        Ordering
+// @Param       order_id path     string                  false "The order ID"
+// @Success     200         {object} handler.Response{data=[]Item{}}
+// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /ordering/orders/{order_id}/items [GET]
 func (s Service) ListItems(ctx context.Context, r *http.Request) handler.Response {
 	id, err := handler.GetResourceIDFromURL(r, "order_id")
 	if err != nil {
@@ -30,7 +37,7 @@ func (s Service) ListItems(ctx context.Context, r *http.Request) handler.Respons
 
 	items, err := s.ordering.ListItems(ctx, id)
 	if err != nil {
-		return failures.Handle(throw.Error(err))
+		return handler.Fail(throw.Error(err))
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewItemList(items))
