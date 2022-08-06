@@ -14,8 +14,6 @@ import (
 )
 
 func TestMovementsIntegration(t *testing.T) {
-	t.Parallel()
-
 	var (
 		productID string
 		app       = NewTestApp(t, "/menu/products")

@@ -11,8 +11,6 @@ import (
 )
 
 func TestProductIntegration(t *testing.T) {
-	t.Parallel()
-
 	var (
 		app      = NewTestApp(t, "/menu/products")
 		products = []menu.GetProductByKeyResponse{
