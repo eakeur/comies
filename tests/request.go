@@ -101,7 +101,7 @@ func (c client) Request(t *testing.T, method, path string, inputs ...RequestInpu
 }
 
 func (c client) DoRequest(t *testing.T, req *http.Request) *Response {
-	res, err := c.client.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatalf("Could not receive response: %s", err)
 	}
