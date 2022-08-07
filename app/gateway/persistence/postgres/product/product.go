@@ -12,5 +12,5 @@ type actions struct {
 }
 
 func NewActions(db *pgxpool.Pool) product.Actions {
-	return actions{db: db}
+	return &actions{db: db}
 }
