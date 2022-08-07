@@ -26,7 +26,7 @@ func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient)
 		return ingredient.Ingredient{}, throw.Error(err).Params(params)
 	}
 
-	if compositeProduct.Type == product.InputType {
+	if compositeProduct.Type == product.InputType || compositeProduct.Type == product.OutputType {
 		return ingredient.Ingredient{}, ingredient.ErrInvalidCompositeType
 	}
 
