@@ -3,7 +3,7 @@ package ordering
 import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 	"time"
 )
 

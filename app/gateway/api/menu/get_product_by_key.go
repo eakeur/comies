@@ -2,9 +2,9 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 	"net/http"
 
@@ -34,7 +34,8 @@ func (s Service) GetProductByKey(ctx context.Context, r *http.Request) handler.R
 	if flag := r.URL.Query().Get("code"); flag == "true" {
 		prd, err = s.menu.GetProductByCode(ctx, key)
 	} else {
-		id, err := handler.ConvertToID(key)
+		var id types.ID
+		id, err = handler.ConvertToID(key)
 		if err != nil {
 			return handler.IDParsingErrorResponse(err)
 		}

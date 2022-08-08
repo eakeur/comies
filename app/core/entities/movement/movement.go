@@ -1,7 +1,7 @@
 package movement
 
 import (
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 	"time"
 )
 
@@ -36,7 +36,7 @@ type Movement struct {
 	AgentID types.ID
 }
 
-func (m *Movement) Value() types.Quantity {
+func (m Movement) Value() types.Quantity {
 	if m.Type == OutputType || m.Type == ReservedType {
 		m.Quantity *= -1
 	}

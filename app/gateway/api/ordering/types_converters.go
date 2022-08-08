@@ -4,8 +4,8 @@ import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
 	"comies/app/core/entities/reservation"
+	"comies/app/core/types"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/types"
 )
 
 func (a ItemAdditionRequest) ToItem(orderID string) (item.Item, error) {

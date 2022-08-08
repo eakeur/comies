@@ -1,8 +1,8 @@
 package item
 
 import (
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 )
 
 const (

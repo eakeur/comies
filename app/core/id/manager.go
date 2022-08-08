@@ -1,8 +1,7 @@
 package id
 
 import (
-	"comies/app/sdk/types"
-
+	"comies/app/core/types"
 	"github.com/bwmarrin/snowflake"
 )
 

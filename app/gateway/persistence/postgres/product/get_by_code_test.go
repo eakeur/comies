@@ -2,8 +2,8 @@ package product
 
 import (
 	"comies/app/core/entities/product"
+	"comies/app/core/types"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/types"
 	"context"
 	"testing"
 

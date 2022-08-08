@@ -3,8 +3,8 @@ package ingredient
 import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/product"
+	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/throw"
 	"context"
 	"testing"
 

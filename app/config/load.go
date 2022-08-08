@@ -1,15 +1,24 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
-func Load() (Config, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Println("Could not load .env file: continuing fetching variables from environment")
+func Load() Config {
+
+	for _, filename := range []string{
+		".env.local", ".env",
+	} {
+		err := godotenv.Load(filename)
+		if err == nil {
+			log.Printf("Loaded %s file", filename)
+			break
+		}
+
+		log.Printf("Could not load %s file: continuing fetching variables", filename)
 	}
 
 	return Config{
@@ -30,5 +39,5 @@ func Load() (Config, error) {
 		IDGeneration: IDGeneration{
 			NodeNumber: os.Getenv("ID_GENERATION_NODE_NUMBER"),
 		},
-	}, nil
+	}
 }

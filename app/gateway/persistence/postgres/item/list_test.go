@@ -3,8 +3,8 @@ package item
 import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/order"
+	"comies/app/core/types"
 	"comies/app/gateway/persistence/postgres/tests"
-	"comies/app/sdk/types"
 	"context"
 	"testing"
 

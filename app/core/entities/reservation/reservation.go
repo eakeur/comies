@@ -1,6 +1,6 @@
 package reservation
 
-import "comies/app/sdk/types"
+import "comies/app/core/types"
 
 type (
 	Reservation struct {

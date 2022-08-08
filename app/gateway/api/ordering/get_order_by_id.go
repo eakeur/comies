@@ -2,9 +2,9 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 	"net/http"
 	"time"

@@ -2,8 +2,8 @@ package product
 
 import (
 	"comies/app/core/entities/product"
+	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres/query"
-	"comies/app/sdk/throw"
 	"context"
 )
 
@@ -24,6 +24,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 		from
 			products p
 		%where_query%
+		order by p.code
 	`
 
 	q := query.NewQuery(script).

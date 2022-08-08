@@ -2,9 +2,9 @@ package product
 
 import (
 	"comies/app/core/entities/product"
+	"comies/app/core/throw"
+	"comies/app/core/types"
 	"comies/app/gateway/persistence/postgres/transaction"
-	"comies/app/sdk/throw"
-	"comies/app/sdk/types"
 	"context"
 )
 

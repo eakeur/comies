@@ -1,8 +1,8 @@
 package menu
 
 import (
+	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
-	"comies/app/sdk/throw"
 	"context"
 	"net/http"
 )
@@ -19,7 +19,7 @@ import (
 // @Failure     500 {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/movements/{id} [DELETE]
 func (s Service) RemoveProductMovement(ctx context.Context, r *http.Request) handler.Response {
-	id, err := handler.GetResourceIDFromURL(r, "product_id")
+	id, err := handler.GetResourceIDFromURL(r, "movement_id")
 	if err != nil {
 		return handler.IDParsingErrorResponse(err)
 	}

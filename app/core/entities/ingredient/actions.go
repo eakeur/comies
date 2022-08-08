@@ -1,7 +1,7 @@
 package ingredient
 
 import (
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 	"context"
 )
 

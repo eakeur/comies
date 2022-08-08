@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"comies/app/sdk/types"
+	"comies/app/core/types"
 	"context"
-	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type (
