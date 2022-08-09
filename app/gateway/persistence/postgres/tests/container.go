@@ -5,18 +5,20 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/ory/dockertest/docker"
 	"log"
 	"math"
 	"math/big"
-
-	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/ory/dockertest/docker"
 
 	"github.com/ory/dockertest"
 	"github.com/pkg/errors"
 )
 
-const ContainerName = "postgres_testing_container"
+const (
+	ContainerName    = "postgres_testing_container"
+	ContainerExpires = 600
+)
 
 func ConnectToDockerPostgres() (*pgxpool.Pool, error) {
 	pool, err := pool()
@@ -24,6 +26,8 @@ func ConnectToDockerPostgres() (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "the docker container resource could not be created or fetched")
 	}
+
+	resource.Expire(ContainerExpires)
 
 	dbPortBinding := resource.GetPort("5432/tcp")
 	if err != nil {
