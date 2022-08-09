@@ -3,6 +3,7 @@ services:
   comies_postgres:
     image: postgres:14-alpine
     container_name: comies_db
+    command: ["postgres", "-c", "log_statement=all"]
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

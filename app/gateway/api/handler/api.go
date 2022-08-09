@@ -66,12 +66,13 @@ func (h *Handler) RegisterService(router chi.Router, service interface{}) chi.Ro
 			}
 		}
 
+		r := router
 		if len(middlewares) > 0 {
-			router = router.With(middlewares...)
+			r = r.With(middlewares...)
 		}
 
 		for _, m := range ru.methods {
-			router.Method(m, ru.path, ru)
+			r.Method(m, ru.path, ru)
 		}
 
 	}
