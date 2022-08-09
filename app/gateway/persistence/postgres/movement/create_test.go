@@ -76,7 +76,7 @@ func Test_actions_Create(t *testing.T) {
 					as equal
 					from movements where id = $1
 				`
-				db.CheckValue(ctx, script, true, 1, 1, movement.OutputType, date, 100, 50, 1544474558856547556)
+				db.CheckValue(t, ctx, script, true, 1, 1, movement.OutputType, date, 100, 50, 1544474558856547556)
 			},
 		},
 		{
@@ -100,8 +100,7 @@ func Test_actions_Create(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			got, err := a.Create(ctx, tt.args.movement)

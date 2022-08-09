@@ -16,72 +16,104 @@ import (
 
 type (
 	Database struct {
-		Name     string
-		TestName string
-		Pool     *pgxpool.Pool
-		Context  context.Context
-		Test     *testing.T
-		txEnd    func(context.Context)
+		*pgxpool.Pool
 	}
 
 	Callback = func(ctx context.Context, db *Database, t *testing.T)
 )
 
-func (d *Database) Transaction(ctx context.Context) (context.Context, func(context.Context)) {
-	man := transaction.NewManager(d.Pool)
-	d.Context = man.Begin(ctx)
-	d.txEnd = man.End
-	return d.Context, man.End
-}
+func NewTestDatabase(t *testing.T, ctx context.Context, bef Callback, aft Callback, withTX bool) (*Database, context.Context) {
+	t.Helper()
 
-func (d Database) Drop(callbacks ...Callback) {
-	if d.txEnd != nil {
-		d.txEnd(d.Context)
+	if conn == nil {
+		t.FailNow()
 	}
 
-	d.runCallbacks(callbacks)
+	var (
+		tx   transaction.Manager
+		db   *Database
+		test = t.Name()
+		cfg  = conn.Config().ConnConfig
+	)
 
-	const script = `drop database if exists %s`
-	d.Pool.Close()
-
-	_, err := container.database.Pool.Exec(d.Context, fmt.Sprintf(script, d.Name))
-	if err != nil {
-		log.Printf("Could not drop database for test %s: %v", d.TestName, err)
-	}
-}
-
-func (d *Database) name() {
 	n, _ := rand.Int(rand.Reader, big.NewInt(math.MaxInt32))
-	d.Name = fmt.Sprintf("database_%d", n)
-}
+	name := fmt.Sprintf("database_%d", n)
 
-func (d *Database) mount() error {
-	_, err := container.database.Pool.Exec(d.Context, "create database "+d.Name)
+	_, _ = conn.Exec(ctx, fmt.Sprintf("drop database if exists %s", name))
+
+	script := fmt.Sprintf("create database %s template %s_template", name, conn.Config().ConnConfig.Database)
+	_, err := conn.Exec(ctx, script)
 	if err != nil {
-		return err
+		t.Errorf("Could not create database for test %s: %v", test, err)
+		t.FailNow()
 	}
 
-	return nil
-}
-
-func (d *Database) connect() error {
-	cfg := container.config
-	cfg.Name = d.Name
-
-	p, err := postgres.ConnectAndMount(d.Context, cfg)
+	pool, err := postgres.NewConnection(ctx, postgres.CreateDatabaseURL(cfg.User, cfg.Password, fmt.Sprintf("%s:%d", cfg.Host, cfg.Port), name, "disable"))
 	if err != nil {
-		return err
+		t.Errorf("Could not connect to database for test %s: %v", test, err)
+		t.FailNow()
 	}
 
-	d.Pool = p
+	db = &Database{
+		Pool: pool,
+	}
 
-	return nil
-}
+	if withTX {
+		tx = transaction.NewManager(pool)
+		ctx = tx.Begin(ctx)
+	}
 
-func (d *Database) runCallbacks(cb []Callback) {
-	for _, callback := range cb {
-		if callback != nil {
-			callback(d.Context, d, d.Test)
+	if bef != nil {
+		bef(ctx, db, t)
+	}
+
+	t.Cleanup(func() {
+		if withTX {
+			tx.End(ctx)
 		}
+
+		if aft != nil {
+			aft(ctx, db, t)
+		}
+
+		const script = `drop database %s`
+		pool.Close()
+
+		_, err := conn.Exec(ctx, fmt.Sprintf(script, name))
+		if err != nil {
+			log.Printf("Could not drop database for test %s: %v", test, err)
+		}
+	})
+
+	return db, ctx
+}
+
+func FetchTestDB(t *testing.T, callbacks ...Callback) (context.Context, *Database) {
+	t.Helper()
+	ctx := context.Background()
+	bef, aft := checkCallbacks(callbacks)
+
+	db, ctx := NewTestDatabase(t, ctx, bef, aft, false)
+	return ctx, db
+}
+
+func FetchTestTX(t *testing.T, callbacks ...Callback) (context.Context, *Database) {
+	t.Helper()
+	ctx := context.Background()
+	bef, aft := checkCallbacks(callbacks)
+
+	db, ctx := NewTestDatabase(t, ctx, bef, aft, true)
+	return ctx, db
+}
+
+func checkCallbacks(cbs []Callback) (bef Callback, aft Callback) {
+	if len(cbs) > 0 {
+		bef = cbs[0]
 	}
+
+	if len(cbs) > 1 {
+		aft = cbs[1]
+	}
+
+	return
 }

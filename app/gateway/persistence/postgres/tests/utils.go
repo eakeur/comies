@@ -7,18 +7,19 @@ import (
 	"comies/app/core/entities/order"
 	"comies/app/core/entities/product"
 	"context"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func (d *Database) CheckValue(ctx context.Context, script string, expected interface{}, args ...interface{}) {
+func (d Database) CheckValue(t *testing.T, ctx context.Context, script string, expected interface{}, args ...interface{}) {
 	var got interface{}
-	r := d.Pool.QueryRow(ctx, script, args...)
+	r := d.QueryRow(ctx, script, args...)
 	if err := r.Scan(&got); err != nil {
-		d.Test.Errorf("an error occurred when checking value: %v", err)
+		t.Errorf("an error occurred when checking value: %v", err)
 	}
 
-	assert.EqualValues(d.Test, expected, got)
+	assert.EqualValues(t, expected, got)
 }
 
 func (d *Database) InsertOrders(ctx context.Context, orders ...order.Order) ([]order.Order, error) {

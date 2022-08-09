@@ -66,7 +66,6 @@ func Test_actions_List(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop()
 
 			got, err := actions{db: db.Pool}.List(ctx, tt.args.orderID)
 			assert.ErrorIs(t, err, tt.wantErr)

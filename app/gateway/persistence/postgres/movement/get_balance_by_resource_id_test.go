@@ -110,7 +110,6 @@ func Test_actions_GetMovementByResourceID(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop(tt.after)
 
 			a := actions{db: db.Pool}
 			got, err := a.GetBalanceByProductID(ctx, tt.args.resourceID, tt.args.filter)

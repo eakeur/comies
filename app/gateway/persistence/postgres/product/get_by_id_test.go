@@ -72,7 +72,6 @@ func Test_actions_GetByID(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop(tt.after)
 
 			a := actions{db: db.Pool}
 			got, err := a.GetByID(ctx, tt.args.id)

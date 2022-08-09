@@ -49,7 +49,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, db *tests.Database, _ *testing.T) {
-				db.CheckValue(ctx, "select count(id) from orders_flow", int64(1))
+				db.CheckValue(t, ctx, "select count(id) from orders_flow", int64(1))
 			},
 		},
 		{
@@ -112,8 +112,7 @@ func Test_actions_UpdateFlow(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			got, err := a.UpdateFlow(ctx, tt.args.flow)

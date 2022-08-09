@@ -6,14 +6,15 @@ import (
 	"comies/app/gateway/persistence/postgres/tests"
 	"context"
 	"fmt"
-	"github.com/bwmarrin/snowflake"
-	"go.uber.org/zap"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"testing"
 	"time"
+
+	"github.com/bwmarrin/snowflake"
+	"go.uber.org/zap"
 )
 
 func TestMain(m *testing.M) {
@@ -21,8 +22,7 @@ func TestMain(m *testing.M) {
 }
 
 func NewTestApp(t *testing.T, defaultRoute string) Client {
-	ctx := context.Background()
-	db := tests.NewTestDatabase(t, ctx)
+	db, _ := tests.NewTestDatabase(t, context.Background(), nil, nil, false)
 
 	flake, err := snowflake.NewNode(1)
 	if err != nil {
@@ -48,7 +48,6 @@ func NewTestApp(t *testing.T, defaultRoute string) Client {
 	addr := lis.Addr()
 
 	t.Cleanup(func() {
-		db.Drop()
 		_ = lis.Close()
 	})
 

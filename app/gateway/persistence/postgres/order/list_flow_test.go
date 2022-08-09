@@ -68,7 +68,6 @@ func Test_actions_ListFlow(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop()
 
 			got, err := actions{db: db.Pool}.ListFlow(ctx, tt.args.orderID)
 			assert.ErrorIs(t, err, tt.wantErr)
