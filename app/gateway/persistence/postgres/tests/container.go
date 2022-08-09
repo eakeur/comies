@@ -27,8 +27,6 @@ func ConnectToDockerPostgres() (*pgxpool.Pool, error) {
 		return nil, errors.Wrap(err, "the docker container resource could not be created or fetched")
 	}
 
-	resource.Expire(ContainerExpires)
-
 	dbPortBinding := resource.GetPort("5432/tcp")
 	if err != nil {
 		return nil, errors.Wrap(err, "could not set an expiration time")
@@ -120,6 +118,7 @@ func resource(dockerPool *dockertest.Pool) (*dockertest.Resource, error) {
 		return &dockertest.Resource{Container: container}, nil
 	}
 
+	resource.Expire(ContainerExpires)
 	return resource, nil
 }
 
