@@ -57,7 +57,7 @@ func Test_actions_SetOutputType(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				d.CheckValue(ctx, "select type from movements where id = $1", movement.OutputType, 1)
+				d.CheckValue(t, ctx, "select type from movements where id = $1", movement.OutputType, 1)
 			},
 		},
 		{
@@ -74,8 +74,7 @@ func Test_actions_SetOutputType(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.SetOutputType(ctx, tt.args.movementID)

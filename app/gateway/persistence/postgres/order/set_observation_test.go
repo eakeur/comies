@@ -38,7 +38,7 @@ func Test_actions_SetObservation(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, _ *testing.T) {
-				d.CheckValue(ctx, "select max(observations) from orders", "Remove onions and tomatoes")
+				d.CheckValue(t, ctx, "select max(observations) from orders", "Remove onions and tomatoes")
 			},
 		},
 		{
@@ -56,8 +56,7 @@ func Test_actions_SetObservation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.SetObservation(ctx, tt.args.id, tt.args.observation)

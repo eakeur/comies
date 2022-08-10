@@ -237,7 +237,6 @@ func Test_actions_ListByResourceID(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop()
 
 			got, err := actions{db: db.Pool}.ListByProductID(ctx, tt.args.resourceID, tt.args.filter)
 			assert.ErrorIs(t, err, tt.wantErr)

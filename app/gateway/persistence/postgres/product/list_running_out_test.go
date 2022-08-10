@@ -5,8 +5,9 @@ import (
 	"comies/app/core/entities/product"
 	"comies/app/gateway/persistence/postgres/tests"
 	"context"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_actions_ListRunningOut(t *testing.T) {
@@ -130,7 +131,6 @@ func Test_actions_ListRunningOut(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop()
 
 			got, err := actions{db: db.Pool}.ListRunningOut(ctx)
 			assert.ErrorIs(t, err, tt.wantErr)

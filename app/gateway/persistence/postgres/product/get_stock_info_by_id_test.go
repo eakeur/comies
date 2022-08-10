@@ -64,7 +64,6 @@ func Test_actions_GetStockInfoByID(t *testing.T) {
 			t.Parallel()
 
 			ctx, db := tests.FetchTestDB(t, tt.before)
-			defer db.Drop(tt.after)
 
 			a := actions{db: db.Pool}
 			got, err := a.GetStockInfoByID(ctx, tt.args.productID)

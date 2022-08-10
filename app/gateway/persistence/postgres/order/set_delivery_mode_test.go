@@ -38,7 +38,7 @@ func Test_actions_SetDeliveryMode(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, _ *testing.T) {
-				d.CheckValue(ctx, "select max(delivery_mode) from orders", order.DeliveryDeliveryMode)
+				d.CheckValue(t, ctx, "select max(delivery_mode) from orders", order.DeliveryDeliveryMode)
 			},
 		},
 		{
@@ -56,8 +56,7 @@ func Test_actions_SetDeliveryMode(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.SetDeliveryMode(ctx, tt.args.id, tt.args.mode)

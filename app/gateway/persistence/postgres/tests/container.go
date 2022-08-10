@@ -2,65 +2,160 @@ package tests
 
 import (
 	"comies/app/gateway/persistence/postgres"
+	"context"
+	"crypto/rand"
 	"fmt"
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/ory/dockertest/docker"
 	"log"
+	"math"
+	"math/big"
 
 	"github.com/ory/dockertest"
 	"github.com/pkg/errors"
 )
 
 const (
-	ContainerExpirationSeconds = 600
+	ContainerName    = "postgres_testing_container"
+	ContainerExpires = 600
 )
 
-type Container struct {
-	config   postgres.Config
-	database *Database
-	pool     *dockertest.Pool
-	resource *dockertest.Resource
+func ConnectToDockerPostgres() (*pgxpool.Pool, error) {
+	pool, err := pool()
+	resource, err := resource(pool)
+	if err != nil {
+		return nil, errors.Wrap(err, "the docker container resource could not be created or fetched")
+	}
+
+	dbPortBinding := resource.GetPort("5432/tcp")
+	if err != nil {
+		return nil, errors.Wrap(err, "could not set an expiration time")
+	}
+
+	db, err := connect(pool, dbPortBinding)
+	if err != nil {
+		defer pool.Purge(resource)
+		return nil, errors.Wrap(err, "an error occurred when pinging database")
+	}
+
+	n, _ := rand.Int(rand.Reader, big.NewInt(math.MaxInt32))
+	databaseName := fmt.Sprintf("database_%d", n)
+
+	err = up(db, databaseName)
+	if err != nil {
+		defer pool.Purge(resource)
+		return nil, err
+	}
+
+	conn, err = postgres.ConnectAndMount(context.Background(), postgres.Config{
+		User:     "postgres",
+		Password: "postgres",
+		Host:     "localhost:" + dbPortBinding,
+		Name:     databaseName,
+		SSLMode:  "disable",
+	})
+	if err != nil {
+		defer pool.Purge(resource)
+		return nil, errors.Wrap(err, "an error occurred when creating test database schema")
+	}
+
+	_, _ = conn.Exec(
+		context.Background(), fmt.Sprintf(
+			"create database %[1]s_template template %[1]s;",
+			databaseName,
+		),
+	)
+
+	return conn, nil
+
 }
 
-func (c *Container) create() error {
-	c.database.Name = c.config.Name
-
+func pool() (*dockertest.Pool, error) {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
-		return errors.Wrap(err, "the docker pool connection could not be established")
+		return nil, errors.Wrap(err, "the docker pool connection could not be established")
 	}
 
 	if err := pool.Client.Ping(); err != nil {
-		return errors.Wrap(err, "could not contact docker pool")
+		return nil, errors.Wrap(err, "could not contact docker pool")
 	}
 
-	resource, err := pool.Run("postgres", "14-alpine", []string{
-		fmt.Sprintf("POSTGRES_USER=%s", c.config.User),
-		fmt.Sprintf("POSTGRES_PASSWORD=%s", c.config.Password),
-		fmt.Sprintf("POSTGRES_DB=%s", c.config.Name),
+	return pool, nil
+}
+
+func resource(dockerPool *dockertest.Pool) (*dockertest.Resource, error) {
+	container, _ := dockerPool.Client.InspectContainer(ContainerName)
+	if container != nil && container.State.Running {
+		resource := &dockertest.Resource{Container: container}
+		return resource, nil
+	}
+	if container != nil && !container.State.Running {
+		_ = dockerPool.RemoveContainerByName(ContainerName)
+	}
+
+	resource, err := dockerPool.RunWithOptions(&dockertest.RunOptions{
+		Name:       ContainerName,
+		Repository: "postgres",
+		Tag:        "14-alpine",
+		Env:        []string{"POSTGRES_USER=postgres", "POSTGRES_PASSWORD=postgres"},
+	}, func(c *docker.HostConfig) {
+		c.AutoRemove = true
+		c.RestartPolicy = docker.RestartPolicy{Name: "no"}
 	})
 	if err != nil {
-		return errors.Wrap(err, "the docker container could not be created")
+		log.Println("concurrent processes from different packages might be starting docker, try to connect to them")
+		var container *docker.Container
+		if err = dockerPool.Retry(func() error {
+			if container, err = dockerPool.Client.InspectContainer(ContainerName); container != nil {
+				return nil
+			}
+			return err
+		}); err != nil || container == nil {
+			return nil, fmt.Errorf(`failed getting container resource: %w`, err)
+		}
+
+		log.Println("Got connection to docker from concurrent process")
+		return &dockertest.Resource{Container: container}, nil
 	}
 
-	c.pool = pool
-	c.resource = resource
-	c.config.Host += ":" + c.resource.GetPort("5432/tcp")
-	err = resource.Expire(ContainerExpirationSeconds)
-	if err != nil {
-		return errors.Wrap(err, "could not set an expiration time")
+	resource.Expire(ContainerExpires)
+	return resource, nil
+}
+
+func connect(pool *dockertest.Pool, at string) (*pgxpool.Pool, error) {
+	var pg *pgxpool.Pool
+
+	if err := pool.Retry(func() error {
+		ctx := context.Background()
+		url := postgres.CreateDatabaseURL("postgres", "postgres", "localhost:"+at, "postgres", "disable")
+
+		var err error
+		pg, err = postgres.NewConnection(ctx, url)
+		if err != nil {
+			return err
+		}
+
+		return pg.Ping(ctx)
+	}); err != nil {
+		return nil, errors.Wrap(err, "an error occurred when connecting to the database server")
 	}
 
-	if err := c.pool.Retry(c.database.connect); err != nil {
-		c.teardown()
-		return errors.Wrap(err, "an error occurred when creating and connecting to the database")
+	return pg, nil
+}
+
+func up(conn *pgxpool.Pool, name string) error {
+	_ = down(conn, name)
+
+	if _, err := conn.Exec(context.Background(), fmt.Sprintf(`create database %s;`, name)); err != nil {
+		return fmt.Errorf("failed creating test database %s: %w", name, err)
+	}
+	return nil
+}
+
+func down(conn *pgxpool.Pool, name string) error {
+	if _, err := conn.Exec(context.Background(), fmt.Sprintf(`drop database if exists %s;`, name)); err != nil {
+		return fmt.Errorf("failed dropping test database %s: %w", name, err)
 	}
 
 	return nil
-
-}
-
-func (c *Container) teardown() {
-	err := c.pool.Purge(c.resource)
-	if err != nil {
-		log.Printf("Error purging database container resources: %v", err)
-	}
 }

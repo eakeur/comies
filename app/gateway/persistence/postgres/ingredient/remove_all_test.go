@@ -66,7 +66,7 @@ func Test_actions_RemoveAll(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				d.CheckValue(ctx, "select count(id) from ingredients", int64(0))
+				d.CheckValue(t, ctx, "select count(id) from ingredients", int64(0))
 			},
 		},
 		{
@@ -83,8 +83,7 @@ func Test_actions_RemoveAll(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.RemoveAll(ctx, tt.args.productID)

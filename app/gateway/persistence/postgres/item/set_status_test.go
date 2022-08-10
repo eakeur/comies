@@ -68,8 +68,7 @@ func Test_actions_SetStatus(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.SetStatus(ctx, tt.args.itemID, tt.args.status)

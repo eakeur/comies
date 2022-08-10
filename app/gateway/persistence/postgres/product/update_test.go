@@ -69,7 +69,7 @@ func Test_actions_Update(t *testing.T) {
                         minimum_sale = $8
 					from products where id = $1
 				`
-				d.CheckValue(ctx, script, true, 1, "PRDXTA", "Product XTA", product.InputType, 20, 30, types.Kilogram, 2)
+				d.CheckValue(t, ctx, script, true, 1, "PRDXTA", "Product XTA", product.InputType, 20, 30, types.Kilogram, 2)
 			},
 		},
 		{
@@ -142,8 +142,7 @@ func Test_actions_Update(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.Update(ctx, tt.args.product)

@@ -125,7 +125,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 				}
 			},
 			after: func(ctx context.Context, d *tests.Database, t *testing.T) {
-				d.CheckValue(ctx, "select count(id) from movements", int64(3))
+				d.CheckValue(t, ctx, "select count(id) from movements", int64(3))
 			},
 		},
 		{
@@ -142,8 +142,7 @@ func Test_actions_RemoveReserved(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, db := tests.FetchTestTX(t, tt.before)
-			defer db.Drop(tt.after)
+			ctx, _ := tests.FetchTestTX(t, tt.before, tt.after)
 
 			a := actions{}
 			err := a.RemoveReserved(ctx, tt.args.agentID)
