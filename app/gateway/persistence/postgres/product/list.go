@@ -20,14 +20,11 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 			p.minimum_sale,
 			p.minimum_quantity,
 			p.maximum_quantity,
-			p.location,
-			coalesce(m.balance, 0) as balance
+			p.location
 		from
 			products p
-			left join products_balances m on p.id = m.product_id
 		%where_query%
-		order by 
-			(case when p.type in (10, 30) then coalesce(m.balance, 0) - p.minimum_quantity else -100000 end), 
+		order by
 			p.code
 	`
 
@@ -56,7 +53,6 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 			&p.MinimumQuantity,
 			&p.MaximumQuantity,
 			&p.Location,
-			&p.Balance,
 		); err != nil {
 			continue
 		}

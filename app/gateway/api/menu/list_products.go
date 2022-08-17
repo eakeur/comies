@@ -28,6 +28,15 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 		Type: 0,
 	}
 
+	if query.Get("stock") == "true" {
+		products, err := s.menu.ListProductsRunningOut(ctx)
+		if err != nil {
+			return handler.Fail(throw.Error(err))
+		}
+
+		return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
+	}
+
 	t, err := strconv.Atoi(query.Get("type"))
 	if err == nil {
 		filter.Type = product.Type(t)
@@ -40,20 +49,6 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 
 	return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
 }
-
-type (
-	ListProductsResponse struct {
-		// ID is the unique identifier of this product
-		ID string `json:"id"`
-		// Code represents how the store's crew call this product internally
-		Code string `json:"code"`
-		// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
-		// shown in fiscal documents
-		Name string `json:"name"`
-		// Type is the type of the product
-		Type product.Type `json:"type"`
-	}
-)
 
 func NewListProductsResponse(list []product.Product) []GetProductByKeyResponse {
 	products := make([]GetProductByKeyResponse, len(list))

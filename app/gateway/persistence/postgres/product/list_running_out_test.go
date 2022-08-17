@@ -54,6 +54,17 @@ func Test_actions_ListRunningOut(t *testing.T) {
 						MinimumQuantity: 0,
 					},
 				},
+				{
+					ID:      2,
+					Code:    "PRDB",
+					Name:    "Product B",
+					Type:    product.OutputType,
+					Balance: 200,
+					Stock: product.Stock{
+						MaximumQuantity: 350,
+						MinimumQuantity: 10,
+					},
+				},
 			},
 			before: func(ctx context.Context, d *tests.Database, t *testing.T) {
 				_, err := d.InsertProducts(ctx, product.Product{

@@ -150,7 +150,7 @@ func TestProductIntegration(t *testing.T) {
 
 		type ListRequest struct {
 			filter map[string]string
-			want   []menu.ListProductsResponse
+			want   []menu.GetProductByKeyResponse
 		}
 
 		for _, r := range []ListRequest{
@@ -158,41 +158,25 @@ func TestProductIntegration(t *testing.T) {
 				filter: map[string]string{
 					"code": "COK",
 				},
-				want: []menu.ListProductsResponse{
-					{
-						Code: "COKC",
-						Name: "Coke Can",
-						Type: product.OutputType,
-					},
-					{
-						Code: "COKL",
-						Name: "Coke 1 Liter",
-						Type: product.OutputType,
-					},
+				want: []menu.GetProductByKeyResponse{
+					products[1],
+					products[0],
 				},
 			},
 			{
 				filter: map[string]string{
 					"name": "pieces",
 				},
-				want: []menu.ListProductsResponse{
-					{
-						Code: "CHIKP",
-						Name: "Chicken pieces",
-						Type: product.InputType,
-					},
+				want: []menu.GetProductByKeyResponse{
+					products[2],
 				},
 			},
 			{
 				filter: map[string]string{
 					"type": "30",
 				},
-				want: []menu.ListProductsResponse{
-					{
-						Code: "CHIKP",
-						Name: "Chicken pieces",
-						Type: product.InputType,
-					},
+				want: []menu.GetProductByKeyResponse{
+					products[2],
 				},
 			},
 		} {
@@ -200,7 +184,7 @@ func TestProductIntegration(t *testing.T) {
 			go func(req ListRequest) {
 				defer wg.Done()
 				var payload handler.Response
-				var data []menu.ListProductsResponse
+				var data []menu.GetProductByKeyResponse
 				payload.Data = &data
 
 				response := app.Request(t, http.MethodGet, "", RequestInput{query: req.filter}).To(&payload).Run()
