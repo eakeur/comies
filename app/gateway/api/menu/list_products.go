@@ -17,8 +17,7 @@ import (
 // @Param       code query    string false "Adds a filter looking for the products codes"
 // @Param       name query    string false "Adds a filter looking for the products names"
 // @Param       type query    int    false "Adds a filter looking for the products types"
-// @Success     200  {object} handler.Response{data=[]ListProductsResponse{}}
-// @Success     200  {object} handler.Response{data=[]ListRunningOutProductsResponse{}}
+// @Success     200  {object} handler.Response{data=[]GetProductByKeyResponse{}}
 // @Failure     500  {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [GET]
 func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Response {
@@ -56,15 +55,10 @@ type (
 	}
 )
 
-func NewListProductsResponse(list []product.Product) []ListProductsResponse {
-	products := make([]ListProductsResponse, len(list))
+func NewListProductsResponse(list []product.Product) []GetProductByKeyResponse {
+	products := make([]GetProductByKeyResponse, len(list))
 	for i, p := range list {
-		products[i] = ListProductsResponse{
-			ID:   p.ID.String(),
-			Code: p.Code,
-			Name: p.Name,
-			Type: p.Type,
-		}
+		products[i] = NewGetProductByKeyResponse(p)
 	}
 	return products
 }
