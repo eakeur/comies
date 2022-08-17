@@ -5,8 +5,6 @@ import (
 	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres/query"
 	"context"
-	"fmt"
-	"strings"
 )
 
 func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Product, error) {
@@ -28,7 +26,9 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 			products p
 			left join products_balances m on p.id = m.product_id
 		%where_query%
-		%order%
+		order by 
+			(case when p.type in (10, 30) then coalesce(m.balance, 0) - p.minimum_quantity else -100000 end), 
+			p.code
 	`
 
 	q := query.NewQuery(script).
@@ -36,14 +36,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 		Where(filter.Name != "", "p.name like $%v", "%"+filter.Name+"%").And().
 		Where(filter.Type != 0, "p.type = $%v", filter.Type)
 
-	scr := fmt.Sprintf(strings.Replace(q.Script(), "%order%", `
-	order by 
-			p.type in ($%d, $%d),
-			coalesce(m.balance, 0) - p.minimum_quantity, 
-			p.code
-	`, 1), len(q.Args)+1, len(q.Args)+2)
-
-	rows, err := a.db.Query(ctx, scr, append(q.Args, product.InputType, product.OutputType)...)
+	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {
 		return nil, throw.Error(err)
 	}
