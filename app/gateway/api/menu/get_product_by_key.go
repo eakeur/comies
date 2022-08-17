@@ -74,6 +74,8 @@ type (
 		MinimumQuantity types.Quantity `json:"minimum_quantity"`
 		// Location is a brief description of where this stock is located
 		Location string `json:"location"`
+		// Balance is the stock balance of this product
+		Balance types.Quantity `json:"balance"`
 	}
 )
 
@@ -90,5 +92,6 @@ func NewGetProductByKeyResponse(prd product.Product) GetProductByKeyResponse {
 		MaximumQuantity: prd.MaximumQuantity,
 		MinimumQuantity: prd.MinimumQuantity,
 		Location:        prd.Location,
+		Balance:         prd.Balance,
 	}
 }
