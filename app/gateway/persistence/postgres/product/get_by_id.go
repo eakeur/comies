@@ -21,11 +21,13 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 			p.sale_price,
 			p.sale_unit,
 			p.minimum_sale,
-			minimum_quantity,
-			maximum_quantity,
-			location
+			p.minimum_quantity,
+			p.maximum_quantity,
+			p.location,
+			coalesce(m.balance, 0) as balance
 		from
 			products p
+			left join products_balances m on p.id = m.product_id
 		where
 			p.id = $1
 	`
@@ -45,6 +47,7 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 		&p.MinimumQuantity,
 		&p.MaximumQuantity,
 		&p.Location,
+		&p.Balance,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return product.Product{}, throw.Error(product.ErrNotFound).
