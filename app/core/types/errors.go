@@ -1,8 +1,6 @@
-package throw
+package types
 
-import (
-	"errors"
-)
+import "errors"
 
 var (
 	ErrNotFound      = errors.New("this resource could not be found or does not exist")

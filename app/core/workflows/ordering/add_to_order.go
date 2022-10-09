@@ -3,14 +3,14 @@ package ordering
 import (
 	"comies/app/core/entities/item"
 	"comies/app/core/entities/reservation"
-	"comies/app/core/throw"
+	"comies/app/core/types"
 	"context"
 )
 
 func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error) {
 
 	if i.OrderID.Empty() {
-		return ItemAdditionResult{}, throw.ErrMissingID
+		return ItemAdditionResult{}, types.ErrMissingID
 	}
 
 	w.id.Create(&i.ID)

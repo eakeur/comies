@@ -1,7 +1,6 @@
 package movement
 
 import (
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"time"
 )
@@ -16,7 +15,7 @@ type (
 
 func (f Filter) Validate() error {
 	if f.ProductID.Empty() {
-		return throw.ErrMissingID
+		return types.ErrMissingID
 	}
 
 	if f.FinalDate.Before(f.InitialDate) {

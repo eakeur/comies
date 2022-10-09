@@ -1,7 +1,6 @@
 package item
 
 import (
-	"comies/app/core/throw"
 	"comies/app/core/types"
 )
 
@@ -51,7 +50,7 @@ func (i Item) Validate() error {
 	}
 
 	if i.ProductID.Empty() {
-		return throw.ErrMissingID
+		return types.ErrMissingID
 	}
 
 	return nil

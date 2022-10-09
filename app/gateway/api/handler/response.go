@@ -36,7 +36,7 @@ func (r Response) Write(w http.ResponseWriter, req *http.Request) {
 	go func() {
 		logger := LoggerFromContext(req.Context()).With("code", r.code)
 		if r.inner != nil {
-			logger.Error("errors", r.inner.Error())
+			logger.Error(r.inner.Error())
 			return
 		}
 

@@ -1,0 +1,31 @@
+package menu
+
+import (
+	"comies/app/gateway/api/handler"
+	"context"
+	"net/http"
+)
+
+// RemoveProduct remove a product from the store's menu.
+//
+// @Summary     Remove product
+// @Description removes a product from the store's menu.
+// @Tags        Product
+// @Param       product_id path string true "The product ID"
+// @Success     204
+// @Failure     400 {object} handler.Response{error=handler.Error{}} "INVALID_ID"
+// @Failure     500 {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Router      /menu/products/{product_id} [DELETE]
+func RemoveProduct(ctx context.Context, r *http.Request) handler.Response {
+	id, err := handler.GetResourceIDFromURL(r, "product_id")
+	if err != nil {
+		return handler.IDParsingErrorResponse(err)
+	}
+
+	err = menu.RemoveProduct(ctx, id)
+	if err != nil {
+		return handler.Fail(err)
+	}
+
+	return handler.ResponseWithData(http.StatusNoContent, nil)
+}
