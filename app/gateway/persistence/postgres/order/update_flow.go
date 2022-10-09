@@ -33,17 +33,11 @@ func (a actions) UpdateFlow(ctx context.Context, f order.FlowUpdate) (order.Flow
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == postgres.DuplicateError &&
 				(pgErr.ConstraintName == postgres.OrderFlowPK || pgErr.ConstraintName == postgres.OrderStatusUK) {
-				return order.FlowUpdate{}, throw.Error(throw.ErrAlreadyExists).
-					Describe("the flow id or status provided seems to already exist").Params(map[string]interface{}{
-					"id": f.ID, "order_id": f.OrderID, "status": f.Status,
-				})
+				return order.FlowUpdate{}, throw.ErrAlreadyExists
 			}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.OrderFlowFK {
-				return order.FlowUpdate{}, throw.Error(throw.ErrNotFound).
-					Describe("the order id provided seems to not exist").Params(map[string]interface{}{
-					"id": f.ID, "order_id": f.OrderID, "status": f.Status,
-				})
+				return order.FlowUpdate{}, throw.ErrNotFound
 			}
 		}
 		return order.FlowUpdate{}, err

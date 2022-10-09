@@ -20,11 +20,11 @@ func (a actions) SetPlacementDate(ctx context.Context, id types.ID, date time.Ti
 
 	cmd, err := transaction.ExecFromContext(ctx, script, date, id)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
 	"context"
 	"net/http"
@@ -29,7 +28,7 @@ func (s Service) GetProductNameByID(ctx context.Context, r *http.Request) handle
 		return handler.Response{}
 	}
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	return handler.ResponseWithData(http.StatusOK, GetProductNameResponse{Name: name})

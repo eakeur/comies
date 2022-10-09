@@ -2,7 +2,6 @@ package item
 
 import (
 	"comies/app/core/entities/item"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"context"
 )
@@ -25,7 +24,7 @@ func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error
 
 	rows, err := a.db.Query(ctx, script, orderID)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	items := make([]item.Item, 0)

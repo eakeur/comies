@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"context"
 )
 
@@ -10,7 +9,7 @@ func (w workflow) ListProducts(ctx context.Context, filter product.Filter) ([]pr
 
 	list, err := w.products.List(ctx, filter)
 	if err != nil {
-		return []product.Product{}, throw.Error(err)
+		return []product.Product{}, err
 	}
 
 	return list, err

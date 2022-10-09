@@ -12,11 +12,11 @@ func (a actions) RemoveAll(ctx context.Context, productID types.ID) error {
 
 	cmd, err := transaction.ExecFromContext(ctx, script, productID)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() <= 0 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

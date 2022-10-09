@@ -3,27 +3,20 @@ package menu
 import (
 	"comies/app/core/entities/ingredient"
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"context"
 )
 
 func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
 
-	var params = map[string]interface{}{
-		"product_id":    i.ProductID,
-		"ingredient_id": i.IngredientID,
-		"quantity":      i.Quantity,
-	}
-
 	w.id.Create(&i.ID)
 
 	if err := i.Validate(); err != nil {
-		return ingredient.Ingredient{}, throw.Error(err).Params(params)
+		return ingredient.Ingredient{}, err
 	}
 
 	compositeProduct, err := w.products.GetByID(ctx, i.ProductID)
 	if err != nil {
-		return ingredient.Ingredient{}, throw.Error(err).Params(params)
+		return ingredient.Ingredient{}, err
 	}
 
 	if compositeProduct.Type == product.InputType || compositeProduct.Type == product.OutputType {
@@ -32,7 +25,7 @@ func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient)
 
 	ingredientProduct, err := w.products.GetByID(ctx, i.IngredientID)
 	if err != nil {
-		return ingredient.Ingredient{}, throw.Error(err).Params(params)
+		return ingredient.Ingredient{}, err
 	}
 
 	if ingredientProduct.Type == product.OutputType || ingredientProduct.Type == product.OutputCompositeType {
@@ -41,7 +34,7 @@ func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient)
 
 	i, err = w.ingredients.Create(ctx, i)
 	if err != nil {
-		return ingredient.Ingredient{}, throw.Error(err)
+		return ingredient.Ingredient{}, err
 	}
 
 	return i, nil

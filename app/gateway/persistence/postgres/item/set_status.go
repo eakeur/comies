@@ -13,11 +13,11 @@ func (a actions) SetStatus(ctx context.Context, itemID types.ID, status item.Sta
 
 	cmd, err := transaction.ExecFromContext(ctx, script, status, itemID)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() <= 0 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

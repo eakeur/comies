@@ -10,13 +10,13 @@ import (
 func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error) {
 
 	if i.OrderID.Empty() {
-		return ItemAdditionResult{}, throw.Error(throw.ErrMissingID)
+		return ItemAdditionResult{}, throw.ErrMissingID
 	}
 
 	w.id.Create(&i.ID)
 	i, err := w.items.Create(ctx, i)
 	if err != nil {
-		return ItemAdditionResult{}, throw.Error(err)
+		return ItemAdditionResult{}, err
 	}
 
 	res, err := w.products.Reserve(ctx, reservation.Reservation{
@@ -27,7 +27,7 @@ func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResu
 		Replace:   i.Details.ReplaceIngredients,
 	})
 	if err != nil {
-		return ItemAdditionResult{}, throw.Error(err)
+		return ItemAdditionResult{}, err
 	}
 
 	result := ItemAdditionResult{}

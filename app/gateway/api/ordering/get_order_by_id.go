@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"comies/app/gateway/api/handler"
 	"context"
@@ -42,7 +41,7 @@ func (s Service) GetOrderByID(ctx context.Context, r *http.Request) handler.Resp
 
 	o, err := s.ordering.GetOrderByID(ctx, id)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewGetOrderByIDResponse(o))

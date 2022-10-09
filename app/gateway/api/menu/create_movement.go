@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"comies/app/gateway/api/handler"
 	"context"
@@ -40,7 +39,7 @@ func (s Service) CreateMovement(ctx context.Context, r *http.Request) handler.Re
 
 	bal, err := s.menu.CreateMovement(ctx, mov.ToMovement(productID, agentID))
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	return handler.ResponseWithData(http.StatusCreated, MovementAdditionResult{ID: bal.ID.String(), Balance: bal.Count})

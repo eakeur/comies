@@ -2,7 +2,6 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"context"
 )
 
@@ -32,7 +31,7 @@ func (a actions) ListRunningOut(ctx context.Context) ([]product.Product, error) 
 
 	rows, err := a.db.Query(ctx, script, product.OutputType, product.InputType)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	products := make([]product.Product, 0)

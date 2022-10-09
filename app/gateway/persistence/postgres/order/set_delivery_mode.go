@@ -20,11 +20,11 @@ func (a actions) SetDeliveryMode(ctx context.Context, id types.ID, deliverType o
 
 	cmd, err := transaction.ExecFromContext(ctx, script, deliverType, id)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

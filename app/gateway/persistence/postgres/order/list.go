@@ -2,7 +2,6 @@ package order
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres/query"
 	"context"
 )
@@ -42,7 +41,7 @@ func (a actions) List(ctx context.Context, filter order.Filter) ([]order.Order, 
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	items := make([]order.Order, 0)

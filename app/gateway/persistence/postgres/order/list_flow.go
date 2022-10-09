@@ -2,7 +2,6 @@ package order
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"context"
 )
@@ -22,7 +21,7 @@ func (a actions) ListFlow(ctx context.Context, orderID types.ID) ([]order.FlowUp
 
 	rows, err := a.db.Query(ctx, script, orderID)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	items := make([]order.FlowUpdate, 0)

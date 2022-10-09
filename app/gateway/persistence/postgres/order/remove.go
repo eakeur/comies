@@ -18,11 +18,11 @@ func (a actions) Remove(ctx context.Context, id types.ID) error {
 
 	cmd, err := transaction.ExecFromContext(ctx, script, id)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

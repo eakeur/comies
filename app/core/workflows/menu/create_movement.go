@@ -3,7 +3,6 @@ package menu
 import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"context"
 	"time"
 )
@@ -11,7 +10,7 @@ import (
 func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (ActualBalance, error) {
 	prd, err := w.products.GetByID(ctx, mv.ProductID)
 	if err != nil {
-		return ActualBalance{}, throw.Error(err)
+		return ActualBalance{}, err
 	}
 
 	if (prd.Type == product.InputType && mv.Type == movement.OutputType) ||
@@ -21,7 +20,7 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 
 	actual, err := w.movements.GetBalanceByProductID(ctx, mv.ProductID, movement.Filter{})
 	if err != nil {
-		return ActualBalance{}, throw.Error(err)
+		return ActualBalance{}, err
 	}
 
 	w.id.Create(&mv.ID)
@@ -31,21 +30,21 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 	}
 
 	if err := mv.Validate(); err != nil {
-		return ActualBalance{}, throw.Error(err)
+		return ActualBalance{}, err
 	}
 
 	actual += mv.Value()
 	if mv.Type == movement.InputType && actual > prd.MaximumQuantity {
-		return ActualBalance{}, throw.Error(product.ErrStockAlreadyFull)
+		return ActualBalance{}, product.ErrStockAlreadyFull
 	}
 
 	if mv.Type == movement.OutputType && actual < prd.MinimumQuantity {
-		return ActualBalance{}, throw.Error(product.ErrStockNegative)
+		return ActualBalance{}, product.ErrStockNegative
 	}
 
 	_, err = w.movements.Create(ctx, mv)
 	if err != nil {
-		return ActualBalance{}, throw.Error(err)
+		return ActualBalance{}, err
 	}
 
 	return ActualBalance{

@@ -38,19 +38,16 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) (movement.Mo
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
-			params := map[string]interface{}{"id": mov.ID, "product_id": mov.ProductID}
 
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.MovementStockIDFK {
-				return movement.Movement{}, throw.Error(throw.ErrNotFound).
-					Describe("the product id provided seems to not exist").Params(params)
+				return movement.Movement{}, throw.ErrNotFound
 			}
 
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.MovementIDPK {
-				return movement.Movement{}, throw.Error(throw.ErrAlreadyExists).
-					Describe("a movement with this id seems to already exist").Params(params)
+				return movement.Movement{}, throw.ErrAlreadyExists
 			}
 		}
-		return movement.Movement{}, throw.Error(err)
+		return movement.Movement{}, err
 	}
 
 	return mov, nil

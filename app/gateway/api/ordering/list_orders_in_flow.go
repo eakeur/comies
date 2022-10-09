@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
 	"context"
 	"net/http"
@@ -15,7 +14,7 @@ var ws = websocket.Upgrader{}
 func (s Service) ListOrdersInFlow(ctx context.Context, w http.ResponseWriter, r *http.Request) handler.Response {
 	server, err := ws.Upgrade(w, r, nil)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	defer func(server *websocket.Conn) {
@@ -24,7 +23,7 @@ func (s Service) ListOrdersInFlow(ctx context.Context, w http.ResponseWriter, r 
 
 	channel, err := s.ordering.Channel(ctx)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	for {

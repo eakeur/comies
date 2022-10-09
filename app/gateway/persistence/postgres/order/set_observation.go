@@ -19,11 +19,11 @@ func (a actions) SetObservation(ctx context.Context, id types.ID, observation st
 
 	cmd, err := transaction.ExecFromContext(ctx, script, observation, id)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

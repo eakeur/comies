@@ -2,7 +2,6 @@ package ordering
 
 import (
 	"comies/app/core/entities/order"
-	"comies/app/core/throw"
 	"context"
 )
 
@@ -14,7 +13,7 @@ func (w workflow) Channel(ctx context.Context) (chan OrderNotification, error) {
 
 	ch, err := w.createChannel(ctx)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	return ch, nil
@@ -31,14 +30,14 @@ func (w workflow) createChannel(ctx context.Context) (chan OrderNotification, er
 		},
 	})
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	ch := make(chan OrderNotification)
 	for _, o := range orders {
 		items, err := w.items.List(ctx, o.ID)
 		if err != nil {
-			return nil, throw.Error(err)
+			return nil, err
 		}
 
 		ch <- OrderNotification{

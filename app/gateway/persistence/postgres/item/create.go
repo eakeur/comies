@@ -39,20 +39,14 @@ func (a actions) Create(ctx context.Context, i item.Item) (item.Item, error) {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == postgres.NonexistentFK && pgErr.ConstraintName == postgres.ItemOrderIDFK {
-				return item.Item{}, throw.Error(throw.ErrNotFound).
-					Describe("the order id provided seems to not exist").Params(map[string]interface{}{
-					"order_id": i.OrderID.String(),
-				})
+				return item.Item{}, throw.ErrNotFound
 			}
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.ItemIDPK {
-				return item.Item{}, throw.Error(throw.ErrAlreadyExists).
-					Describe("the item id provided seems to already exist").Params(map[string]interface{}{
-					"order_id": i.OrderID.String(), "item_id": i.ID.String(),
-				})
+				return item.Item{}, throw.ErrAlreadyExists
 			}
 		}
 
-		return item.Item{}, throw.Error(err)
+		return item.Item{}, err
 	}
 
 	return i, nil

@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
 	"context"
 	"encoding/json"
@@ -30,7 +29,7 @@ func (s Service) SetOrderDeliveryMode(ctx context.Context, r *http.Request) hand
 
 	err = s.ordering.SetOrderDeliveryMode(ctx, id, req.Mode)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	return handler.ResponseWithData(http.StatusNoContent, nil)

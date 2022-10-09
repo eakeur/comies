@@ -38,10 +38,7 @@ func (a actions) Create(ctx context.Context, o order.Order) (order.Order, error)
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.OrderIDPK {
-				return order.Order{}, throw.Error(throw.ErrAlreadyExists).
-					Describe("the order id provided seems to already exist").Params(map[string]interface{}{
-					"id": o.ID,
-				})
+				return order.Order{}, throw.ErrAlreadyExists
 			}
 		}
 

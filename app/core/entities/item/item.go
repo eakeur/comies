@@ -47,12 +47,11 @@ func (i Item) Validate() error {
 	}
 
 	if i.Quantity <= types.QuantityMinimum {
-		return throw.Error(ErrInvalidQuantity).
-			DescribeF("the quantity should be bigger than %v", types.QuantityMinimum)
+		return ErrInvalidQuantity
 	}
 
 	if i.ProductID.Empty() {
-		return throw.Error(throw.ErrMissingID).Describe("a product id must be specified")
+		return throw.ErrMissingID
 	}
 
 	return nil

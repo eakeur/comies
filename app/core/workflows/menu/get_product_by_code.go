@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"context"
 )
 
@@ -10,7 +9,7 @@ func (w workflow) GetProductByCode(ctx context.Context, code string) (product.Pr
 
 	prod, err := w.products.GetByCode(ctx, code)
 	if err != nil {
-		return product.Product{}, throw.Error(err)
+		return product.Product{}, err
 	}
 	return prod, nil
 }

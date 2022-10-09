@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
 	"context"
 	"net/http"
@@ -15,7 +14,7 @@ import (
 func (s Service) RequestOrderTicket(ctx context.Context, _ *http.Request) handler.Response {
 	ticket, err := s.ordering.RequestOrderTicket(ctx)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	return handler.ResponseWithData(http.StatusCreated, OrderRequestResponse{ID: ticket.String()})

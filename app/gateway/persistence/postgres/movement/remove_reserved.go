@@ -18,11 +18,11 @@ func (a actions) RemoveReserved(ctx context.Context, agentID types.ID) error {
 
 	cmd, err := transaction.ExecFromContext(ctx, script, agentID, movement.ReservedType)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() < 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

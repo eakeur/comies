@@ -12,11 +12,11 @@ func (a actions) Remove(ctx context.Context, movementID types.ID) error {
 
 	cmd, err := transaction.ExecFromContext(ctx, script, movementID)
 	if err != nil {
-		return throw.Error(err)
+		return err
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return throw.Error(throw.ErrNotFound)
+		return throw.ErrNotFound
 	}
 
 	return nil

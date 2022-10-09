@@ -1,7 +1,6 @@
 package ordering
 
 import (
-	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
 	"context"
 	"encoding/json"
@@ -35,7 +34,7 @@ func (s Service) AddToOrder(ctx context.Context, r *http.Request) handler.Respon
 
 	res, err := s.ordering.AddToOrder(ctx, it)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	if size := len(res.Failed); size > 0 {

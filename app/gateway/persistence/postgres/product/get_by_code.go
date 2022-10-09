@@ -2,7 +2,6 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"context"
 	"errors"
 
@@ -46,12 +45,9 @@ func (a actions) GetByCode(ctx context.Context, code string) (product.Product, e
 		&p.Location,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Product{}, throw.Error(product.ErrNotFound).
-				Describe("the product code provided seems to not exist").Params(map[string]interface{}{
-				"code": code,
-			})
+			return product.Product{}, product.ErrNotFound
 		}
-		return product.Product{}, throw.Error(err)
+		return product.Product{}, err
 	}
 
 	return p, nil

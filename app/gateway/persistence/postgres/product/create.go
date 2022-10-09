@@ -2,7 +2,6 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres"
 	"comies/app/gateway/persistence/postgres/transaction"
 	"context"
@@ -46,10 +45,7 @@ func (a actions) Create(ctx context.Context, p product.Product) (product.Product
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == postgres.DuplicateError && pgErr.ConstraintName == postgres.ProductCodeUK {
-				return product.Product{}, throw.Error(product.ErrCodeAlreadyExists).
-					Describe("the product code provided seems to already exist").Params(map[string]interface{}{
-					"id": p.ID, "code": p.Code,
-				})
+				return product.Product{}, product.ErrCodeAlreadyExists
 			}
 		}
 

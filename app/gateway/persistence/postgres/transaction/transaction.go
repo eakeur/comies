@@ -1,7 +1,6 @@
 package transaction
 
 import (
-	"comies/app/core/throw"
 	"context"
 
 	"github.com/jackc/pgconn"
@@ -20,12 +19,12 @@ func FromContext(ctx context.Context) (pgx.Tx, error) {
 func ExecFromContext(ctx context.Context, script string, parameters ...interface{}) (pgconn.CommandTag, error) {
 	tx, err := FromContext(ctx)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	cmd, err := tx.Exec(ctx, script, parameters...)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	return cmd, err
@@ -34,7 +33,7 @@ func ExecFromContext(ctx context.Context, script string, parameters ...interface
 func QueryRowFromContext(ctx context.Context, script string, parameters ...interface{}) (pgx.Row, error) {
 	tx, err := FromContext(ctx)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	return tx.QueryRow(ctx, script, parameters...), nil

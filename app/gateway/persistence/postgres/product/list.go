@@ -2,7 +2,6 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"comies/app/gateway/persistence/postgres/query"
 	"context"
 )
@@ -35,7 +34,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	products := make([]product.Product, 0)

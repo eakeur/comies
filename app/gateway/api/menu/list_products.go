@@ -2,7 +2,6 @@ package menu
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"comies/app/gateway/api/handler"
 	"context"
 	"net/http"
@@ -31,7 +30,7 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 	if query.Get("stock") == "true" {
 		products, err := s.menu.ListProductsRunningOut(ctx)
 		if err != nil {
-			return handler.Fail(throw.Error(err))
+			return handler.Fail(err)
 		}
 
 		return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
@@ -44,7 +43,7 @@ func (s Service) ListProducts(ctx context.Context, r *http.Request) handler.Resp
 
 	products, err := s.menu.ListProducts(ctx, filter)
 	if err != nil {
-		return handler.Fail(throw.Error(err))
+		return handler.Fail(err)
 	}
 
 	return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))

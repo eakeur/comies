@@ -2,7 +2,6 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"context"
 	"errors"
@@ -31,12 +30,9 @@ func (a actions) GetStockInfoByID(ctx context.Context, productID types.ID) (prod
 		&p.Location,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Stock{}, throw.Error(product.ErrNotFound).
-				Describe("the product id provided seems to not exist").Params(map[string]interface{}{
-				"productID": productID,
-			})
+			return product.Stock{}, product.ErrNotFound
 		}
-		return product.Stock{}, throw.Error(err)
+		return product.Stock{}, err
 	}
 
 	return p, nil

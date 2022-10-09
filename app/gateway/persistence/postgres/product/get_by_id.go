@@ -2,7 +2,6 @@ package product
 
 import (
 	"comies/app/core/entities/product"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"context"
 	"errors"
@@ -50,12 +49,9 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 		&p.Balance,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Product{}, throw.Error(product.ErrNotFound).
-				Describe("the product id provided seems to not exist").Params(map[string]interface{}{
-				"id": id,
-			})
+			return product.Product{}, product.ErrNotFound
 		}
-		return product.Product{}, throw.Error(err)
+		return product.Product{}, err
 	}
 
 	return p, nil

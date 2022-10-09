@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"comies/app/core/throw"
 	"comies/app/gateway/api/middleware"
 	"context"
 	"encoding/json"
@@ -36,13 +35,6 @@ func (r Response) Write(w http.ResponseWriter, req *http.Request) {
 
 	go func() {
 		logger := LoggerFromContext(req.Context()).With("code", r.code)
-
-		var innErr throw.DetailedError
-		if r.inner != nil && errors.As(r.inner, &innErr) {
-			logger.Desugar().With(zap.Any("errors", innErr.Stacked())).Error("failed request")
-			return
-		}
-
 		if r.inner != nil {
 			logger.Error("errors", r.inner.Error())
 			return

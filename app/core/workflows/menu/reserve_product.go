@@ -5,24 +5,15 @@ import (
 	"comies/app/core/entities/movement"
 	"comies/app/core/entities/product"
 	"comies/app/core/entities/reservation"
-	"comies/app/core/throw"
 	"context"
 	"errors"
 	"sync"
 )
 
 func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failures []reservation.Failure, err error) {
-
-	var (
-		params = map[string]interface{}{
-			"reservation_id": r.ID.String(),
-			"product_id":     r.ProductID.String(),
-		}
-	)
-
 	ingredients, err := w.ingredients.List(ctx, r.ProductID)
 	if err != nil {
-		return nil, throw.Error(err).Params(params)
+		return nil, err
 	}
 
 	wg := sync.WaitGroup{}
@@ -43,7 +34,7 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 				})
 			}
 
-			return nil, throw.Error(err)
+			return nil, err
 		}
 	} else {
 		for _, ing := range ingredient.IgnoreAndReplace(ingredients, r.Ignore, r.Replace, func(i ingredient.Ingredient) ingredient.Ingredient {
@@ -74,7 +65,7 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 	}
 
 	if len(errs) > 0 {
-		return nil, throw.Error(<-errs).Params(params)
+		return nil, <-errs
 	}
 
 	return failures, nil

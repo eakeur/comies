@@ -2,7 +2,6 @@ package movement
 
 import (
 	"comies/app/core/entities/movement"
-	"comies/app/core/throw"
 	"comies/app/core/types"
 	"comies/app/gateway/persistence/postgres/query"
 	"context"
@@ -31,7 +30,7 @@ func (a actions) ListByProductID(ctx context.Context, resourceID types.ID, filte
 
 	rows, err := a.db.Query(ctx, q.Script(), q.Args...)
 	if err != nil {
-		return nil, throw.Error(err)
+		return nil, err
 	}
 
 	movements := make([]movement.Movement, 0)

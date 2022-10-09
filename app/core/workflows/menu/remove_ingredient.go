@@ -9,14 +9,12 @@ import (
 func (w workflow) RemoveIngredient(ctx context.Context, id types.ID) error {
 
 	if id.Empty() {
-		return throw.Error(throw.ErrMissingID)
+		return throw.ErrMissingID
 	}
 
 	err := w.ingredients.Remove(ctx, id)
 	if err != nil {
-		return throw.Error(err).Params(map[string]interface{}{
-			"id": id.String(),
-		})
+		return err
 	}
 
 	return nil
