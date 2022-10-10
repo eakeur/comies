@@ -1,10 +1,10 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
-	"comies/app/core/entities/order"
-	"comies/app/core/entities/reservation"
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/core/item"
+	"comies/app/core/order"
+	"comies/app/core/reservation"
 )
 
 type (
@@ -14,7 +14,7 @@ type (
 	}
 
 	ReservationFailure struct {
-		ProductID types.ID
+		ProductID id.ID
 		Error     error
 	}
 
@@ -23,7 +23,7 @@ type (
 	}
 
 	OrderConfirmation struct {
-		OrderID      types.ID
+		OrderID      id.ID
 		DeliveryMode order.DeliveryMode
 	}
 )

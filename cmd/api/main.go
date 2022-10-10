@@ -1,84 +1,42 @@
 package main
 
 import (
-	"comies/app"
 	"comies/app/config"
-	"comies/app/gateway/api"
-	"comies/app/gateway/persistence/postgres"
-	"context"
+	"comies/app/core/id"
+	"comies/app/data/conn"
 	"fmt"
 	"log"
 	"net"
-	"net/http"
-	"strconv"
 
-	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	"github.com/bwmarrin/snowflake"
 )
 
 // @title        Comies Backend API
 // @version      1.0
 // @description  An API wrapping all functionalities of the ordering and menu services of Comies
 func main() {
-	ctx := context.Background()
-
 	cfg := config.Load()
 
-	var (
-		db  *pgxpool.Pool
-		err error
-	)
-
-	if cfg.Database.URL == "" {
-		db, err = postgres.ConnectAndMount(ctx, postgres.Config{
-			User:     cfg.Database.User,
-			Password: cfg.Database.Password,
-			Host:     cfg.Database.Host,
-			Name:     cfg.Database.Name,
-			SSLMode:  cfg.Database.SSLMode,
-		})
-	} else {
-		db, err = postgres.ConnectAndMountURL(ctx, cfg.Database.URL)
-	}
+	err := conn.Connect(cfg.Database)
 	if err != nil {
-		log.Fatalf("Could not connect and populate postgres database: %v", err)
+		log.Fatalf("Could not startup database: %v", err)
 	}
-	log.Printf("Successfully connected to database %s", db.Config().ConnConfig.Database)
 
-	nodeNumber, err := strconv.Atoi(cfg.IDGeneration.NodeNumber)
+	err = conn.Migrate()
 	if err != nil {
-		log.Fatalf("Could not parse id generation node number %v: %v", cfg.IDGeneration.NodeNumber, err)
+		log.Fatalf("Could not migrate database: %v", err)
 	}
 
-	snflake, err := snowflake.NewNode(int64(nodeNumber))
+	err = id.NewNode(cfg.IDGeneration)
 	if err != nil {
-		log.Fatalf("Could not create snowflake node: %v", err)
-	}
-	log.Println("Successfully created snowflake node")
-
-	var logger *zap.Logger
-	if cfg.Logger.Environment == "development" {
-		logger, err = zap.NewDevelopment(zap.AddStacktrace(zapcore.PanicLevel))
-		if err != nil {
-			log.Fatalf("Could not create logger instance: %v", err)
-		}
-		log.Println("Successfully created logger instance in development mode")
-	} else {
-		logger, err = zap.NewProduction(zap.AddStacktrace(zapcore.PanicLevel))
-		if err != nil {
-			log.Fatalf("Could not create logger instance: %v", err)
-		}
-		log.Println("Successfully created logger instance in production mode")
+		log.Fatalf("Could not startup idgen: %v", err)
 	}
 
-	application := app.NewApplication(app.Gateways{
-		Database:      db,
-		SnowflakeNode: snflake,
-		Logger:        logger.Sugar(),
-	})
+	err = startupLogger(cfg.Logger)
+	if err != nil {
+		log.Fatalf("Could not startup logger: %v", err)
+	}
 
 	address := fmt.Sprintf(":%v", cfg.Server.ListenPort)
 	lis, err := net.Listen("tcp", address)
@@ -87,8 +45,27 @@ func main() {
 	}
 	log.Printf("Listening on %s", lis.Addr())
 
-	err = http.Serve(lis, api.NewAPI(application))
-	if err != nil {
-		log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, err)
+	// err = http.Serve(lis, api.NewAPI(application))
+	// if err != nil {
+	// 	log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, err)
+	// }
+}
+
+func startupLogger(cfg config.Logger) error {
+
+	stackTraceOption := zap.AddStacktrace(zapcore.PanicLevel)
+
+	builderByEnv := map[string]func(options ...zap.Option) (*zap.Logger, error){
+		"development": zap.NewDevelopment,
+		"production":  zap.NewProduction,
 	}
+
+	logger, err := builderByEnv[cfg.Environment](stackTraceOption)
+	if err != nil {
+		return err
+	}
+
+	zap.ReplaceGlobals(logger)
+
+	return nil
 }

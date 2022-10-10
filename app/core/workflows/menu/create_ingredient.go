@@ -1,20 +1,23 @@
 package menu
 
 import (
-	"comies/app/core/entities/ingredient"
-	"comies/app/core/entities/product"
+	"comies/app/core/id"
+	"comies/app/core/ingredient"
+	"comies/app/core/product"
+	"comies/app/data/ingredients"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
+func CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
 
-	w.id.Create(&i.ID)
+	id.Create(&i.ID)
 
 	if err := i.Validate(); err != nil {
 		return ingredient.Ingredient{}, err
 	}
 
-	compositeProduct, err := w.products.GetByID(ctx, i.ProductID)
+	compositeProduct, err := products.GetByID(ctx, i.ProductID)
 	if err != nil {
 		return ingredient.Ingredient{}, err
 	}
@@ -23,7 +26,7 @@ func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient)
 		return ingredient.Ingredient{}, ingredient.ErrInvalidCompositeType
 	}
 
-	ingredientProduct, err := w.products.GetByID(ctx, i.IngredientID)
+	ingredientProduct, err := products.GetByID(ctx, i.IngredientID)
 	if err != nil {
 		return ingredient.Ingredient{}, err
 	}
@@ -32,7 +35,7 @@ func (w workflow) CreateIngredient(ctx context.Context, i ingredient.Ingredient)
 		return ingredient.Ingredient{}, ingredient.ErrInvalidIngredientType
 	}
 
-	i, err = w.ingredients.Create(ctx, i)
+	i, err = ingredients.Create(ctx, i)
 	if err != nil {
 		return ingredient.Ingredient{}, err
 	}

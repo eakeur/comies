@@ -1,14 +1,17 @@
 package ordering
 
 import (
-	"comies/app/core/entities/order"
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/core/order"
+	"comies/app/core/workflows/menu"
+	"comies/app/data/items"
+	"comies/app/data/orders"
 	"context"
 )
 
-func (w workflow) CancelOrder(ctx context.Context, id types.ID) error {
+func CancelOrder(ctx context.Context, id id.ID) error {
 
-	o, err := w.orders.GetByID(ctx, id)
+	o, err := orders.GetByID(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -17,13 +20,13 @@ func (w workflow) CancelOrder(ctx context.Context, id types.ID) error {
 		return order.ErrAlreadyPreparing
 	}
 
-	items, err := w.items.List(ctx, o.ID)
+	items, err := items.List(ctx, o.ID)
 	if err != nil {
 		return err
 	}
 
 	for _, item := range items {
-		err := w.products.UpdateReservation(ctx, item.ID, false)
+		err := menu.UpdateReservation(ctx, item.ID, false)
 		if err != nil {
 			return err
 		}

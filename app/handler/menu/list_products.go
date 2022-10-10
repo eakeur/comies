@@ -1,8 +1,9 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
-	"comies/app/gateway/api/handler"
+	"comies/app/core/product"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"net/http"
 	"strconv"
@@ -16,10 +17,10 @@ import (
 // @Param       code query    string false "Adds a filter looking for the products codes"
 // @Param       name query    string false "Adds a filter looking for the products names"
 // @Param       type query    int    false "Adds a filter looking for the products types"
-// @Success     200  {object} handler.Response{data=[]GetProductByKeyResponse{}}
-// @Failure     500  {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Success     200  {object} rest.Response{data=[]GetProductByKeyResponse{}}
+// @Failure     500  {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [GET]
-func ListProducts(ctx context.Context, r *http.Request) handler.Response {
+func ListProducts(ctx context.Context, r *http.Request) rest.Response {
 	query := r.URL.Query()
 	filter := product.Filter{
 		Code: query.Get("code"),
@@ -30,10 +31,10 @@ func ListProducts(ctx context.Context, r *http.Request) handler.Response {
 	if query.Get("stock") == "true" {
 		products, err := menu.ListProductsRunningOut(ctx)
 		if err != nil {
-			return handler.Fail(err)
+			return rest.Fail(err)
 		}
 
-		return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
+		return rest.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
 	}
 
 	t, err := strconv.Atoi(query.Get("type"))
@@ -43,10 +44,10 @@ func ListProducts(ctx context.Context, r *http.Request) handler.Response {
 
 	products, err := menu.ListProducts(ctx, filter)
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
-	return handler.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
+	return rest.ResponseWithData(http.StatusOK, NewListProductsResponse(products))
 }
 
 func NewListProductsResponse(list []product.Product) []GetProductByKeyResponse {

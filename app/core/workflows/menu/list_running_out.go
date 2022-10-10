@@ -1,12 +1,13 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
+	"comies/app/core/product"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) ListProductsRunningOut(ctx context.Context) ([]product.Product, error) {
-	list, err := w.products.ListRunningOut(ctx)
+func ListProductsRunningOut(ctx context.Context) ([]product.Product, error) {
+	list, err := products.ListRunningOut(ctx)
 	if err != nil {
 		return []product.Product{}, err
 	}

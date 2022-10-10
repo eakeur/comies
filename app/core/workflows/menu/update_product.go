@@ -1,17 +1,18 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
+	"comies/app/core/product"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) UpdateProduct(ctx context.Context, prd product.Product) error {
+func UpdateProduct(ctx context.Context, prd product.Product) error {
 
 	if err := prd.Validate(); err != nil {
 		return err
 	}
 
-	err := w.products.Update(ctx, prd)
+	err := products.Update(ctx, prd)
 	if err != nil {
 		return err
 	}

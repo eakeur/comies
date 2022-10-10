@@ -1,13 +1,14 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
+	"comies/app/core/product"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) ListProducts(ctx context.Context, filter product.Filter) ([]product.Product, error) {
+func ListProducts(ctx context.Context, filter product.Filter) ([]product.Product, error) {
 
-	list, err := w.products.List(ctx, filter)
+	list, err := products.List(ctx, filter)
 	if err != nil {
 		return []product.Product{}, err
 	}

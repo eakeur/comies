@@ -1,9 +1,10 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
+	"comies/app/core/product"
 	"comies/app/core/types"
-	"comies/app/gateway/api/handler"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -15,25 +16,25 @@ import (
 // @Description Adds a product to the store's menu.
 // @Tags        Product
 // @Param       product body     CreateProductRequest true "The properties to define the product"
-// @Success     201     {object} handler.Response{data=CreateProductResponse{}}
-// @Failure     412     {object} handler.Response{error=handler.Error{}} "PRODUCT_CODE_ALREADY_EXISTS"
-// @Failure     422     {object} handler.Response{error=handler.Error{}} "PRODUCT_ZERO_SALE_QUANTITY, PRODUCT_ZERO_PRICE, PRODUCT_INVALID_CODE, PRODUCT_INVALID_NAME, PRODUCT_INVALID_TYPE"
-// @Failure     500     {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Success     201     {object} rest.Response{data=CreateProductResponse{}}
+// @Failure     412     {object} rest.Response{error=rest.Error{}} "PRODUCT_CODE_ALREADY_EXISTS"
+// @Failure     422     {object} rest.Response{error=rest.Error{}} "PRODUCT_ZERO_SALE_QUANTITY, PRODUCT_ZERO_PRICE, PRODUCT_INVALID_CODE, PRODUCT_INVALID_NAME, PRODUCT_INVALID_TYPE"
+// @Failure     500     {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [POST]
-func CreateProduct(ctx context.Context, r *http.Request) handler.Response {
+func CreateProduct(ctx context.Context, r *http.Request) rest.Response {
 
 	var p CreateProductRequest
 	err := json.NewDecoder(r.Body).Decode(&p)
 	if err != nil {
-		return handler.JSONParsingErrorResponse(err)
+		return rest.JSONParsingErrorResponse(err)
 	}
 
 	prd, err := menu.CreateProduct(ctx, p.ToProduct())
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
-	return handler.ResponseWithData(http.StatusCreated, CreateProductResponse{ID: prd.ID.String()})
+	return rest.ResponseWithData(http.StatusCreated, CreateProductResponse{ID: prd.ID.String()})
 }
 
 type (

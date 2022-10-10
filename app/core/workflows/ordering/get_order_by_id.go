@@ -1,13 +1,14 @@
 package ordering
 
 import (
-	"comies/app/core/entities/order"
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/core/order"
+	"comies/app/data/orders"
 	"context"
 )
 
-func (w workflow) GetOrderByID(ctx context.Context, id types.ID) (order.Order, error) {
-	o, err := w.orders.GetByID(ctx, id)
+func GetOrderByID(ctx context.Context, id id.ID) (order.Order, error) {
+	o, err := orders.GetByID(ctx, id)
 	if err != nil {
 		return order.Order{}, err
 	}

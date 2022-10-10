@@ -1,14 +1,15 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/core/product"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) GetProductByID(ctx context.Context, id types.ID) (product.Product, error) {
+func GetProductByID(ctx context.Context, id id.ID) (product.Product, error) {
 
-	prod, err := w.products.GetByID(ctx, id)
+	prod, err := products.GetByID(ctx, id)
 	if err != nil {
 		return product.Product{}, err
 	}

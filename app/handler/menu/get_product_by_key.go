@@ -1,9 +1,11 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
+	"comies/app/core/id"
+	"comies/app/core/product"
 	"comies/app/core/types"
-	"comies/app/gateway/api/handler"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"net/http"
 
@@ -17,12 +19,12 @@ import (
 // @Tags        Product
 // @Param       product_key path     string false "The product ID"
 // @Param       code        query    bool   false "Toggles if the API should search by code"
-// @Success     200         {object} handler.Response{data=GetProductByKeyResponse{}}
-// @Failure     404         {object} handler.Response{error=handler.Error{}} "PRODUCT_NOT_FOUND"
-// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Success     200         {object} rest.Response{data=GetProductByKeyResponse{}}
+// @Failure     404         {object} rest.Response{error=rest.Error{}} "PRODUCT_NOT_FOUND"
+// @Failure     400         {object} rest.Response{error=rest.Error{}} "INVALID_ID"
+// @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id} [GET]
-func GetProductByKey(ctx context.Context, r *http.Request) handler.Response {
+func GetProductByKey(ctx context.Context, r *http.Request) rest.Response {
 	var (
 		prd product.Product
 		err error
@@ -33,19 +35,19 @@ func GetProductByKey(ctx context.Context, r *http.Request) handler.Response {
 	if flag := r.URL.Query().Get("code"); flag == "true" {
 		prd, err = menu.GetProductByCode(ctx, key)
 	} else {
-		var id types.ID
-		id, err = handler.ConvertToID(key)
+		var id id.ID
+		id, err = rest.ConvertToID(key)
 		if err != nil {
-			return handler.IDParsingErrorResponse(err)
+			return rest.IDParsingErrorResponse(err)
 		}
 		prd, err = menu.GetProductByID(ctx, id)
 	}
 
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
-	return handler.ResponseWithData(http.StatusOK, NewGetProductByKeyResponse(prd))
+	return rest.ResponseWithData(http.StatusOK, NewGetProductByKeyResponse(prd))
 }
 
 type (

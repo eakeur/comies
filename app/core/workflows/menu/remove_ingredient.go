@@ -1,17 +1,19 @@
 package menu
 
 import (
+	"comies/app/core/id"
 	"comies/app/core/types"
+	"comies/app/data/ingredients"
 	"context"
 )
 
-func (w workflow) RemoveIngredient(ctx context.Context, id types.ID) error {
+func RemoveIngredient(ctx context.Context, id id.ID) error {
 
 	if id.Empty() {
 		return types.ErrMissingID
 	}
 
-	err := w.ingredients.Remove(ctx, id)
+	err := ingredients.Remove(ctx, id)
 	if err != nil {
 		return err
 	}

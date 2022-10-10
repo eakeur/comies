@@ -1,16 +1,19 @@
 package ordering
 
 import (
-	"comies/app/core/entities/order"
+	"comies/app/core/order"
+	"comies/app/core/workflows/menu"
+	"comies/app/data/items"
+	"comies/app/data/orders"
 	"context"
 	"time"
 )
 
-func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
+func Order(ctx context.Context, o OrderConfirmation) (order.Order, error) {
 
 	var consume bool
 
-	ord, err := w.orders.GetByID(ctx, o.OrderID)
+	ord, err := orders.GetByID(ctx, o.OrderID)
 	if err != nil {
 		return order.Order{}, err
 	}
@@ -19,7 +22,7 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 		return order.Order{}, order.ErrAlreadyOrdered
 	}
 
-	items, err := w.items.List(ctx, o.OrderID)
+	items, err := items.List(ctx, o.OrderID)
 	if err != nil {
 		return order.Order{}, err
 	}
@@ -30,21 +33,21 @@ func (w workflow) Order(ctx context.Context, o OrderConfirmation) (order.Order, 
 
 	defer func() {
 		go func() {
-			w.sendToChannel(OrderNotification{
+			sendToChannel(OrderNotification{
 				Order: ord,
 				Items: items,
 			})
 			for _, item := range items {
-				w.products.UpdateReservation(ctx, item.ID, consume)
+				menu.UpdateReservation(ctx, item.ID, consume)
 			}
 		}()
 	}()
 
-	if err := w.orders.SetDeliveryMode(ctx, o.OrderID, o.DeliveryMode); err != nil {
+	if err := orders.SetDeliveryMode(ctx, o.OrderID, o.DeliveryMode); err != nil {
 		return order.Order{}, err
 	}
 
-	if _, err = w.orders.UpdateFlow(ctx, order.FlowUpdate{
+	if _, err = orders.UpdateFlow(ctx, order.FlowUpdate{
 		OrderID:    o.OrderID,
 		Status:     order.PreparingStatus,
 		OccurredAt: time.Now().UTC(),

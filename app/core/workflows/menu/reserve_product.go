@@ -1,17 +1,18 @@
 package menu
 
 import (
-	"comies/app/core/entities/ingredient"
-	"comies/app/core/entities/movement"
-	"comies/app/core/entities/product"
-	"comies/app/core/entities/reservation"
+	"comies/app/core/ingredient"
+	"comies/app/core/movement"
+	"comies/app/core/product"
+	"comies/app/core/reservation"
+	"comies/app/data/ingredients"
 	"context"
 	"errors"
 	"sync"
 )
 
-func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failures []reservation.Failure, err error) {
-	ingredients, err := w.ingredients.List(ctx, r.ProductID)
+func Reserve(ctx context.Context, r reservation.Reservation) (failures []reservation.Failure, err error) {
+	ingredients, err := ingredients.List(ctx, r.ProductID)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +21,7 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 	errs := make(chan error, len(ingredients))
 
 	if len(ingredients) == 0 {
-		if _, err := w.CreateMovement(ctx, movement.Movement{
+		if _, err := CreateMovement(ctx, movement.Movement{
 			ProductID: r.ProductID,
 			Quantity:  r.Quantity,
 			AgentID:   r.ID,
@@ -45,7 +46,7 @@ func (w workflow) Reserve(ctx context.Context, r reservation.Reservation) (failu
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				f, err := w.Reserve(ctx, reservation.Reservation{
+				f, err := Reserve(ctx, reservation.Reservation{
 					ID:         r.ID,
 					ReserveFor: ing.ProductID,
 					ProductID:  ing.IngredientID,

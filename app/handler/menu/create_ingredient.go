@@ -1,9 +1,11 @@
 package menu
 
 import (
-	"comies/app/core/entities/ingredient"
+	"comies/app/core/id"
+	"comies/app/core/ingredient"
 	"comies/app/core/types"
-	"comies/app/gateway/api/handler"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -16,35 +18,35 @@ import (
 // @Tags        Product
 // @Param       product_id path     string                  false "The product ID"
 // @Param       ingredient  body     CreateIngredientRequest true  "The properties to define the ingredient"
-// @Success     201         {object} handler.Response{data=IngredientAdditionResult{}}
-// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
-// @Failure     412         {object} handler.Response{error=handler.Error{}} "INGREDIENT_INVALID_INGREDIENT_ID, INGREDIENT_INVALID_PRODUCT_ID, INGREDIENT_ZERO_QUANTITY, INGREDIENT_INVALID_PRODUCT_TYPE, INGREDIENT_INVALID_INGREDIENT_TYPE"
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Success     201         {object} rest.Response{data=IngredientAdditionResult{}}
+// @Failure     400         {object} rest.Response{error=rest.Error{}} "INVALID_ID"
+// @Failure     412         {object} rest.Response{error=rest.Error{}} "INGREDIENT_INVALID_INGREDIENT_ID, INGREDIENT_INVALID_PRODUCT_ID, INGREDIENT_ZERO_QUANTITY, INGREDIENT_INVALID_PRODUCT_TYPE, INGREDIENT_INVALID_INGREDIENT_TYPE"
+// @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/ingredients [POST]
-func CreateIngredient(ctx context.Context, r *http.Request) handler.Response {
+func CreateIngredient(ctx context.Context, r *http.Request) rest.Response {
 
 	var i CreateIngredientRequest
 	err := json.NewDecoder(r.Body).Decode(&i)
 	if err != nil {
-		return handler.JSONParsingErrorResponse(err)
+		return rest.JSONParsingErrorResponse(err)
 	}
 
-	productID, err := handler.GetResourceIDFromURL(r, "product_id")
+	productID, err := rest.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
-		return handler.IDParsingErrorResponse(err)
+		return rest.IDParsingErrorResponse(err)
 	}
 
-	ingredientID, err := handler.ConvertToID(i.IngredientID)
+	ingredientID, err := rest.ConvertToID(i.IngredientID)
 	if err != nil {
-		return handler.IDParsingErrorResponse(err)
+		return rest.IDParsingErrorResponse(err)
 	}
 
 	ing, err := menu.CreateIngredient(ctx, i.ToIngredient(productID, ingredientID))
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
-	return handler.ResponseWithData(http.StatusCreated, IngredientAdditionResult{ID: ing.ID.String()})
+	return rest.ResponseWithData(http.StatusCreated, IngredientAdditionResult{ID: ing.ID.String()})
 }
 
 type CreateIngredientRequest struct {
@@ -56,7 +58,7 @@ type CreateIngredientRequest struct {
 	Optional bool `json:"optional"`
 }
 
-func (i *CreateIngredientRequest) ToIngredient(productID, ingredientID types.ID) ingredient.Ingredient {
+func (i *CreateIngredientRequest) ToIngredient(productID, ingredientID id.ID) ingredient.Ingredient {
 	return ingredient.Ingredient{
 		ProductID:    productID,
 		IngredientID: ingredientID,

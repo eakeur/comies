@@ -1,13 +1,14 @@
 package ordering
 
 import (
-	"comies/app/core/entities/order"
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/core/order"
+	"comies/app/data/orders"
 	"context"
 )
 
-func (w workflow) SetOrderDeliveryMode(ctx context.Context, id types.ID, deliveryMode order.DeliveryMode) error {
-	err := w.orders.SetDeliveryMode(ctx, id, deliveryMode)
+func SetOrderDeliveryMode(ctx context.Context, id id.ID, deliveryMode order.DeliveryMode) error {
+	err := orders.SetDeliveryMode(ctx, id, deliveryMode)
 	if err != nil {
 		return err
 	}

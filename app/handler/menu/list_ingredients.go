@@ -1,7 +1,8 @@
 package menu
 
 import (
-	"comies/app/gateway/api/handler"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"net/http"
 )
@@ -12,18 +13,18 @@ import (
 // @Description Fetches all product ingredients.
 // @Tags        Product
 // @Param       product_id path     string false "The product ID"
-// @Success     200         {object} handler.Response{data=[]Ingredient{}}
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Success     200         {object} rest.Response{data=[]Ingredient{}}
+// @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/ingredients [GET]
-func GetProductIngredients(ctx context.Context, r *http.Request) handler.Response {
-	id, err := handler.GetResourceIDFromURL(r, "product_id")
+func GetProductIngredients(ctx context.Context, r *http.Request) rest.Response {
+	id, err := rest.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
-		return handler.IDParsingErrorResponse(err)
+		return rest.IDParsingErrorResponse(err)
 	}
 
 	list, err := menu.ListIngredients(ctx, id)
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
 	ingredients := make([]Ingredient, len(list))
@@ -37,5 +38,5 @@ func GetProductIngredients(ctx context.Context, r *http.Request) handler.Respons
 		}
 	}
 
-	return handler.ResponseWithData(http.StatusOK, ingredients)
+	return rest.ResponseWithData(http.StatusOK, ingredients)
 }

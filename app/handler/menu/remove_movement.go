@@ -1,7 +1,8 @@
 package menu
 
 import (
-	"comies/app/gateway/api/handler"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"net/http"
 )
@@ -14,19 +15,19 @@ import (
 // @Param       product_id path string true "The product ID"
 // @Param       id         path string true "The movement ID"
 // @Success     204
-// @Failure     400 {object} handler.Response{error=handler.Error{}} "INVALID_ID"
-// @Failure     500 {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Failure     400 {object} rest.Response{error=rest.Error{}} "INVALID_ID"
+// @Failure     500 {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/movements/{id} [DELETE]
-func RemoveProductMovement(ctx context.Context, r *http.Request) handler.Response {
-	id, err := handler.GetResourceIDFromURL(r, "movement_id")
+func RemoveProductMovement(ctx context.Context, r *http.Request) rest.Response {
+	id, err := rest.GetResourceIDFromURL(r, "movement_id")
 	if err != nil {
-		return handler.IDParsingErrorResponse(err)
+		return rest.IDParsingErrorResponse(err)
 	}
 
 	err = menu.RemoveMovement(ctx, id)
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
-	return handler.ResponseWithData(http.StatusNoContent, nil)
+	return rest.ResponseWithData(http.StatusNoContent, nil)
 }

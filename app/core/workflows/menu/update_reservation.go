@@ -1,21 +1,22 @@
 package menu
 
 import (
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/data/movements"
 	"context"
 )
 
-func (w workflow) UpdateReservation(ctx context.Context, reservationID types.ID, consume bool) error {
+func UpdateReservation(ctx context.Context, reservationID id.ID, consume bool) error {
 
 	if consume {
-		err := w.movements.SetOutputType(ctx, reservationID)
+		err := movements.SetOutputType(ctx, reservationID)
 		if err != nil {
 			return err
 		}
 
 	}
 
-	err := w.movements.RemoveReserved(ctx, reservationID)
+	err := movements.RemoveReserved(ctx, reservationID)
 	if err != nil {
 		return err
 	}

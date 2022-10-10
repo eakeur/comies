@@ -1,14 +1,17 @@
 package menu
 
 import (
-	"comies/app/core/entities/movement"
-	"comies/app/core/entities/product"
+	"comies/app/core/id"
+	"comies/app/core/movement"
+	"comies/app/core/product"
+	"comies/app/data/movements"
+	"comies/app/data/products"
 	"context"
 	"time"
 )
 
-func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (ActualBalance, error) {
-	prd, err := w.products.GetByID(ctx, mv.ProductID)
+func CreateMovement(ctx context.Context, mv movement.Movement) (ActualBalance, error) {
+	prd, err := products.GetByID(ctx, mv.ProductID)
 	if err != nil {
 		return ActualBalance{}, err
 	}
@@ -18,12 +21,12 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 		return ActualBalance{}, movement.ErrInvalidProductType
 	}
 
-	actual, err := w.movements.GetBalanceByProductID(ctx, mv.ProductID, movement.Filter{})
+	actual, err := movements.GetBalanceByProductID(ctx, mv.ProductID, movement.Filter{})
 	if err != nil {
 		return ActualBalance{}, err
 	}
 
-	w.id.Create(&mv.ID)
+	id.Create(&mv.ID)
 
 	if mv.Date.IsZero() {
 		mv.Date = time.Now().UTC()
@@ -42,7 +45,7 @@ func (w workflow) CreateMovement(ctx context.Context, mv movement.Movement) (Act
 		return ActualBalance{}, product.ErrStockNegative
 	}
 
-	_, err = w.movements.Create(ctx, mv)
+	_, err = movements.Create(ctx, mv)
 	if err != nil {
 		return ActualBalance{}, err
 	}

@@ -1,19 +1,21 @@
 package menu
 
 import (
-	"comies/app/core/entities/product"
+	"comies/app/core/id"
+	"comies/app/core/product"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) CreateProduct(ctx context.Context, prd product.Product) (product.Product, error) {
+func CreateProduct(ctx context.Context, prd product.Product) (product.Product, error) {
 
-	w.id.Create(&prd.ID)
+	id.Create(&prd.ID)
 
 	if err := prd.Validate(); err != nil {
 		return product.Product{}, err
 	}
 
-	prd, err := w.products.Create(ctx, prd)
+	prd, err := products.Create(ctx, prd)
 	if err != nil {
 		return product.Product{}, err
 	}

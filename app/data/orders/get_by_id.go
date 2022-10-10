@@ -1,0 +1,58 @@
+package orders
+
+import (
+	"comies/app/core/id"
+	"comies/app/core/order"
+	"comies/app/core/types"
+	"comies/app/data/conn"
+	"context"
+	"errors"
+
+	"github.com/jackc/pgx/v4"
+)
+
+func GetByID(ctx context.Context, id id.ID) (order.Order, error) {
+	const script = `
+		select
+			o.id,
+        	max(o.identification),
+        	max(o.placed_at),
+        	max(o.delivery_mode),
+        	max(o.observations),
+			max(s.status),
+			coalesce(sum(i.price), 0) as price
+		from
+			orders o
+		inner join 
+			orders_statuses s on o.id = s.order_id
+		left join items i on o.id = i.order_id
+		where
+			o.id = $1
+		group by 
+			o.id
+	`
+
+	row, err := conn.QueryRowFromContext(ctx, script, id)
+	if err != nil {
+		return order.Order{}, nil
+	}
+
+	var o order.Order
+	if err := row.Scan(
+		&o.ID,
+		&o.Identification,
+		&o.PlacedAt,
+		&o.DeliveryMode,
+		&o.Observations,
+		&o.Status,
+		&o.FinalPrice,
+	); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return order.Order{}, types.ErrNotFound
+		}
+		return order.Order{}, err
+	}
+
+	o.PlacedAt = o.PlacedAt.UTC()
+	return o, nil
+}

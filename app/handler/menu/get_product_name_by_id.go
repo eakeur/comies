@@ -1,7 +1,8 @@
 package menu
 
 import (
-	"comies/app/gateway/api/handler"
+	"comies/app/core/workflows/menu"
+	"comies/app/handler/rest"
 	"context"
 	"net/http"
 )
@@ -12,26 +13,26 @@ import (
 // @Description Fetches a product name by its id.
 // @Tags        Product
 // @Param       product_key path     string false "The product ID"
-// @Success     200         {object} handler.Response{data=GetProductNameResponse{}}
-// @Failure     404         {object} handler.Response{error=handler.Error{}} "PRODUCT_NOT_FOUND"
-// @Failure     400         {object} handler.Response{error=handler.Error{}} "INVALID_ID"
-// @Failure     500         {object} handler.Response{error=handler.Error{}} "ERR_INTERNAL_SERVER_ERROR"
+// @Success     200         {object} rest.Response{data=GetProductNameResponse{}}
+// @Failure     404         {object} rest.Response{error=rest.Error{}} "PRODUCT_NOT_FOUND"
+// @Failure     400         {object} rest.Response{error=rest.Error{}} "INVALID_ID"
+// @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/name [GET]
-func GetProductNameByID(ctx context.Context, r *http.Request) handler.Response {
-	id, err := handler.GetResourceIDFromURL(r, "product_id")
+func GetProductNameByID(ctx context.Context, r *http.Request) rest.Response {
+	id, err := rest.GetResourceIDFromURL(r, "product_id")
 	if err != nil {
-		return handler.IDParsingErrorResponse(err)
+		return rest.IDParsingErrorResponse(err)
 	}
 
 	name, err := menu.GetProductNameByID(ctx, id)
 	if err != nil {
-		return handler.Response{}
+		return rest.Response{}
 	}
 	if err != nil {
-		return handler.Fail(err)
+		return rest.Fail(err)
 	}
 
-	return handler.ResponseWithData(http.StatusOK, GetProductNameResponse{Name: name})
+	return rest.ResponseWithData(http.StatusOK, GetProductNameResponse{Name: name})
 }
 
 type GetProductNameResponse struct {

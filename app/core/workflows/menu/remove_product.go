@@ -1,13 +1,14 @@
 package menu
 
 import (
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/data/products"
 	"context"
 )
 
-func (w workflow) RemoveProduct(ctx context.Context, id types.ID) error {
+func RemoveProduct(ctx context.Context, id id.ID) error {
 
-	err := w.products.Remove(ctx, id)
+	err := products.Remove(ctx, id)
 	if err != nil {
 		return err
 	}

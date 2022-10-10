@@ -1,25 +1,28 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
-	"comies/app/core/entities/reservation"
+	"comies/app/core/id"
+	"comies/app/core/item"
+	"comies/app/core/reservation"
 	"comies/app/core/types"
+	"comies/app/core/workflows/menu"
+	"comies/app/data/items"
 	"context"
 )
 
-func (w workflow) AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error) {
+func AddToOrder(ctx context.Context, i item.Item) (ItemAdditionResult, error) {
 
 	if i.OrderID.Empty() {
 		return ItemAdditionResult{}, types.ErrMissingID
 	}
 
-	w.id.Create(&i.ID)
-	i, err := w.items.Create(ctx, i)
+	id.Create(&i.ID)
+	i, err := items.Create(ctx, i)
 	if err != nil {
 		return ItemAdditionResult{}, err
 	}
 
-	res, err := w.products.Reserve(ctx, reservation.Reservation{
+	res, err := menu.Reserve(ctx, reservation.Reservation{
 		ID:        i.ID,
 		ProductID: i.ProductID,
 		Quantity:  i.Quantity,

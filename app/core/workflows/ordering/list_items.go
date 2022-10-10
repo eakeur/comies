@@ -1,13 +1,14 @@
 package ordering
 
 import (
-	"comies/app/core/entities/item"
-	"comies/app/core/types"
+	"comies/app/core/id"
+	"comies/app/core/item"
+	"comies/app/data/items"
 	"context"
 )
 
-func (w workflow) ListItems(ctx context.Context, orderID types.ID) ([]item.Item, error) {
-	list, err := w.items.List(ctx, orderID)
+func ListItems(ctx context.Context, orderID id.ID) ([]item.Item, error) {
+	list, err := items.List(ctx, orderID)
 	if err != nil {
 		return nil, err
 	}

@@ -1,27 +1,37 @@
 package id
 
 import (
-	"comies/app/core/types"
+	"comies/app/config"
+	"strconv"
+
 	"github.com/bwmarrin/snowflake"
 )
 
 type (
-	Manager interface {
-		Create(id *types.ID)
-	}
-
-	manager struct {
-		node *snowflake.Node
-	}
+	ID int64
 )
 
-func NewManager(node *snowflake.Node) Manager {
-	return manager{
-		node: node,
-	}
+func (i ID) String() string {
+	return strconv.FormatInt(int64(i), 10)
 }
 
-func (m manager) Create(id *types.ID) {
-	gen := types.ID(m.node.Generate().Int64())
+func (i ID) Empty() bool {
+	return i == 0
+}
+
+var node *snowflake.Node
+
+func NewNode(cfg config.IDGeneration) (err error) {
+	number, err := strconv.Atoi(cfg.NodeNumber)
+	if err != nil {
+		return err
+	}
+
+	node, err = snowflake.NewNode(int64(number))
+	return
+}
+
+func Create(id *ID) {
+	gen := ID(node.Generate().Int64())
 	*id = gen
 }

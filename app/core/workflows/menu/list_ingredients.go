@@ -1,18 +1,20 @@
 package menu
 
 import (
-	"comies/app/core/entities/ingredient"
+	"comies/app/core/id"
+	"comies/app/core/ingredient"
 	"comies/app/core/types"
+	"comies/app/data/ingredients"
 	"context"
 )
 
-func (w workflow) ListIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
+func ListIngredients(ctx context.Context, productID id.ID) ([]ingredient.Ingredient, error) {
 
 	if productID.Empty() {
 		return []ingredient.Ingredient{}, types.ErrMissingID
 	}
 
-	list, err := w.ingredients.List(ctx, productID)
+	list, err := ingredients.List(ctx, productID)
 	if err != nil {
 		return []ingredient.Ingredient{}, err
 	}
