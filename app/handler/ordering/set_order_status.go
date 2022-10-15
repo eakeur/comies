@@ -1,8 +1,8 @@
 package ordering
 
 import (
-	"comies/app/core/workflows/ordering"
 	"comies/app/handler/rest"
+	"comies/app/workflows/ordering"
 	"context"
 	"encoding/json"
 	"net/http"

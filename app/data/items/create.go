@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, i item.Item) (item.Item, error) {
+func Create(ctx context.Context, i item.Item) error {
 	const script = `
 		insert into items (
 			id,

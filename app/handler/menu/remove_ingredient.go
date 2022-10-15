@@ -1,8 +1,8 @@
 package menu
 
 import (
-	"comies/app/core/workflows/menu"
 	"comies/app/handler/rest"
+	"comies/app/workflows/menu"
 	"context"
 	"net/http"
 )

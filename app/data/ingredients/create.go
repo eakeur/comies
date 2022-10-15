@@ -1,7 +1,7 @@
 package ingredients
 
 import (
-	"comies/app/core/ingredient"
+	"comies/app/core/menu"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
+func Create(ctx context.Context, i menu.Ingredient) error {
 	const script = `
 		insert into ingredients (
 			id,
@@ -35,17 +35,18 @@ func Create(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient
 		if errors.As(err, &pgErr) {
 
 			if pgErr.Code == conn.NonexistentFK && pgErr.ConstraintName == conn.IngredientProductIDFK {
-				return ingredient.Ingredient{}, types.ErrNotFound
+				return types.ErrNotFound
 			}
 			if pgErr.Code == conn.NonexistentFK && pgErr.ConstraintName == conn.IngredientIDFK {
-				return ingredient.Ingredient{}, types.ErrNotFound
+				return types.ErrNotFound
 			}
 			if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.IngredientProductUK {
-				return ingredient.Ingredient{}, types.ErrAlreadyExists
+				return types.ErrAlreadyExists
 			}
 		}
-		return ingredient.Ingredient{}, err
+
+		return err
 	}
 
-	return i, nil
+	return nil
 }

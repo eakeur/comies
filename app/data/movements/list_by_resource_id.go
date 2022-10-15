@@ -1,23 +1,22 @@
 package movements
 
 import (
-	"comies/app/core/id"
-	"comies/app/core/movement"
+	"comies/app/core/menu"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"comies/app/data/query"
 	"context"
 )
 
-func ListByProductID(ctx context.Context, resourceID id.ID, filter movement.Filter) ([]movement.Movement, error) {
+func List(ctx context.Context, filter menu.MovementFilter) ([]menu.Movement, error) {
 	const script = `
 		select
 			m.id,
 			m.product_id,
 			m.type,
 			m.date,
-			m.quantity,
-			m.value,
-			m.agent_id
+			m.agent_id,
+			m.quantity
 		from
 			movements m
 		where
@@ -27,29 +26,32 @@ func ListByProductID(ctx context.Context, resourceID id.ID, filter movement.Filt
 	q, err := query.NewQuery(script).
 		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
 		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
-		OnlyWhere(resourceID != 0, "m.product_id= $%v", resourceID)
+		OnlyWhere(filter.ProductID != 0, "m.product_id= $%v", filter.ProductID)
 
 	rows, err := conn.QueryFromContext(ctx, q.Script(), q.Args...)
 	if err != nil {
 		return nil, err
 	}
 
-	movements := make([]movement.Movement, 0)
+	movements := make([]menu.Movement, 0)
+	var m menu.Movement
+	var qt types.Quantity
+
 	for rows.Next() {
-		var m movement.Movement
+
 		if err := rows.Scan(
 			&m.ID,
 			&m.ProductID,
 			&m.Type,
 			&m.Date,
-			&m.Quantity,
-			&m.PaidValue,
 			&m.AgentID,
+			&qt,
 		); err != nil {
-			continue
+			return nil, err
 		}
 
 		m.Date = m.Date.UTC()
+		m = menu.AssignMovementQuantity(m, qt)
 
 		movements = append(movements, m)
 	}

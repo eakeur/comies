@@ -1,7 +1,7 @@
 package products
 
 import (
-	"comies/app/core/product"
+	"comies/app/core/menu"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, p product.Product) (product.Product, error) {
+func Create(ctx context.Context, p menu.Product) error {
 	const script = `
 		insert into products (
 			id,
@@ -44,12 +44,12 @@ func Create(ctx context.Context, p product.Product) (product.Product, error) {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.ProductCodeUK {
-				return product.Product{}, product.ErrCodeAlreadyExists
+				return menu.ErrCodeAlreadyExists
 			}
 		}
 
-		return product.Product{}, err
+		return err
 	}
 
-	return p, nil
+	return nil
 }

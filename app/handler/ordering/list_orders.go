@@ -4,8 +4,8 @@ import (
 	"comies/app/core/id"
 	"comies/app/core/order"
 	"comies/app/core/types"
-	"comies/app/core/workflows/ordering"
 	"comies/app/handler/rest"
+	"comies/app/workflows/ordering"
 	"context"
 	"net/http"
 	"strconv"
@@ -29,7 +29,7 @@ type ListOrdersResponse struct {
 // ListOrders
 //
 // @Tags        Ordering
-// @Success     200         {object} rest.Response{data=[]Order{}}
+// @Success     200         {object} rest.Response{data=[]PlaceOrder{}}
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /ordering/ordering [GET]
 func ListOrders(ctx context.Context, r *http.Request) rest.Response {

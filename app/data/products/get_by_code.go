@@ -1,7 +1,7 @@
 package products
 
 import (
-	"comies/app/core/product"
+	"comies/app/core/menu"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetByCode(ctx context.Context, code string) (product.Product, error) {
+func GetByCode(ctx context.Context, code string) (menu.Product, error) {
 	const script = `
 		select
 			id,
@@ -22,7 +22,8 @@ func GetByCode(ctx context.Context, code string) (product.Product, error) {
 			minimum_sale,
 			minimum_quantity,
 			maximum_quantity,
-			location
+			location,
+			coalesce(m.balance, 0) as balance
 		from
 			products p
 		where
@@ -31,10 +32,10 @@ func GetByCode(ctx context.Context, code string) (product.Product, error) {
 
 	row, err := conn.QueryRowFromContext(ctx, script, code)
 	if err != nil {
-		return product.Product{}, err
+		return menu.Product{}, err
 	}
 
-	var p product.Product
+	var p menu.Product
 	if err := row.Scan(
 		&p.ID,
 		&p.Code,
@@ -47,11 +48,12 @@ func GetByCode(ctx context.Context, code string) (product.Product, error) {
 		&p.MinimumQuantity,
 		&p.MaximumQuantity,
 		&p.Location,
+		&p.Balance,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Product{}, product.ErrNotFound
+			return menu.Product{}, menu.ErrNotFound
 		}
-		return product.Product{}, err
+		return menu.Product{}, err
 	}
 
 	return p, nil

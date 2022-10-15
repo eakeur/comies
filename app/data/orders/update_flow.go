@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func UpdateFlow(ctx context.Context, f order.FlowUpdate) (order.FlowUpdate, error) {
+func UpdateFlow(ctx context.Context, f order.FlowUpdate) error {
 	const script = `
 		insert into orders_flow (
 			id,

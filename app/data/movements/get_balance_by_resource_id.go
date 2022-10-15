@@ -1,15 +1,14 @@
 package movements
 
 import (
-	"comies/app/core/id"
-	"comies/app/core/movement"
+	"comies/app/core/menu"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"comies/app/data/query"
 	"context"
 )
 
-func GetBalanceByProductID(ctx context.Context, resourceID id.ID, filter movement.Filter) (types.Quantity, error) {
+func GetBalance(ctx context.Context, filter menu.MovementFilter) (types.Quantity, error) {
 	const script = `
 		select
 			coalesce(sum(
@@ -28,7 +27,7 @@ func GetBalanceByProductID(ctx context.Context, resourceID id.ID, filter movemen
 	q, err := query.NewQuery(script).
 		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
 		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
-		OnlyWhere(resourceID != 0, "m.product_id = $%v", resourceID)
+		OnlyWhere(filter.ProductID != 0, "m.product_id = $%v", filter.ProductID)
 	if err != nil {
 		return 0, err
 	}

@@ -4,8 +4,8 @@ import (
 	"comies/app/core/id"
 	"comies/app/core/item"
 	"comies/app/core/types"
-	"comies/app/core/workflows/ordering"
 	"comies/app/handler/rest"
+	"comies/app/workflows/ordering"
 	"context"
 	"net/http"
 )

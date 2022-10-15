@@ -1,7 +1,7 @@
 package products
 
 import (
-	"comies/app/core/product"
+	"comies/app/core/menu"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Update(ctx context.Context, prd product.Product) error {
+func Update(ctx context.Context, prd menu.Product) error {
 	const script = `
 		update 
 			products
@@ -46,14 +46,14 @@ func Update(ctx context.Context, prd product.Product) error {
 		if errors.As(err, &pgErr) {
 
 			if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.ProductCodeUK {
-				return product.ErrCodeAlreadyExists
+				return menu.ErrCodeAlreadyExists
 			}
 		}
 		return err
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return product.ErrNotFound
+		return menu.ErrNotFound
 	}
 
 	return nil

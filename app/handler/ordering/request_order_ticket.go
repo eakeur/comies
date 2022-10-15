@@ -1,8 +1,8 @@
 package ordering
 
 import (
-	"comies/app/core/workflows/ordering"
 	"comies/app/handler/rest"
+	"comies/app/workflows/ordering"
 	"context"
 	"net/http"
 )
@@ -13,7 +13,7 @@ import (
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /ordering/new [POST]
 func RequestOrderTicket(ctx context.Context, _ *http.Request) rest.Response {
-	ticket, err := ordering.RequestOrderTicket(ctx)
+	ticket, err := ordering.InitializeOrder(ctx)
 	if err != nil {
 		return rest.Fail(err)
 	}

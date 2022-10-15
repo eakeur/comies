@@ -1,13 +1,13 @@
 package products
 
 import (
-	"comies/app/core/product"
+	"comies/app/core/menu"
 	"comies/app/data/conn"
 	"comies/app/data/query"
 	"context"
 )
 
-func List(ctx context.Context, filter product.Filter) ([]product.Product, error) {
+func List(ctx context.Context, filter menu.ProductFilter) ([]menu.Product, error) {
 	const script = `
 		select
 			p.id,
@@ -38,9 +38,9 @@ func List(ctx context.Context, filter product.Filter) ([]product.Product, error)
 		return nil, err
 	}
 
-	products := make([]product.Product, 0)
+	products := make([]menu.Product, 0)
 	for rows.Next() {
-		var p product.Product
+		var p menu.Product
 		if err := rows.Scan(
 			&p.ID,
 			&p.Code,
@@ -54,7 +54,7 @@ func List(ctx context.Context, filter product.Filter) ([]product.Product, error)
 			&p.MaximumQuantity,
 			&p.Location,
 		); err != nil {
-			continue
+			return nil, err
 		}
 
 		products = append(products, p)

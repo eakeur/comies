@@ -2,12 +2,13 @@ package ingredients
 
 import (
 	"comies/app/core/id"
-	"comies/app/core/ingredient"
+	"comies/app/core/menu"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )
 
-func List(ctx context.Context, productID id.ID) ([]ingredient.Ingredient, error) {
+func List(ctx context.Context, productID id.ID) ([]menu.Ingredient, error) {
 	const script = `
 		select
 			id,
@@ -26,21 +27,20 @@ func List(ctx context.Context, productID id.ID) ([]ingredient.Ingredient, error)
 		return nil, err
 	}
 
-	ingredients := make([]ingredient.Ingredient, 0)
+	ingredients := make([]menu.Ingredient, 0)
 	for rows.Next() {
-		var it ingredient.Ingredient
-		err := rows.Scan(
-			&it.ID,
-			&it.ProductID,
-			&it.IngredientID,
-			&it.Quantity,
-			&it.Optional,
-		)
-		if err != nil {
-			continue
+		var i menu.Ingredient
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProductID,
+			&i.IngredientID,
+			&i.Quantity,
+			&i.Optional,
+		); err != nil {
+			return nil, err
 		}
 
-		ingredients = append(ingredients, it)
+		ingredients = append(ingredients, i)
 	}
 
 	return ingredients, nil

@@ -2,7 +2,7 @@ package products
 
 import (
 	"comies/app/core/id"
-	"comies/app/core/product"
+	"comies/app/core/menu"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetByID(ctx context.Context, id id.ID) (product.Product, error) {
+func GetByID(ctx context.Context, id id.ID) (menu.Product, error) {
 	const script = `
 		select
 			p.id,
@@ -34,10 +34,10 @@ func GetByID(ctx context.Context, id id.ID) (product.Product, error) {
 
 	row, err := conn.QueryRowFromContext(ctx, script, id)
 	if err != nil {
-		return product.Product{}, err
+		return menu.Product{}, err
 	}
 
-	var p product.Product
+	var p menu.Product
 	if err := row.Scan(
 		&p.ID,
 		&p.Code,
@@ -53,9 +53,9 @@ func GetByID(ctx context.Context, id id.ID) (product.Product, error) {
 		&p.Balance,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return product.Product{}, product.ErrNotFound
+			return menu.Product{}, menu.ErrNotFound
 		}
-		return product.Product{}, err
+		return menu.Product{}, err
 	}
 
 	return p, nil

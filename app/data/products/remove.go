@@ -2,7 +2,7 @@ package products
 
 import (
 	"comies/app/core/id"
-	"comies/app/core/product"
+	"comies/app/core/menu"
 	"comies/app/data/conn"
 	"context"
 )
@@ -16,7 +16,7 @@ func Remove(ctx context.Context, id id.ID) error {
 	}
 
 	if cmd.RowsAffected() != 1 {
-		return product.ErrNotFound
+		return menu.ErrNotFound
 	}
 
 	return nil

@@ -2,7 +2,7 @@ package orders
 
 import (
 	"comies/app/core/id"
-	"comies/app/core/order"
+	"comies/app/core/ordering"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -11,21 +11,22 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetByID(ctx context.Context, id id.ID) (order.Order, error) {
+func GetByID(ctx context.Context, id id.ID) (ordering.Order, error) {
 	const script = `
 		select
 			o.id,
-        	max(o.identification),
         	max(o.placed_at),
         	max(o.delivery_mode),
         	max(o.observations),
 			max(s.status),
-			coalesce(sum(i.price), 0) as price
+			max(o.customer_name),
+			max(o.customer_phone),
+			max(o.customer_address)
 		from
 			orders o
 		inner join 
 			orders_statuses s on o.id = s.order_id
-		left join items i on o.id = i.order_id
+		-- left join items i on o.id = i.order_id
 		where
 			o.id = $1
 		group by 
@@ -34,23 +35,24 @@ func GetByID(ctx context.Context, id id.ID) (order.Order, error) {
 
 	row, err := conn.QueryRowFromContext(ctx, script, id)
 	if err != nil {
-		return order.Order{}, nil
+		return ordering.Order{}, nil
 	}
 
-	var o order.Order
+	var o ordering.Order
 	if err := row.Scan(
 		&o.ID,
-		&o.Identification,
 		&o.PlacedAt,
-		&o.DeliveryMode,
+		&o.DeliveryType,
 		&o.Observations,
 		&o.Status,
-		&o.FinalPrice,
+		&o.Customer.Name,
+		&o.Customer.Phone,
+		&o.Customer.Address,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return order.Order{}, types.ErrNotFound
+			return ordering.Order{}, types.ErrNotFound
 		}
-		return order.Order{}, err
+		return ordering.Order{}, err
 	}
 
 	o.PlacedAt = o.PlacedAt.UTC()

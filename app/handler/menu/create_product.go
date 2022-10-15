@@ -3,8 +3,8 @@ package menu
 import (
 	"comies/app/core/product"
 	"comies/app/core/types"
-	"comies/app/core/workflows/menu"
 	"comies/app/handler/rest"
+	"comies/app/workflows/menu"
 	"context"
 	"encoding/json"
 	"net/http"
