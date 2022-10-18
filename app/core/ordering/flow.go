@@ -6,7 +6,6 @@ import (
 )
 
 type Flow struct {
-	ID         id.ID
 	OrderID    id.ID
 	Status     Status
 	OccurredAt time.Time
@@ -30,8 +29,8 @@ func NewOrderFlow(o Order) Flow {
 
 func NewFlow(orderID id.ID, status Status) Flow {
 	return Flow{
-		OrderID: orderID,
-		Status: status,
+		OrderID:    orderID,
+		Status:     status,
 		OccurredAt: time.Now().UTC(),
 	}
 }

@@ -2,18 +2,17 @@ package items
 
 import (
 	"comies/app/core/id"
-	"comies/app/core/item"
+	"comies/app/core/ordering"
 	"comies/app/data/conn"
 	"context"
 )
 
-func List(ctx context.Context, orderID id.ID) ([]item.Item, error) {
+func List(ctx context.Context, orderID id.ID) ([]ordering.Item, error) {
 	const script = `
 		select
 			id,
 			order_id,
 			status,
-            price,
 			product_id,
 			quantity,
 			observations
@@ -28,20 +27,19 @@ func List(ctx context.Context, orderID id.ID) ([]item.Item, error) {
 		return nil, err
 	}
 
-	items := make([]item.Item, 0)
+	items := make([]ordering.Item, 0)
+	var it ordering.Item
+
 	for rows.Next() {
-		var it item.Item
-		err := rows.Scan(
+		if err := rows.Scan(
 			&it.ID,
 			&it.OrderID,
 			&it.Status,
-			&it.Price,
 			&it.ProductID,
 			&it.Quantity,
 			&it.Observations,
-		)
-		if err != nil {
-			continue
+		); err != nil {
+			return nil, err
 		}
 
 		items = append(items, it)

@@ -15,8 +15,8 @@ type NewOrderNotification struct {
 
 type Update struct {
 	OrderID id.ID
-	Path string
-	Value interface{}
+	Path    string
+	Value   interface{}
 }
 
 var channel = make(map[id.ID]chan Update)
@@ -27,21 +27,12 @@ func Channel(ctx context.Context) (chan Update, error) {
 		return ch, nil
 	}
 
-	ch, err := createChannel(ctx)
+	list, err := orders.List(ctx, ordering.OrderFilter{Status: ordering.UndoneOrderStatuses})
 	if err != nil {
 		return nil, err
 	}
 
-	return ch, nil
-}
-
-func createChannel(ctx context.Context) (chan Update, error) {
-	list, err := orders.List(ctx, ordering.UndoneOrderStatuses)
-	if err != nil {
-		return nil, err
-	}
-
-	ch := make(chan Update)
+	ch = make(chan Update)
 	for _, o := range list {
 		i, err := items.List(ctx, o.ID)
 		if err != nil {
@@ -50,7 +41,7 @@ func createChannel(ctx context.Context) (chan Update, error) {
 
 		ch <- Update{
 			OrderID: o.ID,
-			Path: "*",
+			Path:    "*",
 			Value: NewOrderNotification{
 				Order: o,
 				Items: i,
@@ -62,17 +53,19 @@ func createChannel(ctx context.Context) (chan Update, error) {
 	return ch, nil
 }
 
-func sendToChannel(orderID id.ID, path string, val interface{}) {
-	go func(){
-		ch, ok := channel[0]
-		if !ok {
-			return
-		}
-
-		ch <- Update{
-			OrderID: orderID,
-			Path:    path,
-			Value:   val,
+func sendch(orderID id.ID, path string, val interface{}) {
+	go func(orderID id.ID, path string, val interface{}) {
+		if ch, ok := channel[0]; ok {
+			ch <- Update{
+				OrderID: orderID,
+				Path:    path,
+				Value:   val,
 			}
-	}()
+		}
+	}(orderID, path, val)
 }
+
+const (
+	newOrderPath     = "*"
+	changeStatusPath = "order.status"
+)

@@ -1,7 +1,7 @@
 package items
 
 import (
-	"comies/app/core/item"
+	"comies/app/core/ordering"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, i item.Item) error {
+func Create(ctx context.Context, i ordering.Item) error {
 	const script = `
 		insert into items (
 			id,
@@ -29,7 +29,6 @@ func Create(ctx context.Context, i item.Item) error {
 		i.ID,
 		i.OrderID,
 		i.Status,
-		i.Price,
 		i.ProductID,
 		i.Quantity,
 		i.Observations,
@@ -38,15 +37,15 @@ func Create(ctx context.Context, i item.Item) error {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == conn.NonexistentFK && pgErr.ConstraintName == conn.ItemOrderIDFK {
-				return item.Item{}, types.ErrNotFound
+				return types.ErrNotFound
 			}
 			if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.ItemIDPK {
-				return item.Item{}, types.ErrAlreadyExists
+				return types.ErrAlreadyExists
 			}
 		}
 
-		return item.Item{}, err
+		return err
 	}
 
-	return i, nil
+	return nil
 }

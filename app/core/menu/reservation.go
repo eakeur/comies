@@ -20,12 +20,12 @@ type ReservationFailure struct {
 }
 
 func ReservationToReservedMovement(r Reservation) Movement {
-	return AssignMovementQuantity(Movement{
+	return Movement{
 		ProductID: r.ProductID,
 		quantity:  r.Quantity,
 		AgentID:   r.ID,
 		Type:      ReservedMovementType,
-	}, r.Quantity)
+	}
 }
 
 func ReservationToIngredientReservation(r Reservation, i Ingredient) Reservation {

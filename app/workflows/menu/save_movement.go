@@ -11,12 +11,12 @@ import (
 	"time"
 )
 
-type ActualBalance struct {
+type Balance struct {
 	ID    id.ID
 	Count types.Quantity
 }
 
-func CreateMovement(ctx context.Context, m menu.Movement) (ActualBalance, error) {
+func CreateMovement(ctx context.Context, m menu.Movement, q types.Quantity) (Balance, error) {
 
 	m.ID = ids.Create()
 
@@ -24,30 +24,32 @@ func CreateMovement(ctx context.Context, m menu.Movement) (ActualBalance, error)
 		m.Date = time.Now().UTC()
 	}
 
+	m = menu.AssignMovementQuantity(m, q)
+
 	if err := menu.ValidateMovement(m); err != nil {
-		return ActualBalance{}, err
+		return Balance{}, err
 	}
 
 	prd, err := products.GetByID(ctx, m.ProductID)
 	if err != nil {
-		return ActualBalance{}, err
+		return Balance{}, err
 	}
 
 	if err := menu.CheckMovementTypeCompatibility(m.Type, prd.Type); err != nil {
-		return ActualBalance{}, err
+		return Balance{}, err
 	}
 
 	actual, err := movements.GetBalance(ctx, menu.MovementFilter{})
 	if err != nil {
-		return ActualBalance{}, err
+		return Balance{}, err
 	}
 
 	actual = menu.IncrementStockQuantity(actual, m)
-	if err := menu.CanStockAfford(m, actual, prd.Stock); err != nil {
-		return ActualBalance{}, err
+	if err := menu.CanStockAfford(m, actual, prd); err != nil {
+		return Balance{}, err
 	}
 
-	return ActualBalance{
+	return Balance{
 		ID:    m.ID,
 		Count: actual,
 	}, movements.Create(ctx, m)

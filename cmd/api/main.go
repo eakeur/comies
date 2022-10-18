@@ -2,8 +2,8 @@ package main
 
 import (
 	"comies/app/config"
-	"comies/app/core/id"
 	"comies/app/data/conn"
+	"comies/app/data/ids"
 	"fmt"
 	"log"
 	"net"
@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("Could not migrate database: %v", err)
 	}
 
-	err = id.NewNode(cfg.IDGeneration)
+	err = ids.NewNode(cfg.IDGeneration)
 	if err != nil {
 		log.Fatalf("Could not startup idgen: %v", err)
 	}

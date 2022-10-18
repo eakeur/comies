@@ -7,11 +7,11 @@ import (
 )
 
 type Movement struct {
-	ID        id.ID          `json:"id"`
-	ProductID id.ID          `json:"product_id"`
-	AgentID   id.ID          `json:"agent_id"`
-	Type      Type           `json:"type"`
-	Date      time.Time      `json:"date"`
+	ID        id.ID     `json:"id"`
+	ProductID id.ID     `json:"product_id"`
+	AgentID   id.ID     `json:"agent_id"`
+	Type      Type      `json:"type"`
+	Date      time.Time `json:"date"`
 	quantity  types.Quantity
 }
 
@@ -37,12 +37,12 @@ func ValidateMovement(m Movement) error {
 	return ValidateMovementType(m.Type)
 }
 
-func CanStockAfford(m Movement, actual types.Quantity, props Stock) error {
-	if m.Type == InputMovementType && actual > props.MaximumQuantity {
+func CanStockAfford(m Movement, actual types.Quantity, p Product) error {
+	if m.Type == InputMovementType && actual > p.MaximumQuantity {
 		return ErrStockAlreadyFull
 	}
 
-	if m.Type == OutputMovementType && actual < props.MinimumQuantity {
+	if m.Type == OutputMovementType && actual < p.MinimumQuantity {
 		return ErrStockNegative
 	}
 

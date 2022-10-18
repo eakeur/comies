@@ -15,8 +15,8 @@ func Reserve(ctx context.Context, r menu.Reservation) (failures []menu.Reservati
 	}
 
 	if len(ings) == 0 {
-		_, err = CreateMovement(ctx, menu.ReservationToReservedMovement(r))
-		if err != nil && errors.Is(err, menu.ErrStockNegative){
+		_, err = CreateMovement(ctx, menu.ReservationToReservedMovement(r), r.Quantity)
+		if err != nil && errors.Is(err, menu.ErrStockNegative) {
 			failures = append(failures, menu.ReservationFailure{
 				For:       r.ReserveFor,
 				ProductID: r.ProductID,
@@ -30,13 +30,13 @@ func Reserve(ctx context.Context, r menu.Reservation) (failures []menu.Reservati
 	return reserveIngredients(ctx, r, ings)
 }
 
-func reserveIngredients(ctx context.Context, r menu.Reservation, ings []menu.Ingredient) (failures []menu.ReservationFailure, err error){
-	var  wg = sync.WaitGroup{}
+func reserveIngredients(ctx context.Context, r menu.Reservation, ings []menu.Ingredient) (failures []menu.ReservationFailure, err error) {
+	var wg = sync.WaitGroup{}
 	var errs = make(chan error, len(ings))
 
-	for _, ing := range menu.ModifyIngredientsList(ings, r.Specifics, r.Quantity){
+	for _, ing := range menu.ModifyIngredientsList(ings, r.Specifics, r.Quantity) {
 		wg.Add(1)
-		
+
 		go func(ctx context.Context, i menu.Ingredient) {
 			defer wg.Done()
 			f, err := Reserve(ctx, menu.ReservationToIngredientReservation(r, i))

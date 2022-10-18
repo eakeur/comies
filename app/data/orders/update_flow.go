@@ -1,7 +1,7 @@
 package orders
 
 import (
-	"comies/app/core/order"
+	"comies/app/core/ordering"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -10,10 +10,9 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func UpdateFlow(ctx context.Context, f order.FlowUpdate) error {
+func UpdateFlow(ctx context.Context, f ordering.Flow) error {
 	const script = `
 		insert into orders_flow (
-			id,
 			order_id, 
 			occurred_at,
 			status
@@ -22,7 +21,6 @@ func UpdateFlow(ctx context.Context, f order.FlowUpdate) error {
 		)
 	`
 	_, err := conn.ExecFromContext(ctx, script,
-		f.ID,
 		f.OrderID,
 		f.OccurredAt,
 		f.Status,
@@ -32,15 +30,15 @@ func UpdateFlow(ctx context.Context, f order.FlowUpdate) error {
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == conn.DuplicateError &&
 				(pgErr.ConstraintName == conn.OrderFlowPK || pgErr.ConstraintName == conn.OrderStatusUK) {
-				return order.FlowUpdate{}, types.ErrAlreadyExists
+				return types.ErrAlreadyExists
 			}
 
 			if pgErr.Code == conn.NonexistentFK && pgErr.ConstraintName == conn.OrderFlowFK {
-				return order.FlowUpdate{}, types.ErrNotFound
+				return types.ErrNotFound
 			}
 		}
-		return order.FlowUpdate{}, err
+		return err
 	}
 
-	return f, nil
+	return nil
 }

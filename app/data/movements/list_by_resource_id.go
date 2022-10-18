@@ -27,6 +27,9 @@ func List(ctx context.Context, filter menu.MovementFilter) ([]menu.Movement, err
 		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
 		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
 		OnlyWhere(filter.ProductID != 0, "m.product_id= $%v", filter.ProductID)
+	if err != nil {
+		return nil, err
+	}
 
 	rows, err := conn.QueryFromContext(ctx, q.Script(), q.Args...)
 	if err != nil {

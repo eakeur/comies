@@ -26,4 +26,11 @@ func TestID_MarshalJSON(t *testing.T) {
 
 	t.Logf("marshaled id: %s", got)
 	assert.Equal(t, want, string(got))
+
+	var res field
+	_ = json.Unmarshal(got, &res)
+
+	t.Logf("unmarshaled struct: %v", res)
+	assert.Equal(t, arg, res)
+
 }

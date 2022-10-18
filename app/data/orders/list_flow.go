@@ -2,15 +2,14 @@ package orders
 
 import (
 	"comies/app/core/id"
-	"comies/app/core/order"
+	"comies/app/core/ordering"
 	"comies/app/data/conn"
 	"context"
 )
 
-func ListFlow(ctx context.Context, orderID id.ID) ([]order.FlowUpdate, error) {
+func ListFlow(ctx context.Context, orderID id.ID) ([]ordering.Flow, error) {
 	const script = `
 		select
-			f.id,
 			f.order_id,
 			f.occurred_at,
 			f.status
@@ -25,17 +24,17 @@ func ListFlow(ctx context.Context, orderID id.ID) ([]order.FlowUpdate, error) {
 		return nil, err
 	}
 
-	items := make([]order.FlowUpdate, 0)
+	items := make([]ordering.Flow, 0)
 	for rows.Next() {
-		var o order.FlowUpdate
+		var o ordering.Flow
 		if err := rows.Scan(
-			&o.ID,
 			&o.OrderID,
 			&o.OccurredAt,
 			&o.Status,
 		); err != nil {
-			continue
+			return nil, err
 		}
+
 		o.OccurredAt = o.OccurredAt.UTC()
 		items = append(items, o)
 	}

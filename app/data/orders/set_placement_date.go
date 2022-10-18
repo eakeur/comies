@@ -8,15 +8,8 @@ import (
 	"time"
 )
 
-func SetPlacementDate(ctx context.Context, id id.ID, date time.Time) error {
-	const script = `
-		update
-			orders
-		set
-			placed_at = $1
-		where
-			id = $2
-	`
+func SetPlacedAt(ctx context.Context, id id.ID, date time.Time) error {
+	const script = `update orders set placed_at = $1 where id = $2`
 
 	cmd, err := conn.ExecFromContext(ctx, script, date, id)
 	if err != nil {

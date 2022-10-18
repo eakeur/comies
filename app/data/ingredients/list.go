@@ -3,7 +3,6 @@ package ingredients
 import (
 	"comies/app/core/id"
 	"comies/app/core/menu"
-	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )

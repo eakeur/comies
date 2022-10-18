@@ -8,14 +8,7 @@ import (
 )
 
 func SetObservation(ctx context.Context, id id.ID, observation string) error {
-	const script = `
-		update
-			orders
-		set
-			observations = $1
-		where
-			id = $2
-	`
+	const script = `update orders set observations = $1 where id = $2`
 
 	cmd, err := conn.ExecFromContext(ctx, script, observation, id)
 	if err != nil {

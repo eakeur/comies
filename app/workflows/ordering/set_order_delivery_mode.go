@@ -12,5 +12,5 @@ func SetOrderDeliveryMode(ctx context.Context, id id.ID, deliveryType ordering.T
 		return err
 	}
 
-	return orders.SetDeliveryMode(ctx, id, deliveryType)
+	return orders.SetDeliveryType(ctx, id, deliveryType)
 }

@@ -14,10 +14,6 @@ type AddToOrderRequest struct {
 	Specifications menu.IngredientSpecification `json:"specifications"`
 }
 
-type OrderConfirmation struct {
-	DeliveryMode ordering.Type `json:"delivery_mode"`
-}
-
 type SetItemStatusRequest struct {
 	Status ordering.Status `json:"status"`
 }

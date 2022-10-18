@@ -33,6 +33,9 @@ func GetBalance(ctx context.Context, filter menu.MovementFilter) (types.Quantity
 	}
 
 	row, err := conn.QueryRowFromContext(ctx, q.Script(), q.Args...)
+	if err != nil {
+		return 0, err
+	}
 
 	var quantity types.Quantity
 	if err := row.Scan(&quantity); err != nil {

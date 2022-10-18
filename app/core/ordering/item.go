@@ -2,21 +2,18 @@ package ordering
 
 import (
 	"comies/app/core/id"
+	"comies/app/core/menu"
 	"comies/app/core/types"
 )
 
 type Item struct {
-	ID                 id.ID
-	OrderID            id.ID
-	Status             Status
-	Price              types.Currency
-	ProductID          id.ID
-	Quantity           types.Quantity
-	Observations       string
-	Specification map[id.ID]struct {
-		ChangeType Type  `json:"change_type"`
-		ReplaceBy  id.ID `json:"replace_by"`
-	}
+	ID            id.ID                        `json:"id"`
+	OrderID       id.ID                        `json:"order_id"`
+	Status        Status                       `json:"status"`
+	ProductID     id.ID                        `json:"product_id"`
+	Quantity      types.Quantity               `json:"quantity"`
+	Observations  string                       `json:"observations"`
+	Specification menu.IngredientSpecification `json:"specification"`
 }
 
 func ValidateItemStatus(s Status) error {

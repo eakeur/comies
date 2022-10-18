@@ -12,7 +12,9 @@ type Ingredient struct {
 	Quantity     types.Quantity `json:"quantity"`
 	Optional     bool           `json:"optional"`
 }
-type IngredientSpecification map[id.ID]struct {
+type IngredientSpecification map[id.ID]Specification
+
+type Specification struct {
 	ChangeType Type  `json:"change_type"`
 	ReplaceBy  id.ID `json:"replace_by"`
 }

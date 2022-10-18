@@ -11,6 +11,13 @@ func SetOrderStatus(ctx context.Context, id id.ID, st ordering.Status) error {
 	if err := ordering.ValidateOrderStatus(st); err != nil {
 		return err
 	}
-	
-	return orders.UpdateFlow(ctx, ordering.NewFlow(id, st))
+
+	err := orders.UpdateFlow(ctx, ordering.NewFlow(id, st))
+	if err != nil {
+		return err
+	}
+
+	defer sendch(id, changeStatusPath, st)
+
+	return nil
 }

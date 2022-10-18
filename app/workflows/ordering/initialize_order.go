@@ -8,8 +8,9 @@ import (
 )
 
 func InitializeOrder(ctx context.Context) (ordering.Order, error) {
-	return orders.Create(ctx, ordering.Order{
-		ID: ids.Create(),
+	o := ordering.Order{
+		ID:     ids.Create(),
 		Status: ordering.InTheCartOrderStatus,
-	})
+	}
+	return o, orders.Create(ctx, o)
 }

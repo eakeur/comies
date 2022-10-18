@@ -11,11 +11,11 @@ import (
 )
 
 type OrderConfirmation struct {
-	OrderID      id.ID
-	DeliveryType ordering.Type
-	CustomerName string
+	OrderID         id.ID
+	DeliveryType    ordering.Type
+	CustomerName    string
 	CustomerAddress string
-	CustomerPhone string
+	CustomerPhone   string
 }
 
 func PlaceOrder(ctx context.Context, c OrderConfirmation) (ordering.Order, error) {
@@ -35,11 +35,11 @@ func PlaceOrder(ctx context.Context, c OrderConfirmation) (ordering.Order, error
 	}
 
 	itemsList, err := items.List(ctx, o.ID)
-	if err != nil || len(itemsList) <= 0{
+	if err != nil || len(itemsList) <= 0 {
 		return ordering.Order{}, ordering.ErrInvalidNumberOfItems
 	}
 
-	if err := orders.SetDeliveryMode(ctx, o.ID, o.DeliveryType); err != nil {
+	if err := updateOrderOnConfirmation(ctx, o); err != nil {
 		return ordering.Order{}, err
 	}
 
@@ -47,17 +47,33 @@ func PlaceOrder(ctx context.Context, c OrderConfirmation) (ordering.Order, error
 		return ordering.Order{}, err
 	}
 
-	sendToChannel(o.ID, "*", NewOrderNotification{
+	sendch(o.ID, newOrderPath, NewOrderNotification{
 		Order: o,
 		Items: itemsList,
 	})
 
 	go func() {
 		for _, item := range itemsList {
-			menu.UpdateReservation(ctx, item.ID, true)
+			menu.ConfirmReservation(ctx, item.ID)
 		}
 	}()
 
 	return o, nil
 
+}
+
+func updateOrderOnConfirmation(ctx context.Context, o ordering.Order) error {
+	if err := orders.SetDeliveryType(ctx, o.ID, o.DeliveryType); err != nil {
+		return err
+	}
+
+	if err := orders.SetPlacedAt(ctx, o.ID, o.PlacedAt); err != nil {
+		return err
+	}
+
+	if err := orders.SetObservation(ctx, o.ID, o.Observations); err != nil {
+		return err
+	}
+
+	return nil
 }
