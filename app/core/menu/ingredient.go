@@ -1,30 +1,29 @@
 package menu
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/types"
 )
 
 type Ingredient struct {
-	ID           id.ID          `json:"id"`
-	ProductID    id.ID          `json:"product_id"`
-	IngredientID id.ID          `json:"ingredient_id"`
+	ID           types.ID       `json:"id"`
+	ProductID    types.ID       `json:"product_id"`
+	IngredientID types.ID       `json:"ingredient_id"`
 	Quantity     types.Quantity `json:"quantity"`
 	Optional     bool           `json:"optional"`
 }
-type IngredientSpecification map[id.ID]Specification
+type IngredientSpecification map[types.ID]Specification
 
 type Specification struct {
-	ChangeType Type  `json:"change_type"`
-	ReplaceBy  id.ID `json:"replace_by"`
+	ChangeType Type     `json:"change_type"`
+	ReplaceBy  types.ID `json:"replace_by"`
 }
 
 func ValidateIngredient(i Ingredient) error {
-	if err := id.ValidateID(i.IngredientID); err != nil {
+	if err := types.ValidateID(i.IngredientID); err != nil {
 		return ErrInvalidComponentID
 	}
 
-	if err := id.ValidateID(i.ProductID); err != nil {
+	if err := types.ValidateID(i.ProductID); err != nil {
 		return ErrInvalidCompositeID
 	}
 

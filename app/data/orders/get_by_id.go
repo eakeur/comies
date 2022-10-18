@@ -1,7 +1,6 @@
 package orders
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
 	"comies/app/core/types"
 	"comies/app/data/conn"
@@ -11,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetByID(ctx context.Context, id id.ID) (ordering.Order, error) {
+func GetByID(ctx context.Context, id types.ID) (ordering.Order, error) {
 	const script = `
 		select
 			o.id,

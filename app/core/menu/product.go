@@ -1,12 +1,11 @@
 package menu
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/types"
 )
 
 type Product struct {
-	ID              id.ID          `json:"id"`
+	ID              types.ID       `json:"id"`
 	Code            string         `json:"code"`
 	Name            string         `json:"name"`
 	Type            Type           `json:"type"`

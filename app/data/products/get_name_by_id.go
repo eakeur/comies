@@ -1,8 +1,8 @@
 package products
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetNameByID(ctx context.Context, id id.ID) (string, error) {
+func GetNameByID(ctx context.Context, id types.ID) (string, error) {
 	const script = `
 		select p.name from products p where p.id = $1
 	`

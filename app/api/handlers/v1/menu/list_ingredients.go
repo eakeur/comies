@@ -3,7 +3,7 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/workflows/menu"
+	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 )

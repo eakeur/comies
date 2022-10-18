@@ -1,7 +1,7 @@
 package ordering
 
 import (
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"time"
 )
 
@@ -20,12 +20,12 @@ type Customer struct {
 }
 
 type Order struct {
-	ID           id.ID          `json:"id"`
-	PlacedAt     time.Time      `json:"placed_at"`
-	Status       Status         `json:"status"`
-	DeliveryType Type           `json:"delivery_mode"`
-	Observations string         `json:"observations"`
-	Customer     Customer       `json:"customer"`
+	ID           types.ID  `json:"id"`
+	PlacedAt     time.Time `json:"placed_at"`
+	Status       Status    `json:"status"`
+	DeliveryType Type      `json:"delivery_mode"`
+	Observations string    `json:"observations"`
+	Customer     Customer  `json:"customer"`
 }
 
 func ValidateOrderStatus(s Status) error {
@@ -54,7 +54,7 @@ func ValidateDeliveryType(t Type) error {
 }
 
 func ValidateOrder(o Order) error {
-	if o.PlacedAt.IsZero() || o.PlacedAt.After(time.Now().UTC()){
+	if o.PlacedAt.IsZero() || o.PlacedAt.After(time.Now().UTC()) {
 		return ErrInvalidPlacementDate
 	}
 
@@ -100,4 +100,3 @@ func CheckIfOrderIsCancelable(o Order) error {
 
 	return nil
 }
-

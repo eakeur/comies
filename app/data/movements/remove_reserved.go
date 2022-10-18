@@ -1,14 +1,13 @@
 package movements
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )
 
-func RemoveReserved(ctx context.Context, agentID id.ID) error {
+func RemoveReserved(ctx context.Context, agentID types.ID) error {
 	const script = `
 		delete from movements m	where m.agent_id = $1 and m.type = $2
 	`

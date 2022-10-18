@@ -3,9 +3,8 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/core/id"
 	"comies/app/core/types"
-	"comies/app/workflows/menu"
+	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 	"time"
@@ -65,7 +64,7 @@ type CreateMovementRequest struct {
 	PaidValue types.Currency `json:"paid_value"`
 
 	// AgentID is the entity from this resource came from or is going to
-	AgentID id.ID `json:"agent_id"`
+	AgentID types.ID `json:"agent_id"`
 }
 
 type Balance struct {

@@ -2,7 +2,7 @@ package ids
 
 import (
 	"comies/app/config"
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"github.com/bwmarrin/snowflake"
 	"strconv"
 )
@@ -19,6 +19,6 @@ func NewNode(cfg config.IDGeneration) (err error) {
 	return
 }
 
-func Create() id.ID {
-	return id.ID(node.Generate().Int64())
+func Create() types.ID {
+	return types.ID(node.Generate().Int64())
 }

@@ -1,14 +1,13 @@
 package movements
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )
 
-func SetOutputType(ctx context.Context, agentID id.ID) error {
+func SetOutputType(ctx context.Context, agentID types.ID) error {
 	const script = `
 		update movements set type = $1 where id = $2
 	`

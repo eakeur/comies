@@ -1,14 +1,13 @@
 package ordering
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
 	"comies/app/core/ordering"
 	"comies/app/core/types"
 )
 
 type AddToOrderRequest struct {
-	ProductID      id.ID                        `json:"product_id"`
+	ProductID      types.ID                     `json:"product_id"`
 	Quantity       types.Quantity               `json:"quantity"`
 	Observations   string                       `json:"observations"`
 	Specifications menu.IngredientSpecification `json:"specifications"`

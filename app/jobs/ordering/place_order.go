@@ -1,17 +1,17 @@
 package ordering
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
+	"comies/app/core/types"
 	"comies/app/data/items"
 	"comies/app/data/orders"
-	"comies/app/workflows/menu"
+	"comies/app/jobs/menu"
 	"context"
 	"time"
 )
 
 type OrderConfirmation struct {
-	OrderID         id.ID
+	OrderID         types.ID
 	DeliveryType    ordering.Type
 	CustomerName    string
 	CustomerAddress string

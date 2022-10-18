@@ -1,7 +1,7 @@
 package send
 
 import (
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"errors"
 	"net/http"
 )
@@ -30,7 +30,7 @@ func Status(code int, options ...Option) Response {
 	return Data(code, nil, options...)
 }
 
-func CreatedWithID(id id.ID) Response {
+func CreatedWithID(id types.ID) Response {
 	return Status(http.StatusCreated, WithHeaders(map[string]string{"Location": id.String()}))
 }
 

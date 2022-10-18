@@ -1,18 +1,18 @@
 package ordering
 
 import (
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"time"
 )
 
 type Flow struct {
-	OrderID    id.ID
+	OrderID    types.ID
 	Status     Status
 	OccurredAt time.Time
 }
 
 func ValidateFlow(f Flow) error {
-	if err := id.ValidateID(f.OrderID); err != nil {
+	if err := types.ValidateID(f.OrderID); err != nil {
 		return err
 	}
 
@@ -27,7 +27,7 @@ func NewOrderFlow(o Order) Flow {
 	return NewFlow(o.ID, PreparingOrderStatus)
 }
 
-func NewFlow(orderID id.ID, status Status) Flow {
+func NewFlow(orderID types.ID, status Status) Flow {
 	return Flow{
 		OrderID:    orderID,
 		Status:     status,

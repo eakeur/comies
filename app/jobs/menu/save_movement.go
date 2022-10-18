@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
 	"comies/app/core/types"
 	"comies/app/data/ids"
@@ -12,7 +11,7 @@ import (
 )
 
 type Balance struct {
-	ID    id.ID
+	ID    types.ID
 	Count types.Quantity
 }
 

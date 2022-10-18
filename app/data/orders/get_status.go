@@ -1,7 +1,6 @@
 package orders
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
 	"comies/app/core/types"
 	"comies/app/data/conn"
@@ -11,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetStatus(ctx context.Context, orderID id.ID) (ordering.Status, error) {
+func GetStatus(ctx context.Context, orderID types.ID) (ordering.Status, error) {
 	const script = `select s.status from orders_statuses s where s.order_id = $1`
 
 	row, err := conn.QueryRowFromContext(ctx, script, orderID)

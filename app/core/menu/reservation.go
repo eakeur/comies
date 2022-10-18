@@ -1,22 +1,21 @@
 package menu
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/types"
 )
 
 type Reservation struct {
-	ID         id.ID                   `json:"id"`
-	ReserveFor id.ID                   `json:"reserve_for"`
-	ProductID  id.ID                   `json:"product_id"`
+	ID         types.ID                `json:"id"`
+	ReserveFor types.ID                `json:"reserve_for"`
+	ProductID  types.ID                `json:"product_id"`
 	Quantity   types.Quantity          `json:"quantity"`
 	Specifics  IngredientSpecification `json:"specifics"`
 }
 
 type ReservationFailure struct {
-	For       id.ID `json:"for"`
-	ProductID id.ID `json:"product_id"`
-	Error     error `json:"error"`
+	For       types.ID `json:"for"`
+	ProductID types.ID `json:"product_id"`
+	Error     error    `json:"error"`
 }
 
 func ReservationToReservedMovement(r Reservation) Movement {

@@ -1,8 +1,8 @@
 package ordering
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
+	"comies/app/core/types"
 	"comies/app/data/items"
 	"comies/app/data/orders"
 	"context"
@@ -14,12 +14,12 @@ type NewOrderNotification struct {
 }
 
 type Update struct {
-	OrderID id.ID
+	OrderID types.ID
 	Path    string
 	Value   interface{}
 }
 
-var channel = make(map[id.ID]chan Update)
+var channel = make(map[types.ID]chan Update)
 
 func Channel(ctx context.Context) (chan Update, error) {
 	ch, ok := channel[0]
@@ -53,8 +53,8 @@ func Channel(ctx context.Context) (chan Update, error) {
 	return ch, nil
 }
 
-func sendch(orderID id.ID, path string, val interface{}) {
-	go func(orderID id.ID, path string, val interface{}) {
+func sendch(orderID types.ID, path string, val interface{}) {
+	go func(orderID types.ID, path string, val interface{}) {
 		if ch, ok := channel[0]; ok {
 			ch <- Update{
 				OrderID: orderID,

@@ -1,13 +1,13 @@
 package items
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )
 
-func List(ctx context.Context, orderID id.ID) ([]ordering.Item, error) {
+func List(ctx context.Context, orderID types.ID) ([]ordering.Item, error) {
 	const script = `
 		select
 			id,

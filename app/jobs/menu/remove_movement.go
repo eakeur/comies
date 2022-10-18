@@ -1,13 +1,13 @@
 package menu
 
 import (
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"comies/app/data/movements"
 	"context"
 )
 
-func RemoveMovement(ctx context.Context, movementID id.ID) error {
-	if err := id.ValidateID(movementID); err != nil {
+func RemoveMovement(ctx context.Context, movementID types.ID) error {
+	if err := types.ValidateID(movementID); err != nil {
 		return err
 	}
 

@@ -1,8 +1,8 @@
 package products
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetByID(ctx context.Context, id id.ID) (menu.Product, error) {
+func GetByID(ctx context.Context, id types.ID) (menu.Product, error) {
 	const script = `
 		select
 			p.id,

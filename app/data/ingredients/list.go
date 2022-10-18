@@ -1,13 +1,13 @@
 package ingredients
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/menu"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )
 
-func List(ctx context.Context, productID id.ID) ([]menu.Ingredient, error) {
+func List(ctx context.Context, productID types.ID) ([]menu.Ingredient, error) {
 	const script = `
 		select
 			id,

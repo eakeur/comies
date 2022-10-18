@@ -3,9 +3,8 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/core/id"
 	"comies/app/core/types"
-	"comies/app/workflows/menu"
+	"comies/app/jobs/menu"
 	"context"
 )
 
@@ -50,7 +49,7 @@ func CreateIngredient(ctx context.Context, r request.Request) send.Response {
 
 type CreateIngredientRequest struct {
 	// IngredientID
-	IngredientID id.ID `json:"ingredient_id"`
+	IngredientID types.ID `json:"ingredient_id"`
 	// Quantity
 	Quantity types.Quantity `json:"quantity"`
 	// Optional

@@ -1,13 +1,13 @@
 package orders
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
+	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
 )
 
-func ListFlow(ctx context.Context, orderID id.ID) ([]ordering.Flow, error) {
+func ListFlow(ctx context.Context, orderID types.ID) ([]ordering.Flow, error) {
 	const script = `
 		select
 			f.order_id,

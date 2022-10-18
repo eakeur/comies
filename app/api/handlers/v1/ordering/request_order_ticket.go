@@ -3,7 +3,7 @@ package ordering
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/workflows/ordering"
+	"comies/app/jobs/ordering"
 	"context"
 )
 

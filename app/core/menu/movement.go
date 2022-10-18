@@ -1,15 +1,14 @@
 package menu
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/types"
 	"time"
 )
 
 type Movement struct {
-	ID        id.ID     `json:"id"`
-	ProductID id.ID     `json:"product_id"`
-	AgentID   id.ID     `json:"agent_id"`
+	ID        types.ID  `json:"id"`
+	ProductID types.ID  `json:"product_id"`
+	AgentID   types.ID  `json:"agent_id"`
 	Type      Type      `json:"type"`
 	Date      time.Time `json:"date"`
 	quantity  types.Quantity

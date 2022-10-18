@@ -1,7 +1,7 @@
 package menu
 
 import (
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"time"
 )
 
@@ -12,14 +12,13 @@ type (
 	}
 
 	MovementFilter struct {
-		ProductID   id.ID
+		ProductID              types.ID
 		InitialDate, FinalDate time.Time
 	}
 )
 
-
 func ValidateMovementFilter(f MovementFilter) error {
-	if err := id.ValidateID(f.ProductID); err != nil {
+	if err := types.ValidateID(f.ProductID); err != nil {
 		return err
 	}
 

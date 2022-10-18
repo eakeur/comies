@@ -3,9 +3,9 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/core/id"
+	"comies/app/core/types"
 	"comies/app/data/products"
-	"comies/app/workflows/menu"
+	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 )
@@ -32,7 +32,7 @@ func GetProductByKey(ctx context.Context, r request.Request) send.Response {
 	case "true":
 		p, err = products.GetByCode(ctx, key)
 	default:
-		i, err := id.FromString(key)
+		i, err := types.FromString(key)
 		if err != nil {
 			return send.IDError(err)
 		}

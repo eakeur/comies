@@ -4,7 +4,7 @@ import (
 	"comies/app/api/request"
 	"comies/app/api/send"
 	"comies/app/data/products"
-	"comies/app/workflows/menu"
+	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 	"strconv"

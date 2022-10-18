@@ -1,10 +1,13 @@
-package id
+package types
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 )
+
+var ErrNoID = errors.New("this resource's id was not provided or is invalid")
 
 type ID int64
 

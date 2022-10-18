@@ -1,13 +1,13 @@
 package ordering
 
 import (
-	"comies/app/core/id"
 	"comies/app/core/ordering"
+	"comies/app/core/types"
 	"comies/app/data/orders"
 	"context"
 )
 
-func CancelOrder(ctx context.Context, id id.ID) error {
+func CancelOrder(ctx context.Context, id types.ID) error {
 
 	o, err := orders.GetByID(ctx, id)
 	if err != nil {
