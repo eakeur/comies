@@ -4,12 +4,11 @@ import (
 	"comies/app/config"
 	"comies/app/data/conn"
 	"comies/app/data/ids"
+	"comies/app/telemetry"
 	"fmt"
 	"log"
 	"net"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"os"
 )
 
 // @title        Comies Backend API
@@ -18,12 +17,12 @@ import (
 func main() {
 	cfg := config.Load()
 
-	err := conn.Connect(cfg.Database)
+	pool, err := conn.Connect(cfg.Database)
 	if err != nil {
 		log.Fatalf("Could not startup database: %v", err)
 	}
 
-	err = conn.Migrate()
+	err = conn.Migrate(pool)
 	if err != nil {
 		log.Fatalf("Could not migrate database: %v", err)
 	}
@@ -33,10 +32,9 @@ func main() {
 		log.Fatalf("Could not startup idgen: %v", err)
 	}
 
-	err = startupLogger(cfg.Logger)
-	if err != nil {
-		log.Fatalf("Could not startup logger: %v", err)
-	}
+	telemetry.Register(&telemetry.Telemetry{
+		Logger: telemetry.NewLogger(os.Stdout),
+	})
 
 	address := fmt.Sprintf(":%v", cfg.Server.ListenPort)
 	lis, err := net.Listen("tcp", address)
@@ -49,23 +47,4 @@ func main() {
 	// if err != nil {
 	// 	log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, err)
 	// }
-}
-
-func startupLogger(cfg config.Logger) error {
-
-	stackTraceOption := zap.AddStacktrace(zapcore.PanicLevel)
-
-	builderByEnv := map[string]func(options ...zap.Option) (*zap.Logger, error){
-		"development": zap.NewDevelopment,
-		"production":  zap.NewProduction,
-	}
-
-	logger, err := builderByEnv[cfg.Environment](stackTraceOption)
-	if err != nil {
-		return err
-	}
-
-	zap.ReplaceGlobals(logger)
-
-	return nil
 }

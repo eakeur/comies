@@ -7,7 +7,6 @@ require (
 	github.com/jackc/pgconn v1.12.1
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/joho/godotenv v1.4.0
-	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
 )
 

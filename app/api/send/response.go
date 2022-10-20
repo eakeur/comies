@@ -9,8 +9,8 @@ type ResponseError struct {
 }
 
 type Response struct {
-	error  error
-	code   int
-	header map[string]string
-	data   interface{}
+	Error  error
+	Code   int
+	Header map[string]string
+	Data   interface{}
 }

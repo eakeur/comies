@@ -9,8 +9,8 @@ import (
 func FromError(err error, options ...Option) Response {
 	response, ok := failures[err]
 	if !ok {
-		response.code = 500
-		response.data = InternalServerError
+		response.Code = 500
+		response.Data = InternalServerError
 		for mappedError, mappedResponse := range failures {
 			if errors.Is(err, mappedError) {
 				response = mappedResponse
@@ -23,7 +23,7 @@ func FromError(err error, options ...Option) Response {
 }
 
 func Data(code int, data interface{}, options ...Option) Response {
-	return build(Response{data: data, code: code}, options...)
+	return build(Response{Data: data, Code: code}, options...)
 }
 
 func Status(code int, options ...Option) Response {

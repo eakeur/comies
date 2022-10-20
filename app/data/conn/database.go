@@ -5,27 +5,29 @@ import (
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type Connection interface {
+type Executer interface {
 	Exec(ctx context.Context, script string, parameters ...interface{}) (pgconn.CommandTag, error)
 	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
-
-	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
-func Pool() *pgxpool.Pool {
-	return pool
+func WithContext(ctx context.Context, e Executer) context.Context {
+	return context.WithValue(ctx, key, e)
 }
 
-func WithContext(ctx context.Context, c Connection) context.Context {
-	return context.WithValue(ctx, key, c)
+func FromContext(ctx context.Context) (Executer, error) {
+	conn, ok := ctx.Value(key).(Executer)
+	if !ok {
+		return nil, ErrNoConnection
+	}
+
+	return conn, nil
 }
 
-func FromContext(ctx context.Context) (Connection, error) {
-	conn, ok := ctx.Value(key).(Connection)
+func TXFromContext(ctx context.Context) (pgx.Tx, error) {
+	conn, ok := ctx.Value(key).(pgx.Tx)
 	if !ok {
 		return nil, ErrNoConnection
 	}

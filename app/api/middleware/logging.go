@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"context"
+	"comies/app/telemetry"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -13,8 +13,9 @@ func Logging(logger *zap.Logger) func(http.Handler) http.Handler {
 	return func(handler http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			handler.ServeHTTP(writer, request.WithContext(
-				context.WithValue(
-					request.Context(), LoggerContextKey{}, logger.With(
+				telemetry.SetLoggerToContext(
+					request.Context(),
+					logger.With(
 						zap.String("method", request.Method),
 						zap.String("path", request.URL.Path),
 					),
@@ -22,5 +23,4 @@ func Logging(logger *zap.Logger) func(http.Handler) http.Handler {
 			))
 		})
 	}
-
 }

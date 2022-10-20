@@ -34,5 +34,10 @@ func SetOrderDeliveryMode(ctx context.Context, r request.Request) send.Response 
 		return send.FromError(err)
 	}
 
+	r.Commit(ctx)
 	return send.Data(http.StatusNoContent, nil)
+}
+
+type SetOrderDeliveryTypeRequest struct {
+	Type ordering.Type `json:"mode"`
 }

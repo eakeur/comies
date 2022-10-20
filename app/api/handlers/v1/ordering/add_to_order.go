@@ -3,6 +3,8 @@ package ordering
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/menu"
+	"comies/app/core/types"
 	"comies/app/jobs/ordering"
 	"context"
 	"encoding/json"
@@ -49,5 +51,13 @@ func AddToOrder(ctx context.Context, r request.Request) send.Response {
 		return send.Data(http.StatusPreconditionFailed, res)
 	}
 
+	defer r.Commit(ctx)
 	return send.CreatedWithID(id)
+}
+
+type AddToOrderRequest struct {
+	ProductID      types.ID                     `json:"product_id"`
+	Quantity       types.Quantity               `json:"quantity"`
+	Observations   string                       `json:"observations"`
+	Specifications menu.IngredientSpecification `json:"specifications"`
 }

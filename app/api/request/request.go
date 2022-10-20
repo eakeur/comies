@@ -2,9 +2,12 @@ package request
 
 import (
 	"comies/app/core/types"
+	"comies/app/data/conn"
+	"context"
 	"encoding/json"
-	"github.com/go-chi/chi/v5"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type Request struct {
@@ -25,4 +28,11 @@ func (r Request) JSONBody(i interface{}) error {
 
 func (r Request) GetQuery(name string) string {
 	return r.URL.Query().Get(name)
+}
+
+func (r Request) Commit(ctx context.Context) {
+	tx, err := conn.TXFromContext(ctx)
+	if err == nil {
+		tx.Commit(ctx)
+	}
 }

@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+          "type": "go",
+          "name": "Run API",
+          "goExecPath": "",
+          "buildTargets": [],
+        },
+
+    ]
+}

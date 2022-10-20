@@ -34,5 +34,10 @@ func SetOrderStatus(ctx context.Context, r request.Request) send.Response {
 		return send.FromError(err)
 	}
 
+	r.Commit(ctx)
 	return send.Data(http.StatusNoContent, nil)
+}
+
+type SetOrderStatusRequest struct {
+	Status ordering.Status `json:"status"`
 }
