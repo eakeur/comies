@@ -1,25 +1,22 @@
 package menu
 
 import (
-	"comies/app/core/menu"
-	"comies/app/data/ids"
+	"comies/app/core/ingredient"
+	"comies/app/core/product"
 	"comies/app/data/ingredients"
 	"comies/app/data/products"
 	"context"
 )
 
-func CreateIngredient(ctx context.Context, i menu.Ingredient) (menu.Ingredient, error) {
-
-	i.ID = ids.Create()
-
+func ValidateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
 	prd, err := products.GetByID(ctx, i.ProductID)
-	if err != nil || !menu.IsComposite(prd.Type) {
-		return menu.Ingredient{}, menu.ErrInvalidCompositeID
+	if err != nil || !product.IsComposite(prd.Type) {
+		return ingredient.Ingredient{}, ingredient.ErrInvalidCompositeID
 	}
 
 	ing, err := products.GetByID(ctx, i.IngredientID)
-	if err != nil || menu.IsOutput(ing.Type){
-		return menu.Ingredient{}, menu.ErrInvalidComponentID
+	if err != nil || product.IsOutput(ing.Type) {
+		return ingredient.Ingredient{}, ingredient.ErrInvalidComponentID
 	}
 
 	return i, ingredients.Create(ctx, i)

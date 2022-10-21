@@ -1,14 +1,14 @@
 package movements
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/movement"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"comies/app/data/query"
 	"context"
 )
 
-func GetBalance(ctx context.Context, filter menu.MovementFilter) (types.Quantity, error) {
+func GetBalance(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
 	const script = `
 		select
 			coalesce(sum(

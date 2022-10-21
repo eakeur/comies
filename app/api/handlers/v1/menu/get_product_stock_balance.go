@@ -3,6 +3,7 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/movement"
 	"comies/app/core/types"
 	"comies/app/jobs/menu"
 	"context"
@@ -25,7 +26,7 @@ func GetProductStockBalance(ctx context.Context, r request.Request) send.Respons
 		return send.IDError(err)
 	}
 
-	bal, err := menu.GetProductBalance(ctx, menu.MovementFilter{
+	bal, err := menu.GetProductBalance(ctx, movement.Filter{
 		ProductID: id,
 	})
 	if err != nil {

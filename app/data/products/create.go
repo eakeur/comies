@@ -1,7 +1,7 @@
 package products
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/product"
 	"comies/app/data/conn"
 	"context"
 	"errors"
@@ -9,8 +9,9 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, p menu.Product) error {
-	const script = `
+func Create(ctx context.Context) func(p product.Product) error {
+	return func(p product.Product) error {
+		const script = `
 		insert into products (
 			id,
 			code,
@@ -28,28 +29,29 @@ func Create(ctx context.Context, p menu.Product) error {
 		)
 	`
 
-	if _, err := conn.ExecFromContext(ctx, script,
-		p.ID,
-		p.Code,
-		p.Name,
-		p.Type,
-		p.CostPrice,
-		p.SalePrice,
-		p.SaleUnit,
-		p.MinimumSale,
-		p.MinimumQuantity,
-		p.MaximumQuantity,
-		p.Location,
-	); err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) {
-			if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.ProductCodeUK {
-				return menu.ErrCodeAlreadyExists
+		if _, err := conn.ExecFromContext(ctx, script,
+			p.ID,
+			p.Code,
+			p.Name,
+			p.Type,
+			p.CostPrice,
+			p.SalePrice,
+			p.SaleUnit,
+			p.MinimumSale,
+			p.MinimumQuantity,
+			p.MaximumQuantity,
+			p.Location,
+		); err != nil {
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) {
+				if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.ProductCodeUK {
+					return product.ErrCodeAlreadyExists
+				}
 			}
+
+			return err
 		}
 
-		return err
+		return nil
 	}
-
-	return nil
 }

@@ -1,7 +1,7 @@
 package products
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/product"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -23,7 +23,7 @@ func GetNameByID(ctx context.Context, id types.ID) (string, error) {
 	var name string
 	if err := row.Scan(&name); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return "", menu.ErrNotFound
+			return "", product.ErrNotFound
 		}
 		return "", err
 	}

@@ -1,0 +1,35 @@
+package movement
+
+import (
+	"comies/app/core/types"
+	"time"
+)
+
+type Movement struct {
+	ID        types.ID       `json:"id"`
+	ProductID types.ID       `json:"product_id"`
+	AgentID   types.ID       `json:"agent_id"`
+	Type      types.Type     `json:"type"`
+	Date      time.Time      `json:"date"`
+	Quantity  types.Quantity `json:"quantity"`
+}
+
+func (m Movement) WithID(id types.ID) Movement {
+	m.ID = id
+	return m
+}
+
+func (m Movement) AssertQuantity() Movement {
+	val := m.Quantity
+	if m.Type == OutputType && val > 0 {
+		val *= -1
+	}
+
+	m.Quantity = val
+
+	return m
+}
+
+func (m Movement) Validate() (Movement, error) {
+	return m, ValidateType(m.Type)
+}

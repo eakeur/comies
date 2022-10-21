@@ -3,7 +3,10 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/product"
 	"comies/app/core/types"
+	"comies/app/data/ids"
+	"comies/app/data/products"
 	"comies/app/jobs/menu"
 	"context"
 )
@@ -26,8 +29,10 @@ func CreateProduct(ctx context.Context, r request.Request) send.Response {
 	if err != nil {
 		return send.JSONError(err)
 	}
-
-	prd, err := menu.SaveProduct(ctx, menu.Product{
+	prd, err := menu.SaveProduct(
+		ids.Create,
+		products.Create(ctx),
+	)(product.Product{
 		Code:            p.Code,
 		Name:            p.Name,
 		Type:            p.Type,
@@ -53,7 +58,7 @@ type CreateProductRequest struct {
 	// shown in fiscal documents
 	Name string `json:"name"`
 	// Type is the type of the product
-	Type menu.Type `json:"type"`
+	Type types.Type `json:"type"`
 	// CostPrice is how much the store pays to make or store this product
 	CostPrice types.Currency `json:"cost_price"`
 	// Price is how much the customer pays for this product

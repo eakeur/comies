@@ -1,7 +1,7 @@
 package products
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/product"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -10,8 +10,9 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func GetByID(ctx context.Context, id types.ID) (menu.Product, error) {
-	const script = `
+func GetByID(ctx context.Context) func(id types.ID) (product.Product, error) {
+	return func(id types.ID) (product.Product, error) {
+		const script = `
 		select
 			p.id,
 			p.code,
@@ -32,31 +33,32 @@ func GetByID(ctx context.Context, id types.ID) (menu.Product, error) {
 			p.id = $1
 	`
 
-	row, err := conn.QueryRowFromContext(ctx, script, id)
-	if err != nil {
-		return menu.Product{}, err
-	}
-
-	var p menu.Product
-	if err := row.Scan(
-		&p.ID,
-		&p.Code,
-		&p.Name,
-		&p.Type,
-		&p.CostPrice,
-		&p.SalePrice,
-		&p.SaleUnit,
-		&p.MinimumSale,
-		&p.MinimumQuantity,
-		&p.MaximumQuantity,
-		&p.Location,
-		&p.Balance,
-	); err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return menu.Product{}, menu.ErrNotFound
+		row, err := conn.QueryRowFromContext(ctx, script, id)
+		if err != nil {
+			return product.Product{}, err
 		}
-		return menu.Product{}, err
-	}
 
-	return p, nil
+		var p product.Product
+		if err := row.Scan(
+			&p.ID,
+			&p.Code,
+			&p.Name,
+			&p.Type,
+			&p.CostPrice,
+			&p.SalePrice,
+			&p.SaleUnit,
+			&p.MinimumSale,
+			&p.MinimumQuantity,
+			&p.MaximumQuantity,
+			&p.Location,
+			&p.Balance,
+		); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return product.Product{}, product.ErrNotFound
+			}
+			return product.Product{}, err
+		}
+
+		return p, nil
+	}
 }

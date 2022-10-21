@@ -1,7 +1,7 @@
 package ingredients
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/ingredient"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, i menu.Ingredient) error {
+func Create(ctx context.Context, i ingredient.Ingredient) error {
 	const script = `
 		insert into ingredients (
 			id,

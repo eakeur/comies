@@ -11,10 +11,5 @@ func RemoveIngredient(ctx context.Context, ingredientID types.ID) error {
 		return err
 	}
 
-	err := ingredients.Remove(ctx, ingredientID)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return ingredients.Remove(ctx, ingredientID)
 }

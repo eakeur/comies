@@ -3,8 +3,9 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/product"
+	"comies/app/core/types"
 	"comies/app/data/products"
-	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 	"strconv"
@@ -35,10 +36,10 @@ func ListProducts(ctx context.Context, r request.Request) send.Response {
 
 	ty, _ := strconv.Atoi(query.Get("type"))
 
-	filter := menu.ProductFilter{
+	filter := product.Filter{
 		Code: query.Get("code"),
 		Name: query.Get("name"),
-		Type: menu.Type(ty),
+		Type: types.Type(ty),
 	}
 
 	list, err := products.List(ctx, filter)

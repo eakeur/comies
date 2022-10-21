@@ -1,15 +1,14 @@
 package ordering
 
 type (
-	Type int
+	Type   int
 	Status int
 )
 
 const (
-	NoType Type = 0
+	NoType   Type   = 0
 	NoStatus Status = 0
 )
-
 
 const (
 	InTheCartOrderStatus       Status = 10
@@ -25,9 +24,8 @@ const (
 const (
 	PreparingItemStatus Status = 10
 	DoneItemStatus      Status = 20
-	FailedItemStatus   Status = 30
+	FailedItemStatus    Status = 30
 )
-
 
 const (
 	TakeoutDeliveryType Type = 10

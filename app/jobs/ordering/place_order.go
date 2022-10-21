@@ -5,7 +5,6 @@ import (
 	"comies/app/core/types"
 	"comies/app/data/items"
 	"comies/app/data/orders"
-	"comies/app/jobs/menu"
 	"context"
 	"time"
 )
@@ -18,10 +17,10 @@ type OrderConfirmation struct {
 	CustomerPhone   string
 }
 
-func PlaceOrder(ctx context.Context, c OrderConfirmation) (ordering.Order, error) {
+func PlaceOrder(ctx context.Context, c OrderConfirmation) (ordering.Order, []ordering.Item, error) {
 	o, err := orders.GetByID(ctx, c.OrderID)
 	if err != nil {
-		return ordering.Order{}, err
+		return ordering.Order{}, nil, err
 	}
 
 	o.DeliveryType = c.DeliveryType
@@ -31,34 +30,23 @@ func PlaceOrder(ctx context.Context, c OrderConfirmation) (ordering.Order, error
 	o.Customer.Address = c.CustomerAddress
 
 	if err := ordering.CheckIfOrderIsPlaceable(o); err != nil {
-		return ordering.Order{}, err
+		return ordering.Order{}, nil, err
 	}
 
 	itemsList, err := items.List(ctx, o.ID)
 	if err != nil || len(itemsList) <= 0 {
-		return ordering.Order{}, ordering.ErrInvalidNumberOfItems
+		return ordering.Order{}, nil, ordering.ErrInvalidNumberOfItems
 	}
 
 	if err := updateOrderOnConfirmation(ctx, o); err != nil {
-		return ordering.Order{}, err
+		return ordering.Order{}, nil, err
 	}
 
 	if err = orders.UpdateFlow(ctx, ordering.NewOrderFlow(o)); err != nil {
-		return ordering.Order{}, err
+		return ordering.Order{}, nil, err
 	}
 
-	sendch(o.ID, newOrderPath, NewOrderNotification{
-		Order: o,
-		Items: itemsList,
-	})
-
-	go func() {
-		for _, item := range itemsList {
-			menu.ConfirmReservation(ctx, item.ID)
-		}
-	}()
-
-	return o, nil
+	return o, itemsList, nil
 
 }
 

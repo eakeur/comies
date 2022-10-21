@@ -3,6 +3,7 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/movement"
 	"comies/app/jobs/menu"
 	"context"
 	"net/http"
@@ -26,7 +27,7 @@ func GetProductMovements(ctx context.Context, r request.Request) send.Response {
 		return send.IDError(err)
 	}
 
-	var filter menu.MovementFilter
+	var filter movement.Filter
 	filter.ProductID = id
 
 	var query = r.URL.Query()

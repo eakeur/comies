@@ -11,11 +11,5 @@ func RemoveProduct(ctx context.Context, productID types.ID) error {
 		return err
 	}
 
-	err := products.Remove(ctx, productID)
-	if err != nil {
-		return err
-	}
-
-	return err
-
+	return products.Remove(ctx, productID)
 }

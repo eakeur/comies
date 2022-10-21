@@ -1,22 +1,16 @@
 package menu
 
 import (
-	"comies/app/core/menu"
-	"comies/app/core/types"
-	"comies/app/data/ids"
-	"comies/app/data/products"
-	"context"
+	"comies/app/core/product"
 )
 
-func SaveProduct(ctx context.Context, p menu.Product) (menu.Product, error) {
-	if err := menu.ValidateProduct(p); err != nil {
-		return menu.Product{}, err
-	}
+func SaveProduct(id IDGenerator, write ProductWriter) ProductSaver {
+	return func(p product.Product) (product.Product, error) {
+		save, err := p.WithID(id()).Validate()
+		if err != nil {
+			return product.Product{}, err
+		}
 
-	if err := types.ValidateID(p.ID); err == nil {
-		return p, products.Update(ctx, p)
+		return save, write(save)
 	}
-
-	p.ID = ids.Create()
-	return p, products.Create(ctx, p)
 }

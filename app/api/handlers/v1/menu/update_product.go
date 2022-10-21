@@ -3,7 +3,9 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/product"
 	"comies/app/core/types"
+	"comies/app/data/products"
 	"comies/app/jobs/menu"
 	"context"
 	"encoding/json"
@@ -35,8 +37,10 @@ func UpdateProduct(ctx context.Context, r request.Request) send.Response {
 		return send.IDError(err)
 	}
 
-	_, err = menu.SaveProduct(ctx, menu.Product{
-		ID:              id,
+	if _, err = menu.SaveProduct(
+		func() types.ID { return id },
+		products.Update(ctx),
+	)(product.Product{
 		Code:            p.Code,
 		Name:            p.Name,
 		Type:            p.Type,
@@ -47,8 +51,7 @@ func UpdateProduct(ctx context.Context, r request.Request) send.Response {
 		MaximumQuantity: p.MaximumQuantity,
 		MinimumQuantity: p.MinimumQuantity,
 		Location:        p.Location,
-	})
-	if err != nil {
+	}); err != nil {
 		return send.FromError(err)
 	}
 
@@ -62,7 +65,7 @@ type UpdateProductRequest struct {
 	// shown in fiscal documents
 	Name string `json:"name"`
 	// Type is the type of the product
-	Type menu.Type `json:"type"`
+	Type types.Type `json:"type"`
 	// CostPrice is how much the store pays to make or store this product
 	CostPrice types.Currency `json:"cost_price"`
 	// Price is how much the customer pays for this product

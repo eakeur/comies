@@ -3,9 +3,9 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/product"
 	"comies/app/core/types"
 	"comies/app/data/products"
-	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 )
@@ -25,7 +25,7 @@ import (
 func GetProductByKey(ctx context.Context, r request.Request) send.Response {
 	key := r.Param("product_key")
 
-	var p menu.Product
+	var p product.Product
 	var err error
 
 	switch r.GetQuery("code") {

@@ -3,10 +3,13 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/movement"
 	"comies/app/core/types"
+	"comies/app/data/ids"
+	"comies/app/data/movements"
+	"comies/app/data/products"
 	"comies/app/jobs/menu"
 	"context"
-	"net/http"
 	"time"
 )
 
@@ -35,24 +38,27 @@ func CreateMovement(ctx context.Context, r request.Request) send.Response {
 		return send.IDError(err)
 	}
 
-	bal, err := menu.CreateMovement(ctx, menu.Movement{
+	m, err := menu.SaveMovement(
+		ids.Create,
+		menu.GetProductByID(products.GetByID(ctx)),
+		movements.Create(ctx),
+	)(movement.Movement{
 		ProductID: productID,
 		AgentID:   mov.AgentID,
 		Type:      mov.Type,
 		Date:      mov.Date,
-	}, mov.Quantity)
+		Quantity:  mov.Quantity,
+	})
 	if err != nil {
 		return send.FromError(err)
 	}
 
-	return send.Data(http.StatusCreated, Balance{Balance: bal.Count}, send.WithHeaders(map[string]string{
-		"id": bal.ID.String(),
-	}))
+	return send.CreatedWithID(m.ID)
 }
 
 type CreateMovementRequest struct {
 	// Type points out if this movement is input or output
-	Type menu.Type `json:"type"`
+	Type types.Type `json:"type"`
 
 	// Date is when the object got into the stock effectively
 	Date time.Time `json:"date"`

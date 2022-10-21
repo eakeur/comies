@@ -1,8 +1,0 @@
-info:
-  contact: {}
-  description: An API wrapping all functionalities of the ordering and menu services
-    of Comies
-  title: Comies Backend API
-  version: "1.0"
-paths: {}
-swagger: "2.0"

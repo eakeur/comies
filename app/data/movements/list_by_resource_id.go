@@ -1,14 +1,13 @@
 package movements
 
 import (
-	"comies/app/core/menu"
-	"comies/app/core/types"
+	"comies/app/core/movement"
 	"comies/app/data/conn"
 	"comies/app/data/query"
 	"context"
 )
 
-func List(ctx context.Context, filter menu.MovementFilter) ([]menu.Movement, error) {
+func List(ctx context.Context, filter movement.Filter) ([]movement.Movement, error) {
 	const script = `
 		select
 			m.id,
@@ -36,9 +35,8 @@ func List(ctx context.Context, filter menu.MovementFilter) ([]menu.Movement, err
 		return nil, err
 	}
 
-	movements := make([]menu.Movement, 0)
-	var m menu.Movement
-	var qt types.Quantity
+	movements := make([]movement.Movement, 0)
+	var m movement.Movement
 
 	for rows.Next() {
 
@@ -48,14 +46,12 @@ func List(ctx context.Context, filter menu.MovementFilter) ([]menu.Movement, err
 			&m.Type,
 			&m.Date,
 			&m.AgentID,
-			&qt,
+			&m.Quantity,
 		); err != nil {
 			return nil, err
 		}
 
 		m.Date = m.Date.UTC()
-		m = menu.AssignMovementQuantity(m, qt)
-
 		movements = append(movements, m)
 	}
 

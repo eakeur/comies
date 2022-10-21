@@ -3,6 +3,7 @@ package menu
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
+	"comies/app/core/ingredient"
 	"comies/app/core/types"
 	"comies/app/jobs/menu"
 	"context"
@@ -33,7 +34,7 @@ func CreateIngredient(ctx context.Context, r request.Request) send.Response {
 		return send.IDError(err)
 	}
 
-	ing, err := menu.CreateIngredient(ctx, menu.Ingredient{
+	ing, err := menu.CreateIngredient(ctx, ingredient.Ingredient{
 		ProductID:    productID,
 		IngredientID: i.IngredientID,
 		Quantity:     i.Quantity,

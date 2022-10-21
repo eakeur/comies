@@ -6,9 +6,10 @@ import (
 	"comies/app/data/ids"
 	"comies/app/telemetry"
 	"fmt"
-	"log"
 	"net"
 	"os"
+
+	"go.uber.org/zap"
 )
 
 // @title        Comies Backend API
@@ -17,34 +18,33 @@ import (
 func main() {
 	cfg := config.Load()
 
+	log := telemetry.NewLogger(os.Stdout)
+
 	pool, err := conn.Connect(cfg.Database)
 	if err != nil {
-		log.Fatalf("Could not startup database: %v", err)
+		log.Fatal("Could not startup database", zap.Error(err))
 	}
 
 	err = conn.Migrate(pool)
 	if err != nil {
-		log.Fatalf("Could not migrate database: %v", err)
+		log.Fatal("Could not migrate database", zap.Error(err))
 	}
 
 	err = ids.NewNode(cfg.IDGeneration)
 	if err != nil {
-		log.Fatalf("Could not startup idgen: %v", err)
+		log.Fatal("Could not startup idgen", zap.Error(err))
 	}
-
-	telemetry.Register(&telemetry.Telemetry{
-		Logger: telemetry.NewLogger(os.Stdout),
-	})
 
 	address := fmt.Sprintf(":%v", cfg.Server.ListenPort)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Fatalf("Could not listen to port %v: %v", cfg.Server.ListenPort, err)
+		log.Fatal("Could not listen to port", zap.String("port", cfg.Server.ListenPort), zap.Error(err))
 	}
-	log.Printf("Listening on %s", lis.Addr())
+
+	log.Info("Server is ready to receive requests", zap.String("address", lis.Addr().String()))
 
 	// err = http.Serve(lis, api.NewAPI(application))
 	// if err != nil {
-	// 	log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, err)
+	// 	log.Fatalf("Server stopped listening on port %v: %v", cfg.Server.ListenPort, zap.Error(err))
 	// }
 }

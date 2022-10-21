@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func Route(fn func(ctx context.Context, r request.Request) send.Response) http.Handler {
+func Route(fn func(ctx context.Context, r request.Request) send.Response) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 

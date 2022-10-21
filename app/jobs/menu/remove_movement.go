@@ -11,10 +11,5 @@ func RemoveMovement(ctx context.Context, movementID types.ID) error {
 		return err
 	}
 
-	err := movements.Remove(ctx, movementID)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return movements.Remove(ctx, movementID)
 }

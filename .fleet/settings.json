@@ -1,13 +1,13 @@
 {
     "[go]": {
       "GOROOT": "/usr/local/go",
-      "GOPATH": "/home/igor/go"
+      "GOPATH": "/home/igo/go"
     },
 
     "toolchains": [
       {
         "GOROOT": "/usr/local/go",
-        "GOPATH": "/home/igor/go"
+        "GOPATH": "/home/igo/go"
       }
     ]
 }

@@ -1,7 +1,7 @@
 package movements
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/movement"
 	"comies/app/core/types"
 	"comies/app/data/conn"
 	"context"
@@ -10,8 +10,9 @@ import (
 	"github.com/jackc/pgconn"
 )
 
-func Create(ctx context.Context, m menu.Movement) error {
-	const script = `
+func Create(ctx context.Context) func(m movement.Movement) error {
+	return func(m movement.Movement) error {
+		const script = `
 		insert into movements (
 			id,
 			product_id,
@@ -24,29 +25,31 @@ func Create(ctx context.Context, m menu.Movement) error {
 		)
 	`
 
-	_, err := conn.ExecFromContext(ctx, script,
-		m.ID,
-		m.ProductID,
-		m.Type,
-		m.Date,
-		m.Date,
-		m.AgentID,
-		menu.MovementQuantity(m),
-	)
-	if err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) {
-			if pgErr.Code == conn.NonexistentFK && pgErr.ConstraintName == conn.MovementStockIDFK {
-				return types.ErrNotFound
+		_, err := conn.ExecFromContext(ctx, script,
+			m.ID,
+			m.ProductID,
+			m.Type,
+			m.Date,
+			m.Date,
+			m.AgentID,
+			m.Quantity,
+		)
+		if err != nil {
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) {
+				if pgErr.Code == conn.NonexistentFK && pgErr.ConstraintName == conn.MovementStockIDFK {
+					return types.ErrNotFound
+				}
+
+				if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.MovementIDPK {
+					return types.ErrAlreadyExists
+				}
 			}
 
-			if pgErr.Code == conn.DuplicateError && pgErr.ConstraintName == conn.MovementIDPK {
-				return types.ErrAlreadyExists
-			}
+			return err
 		}
 
-		return err
+		return nil
 	}
 
-	return nil
 }

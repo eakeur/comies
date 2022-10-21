@@ -1,12 +1,12 @@
 package products
 
 import (
-	"comies/app/core/menu"
+	"comies/app/core/product"
 	"comies/app/data/conn"
 	"context"
 )
 
-func ListRunningOut(ctx context.Context) ([]menu.Product, error) {
+func ListRunningOut(ctx context.Context) ([]product.Product, error) {
 	const script = `
 		select
 			p.id,
@@ -30,13 +30,13 @@ func ListRunningOut(ctx context.Context) ([]menu.Product, error) {
 		coalesce(m.balance, 0) - p.minimum_quantity
 	`
 
-	rows, err := conn.QueryFromContext(ctx, script, menu.OutputProductType, menu.InputProductType)
+	rows, err := conn.QueryFromContext(ctx, script, product.OutputType, product.InputType)
 	if err != nil {
 		return nil, err
 	}
 
-	products := make([]menu.Product, 0)
-	var p menu.Product
+	products := make([]product.Product, 0)
+	var p product.Product
 	for rows.Next() {
 		if err := rows.Scan(
 			&p.ID,

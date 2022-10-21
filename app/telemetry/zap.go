@@ -3,21 +3,20 @@ package telemetry
 import (
 	"context"
 	"io"
+	"os"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-func Logger() *zap.Logger {
-	return instrumentation.Logger
-}
+type LoggerContext struct{}
 
 // LoggerFromContext returns a logger from context if it exists,
 // and returns the standard instrumentation logger otherwise.
 func LoggerFromContext(ctx context.Context) *zap.Logger {
 	logger, ok := ctx.Value(LoggerContext{}).(*zap.Logger)
 	if !ok {
-		logger = instrumentation.Logger
+		NewLogger(os.Stdout).With(zap.String("logmsg", "no logger in context"))
 	}
 
 	return logger
