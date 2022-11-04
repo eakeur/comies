@@ -1,33 +1,24 @@
 package ordering
 
 import (
-	"comies/app/core/entities/order"
+	"comies/app/core/ordering/order"
+	"comies/app/core/ordering/status"
 	"comies/app/core/types"
 	"context"
+	"time"
 )
 
 func (w jobs) CancelOrder(ctx context.Context, id types.ID) error {
 
-	o, err := w.orders.GetByID(ctx, id)
+	o, err := w.statuses.GetLastUpdate(ctx, id)
 	if err != nil {
 		return err
 	}
 
-	if o.Status >= order.PreparingStatus {
-		return order.ErrAlreadyPreparing
+	if o.Value > status.PreparingStatus {
+		return order.ErrAlreadyPrepared
+
 	}
 
-	items, err := w.items.List(ctx, o.ID)
-	if err != nil {
-		return err
-	}
-
-	for _, item := range items {
-		err := w.products.UpdateReservation(ctx, item.ID, false)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return w.statuses.Update(ctx, status.Status{OrderID: id}.WithOccurredAt(time.Now()).WithValue(status.CanceledStatus))
 }

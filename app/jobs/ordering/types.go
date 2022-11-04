@@ -1,15 +1,19 @@
 package ordering
 
 import (
-	"comies/app/core/item"
-	"comies/app/core/order"
-	"comies/app/core/reservation"
+	"comies/app/core/ordering/item"
 	"comies/app/core/types"
+	"time"
 )
 
 type (
 	OrderConfirmation struct {
-		OrderID      types.ID
-		DeliveryMode order.DeliveryMode
+		items           []item.Item
+		DeliveryType    types.Type
+		Observations    string
+		CustomerName    string
+		CustomerPhone   string
+		CustomerAddress string
+		Time            time.Time
 	}
 )

@@ -10,11 +10,22 @@ type Item struct {
 	Status       types.Status   `json:"status"`
 	ProductID    types.ID       `json:"product_id"`
 	Quantity     types.Quantity `json:"quantity"`
+	Value        types.Currency `json:"value"`
 	Observations string         `json:"observations"`
 }
 
 func (i Item) WithID(id types.ID) Item {
 	i.ID = id
+	return i
+}
+
+func (i Item) WithValue(x types.Currency) Item {
+	i.Value = x
+	return i
+}
+
+func (i Item) WIthStatus(x types.Status) Item {
+	i.Status = x
 	return i
 }
 
