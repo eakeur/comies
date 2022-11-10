@@ -7,10 +7,5 @@ import (
 )
 
 func (w jobs) GetOrderByID(ctx context.Context, id types.ID) (order.Order, error) {
-	o, err := w.orders.GetByID(ctx, id)
-	if err != nil {
-		return order.Order{}, err
-	}
-
-	return o, nil
+	return w.orders.GetByID(ctx, id)
 }

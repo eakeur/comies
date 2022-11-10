@@ -1,12 +1,25 @@
 package ordering
 
 import (
+	"comies/app/core/ordering/item"
 	"comies/app/core/ordering/order"
 	"comies/app/core/ordering/status"
+	"comies/app/core/types"
 	"context"
+	"time"
 )
 
-func (w jobs) PlaceOrder(ctx context.Context, conf OrderConfirmation) (order.Order, error) {
+type Order struct {
+	items           []item.Item
+	DeliveryType    types.Type
+	Observations    string
+	CustomerName    string
+	CustomerPhone   string
+	CustomerAddress string
+	Time            time.Time
+}
+
+func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
 	if len(conf.items) <= 0 {
 		return order.Order{}, order.ErrInvalidNumberOfItems
 	}

@@ -6,10 +6,5 @@ import (
 )
 
 func (w jobs) SetItemStatus(ctx context.Context, id types.ID, status types.Status) error {
-	err := w.items.SetStatus(ctx, id, status)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return w.items.SetStatus(ctx, id, status)
 }

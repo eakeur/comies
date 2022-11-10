@@ -17,7 +17,6 @@ func (w jobs) CancelOrder(ctx context.Context, id types.ID) error {
 
 	if o.Value > status.PreparingStatus {
 		return order.ErrAlreadyPrepared
-
 	}
 
 	return w.statuses.Update(ctx, status.Status{OrderID: id}.WithOccurredAt(time.Now()).WithValue(status.CanceledStatus))

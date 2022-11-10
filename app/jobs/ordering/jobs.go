@@ -11,8 +11,7 @@ import (
 var _ Jobs = jobs{}
 
 type Jobs interface {
-	AddToOrder(ctx context.Context, i item.Item) (item.Item, error)
-	PlaceOrder(ctx context.Context, o OrderConfirmation) (order.Order, error)
+	PlaceOrder(ctx context.Context, o Order) (order.Order, error)
 	CancelOrder(ctx context.Context, id types.ID) error
 
 	ListOrders(ctx context.Context, f order.Filter) ([]order.Order, error)
