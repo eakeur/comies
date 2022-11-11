@@ -11,4 +11,5 @@ type Actions interface {
 	Update(ctx context.Context, s Status) error
 	ListHistory(ctx context.Context, orderID types.ID) ([]Status, error)
 	GetLastUpdate(ctx context.Context, orderID types.ID) (Status, error)
+	CountByStatus(ctx context.Context) (CountByStatus, error)
 }

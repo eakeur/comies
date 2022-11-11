@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+type CountByStatus = map[types.Status]types.Quantity
+
 type Status struct {
 	OrderID    types.ID
 	Value      types.Status

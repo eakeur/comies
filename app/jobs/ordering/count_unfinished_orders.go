@@ -1,10 +1,10 @@
 package ordering
 
 import (
-	"comies/app/core/ordering/order"
+	"comies/app/core/ordering/status"
 	"context"
 )
 
-func (w jobs) CountUnfinishedOrders(ctx context.Context) (order.CountByStatus, error) {
-	return w.orders.CountUnfinished(ctx)
+func (w jobs) CountUnfinishedOrders(ctx context.Context) (status.CountByStatus, error) {
+	return w.statuses.CountByStatus(ctx)
 }

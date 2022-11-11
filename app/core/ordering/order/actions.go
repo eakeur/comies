@@ -10,5 +10,4 @@ type Actions interface {
 	List(ctx context.Context, f Filter) ([]Order, error)
 	GetByID(ctx context.Context, id types.ID) (Order, error)
 	GetByCustomerPhone(ctx context.Context, phone string) (Order, error)
-	CountUnfinished(ctx context.Context) (CountByStatus, error)
 }

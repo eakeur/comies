@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-type CountByStatus = map[types.Status]types.Quantity
-
 type Order struct {
 	ID              types.ID   `json:"id"`
 	PlacedAt        time.Time  `json:"placed_at"`

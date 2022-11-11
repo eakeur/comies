@@ -16,7 +16,7 @@ type Jobs interface {
 	CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error)
 
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
-	ListProductsRunningOut(ctx context.Context) ([]product.Product, error)
+	ListProductsRunningOut(ctx context.Context) ([]MissingProduct, error)
 	ListIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error)
 	ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, error)
 

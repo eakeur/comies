@@ -5,6 +5,6 @@ import (
 )
 
 type Filter struct {
-	Type       types.Type
+	Types      []types.Type
 	Code, Name string
 }

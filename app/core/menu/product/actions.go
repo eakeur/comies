@@ -9,7 +9,6 @@ import (
 
 type Actions interface {
 	List(ctx context.Context, filter Filter) ([]Product, error)
-	ListRunningOut(ctx context.Context) ([]Product, error)
 	GetByID(ctx context.Context, id types.ID) (Product, error)
 	GetNameByID(ctx context.Context, id types.ID) (string, error)
 	Create(ctx context.Context, p Product) error
