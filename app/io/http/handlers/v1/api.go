@@ -1,11 +1,11 @@
 package v1
 
 import (
-	"comies/app/api/handlers/v1/menu/ingredients"
-	"comies/app/api/handlers/v1/menu/movements"
-	"comies/app/api/handlers/v1/menu/prices"
-	"comies/app/api/handlers/v1/menu/products"
-	"comies/app/api/route"
+	"comies/app/io/http/handlers/v1/menu/ingredients"
+	"comies/app/io/http/handlers/v1/menu/movements"
+	"comies/app/io/http/handlers/v1/menu/prices"
+	"comies/app/io/http/handlers/v1/menu/products"
+	"comies/app/io/http/route"
 	"comies/app/jobs/menu"
 	"comies/app/jobs/ordering"
 	"net/http"

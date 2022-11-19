@@ -1,8 +1,8 @@
 package ordering
 
 import (
-	"comies/app/api/request"
-	"comies/app/api/send"
+	"comies/app/io/http/request"
+	"comies/app/io/http/send"
 	"comies/app/jobs/ordering"
 	"context"
 )

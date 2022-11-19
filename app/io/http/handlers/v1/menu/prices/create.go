@@ -1,9 +1,9 @@
 package prices
 
 import (
-	"comies/app/api/request"
-	"comies/app/api/send"
 	"comies/app/core/types"
+	"comies/app/io/http/request"
+	"comies/app/io/http/send"
 	"context"
 	"net/http"
 	"strconv"
