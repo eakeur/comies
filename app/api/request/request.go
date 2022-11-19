@@ -2,7 +2,7 @@ package request
 
 import (
 	"comies/app/core/types"
-	"comies/app/data/conn"
+	"comies/app/gateway/data/postgres/conn"
 	"context"
 	"encoding/json"
 	"net/http"

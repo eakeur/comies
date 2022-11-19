@@ -2,10 +2,12 @@ package api
 
 import (
 	"comies/app/api/send"
-	"comies/app/core/ingredient"
-	"comies/app/core/movement"
-	"comies/app/core/ordering"
-	"comies/app/core/product"
+	"comies/app/core/menu/ingredient"
+	"comies/app/core/menu/movement"
+	"comies/app/core/menu/product"
+	"comies/app/core/ordering/item"
+	"comies/app/core/ordering/order"
+	"comies/app/core/ordering/status"
 	"net/http"
 )
 
@@ -66,32 +68,32 @@ func init() {
 			Message: "the movement type must be a valid one",
 		}),
 
-		ordering.ErrInvalidQuantity: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
+		item.ErrInvalidQuantity: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
 			Code:    "ITEM_INVALID_QUANTITY",
 			Message: "Ops! This item's quantity should be greater than 0 to be ordered",
 		}),
-		ordering.ErrInvalidStatus: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
+		item.ErrInvalidStatus: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
 			Code:    "ITEM_INVALID_STATUS",
 			Message: "Ops! The item status must be valid",
 		}),
 
-		ordering.ErrAlreadyOrdered: send.Data(http.StatusPreconditionFailed, send.ResponseError{
+		order.ErrAlreadyOrdered: send.Data(http.StatusPreconditionFailed, send.ResponseError{
 			Code:    "ORDER_ALREADY_ORDERED",
 			Message: "Ops! This order is already in process and can not be re-ordered",
 		}),
-		ordering.ErrAlreadyPreparing: send.Data(http.StatusPreconditionFailed, send.ResponseError{
-			Code:    "ORDER_ALREADY_PREPARING",
+		order.ErrAlreadyPrepared: send.Data(http.StatusPreconditionFailed, send.ResponseError{
+			Code:    "ORDER_ALREADY_PREPARED",
 			Message: "Ops! This order is already in process and can not be canceled",
 		}),
-		ordering.ErrInvalidNumberOfItems: send.Data(http.StatusPreconditionFailed, send.ResponseError{
+		order.ErrInvalidNumberOfItems: send.Data(http.StatusPreconditionFailed, send.ResponseError{
 			Code:    "ORDER_MUST_HAVE_ITEMS",
 			Message: "Ops! This order has no items to be ordered",
 		}),
-		ordering.ErrInvalidStatus: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
+		status.ErrInvalidStatus: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
 			Code:    "ORDER_INVALID_STATUS",
 			Message: "Ops! This order status is invalid",
 		}),
-		ordering.ErrInvalidDeliveryType: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
+		order.ErrInvalidDeliveryType: send.Data(http.StatusUnprocessableEntity, send.ResponseError{
 			Code:    "ORDER_INVALID_DELIVERY_MODE",
 			Message: "Ops! This order delivery mode is invalid",
 		}),
