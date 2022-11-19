@@ -22,7 +22,7 @@ type Jobs interface {
 
 	GetProductByID(ctx context.Context, id types.ID) (product.Product, error)
 	GetProductNameByID(ctx context.Context, id types.ID) (string, error)
-	GetProductSaleInfoByID(ctx context.Context, id types.ID) (SaleInfo, error)
+	GetProductLatestPriceByID(ctx context.Context, id types.ID) (types.Currency, error)
 	GetProductStockBalance(ctx context.Context, filter movement.Filter) (types.Quantity, error)
 
 	RemoveProduct(ctx context.Context, id types.ID) error
