@@ -1,11 +1,10 @@
-package menu
+package movements
 
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/core/movement"
+	"comies/app/core/menu/movement"
 	"comies/app/core/types"
-	"comies/app/jobs/menu"
 	"context"
 	"net/http"
 )
@@ -20,13 +19,13 @@ import (
 // @Failure     400         {object} rest.Response{error=rest.Error{}} "INVALID_ID"
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/stock-balance [GET]
-func GetProductStockBalance(ctx context.Context, r request.Request) send.Response {
+func (h Handler) GetProductStockBalance(ctx context.Context, r request.Request) send.Response {
 	id, err := r.IDParam("product_id")
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	bal, err := menu.GetProductBalance(ctx, movement.Filter{
+	bal, err := h.movements.GetProductStockBalance(ctx, movement.Filter{
 		ProductID: id,
 	})
 	if err != nil {

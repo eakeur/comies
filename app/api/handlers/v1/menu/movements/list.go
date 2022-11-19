@@ -1,10 +1,9 @@
-package menu
+package movements
 
 import (
 	"comies/app/api/request"
 	"comies/app/api/send"
-	"comies/app/core/movement"
-	"comies/app/jobs/menu"
+	"comies/app/core/menu/movement"
 	"context"
 	"net/http"
 	"time"
@@ -21,7 +20,7 @@ import (
 // @Success     200         {object} rest.Response{data=[]ListMovementsResponse{}}
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/movements [GET]
-func GetProductMovements(ctx context.Context, r request.Request) send.Response {
+func (h Handler) List(ctx context.Context, r request.Request) send.Response {
 	id, err := r.IDParam("product_id")
 	if err != nil {
 		return send.IDError(err)
@@ -39,7 +38,7 @@ func GetProductMovements(ctx context.Context, r request.Request) send.Response {
 		filter.FinalDate = parse
 	}
 
-	list, err := menu.ListMovements(ctx, filter)
+	list, err := h.movements.ListMovements(ctx, filter)
 	if err != nil {
 		return send.FromError(err)
 	}
