@@ -13,5 +13,4 @@ type Actions interface {
 	GetNameByID(ctx context.Context, id types.ID) (string, error)
 	Create(ctx context.Context, p Product) error
 	Update(ctx context.Context, p Product) error
-	Remove(ctx context.Context, id types.ID) error
 }

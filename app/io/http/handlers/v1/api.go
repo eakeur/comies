@@ -62,6 +62,5 @@ func Serve(router chi.Router, deps Dependencies) {
 					})
 				})
 			})
-
 		})
 }

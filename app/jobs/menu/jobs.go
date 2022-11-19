@@ -26,7 +26,6 @@ type Jobs interface {
 	GetProductLatestPriceByID(ctx context.Context, id types.ID) (types.Currency, error)
 	GetProductStockBalance(ctx context.Context, filter movement.Filter) (types.Quantity, error)
 
-	RemoveProduct(ctx context.Context, id types.ID) error
 	RemoveIngredient(ctx context.Context, productID, ingredientID types.ID) error
 	RemoveMovement(ctx context.Context, id types.ID) error
 
