@@ -19,6 +19,7 @@ type Jobs interface {
 	ListProductsRunningOut(ctx context.Context) ([]MissingProduct, error)
 	ListIngredients(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error)
 	ListMovements(ctx context.Context, filter movement.Filter) ([]movement.Movement, error)
+	ListPrices(ctx context.Context, productID types.ID) ([]price.Price, error)
 
 	GetProductByID(ctx context.Context, id types.ID) (product.Product, error)
 	GetProductNameByID(ctx context.Context, id types.ID) (string, error)
