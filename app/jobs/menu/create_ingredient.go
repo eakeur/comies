@@ -6,7 +6,7 @@ import (
 )
 
 func (w jobs) CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error) {
-	save, err := i.WithID(w.createID()).Validate()
+	save, err := i.Validate()
 	if err != nil {
 		return ingredient.Ingredient{}, err
 	}

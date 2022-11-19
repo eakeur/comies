@@ -26,7 +26,7 @@ type Jobs interface {
 	GetProductStockBalance(ctx context.Context, filter movement.Filter) (types.Quantity, error)
 
 	RemoveProduct(ctx context.Context, id types.ID) error
-	RemoveIngredient(ctx context.Context, id types.ID) error
+	RemoveIngredient(ctx context.Context, productID, ingredientID types.ID) error
 	RemoveMovement(ctx context.Context, id types.ID) error
 
 	UpdateProduct(ctx context.Context, prd product.Product) error

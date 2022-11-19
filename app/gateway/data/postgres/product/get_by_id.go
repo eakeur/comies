@@ -22,7 +22,7 @@ func (a actions) GetByID(ctx context.Context, id types.ID) (product.Product, err
 			p.minimum_sale,
 			p.minimum_quantity,
 			p.maximum_quantity,
-			p.location,
+			p.location
 		from
 			products p
 		where

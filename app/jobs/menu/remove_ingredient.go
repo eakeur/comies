@@ -5,11 +5,15 @@ import (
 	"context"
 )
 
-func (w jobs) RemoveIngredient(ctx context.Context, id types.ID) error {
+func (w jobs) RemoveIngredient(ctx context.Context, productID, ingredientID types.ID) error {
 
-	if err := id.Validate(); err != nil {
+	if err := productID.Validate(); err != nil {
 		return err
 	}
 
-	return w.ingredients.Remove(ctx, id)
+	if err := ingredientID.Validate(); err != nil {
+		return err
+	}
+
+	return w.ingredients.Remove(ctx, productID, ingredientID)
 }

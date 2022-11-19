@@ -10,6 +10,6 @@ import (
 type Actions interface {
 	ListByProductID(ctx context.Context, productID types.ID) ([]Ingredient, error)
 	Create(ctx context.Context, i Ingredient) error
-	Remove(ctx context.Context, id types.ID) error
+	Remove(ctx context.Context, productID types.ID, ingredientID types.ID) error
 	RemoveByProductID(ctx context.Context, productID types.ID) error
 }

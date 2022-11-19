@@ -10,7 +10,7 @@ import (
 
 func (w jobs) CancelOrder(ctx context.Context, id types.ID) error {
 
-	o, err := w.statuses.GetLastUpdate(ctx, id)
+	o, err := w.statuses.GetLatestUpdate(ctx, id)
 	if err != nil {
 		return err
 	}

@@ -10,7 +10,6 @@ import (
 func (a actions) ListByProductID(ctx context.Context, productID types.ID) ([]ingredient.Ingredient, error) {
 	const script = `
 		select
-			id,
 			product_id,
 			ingredient_id,
 			quantity,
@@ -29,7 +28,6 @@ func (a actions) ListByProductID(ctx context.Context, productID types.ID) ([]ing
 	return conn.ScanRows(rows,
 		func(scan conn.Scan, i ingredient.Ingredient) error {
 			return scan(
-				&i.ID,
 				&i.ProductID,
 				&i.IngredientID,
 				&i.Quantity,
