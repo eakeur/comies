@@ -2,8 +2,8 @@ package movement
 
 import (
 	"comies/app/core/menu/movement"
-	"comies/app/gateway/data/postgres/conn"
-	"comies/app/gateway/data/postgres/query"
+	"comies/app/io/data/postgres/conn"
+	"comies/app/io/data/postgres/query"
 	"context"
 )
 

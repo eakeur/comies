@@ -2,7 +2,7 @@ package tests
 
 import (
 	"comies/app/config"
-	"comies/app/gateway/data/postgres/conn"
+	"comies/app/io/data/postgres/conn"
 	"context"
 	"crypto/rand"
 	"fmt"

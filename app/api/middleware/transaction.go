@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"comies/app/gateway/data/postgres/conn"
+	"comies/app/io/data/postgres/conn"
 	"net/http"
 
 	"github.com/jackc/pgx/v4/pgxpool"

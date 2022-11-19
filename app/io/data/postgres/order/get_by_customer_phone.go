@@ -3,7 +3,7 @@ package order
 import (
 	"comies/app/core/ordering/order"
 	"comies/app/core/types"
-	"comies/app/gateway/data/postgres/conn"
+	"comies/app/io/data/postgres/conn"
 	"context"
 	"errors"
 

@@ -2,7 +2,7 @@ package movement
 
 import (
 	"comies/app/core/types"
-	"comies/app/gateway/data/postgres/conn"
+	"comies/app/io/data/postgres/conn"
 	"context"
 )
 
