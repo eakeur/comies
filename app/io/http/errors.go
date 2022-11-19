@@ -1,4 +1,4 @@
-package api
+package http
 
 import (
 	"comies/app/api/send"
