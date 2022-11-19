@@ -12,7 +12,7 @@ import (
 //go:generate moq -fmt goimports -out workflow_mock.go . Jobs:WorkflowMock
 type Jobs interface {
 	CreateProduct(ctx context.Context, p ProductCreation) (types.ID, error)
-	CreateMovement(ctx context.Context, m movement.Movement) (movement.Movement, error)
+	CreateMovement(ctx context.Context, m movement.Movement) (types.ID, error)
 	CreateIngredient(ctx context.Context, i ingredient.Ingredient) (ingredient.Ingredient, error)
 
 	ListProducts(ctx context.Context, productFilter product.Filter) ([]product.Product, error)
