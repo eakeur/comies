@@ -22,7 +22,7 @@ type Jobs interface {
 	SetItemStatus(ctx context.Context, itemID types.ID, st types.Status) error
 
 	GetOrderByID(ctx context.Context, id types.ID) (order.Order, error)
-	GetOrderByCustomerPhone(ctx context.Context, phone string) (order.Order, error)
+	GetStatusByCustomerPhone(ctx context.Context, phone string) (Status, error)
 }
 
 type ProductPriceFetcher func(ctx context.Context, productID types.ID) (types.Currency, error)
