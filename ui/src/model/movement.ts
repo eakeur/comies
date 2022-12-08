@@ -1,4 +1,4 @@
-export type Movement = {
+export interface Movement {
     id: string;
     product_id: string;
     type: number;
@@ -7,9 +7,10 @@ export type Movement = {
     paid_value: number;
 }
 
-export const MovementType = {
-    none: 0,
-    input: 10,
-    output: 20,
-    reserved: 30
+
+export namespace Movement {
+    export const noneType = 0
+    export const inputType = 10
+    export const outputType = 20
+
 }
