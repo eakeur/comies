@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Product, ProductType, Unit } from "../model/product";
+import { Product } from "../model/product";
 import { Comies }  from "../services/comies";
 
 export function useProduct(id: string) {
@@ -17,7 +17,6 @@ export function useProductForm(product?: Product) {
     const control = useForm({defaultValues: product})
 
     const submit = control.handleSubmit(function(product: Product) {
-        product = Product.analyseAndClean(product)
         Comies?.saveProduct(product)
     })
 

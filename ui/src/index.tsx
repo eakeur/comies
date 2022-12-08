@@ -6,16 +6,27 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import { DrawerProvider } from './components/shared/Drawer';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import mockAPI from './api/mock';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const query = new QueryClient()
+
+if (process.env.REACT_APP_MOCKAPI) {
+  mockAPI()
+}
+
 root.render(
-  <ChakraProvider>
+  <QueryClientProvider client={query}>
+    <ChakraProvider>
       <DrawerProvider>
         <App />
       </DrawerProvider>
     </ChakraProvider>
+  </QueryClientProvider>
 );
 
 // If you want your app to work offline and load faster, you can change

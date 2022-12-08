@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Home } from './components/home/Home';
+import { Home } from './components/home';
 import { useShortcuts } from './hooks/keypress';
 import { addAction } from './handlers/handler';
 import { useDrawer } from './hooks/drawer';
-import { ProductForm } from './components/shared/ProductForm';
+import { ProductForm } from './components/product/product-form';
 import { Text } from '@chakra-ui/react'
 
 function App() {
@@ -21,7 +21,6 @@ function App() {
         })
       }
     })
-    console.log("Listening for shortcuts: ", shortcuts)
   }, [shortcuts, drawer])
 
   return <Home />
