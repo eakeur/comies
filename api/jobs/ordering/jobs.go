@@ -16,7 +16,7 @@ type Jobs interface {
 
 	ListOrders(ctx context.Context, f order.Filter) ([]order.Order, error)
 	ListItems(ctx context.Context, orderID types.ID) ([]item.Item, error)
-	CountUnfinishedOrders(ctx context.Context) (status.CountByStatus, error)
+	CountOrdersByStatus(ctx context.Context, status types.Status) (types.Quantity, error)
 
 	SetOrderStatus(ctx context.Context, id types.ID, st status.Status) error
 	SetItemStatus(ctx context.Context, itemID types.ID, st types.Status) error

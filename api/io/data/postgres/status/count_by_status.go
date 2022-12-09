@@ -1,36 +1,29 @@
 package status
 
 import (
-	"comies/core/ordering/status"
 	"comies/core/types"
 	"comies/io/data/postgres/conn"
 	"context"
 )
 
-func (a actions) CountByStatus(ctx context.Context) (status.CountByStatus, error) {
+func (a actions) CountByStatus(ctx context.Context, status types.Status) (types.Quantity, error) {
 	const script = `
 		select
-			ls.value,
 			count(ls.order_id)
 		from latest_statuses ls
+		where ls.value = $1
 		group by ls.value
 	`
 
-	rows, err := conn.QueryFromContext(ctx, script)
+	row, err := conn.QueryRowFromContext(ctx, script, status)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	c := make(status.CountByStatus, 0)
-	for rows.Next() {
-		var status types.Status
-		var count types.Quantity
-		if err := rows.Scan(&status, &count); err != nil {
-			return nil, err
-		}
-
-		c[status] = count
+	var count types.Quantity
+	if err := row.Scan(&count); err != nil {
+		return 0, err
 	}
 
-	return c, nil
+	return count, nil
 }
