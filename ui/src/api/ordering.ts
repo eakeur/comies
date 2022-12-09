@@ -1,20 +1,22 @@
 import { Order } from "../model/order"
-import { API } from "./api"
+import { API } from "api/api"
+import { Routes } from "api/comies/routes"
 
-export function getOrderCountByStatus() {
-    return fetch(API.route("GET_COUNT_BY_STATUS_URL"), API.authorize())
-        .then(API.response)
-        .then<Order.CountByStatus>((res) => res.json())
-
+export function getOrderCountByStatus(status?: number) {
+    return API
+        .route(Routes.ordering.getOrderCountByStatus)
+        .params("status", status?.toString() ?? '')
+        .request()
+        .then((res) => res.json())
+        .then((res) => Number.parseInt(res.count))
 }
 
 export function getOrderStatusByCustomerPhone(phone: string) {
-    return fetch(
-        API.route("GET_STATUS_BY_CUSTOMER_PHONE_URL", {params: {"{customer_phone}": phone}}),
-        API.authorize()
-    )
-        .then(API.response)
-        .then<Order.CurrentStatus>((res) => res.json())
+    return API
+        .route(Routes.ordering.getOrderStatusByCustomerPhone)
+        .params("customer_phone", phone)
+        .request()
+        .then((res) => res.json())
         .then<Order.CurrentStatus>((res) => ({
             ...res,
             occurred_at: new Date(res.occurred_at)

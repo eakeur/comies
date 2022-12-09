@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -7,17 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import { DrawerProvider } from './components/shared/Drawer';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import mockAPI from './api/mock';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 const query = new QueryClient()
-
-if (process.env.REACT_APP_MOCKAPI) {
-  mockAPI()
-}
 
 root.render(
   <QueryClientProvider client={query}>

@@ -1,41 +1,43 @@
+import { fail } from "model/failures";
+
 export namespace API {
     export const idHeader = "Location"
-
-    export type ErrorDesc = {
-        code: string;
-        message: string;
-        target?: any;
-    };
-
+    
     export function authorize(init: RequestInit = {}): RequestInit {
         return init;
     }
 
-    export function response(res: globalThis.Response) {
+    export function handle(res: globalThis.Response) {
         if (!res.ok) {
             res.json().then((data) => {
                 throw data;
-            });
+            }).catch(fail);
         }
 
         return res
     }
 
-    type RouteOptions = { params?: { [key: string]: string }, query?: any }
-    export function route(name: string, { params: prm, query: q }: RouteOptions = {}) {
-        const route = process.env[`REACT_APP_${name}`]
-        if (!route) {
-            return ""
+    export function json(res: globalThis.Response) {
+        return res.json().catch(fail);
+    }
+
+    class URL extends String {
+        params(key: string, value: string): URL {
+            return new URL(this.replace(key, value));
         }
 
-        return query(params(route, prm), q)
+        query(query: any): URL {
+            return !query ? this : new URL(`${this}?${new URLSearchParams(query).toString()}`)
+        }
+
+        request(init?: RequestInit){
+            return fetch(this.toString(), authorize(init)).then(handle)
+        }
     }
 
-    function params(url: string, prm?: { [key: number]: string }){
-        if (prm) Object.entries(prm).forEach(([k, v]) => url = url.replace(k, v))
-        return url
+    export function route(name: string) {
+        return new URL(name);
     }
-    function query(url: string, query?: any) {
-        return !query ? url : `${url}?${new URLSearchParams(query).toString()}`
-    }
+
+    
 }
