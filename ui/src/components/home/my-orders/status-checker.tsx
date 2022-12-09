@@ -4,11 +4,11 @@ import { darken } from "polished";
 import styled from "styled-components";
 import { Order } from "core/order";
 import { getOrderStatusByCustomerPhone } from "api/ordering";
-import { Icon } from "../shared/Icon";
+import { Icon } from "../../shared/Icon";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { ErrorBanner } from "../shared/error";
+import { ErrorBanner } from "../../shared/error";
 
-export function OrderBanner({ phone }: { phone: string }) {
+export function OrderStatusChecker({ phone }: { phone: string }) {
   const { data, isError, isLoading, refetch } = useQuery(phone, () =>
     getOrderStatusByCustomerPhone(phone)
   );

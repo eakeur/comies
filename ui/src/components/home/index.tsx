@@ -1,9 +1,7 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { Flex, Input, Text } from "@chakra-ui/react";
 import styled from "styled-components";
-import { runAction } from "../../handlers/handler";
-import { OrderFastChecker } from "./order-fast-checker";
-import { OrderStatuses } from "./order-statuses";
+import { runAction } from "handlers/handler";
+import { MyOrders } from "./my-orders";
 import { HomeShortcutButton } from "./shortcut-button";
 
 export function Home() {
@@ -48,31 +46,7 @@ export function Home() {
           onClick={() => runAction("add_stock_movement")}
         />
       </Flex>
-      <section>
-        <Text as={"h1"} fontSize={"2xl"}>
-          Meus pedidos
-        </Text>
-
-        <Button
-          width="100%"
-          marginBottom="30px"
-          rightIcon={<ArrowForwardIcon />}
-          colorScheme="orange"
-          variant="outline"
-        >
-          Ver painel de pedidos
-        </Button>
-
-        <Text as={"h3"} fontSize={"l"}>
-          Verifique o status de um pedido:
-        </Text>
-        <OrderFastChecker></OrderFastChecker>
-
-        <Text as={"h3"} fontSize={"l"}>
-          Resumo do dia
-        </Text>
-        <OrderStatuses />
-      </section>
+      <MyOrders />
     </StyledMain>
   );
 }

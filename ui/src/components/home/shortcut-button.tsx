@@ -1,6 +1,6 @@
 import { lighten } from "polished";
 import styled from "styled-components";
-import { Icon } from "../shared/Icon";
+import { Icon } from "components/shared/Icon";
 
 export function HomeShortcutButton({
   name,
