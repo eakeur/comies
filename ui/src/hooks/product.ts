@@ -1,24 +1,41 @@
-import { useEffect, useState } from "react";
+import { useToast } from "@chakra-ui/react";
+import { as } from "model/failures";
 import { useForm } from "react-hook-form";
-import { Product } from "../model/product";
-import { Comies }  from "../services/comies";
+import { useMutation } from "react-query";
+import { addProduct, updateProduct } from "api/menu";
+import { Product } from "model/product";
 
-export function useProduct(id: string) {
-    const [product, setProduct] = useState<Product>({});
-
-    useEffect(function () {
-        Comies.getProductByKey(id).then(setProduct)
-    }, [id])
-
-    return product;
-}
 
 export function useProductForm(product?: Product) {
-    const control = useForm({defaultValues: product})
+    const toast = useToast()
+    const control = useForm({ defaultValues: product })
 
-    const submit = control.handleSubmit(function(product: Product) {
-        Comies?.saveProduct(product)
-    })
+    const mutation = useMutation((product: Product) => {
+        return (
+            product.id ?
+                updateProduct(product.id, product).then((_) => product.id) :
+                addProduct(product))
+    }, {
+        onError(error) {
+            const fail = as(error)
+            toast({
+                title: fail.title,
+                status: "error",
+                description: fail.description,
+            })
+        },
 
-    return {product, control, submit}
+        onSuccess(data) {
+            toast({
+                title: "Produto criado com sucesso",
+                status: "success",
+            })
+        },
+    });
+
+    const submit = control
+        .handleSubmit((product: Product) =>
+            mutation.mutate(Product.clear(product)))
+
+    return { product, control, submit }
 }
