@@ -1,5 +1,5 @@
 import { Order } from "core/order"
-import { API } from "api/comies/api"
+import { API } from "api/api"
 
 export function getOrderCountByStatus(status?: number) {
     return API.ordering.getOrderCountByStatus

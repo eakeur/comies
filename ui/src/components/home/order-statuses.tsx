@@ -2,7 +2,7 @@ import { Flex, SkeletonText, Text } from "@chakra-ui/react";
 import { darken } from "polished";
 import { useQuery } from "react-query";
 import { Icon } from "../shared/Icon";
-import { getOrderCountByStatus } from "../../api/comies/ordering";
+import { getOrderCountByStatus } from "api/ordering";
 import { motion } from "framer-motion";
 import { ListShowUpAnimation } from "../animations/animations";
 import { ErrorBanner } from "../shared/error";
