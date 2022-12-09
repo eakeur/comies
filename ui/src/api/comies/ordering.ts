@@ -1,10 +1,8 @@
-import { Order } from "../core/order"
-import { API } from "api/api"
-import { Routes } from "api/comies/routes"
+import { Order } from "core/order"
+import { API } from "api/comies/api"
 
 export function getOrderCountByStatus(status?: number) {
-    return API
-        .route(Routes.ordering.getOrderCountByStatus)
+    return API.ordering.getOrderCountByStatus
         .params("status", status?.toString() ?? '')
         .request()
         .then((res) => res.json())
@@ -12,8 +10,7 @@ export function getOrderCountByStatus(status?: number) {
 }
 
 export function getOrderStatusByCustomerPhone(phone: string) {
-    return API
-        .route(Routes.ordering.getOrderStatusByCustomerPhone)
+    return API.ordering.getOrderStatusByCustomerPhone
         .params("customer_phone", phone)
         .request()
         .then((res) => res.json())

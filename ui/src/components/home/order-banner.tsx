@@ -3,7 +3,7 @@ import { Flex, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
 import { darken } from "polished";
 import styled from "styled-components";
 import { Order } from "../../core/order";
-import { getOrderStatusByCustomerPhone } from "../../api/ordering";
+import { getOrderStatusByCustomerPhone } from "../../api/comies/ordering";
 import { Icon } from "../shared/Icon";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { ErrorBanner } from "../shared/error";
