@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { Flex, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
 import { darken } from "polished";
 import styled from "styled-components";
-import { Order } from "../../model/order";
+import { Order } from "../../core/order";
 import { getOrderStatusByCustomerPhone } from "../../api/ordering";
 import { Icon } from "../shared/Icon";
 import { ArrowForwardIcon } from "@chakra-ui/icons";

@@ -6,7 +6,7 @@ import { getOrderCountByStatus } from "../../api/ordering";
 import { motion } from "framer-motion";
 import { ListShowUpAnimation } from "../animations/animations";
 import { ErrorBanner } from "../shared/error";
-import { Order } from "../../model/order";
+import { Order } from "../../core/order";
 import styled from "styled-components";
 
 const statuses = [

@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import styled from "styled-components";
 import { useProductForm } from "../../hooks/product";
-import { Product } from "../../model/product";
+import { Product } from "../../core/product";
 
 const StyledForm = styled.form`
   & > div {

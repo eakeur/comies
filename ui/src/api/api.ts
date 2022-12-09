@@ -1,4 +1,4 @@
-import { fail } from "model/failures";
+import { fail } from "core/failures";
 
 export namespace API {
     export const idHeader = "Location"

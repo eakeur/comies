@@ -1,4 +1,4 @@
-import { Product } from "../model/product";
+import { Product } from "../core/product";
 import { API } from "./api";
 import { Routes } from "./comies/routes";
 

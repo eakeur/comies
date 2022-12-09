@@ -1,4 +1,4 @@
-import { Order } from "../model/order"
+import { Order } from "../core/order"
 import { API } from "api/api"
 import { Routes } from "api/comies/routes"
 

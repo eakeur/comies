@@ -1,9 +1,9 @@
 import { useToast } from "@chakra-ui/react";
-import { as } from "model/failures";
+import { as } from "core/failures";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { addProduct, updateProduct } from "api/menu";
-import { Product } from "model/product";
+import { Product } from "core/product";
 
 
 export function useProductForm(product?: Product) {

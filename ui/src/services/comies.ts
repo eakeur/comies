@@ -1,6 +1,6 @@
-import { Ingredient } from "../model/ingredient";
-import { Movement } from "../model/movement";
-import { Product } from "../model/product";
+import { Ingredient } from "../core/ingredient";
+import { Movement } from "../core/movement";
+import { Product } from "../core/product";
 
 const route = `${process.env.REACT_APP_API_URL}`
 
