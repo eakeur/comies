@@ -5,6 +5,8 @@ import (
 	"comies/io/http/handlers/v1/menu/movements"
 	"comies/io/http/handlers/v1/menu/prices"
 	"comies/io/http/handlers/v1/menu/products"
+	"comies/io/http/handlers/v1/ordering/orders"
+	"comies/io/http/handlers/v1/ordering/statuses"
 	"comies/io/http/route"
 	"comies/jobs/menu"
 	"comies/jobs/ordering"
@@ -58,6 +60,27 @@ func Serve(router chi.Router, deps Dependencies) {
 							r.With(deps.TX).Delete("/{movement_id}", route.Route(m.Remove))
 							r.With(deps.Pool).Get("/balance", route.Route(m.GetProductStockBalance))
 							r.With(deps.Pool).Get("/", route.Route(m.List))
+						})
+					})
+				})
+			})
+
+			r.Route("/ordering", func(r chi.Router) {
+				r.Route("/orders", func(r chi.Router) {
+					o := orders.NewHandler(deps.Ordering)
+
+					r.With(deps.TX).Post("/", route.Route(o.Place))
+					r.With(deps.Pool).Get("/", route.Route(o.List))
+
+					r.Route("{order_id}", func(r chi.Router) {
+						r.With(deps.Pool).Get("/", route.Route(o.GetCustomer))
+						r.With(deps.TX).Delete("/", route.Route(o.Cancel))
+
+						r.Route("/status", func(r chi.Router) {
+							s := statuses.NewHandler(deps.Ordering)
+
+							r.With(deps.Pool).Get("/", route.Route(s.Get))
+							r.With(deps.TX).Put("/{status}", route.Route(s.Set))
 						})
 					})
 				})

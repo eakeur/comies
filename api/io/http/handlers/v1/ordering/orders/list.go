@@ -16,6 +16,21 @@ func (h Handler) List(ctx context.Context, r request.Request) send.Response {
 	var filter order.Filter
 
 	query := r.URL.Query()
+
+	if q := query.Get("statuscount"); q != "" {
+		st, err := strconv.Atoi(q)
+		if err != nil {
+			return send.Status(http.StatusBadRequest)
+		}
+
+		count, err := h.orders.CountOrdersByStatus(ctx, types.Status(st))
+		if err != nil {
+			return send.FromError(err)
+		}
+
+		return send.Data(http.StatusOK, map[string]types.Quantity{"count": count})
+	}
+
 	if sts := strings.Split(query.Get("status"), ","); len(sts) > 0 {
 		filter.Status = make([]types.Status, len(sts))
 		for i, o := range sts {

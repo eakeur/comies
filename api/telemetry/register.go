@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Telemetry struct {
@@ -24,7 +25,7 @@ func New(logger *zap.Logger) *Telemetry {
 
 func FakeInstrumentation() *Telemetry {
 	return &Telemetry{
-		Logger: NewLogger(os.Stdout),
+		Logger: NewLogger(os.Stdout, zapcore.DebugLevel),
 	}
 }
 

@@ -1,4 +1,4 @@
-package orders
+package statuses
 
 import (
 	"comies/core/ordering/status"
@@ -7,25 +7,25 @@ import (
 	"comies/io/http/send"
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 )
 
-func (h Handler) SetStatus(ctx context.Context, r request.Request) send.Response {
+func (h Handler) Set(ctx context.Context, r request.Request) send.Response {
 	id, err := r.IDParam("order_id")
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	var st SetOrderStatusRequest
-	err = r.JSONBody(&st)
+	st, err := strconv.Atoi(r.Param("status"))
 	if err != nil {
-		return send.JSONError(err)
+		return send.Status(http.StatusBadRequest)
 	}
 
-	err = h.orders.SetOrderStatus(ctx, id, status.Status{
+	err = h.statuses.SetOrderStatus(ctx, id, status.Status{
 		OrderID:    id,
 		OccurredAt: time.Now(),
-		Value:      st.Status,
+		Value:      types.Status(st),
 	})
 	if err != nil {
 		return send.FromError(err)
@@ -33,8 +33,4 @@ func (h Handler) SetStatus(ctx context.Context, r request.Request) send.Response
 
 	r.Commit(ctx)
 	return send.Data(http.StatusNoContent, nil)
-}
-
-type SetOrderStatusRequest struct {
-	Status types.Status `json:"status"`
 }

@@ -9,7 +9,8 @@ import (
 
 type LoggerContextKey struct{}
 
-func Logging(logger *zap.Logger) func(http.Handler) http.Handler {
+func Logging() func(http.Handler) http.Handler {
+	logger := telemetry.Logger()
 	return func(handler http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			handler.ServeHTTP(writer, request.WithContext(

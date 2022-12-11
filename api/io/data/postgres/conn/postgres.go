@@ -2,9 +2,11 @@ package conn
 
 import (
 	"comies/config"
+	"comies/telemetry"
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -19,6 +21,8 @@ func Connect(c config.Database) (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	pgxConfig.ConnConfig.Logger = zapadapter.NewLogger(telemetry.Logger())
 
 	db, err := pgxpool.ConnectConfig(context.Background(), pgxConfig)
 	if err != nil {

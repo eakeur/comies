@@ -7,6 +7,8 @@ import (
 	"comies/core/types"
 	"context"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type Order struct {
@@ -40,21 +42,36 @@ func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
 		return order.Order{}, err
 	}
 
+	eg, ctx := errgroup.WithContext(ctx)
 	for _, item := range conf.items {
-		_, err = item.Validate()
-		if err != nil {
-			return order.Order{}, err
-		}
+		item := item
+		eg.Go(func() error {
+			price, err := w.getPrice(ctx, item.ProductID)
+			if err != nil {
+				return err
+			}
 
-		err = w.items.Create(ctx, item)
-		if err != nil {
-			return order.Order{}, err
-		}
+			save, err := item.WithValue(price).Validate()
+			if err != nil {
+				return err
+			}
 
-		err := w.dispatchProduct(ctx, item.ProductID, item.ID, item.Quantity)
-		if err != nil {
-			return order.Order{}, err
-		}
+			err = w.items.Create(ctx, save)
+			if err != nil {
+				return err
+			}
+
+			return w.dispatchProduct(ctx, types.Dispatcher{
+				ProductID: save.ProductID,
+				Price:     save.Value,
+				AgentID:   save.ID,
+				Quantity:  save.Quantity,
+			})
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return order.Order{}, err
 	}
 
 	st, err := status.Status{OrderID: o.ID}.

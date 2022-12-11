@@ -27,7 +27,7 @@ type Jobs interface {
 
 type ProductPriceFetcher func(ctx context.Context, productID types.ID) (types.Currency, error)
 
-type ProductDispatcher func(ctx context.Context, productID, agentID types.ID, quantity types.Quantity) error
+type ProductDispatcher func(ctx context.Context, d types.Dispatcher) error
 
 type jobs struct {
 	orders          order.Actions

@@ -27,12 +27,12 @@ func SetLoggerToContext(ctx context.Context, logger *zap.Logger) context.Context
 	return context.WithValue(ctx, LoggerContext{}, logger)
 }
 
-func NewLogger(w io.Writer) *zap.Logger {
+func NewLogger(w io.Writer, level zapcore.Level) *zap.Logger {
 	return zap.New(
 		zapcore.NewCore(
 			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
 			zapcore.AddSync(w),
-			zapcore.InfoLevel,
+			level,
 		),
 	)
 }
