@@ -13,6 +13,11 @@ const root = ReactDOM.createRoot(
 
 const query = new QueryClient()
 
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./api/mocks/browser')
+  worker.start()
+}
+
 root.render(
   <QueryClientProvider client={query}>
     <ChakraProvider>

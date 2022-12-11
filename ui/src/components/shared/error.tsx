@@ -10,13 +10,16 @@ type ErrorBannerProps = {
 };
 export function ErrorBanner(props: ErrorBannerProps) {
   return (
-    <StyledOrderStatusError
+    <StyledOrderStatusError justify="space-between"
       tabIndex={1}
-      direction="column"
-      justify="space-between"
     >
-      <Text fontSize="sm" fontWeight="bold">{props.title ?? "Um erro aconteceu 😔"}</Text>
-      <Text fontSize="sm">{props.description}</Text>
+      <Flex>
+        <Flex direction="column"
+          justify="space-between">
+          <Text fontSize="sm" fontWeight="bold">{props.title ?? "Um erro aconteceu 😔"}</Text>
+          <Text fontSize="sm">{props.description}</Text>
+        </Flex>
+      </Flex>
       {props.retry && (
         <Flex justifyContent="end" alignItems="center">
           <Text fontSize="xs" marginRight="10px">Tentar novamente</Text>
@@ -25,12 +28,12 @@ export function ErrorBanner(props: ErrorBannerProps) {
           </button>
         </Flex>
       )}
+
     </StyledOrderStatusError>
   );
 }
 
 const StyledOrderStatusError = styled(Flex)`
-  min-height: 5rem;
   padding: 20px;
   border-radius: 7px;
   border: 2px solid ${(_) => darken(0.2, "#ff0033")};

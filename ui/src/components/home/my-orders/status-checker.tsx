@@ -1,74 +1,124 @@
 import { useQuery } from "react-query";
-import { Flex, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, InputGroup, InputLeftElement, InputRightElement, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
 import { darken } from "polished";
 import styled from "styled-components";
 import { Order } from "core/order";
 import { getOrderStatusByCustomerPhone } from "api/ordering";
 import { Icon } from "../../shared/Icon";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { ErrorBanner } from "../../shared/error";
+import { useEffect, useState } from "react";
 
-export function OrderStatusChecker({ phone }: { phone: string }) {
-  const { data, isError, isLoading, refetch } = useQuery(phone, () =>
-    getOrderStatusByCustomerPhone(phone)
-  );
+export function OrderStatusChecker() {
 
-  if (isLoading) {
+  const [phone, setPhone] = useState("");
+
+  const { data, isError, isLoading, refetch } = useQuery(phone, () => {
+    return getOrderStatusByCustomerPhone(phone)
+  }, { enabled: false });
+
+  useEffect(() => {
+    if (phone.length >= 9) {
+      refetch()
+    }
+  }, [phone, refetch])
+
+
+  const status = Order.StatusData[data?.value ?? Order.pendingStatus];
+
+  if (isError) {
     return (
       <StyledFlex color="#ececec">
-        <SkeletonCircle size="7" />
-        <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight="2" />
+        err
       </StyledFlex>
     );
   }
 
-  if (isError) {
+  if (isLoading) {
     return (
-      <ErrorBanner
-        description="Não foi possível obter o status do pedido"
-        retry={refetch}
-      />
-    );
-  }
-
-  const status = Order.StatusData[data!.value];
-
-  return (
-    <a href={"/orders/" + data?.order_id}>
       <StyledFlex
         color={status.color}
         tabIndex={1}
         direction="column"
         justify="space-between"
       >
-        <Flex alignItems="center" justify="space-between">
-          <Flex alignItems="center">
-            <Icon name={status.icon} />
-            <Text marginInlineStart="10px" fontSize={"sm"}>
-              {status.name}
-            </Text>
-          </Flex>
-          <Flex direction="column" alignItems="end">
-            <Text fontSize="2xs" justifySelf="flex-end">
-              {data?.occurred_at.toLocaleString("pt-BR", {
-                month: "numeric",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-              })}
-            </Text>
-            <Text fontSize="2xs" justifySelf="flex-end">
-              há {Order.minuteDifference(data!.occurred_at)} minutos
-            </Text>
-          </Flex>
-        </Flex>
-
-        <Flex marginTop="8px" alignItems="center" justify="space-between">
-          <Text fontSize={"xs"}>{data?.customer_name + " • " + phone}</Text>
-          <ArrowForwardIcon />
-        </Flex>
+        <SkeletonCircle size="7" />
+        <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight="2" />
       </StyledFlex>
-    </a>
+    );
+  }
+
+  return (
+    <StyledFlex
+      color={status.color}
+      tabIndex={1}
+      direction="column"
+      justify="space-between"
+    >
+      <form onSubmit={(ev) => {
+        ev.preventDefault()
+
+        const phone = new FormData(ev.currentTarget).get("phone")?.toString() ?? ""
+        setPhone(phone)
+      }}>
+        <InputGroup size="md">
+          <InputLeftElement>
+            <Icon name="Phone"/>
+          </InputLeftElement>
+          <Input
+            pr="4.5rem"
+            type="phone"
+            name="phone"
+            placeholder="Telefone do cliente"
+            borderBottomColor={darken(0.35, status.color)}
+            variant="flushed"
+            defaultValue={phone}
+          />
+          <InputRightElement width="7rem">
+            <Button
+              type="submit"
+              h="1.75rem"
+              size="sm"
+              backgroundColor={status.color}
+              variant="solid"
+              aria-label="Pesquisar pedido por telefone do cliente"
+            >
+              Pesquisar
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+      </form>
+      {
+        data && !isError && !isLoading && phone.length >= 9 && 
+        <Box marginTop="15px">
+          <Flex alignItems="center" justify="space-between">
+            <Flex alignItems="center">
+              <Icon name={status.icon} />
+              <Text marginInlineStart="10px" fontSize={"sm"}>
+                {status.name}
+              </Text>
+            </Flex>
+            <Flex direction="column" alignItems="end">
+              <Text fontSize="2xs" justifySelf="flex-end">
+                {data?.occurred_at.toLocaleString("pt-BR", {
+                  month: "numeric",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </Text>
+              <Text fontSize="2xs" justifySelf="flex-end">
+                há {Order.minuteDifference(data!.occurred_at)} minutos
+              </Text>
+            </Flex>
+          </Flex>
+
+          <Flex marginTop="8px" alignItems="center" justify="space-between">
+            <Text fontSize={"xs"}>{data?.customer_name}</Text>
+            <ArrowForwardIcon />
+          </Flex>
+        </Box>
+      }
+    </StyledFlex>
   );
 }
 

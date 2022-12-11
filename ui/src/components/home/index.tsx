@@ -5,6 +5,7 @@ import { MyOrders } from "./my-orders";
 import { HomeShortcutButton } from "./shortcut-button";
 
 export function Home() {
+
   return (
     <StyledMain>
       <Flex wrap="wrap" direction="column">
@@ -14,37 +15,40 @@ export function Home() {
 
         <Input type={"text"} variant="filled" placeholder="Busque tudo..." />
 
-        <Text as={"h4"} fontSize={"md"} mt="30px">
+        <Text as={"h4"} fontSize={"md"} mt="30px" id="shortcuts-title">
           O que vamos fazer hoje?
         </Text>
-        <HomeShortcutButton
-          name="Novo pedido"
-          shortcut="Shift + A"
-          icon="BuildQueueNew"
-          color="#ef6c00"
-          onClick={() => runAction("add_order")}
-        />
-        <HomeShortcutButton
-          name="Novo produto"
-          shortcut="Shift + D"
-          icon="AppIconDefaultAdd"
-          color="#1565c0"
-          onClick={() => runAction("add_product")}
-        />
-        <HomeShortcutButton
-          name="Verificar estoque"
-          shortcut="Shift + V"
-          icon="ProductionFloorManagement"
-          color="#c62828"
-          onClick={() => runAction("verify_stock")}
-        />
-        <HomeShortcutButton
-          name="Nova entrada/saída"
-          shortcut="Shift + M"
-          icon="SwitcherStartEnd"
-          color="#6a1b9a"
-          onClick={() => runAction("add_stock_movement")}
-        />
+        <Flex id="shortcuts" direction="column">
+          <HomeShortcutButton
+            name="Novo pedido"
+            shortcut="Shift + A"
+            icon="BuildQueueNew"
+            color="#ef6c00"
+            onClick={() => runAction("add_order")}
+          />
+          <HomeShortcutButton
+            name="Novo produto"
+            shortcut="Shift + D"
+            icon="AppIconDefaultAdd"
+            color="#1565c0"
+            onClick={() => runAction("add_product")}
+          />
+          <HomeShortcutButton
+            name="Verificar estoque"
+            shortcut="Shift + V"
+            icon="ProductionFloorManagement"
+            color="#c62828"
+            onClick={() => runAction("verify_stock")}
+          />
+          <HomeShortcutButton
+            name="Nova entrada/saída"
+            shortcut="Shift + M"
+            icon="SwitcherStartEnd"
+            color="#6a1b9a"
+            onClick={() => runAction("add_stock_movement")}
+          />
+        </Flex>
+
       </Flex>
       <MyOrders />
     </StyledMain>
@@ -62,18 +66,31 @@ const StyledMain = styled.main`
     top: 0;
   }
 
-  > section:nth-last-child(1) {
+  section#myorders {
     > * {
       margin-bottom: 30px;
     }
+  }
 
-    h3 {
-      margin-bottom: 5px;
+  div#shortcuts {
+    @media (max-width: 980px) {
+      background-color: #FEFBEA;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      box-sizing: border-box;
+      flex-direction:row;
     }
   }
 
   @media (max-width: 980px) {
     display: block;
+
+    h4#shortcuts-title {
+      display: none;
+      
+    }
 
     > * {
       margin-bottom: 20px;

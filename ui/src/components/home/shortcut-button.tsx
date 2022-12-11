@@ -43,6 +43,8 @@ const StyledHomeShortcutButton = styled.button`
 
   transition: all 200ms ease-out;
 
+  
+
   i {
     font-size: 24px;
     text-align: center;
@@ -54,5 +56,17 @@ const StyledHomeShortcutButton = styled.button`
   }
   &:active {
     background: ${() => lighten(0.2, "#ffb74d")};
+  }
+
+  @media (max-width: 980px) {
+    width: 100%;
+    justify-content: center;
+    span {
+      display: none;
+    }
+
+    i {
+      margin-right: unset;
+    }
   }
 `;

@@ -23,7 +23,7 @@ export namespace API {
 
     class URL extends String {
         params(key: string, value: string): URL {
-            return new URL(this.replace(key, value));
+            return new URL(this.replace(`{${key}}`, value));
         }
 
         query(query: any): URL {

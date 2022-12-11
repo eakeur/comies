@@ -1,18 +1,34 @@
-import { Flex, SkeletonText, Text } from "@chakra-ui/react";
+import { Flex, SkeletonText, Text, useToast } from "@chakra-ui/react";
 import { getOrderCountByStatus } from "api/ordering";
 import { Icon } from "components/shared/Icon";
 import { Order } from "core/order";
 import { useQuery } from "react-query";
 import { darken } from "polished";
 import styled from "styled-components";
+import { motion } from "framer-motion";
+import { ListShowUpAnimation } from "components/animations/animations";
 
 export function OrderCountByStatus({ status }: { status: number }) {
+
+  const toast = useToast()
   const {
     isLoading,
+    isError,
     data,
+    refetch,
   } = useQuery(["statuscount", status], () =>
     getOrderCountByStatus(status)
-  );
+  , {
+    onError(err){
+      if (!toast.isActive("statuscount")){
+        toast({
+          title: "Não foi possível recuperar os pedidos",
+          status: "error",
+          id: "statuscount"
+        })
+      }
+    }
+  });
 
   const { icon, color, name } = Order.StatusData[status];
 
@@ -22,27 +38,41 @@ export function OrderCountByStatus({ status }: { status: number }) {
       tabIndex={1}
       direction="column"
       justify="space-between"
+      variants={ListShowUpAnimation.children}
     >
       <Icon name={icon} />
       {(function () {
         if (isLoading) {
-          <SkeletonText
-            endColor="white.200"
+          return <SkeletonText
+          startColor={darken(0.35, color)}
+            endColor={darken(0.05, color)}
             mt="4"
             noOfLines={2}
-            spacing="1"
-            skeletonHeight="1"
+            spacing="2"
+            skeletonHeight="2"
           />;
         }
 
-        return <h4>{data}</h4>;
+        if (isError) {
+          return <Flex>
+            <Text fontSize="xs" marginRight="10px">Tentar novamente</Text>
+            <button onClick={() => refetch()}>
+              <Icon name="Refresh" />
+            </button>
+          </Flex>
+        }
+
+        return <>
+          <h4>{data}</h4>
+          <Text fontSize="sm">{name}</Text>
+        </>;
       })()}
-      <Text fontSize="sm">{name}</Text>
+      
     </StatusCountBanner>
   );
 }
 
-const StatusCountBanner = styled(Flex)`
+const StatusCountBanner = styled(motion(Flex))`
   width: 8rem;
   height: 8rem;
   padding: 15px;
