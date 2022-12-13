@@ -25,7 +25,7 @@ func Serve(router chi.Router, deps Dependencies) {
 	router.
 		Route("/api/v1", func(r chi.Router) {
 
-			r.Route("menu", func(r chi.Router) {
+			r.Route("/menu", func(r chi.Router) {
 				r.Route("/products", func(r chi.Router) {
 					p := products.NewHandler(deps.Menu)
 
@@ -72,7 +72,7 @@ func Serve(router chi.Router, deps Dependencies) {
 					r.With(deps.TX).Post("/", route.Route(o.Place))
 					r.With(deps.Pool).Get("/", route.Route(o.List))
 
-					r.Route("{order_id}", func(r chi.Router) {
+					r.Route("/{order_id}", func(r chi.Router) {
 						r.With(deps.Pool).Get("/", route.Route(o.GetCustomer))
 						r.With(deps.TX).Delete("/", route.Route(o.Cancel))
 
