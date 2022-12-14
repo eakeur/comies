@@ -15,7 +15,6 @@ func (a actions) List(ctx context.Context, filter movement.Filter) ([]movement.M
 			m.type,
 			m.date,
 			m.quantity,
-			m.value,
 			m.agent_id
 		from
 			movements m
@@ -44,7 +43,6 @@ func (a actions) List(ctx context.Context, filter movement.Filter) ([]movement.M
 				&m.Type,
 				&m.Date,
 				&m.Quantity,
-				&m.Price,
 				&m.AgentID,
 			)
 		},

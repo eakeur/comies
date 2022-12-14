@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"comies/app"
 	"comies/io/http/handlers/v1/menu/ingredients"
 	"comies/io/http/handlers/v1/menu/movements"
 	"comies/io/http/handlers/v1/menu/prices"
@@ -8,16 +9,13 @@ import (
 	"comies/io/http/handlers/v1/ordering/orders"
 	"comies/io/http/handlers/v1/ordering/statuses"
 	"comies/io/http/route"
-	"comies/jobs/menu"
-	"comies/jobs/ordering"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type Dependencies struct {
-	Menu     menu.Jobs
-	Ordering ordering.Jobs
+	App      app.App
 	TX, Pool func(http.Handler) http.Handler
 }
 
@@ -27,7 +25,7 @@ func Serve(router chi.Router, deps Dependencies) {
 
 			r.Route("/menu", func(r chi.Router) {
 				r.Route("/products", func(r chi.Router) {
-					p := products.NewHandler(deps.Menu)
+					p := products.NewHandler(deps.App.Menu)
 
 					r.With(deps.TX).Post("/", route.Route(p.Create))
 					r.With(deps.Pool).Get("/", route.Route(p.List))
@@ -38,7 +36,7 @@ func Serve(router chi.Router, deps Dependencies) {
 						r.With(deps.Pool).Get("/name", route.Route(p.GetNameByID))
 
 						r.Route("/ingredients", func(r chi.Router) {
-							i := ingredients.NewHandler(deps.Menu)
+							i := ingredients.NewHandler(deps.App.Menu)
 
 							r.With(deps.TX).Post("/", route.Route(i.Create))
 							r.With(deps.TX).Delete("/{ingredient_id}", route.Route(i.Remove))
@@ -46,7 +44,7 @@ func Serve(router chi.Router, deps Dependencies) {
 						})
 
 						r.Route("/prices", func(r chi.Router) {
-							p := prices.NewHandler(deps.Menu)
+							p := prices.NewHandler(deps.App.Menu)
 
 							r.With(deps.Pool).Get("/", route.Route(p.List))
 							r.With(deps.Pool).Get("/latest", route.Route(p.Latest))
@@ -54,7 +52,7 @@ func Serve(router chi.Router, deps Dependencies) {
 						})
 
 						r.Route("/movements", func(r chi.Router) {
-							m := movements.NewHandler(deps.Menu)
+							m := movements.NewHandler(deps.App.Menu)
 
 							r.With(deps.TX).Post("/", route.Route(m.Create))
 							r.With(deps.TX).Delete("/{movement_id}", route.Route(m.Remove))
@@ -67,7 +65,7 @@ func Serve(router chi.Router, deps Dependencies) {
 
 			r.Route("/ordering", func(r chi.Router) {
 				r.Route("/orders", func(r chi.Router) {
-					o := orders.NewHandler(deps.Ordering)
+					o := orders.NewHandler(deps.App.Ordering)
 
 					r.With(deps.TX).Post("/", route.Route(o.Place))
 					r.With(deps.Pool).Get("/", route.Route(o.List))
@@ -77,7 +75,7 @@ func Serve(router chi.Router, deps Dependencies) {
 						r.With(deps.TX).Delete("/", route.Route(o.Cancel))
 
 						r.Route("/status", func(r chi.Router) {
-							s := statuses.NewHandler(deps.Ordering)
+							s := statuses.NewHandler(deps.App.Ordering)
 
 							r.With(deps.Pool).Get("/", route.Route(s.Get))
 							r.With(deps.TX).Put("/{status}", route.Route(s.Set))

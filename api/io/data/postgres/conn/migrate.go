@@ -66,3 +66,29 @@ func Migrate(pool *pgxpool.Pool) error {
 
 	return nil
 }
+
+func MigrationHandler(pool *pgxpool.Pool) (*migrate.Migrate, error) {
+
+	cfg := pool.Config().ConnConfig
+
+	driver, err := postgres.WithInstance(stdlib.OpenDB(*cfg), &postgres.Config{
+		DatabaseName: cfg.Database,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get migrations postgres driver: %w", err)
+	}
+
+	source, err := httpfs.New(http.FS(migrationsFS), MigrationPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create migration httpfs driver: %w", err)
+	}
+
+	migration, err := migrate.NewWithInstance("httpfs", source, cfg.Database, driver)
+	if err != nil {
+		return nil, fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
+	}
+
+	migration.Log = logger{}
+
+	return migration, nil
+}

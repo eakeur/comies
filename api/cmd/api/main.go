@@ -1,24 +1,17 @@
 package main
 
 import (
+	"comies/app"
 	"comies/config"
 	"comies/core/types"
 	"comies/io/data/postgres/conn"
-	"comies/io/data/postgres/menu/ingredient"
-	"comies/io/data/postgres/menu/movement"
-	"comies/io/data/postgres/menu/price"
-	"comies/io/data/postgres/menu/product"
-	"comies/io/data/postgres/ordering/item"
-	"comies/io/data/postgres/ordering/order"
-	"comies/io/data/postgres/ordering/status"
 	"comies/io/http"
 	v1 "comies/io/http/handlers/v1"
 	"comies/io/http/middleware"
-	"comies/jobs/menu"
-	"comies/jobs/ordering"
 	"comies/telemetry"
 	"log"
 	"os"
+	"path"
 	"strconv"
 	"time"
 
@@ -31,14 +24,22 @@ import (
 func main() {
 	cfg := config.Load()
 
-	logger := telemetry.NewLogger(os.Stdout, map[string]zapcore.Level{
+	level := map[string]zapcore.Level{
 		"production":  zapcore.InfoLevel,
 		"development": zapcore.DebugLevel,
-	}["production"])
+	}[cfg.Logger.Environment]
 
-	telemetry.Register(&telemetry.Telemetry{Logger: logger})
+	logger := telemetry.NewLogger(os.Stdout, level)
 
-	logger.Info("Successfully created logger instance")
+	sqlLogFilePath := path.Join(os.TempDir(), "comies_sql.log")
+
+	sqlLog, _ := os.Create(sqlLogFilePath)
+	telemetry.Register(&telemetry.Telemetry{
+		Logger: logger,
+		SQL:    telemetry.NewLogger(sqlLog, level),
+	})
+
+	logger.Info("Successfully created logger instance", zap.String("sql", sqlLogFilePath))
 
 	db, err := conn.Connect(cfg.Database)
 	if err != nil {
@@ -62,21 +63,17 @@ func main() {
 		log.Fatalf("Could not create snowflake node: %v", err)
 	}
 
-	createID := func() types.ID {
+	var createID types.CreateID = func() types.ID {
 		return types.ID(snflake.Generate())
 	}
 
 	log.Println("Successfully created snowflake node")
 
-	menu := menu.NewJobs(product.NewActions(), ingredient.NewActions(), movement.NewActions(), price.NewActions(), createID)
-	ordering := ordering.NewJobs(order.NewActions(), item.NewActions(), status.NewActions(), createID, menu.GetProductLatestPriceByID, nil)
-
 	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
 	v1.Serve(router, v1.Dependencies{
-		Menu:     menu,
-		Ordering: ordering,
-		Pool:     middleware.Pool(db),
-		TX:       middleware.TX(db),
+		App:  app.NewApp(createID),
+		Pool: middleware.Pool(db),
+		TX:   middleware.TX(db),
 	})
 
 	http.Serve(cfg.Server.ListenPort, router, time.Second*30, time.Second*30)

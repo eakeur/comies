@@ -5,6 +5,8 @@ import (
 	"comies/core/ordering/order"
 	"comies/core/ordering/status"
 	"comies/core/types"
+	"comies/jobs/billing"
+	"comies/jobs/menu"
 	"context"
 )
 
@@ -25,33 +27,34 @@ type Jobs interface {
 	GetStatusByCustomerPhone(ctx context.Context, phone string) (Status, error)
 }
 
-type ProductPriceFetcher func(ctx context.Context, productID types.ID) (types.Currency, error)
-
-type ProductDispatcher func(ctx context.Context, d types.Dispatcher) error
-
 type jobs struct {
-	orders          order.Actions
-	items           item.Actions
-	statuses        status.Actions
-	getPrice        ProductPriceFetcher
-	createID        types.CreateID
-	dispatchProduct ProductDispatcher
+	orders   order.Actions
+	items    item.Actions
+	statuses status.Actions
+	createID types.CreateID
+
+	menu    menu.Jobs
+	billing billing.Jobs
 }
 
-func NewJobs(
-	orders order.Actions,
-	items item.Actions,
-	statuses status.Actions,
-	createID types.CreateID,
-	getPrice ProductPriceFetcher,
-	dispatchProduct ProductDispatcher,
-) Jobs {
+type Deps struct {
+	Orders    order.Actions
+	Items     item.Actions
+	Statuses  status.Actions
+	IDCreator types.CreateID
+
+	Menu    menu.Jobs
+	Billing billing.Jobs
+}
+
+func NewJobs(deps Deps) Jobs {
 	return jobs{
-		statuses:        statuses,
-		orders:          orders,
-		items:           items,
-		createID:        createID,
-		getPrice:        getPrice,
-		dispatchProduct: dispatchProduct,
+		statuses: deps.Statuses,
+		orders:   deps.Orders,
+		items:    deps.Items,
+		createID: deps.IDCreator,
+
+		menu:    deps.Menu,
+		billing: deps.Billing,
 	}
 }

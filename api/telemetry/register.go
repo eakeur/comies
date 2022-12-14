@@ -10,6 +10,7 @@ import (
 
 type Telemetry struct {
 	Logger *zap.Logger
+	SQL    *zap.Logger
 }
 
 var (

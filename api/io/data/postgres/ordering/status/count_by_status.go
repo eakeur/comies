@@ -8,11 +8,7 @@ import (
 
 func (a actions) CountByStatus(ctx context.Context, status types.Status) (types.Quantity, error) {
 	const script = `
-		select
-			count(ls.order_id)
-		from latest_statuses ls
-		where ls.value = $1
-		group by ls.value
+		select count(ls.order_id) from latest_statuses ls where ls.value = $1
 	`
 
 	row, err := conn.QueryRowFromContext(ctx, script, status)

@@ -12,7 +12,6 @@ type Movement struct {
 	Type      types.Type     `json:"type"`
 	Date      time.Time      `json:"date"`
 	Quantity  types.Quantity `json:"quantity"`
-	Price     types.Currency `json:"price"`
 }
 
 func (m Movement) WithID(id types.ID) Movement {
@@ -37,8 +36,5 @@ func (m Movement) AssertQuantity() Movement {
 }
 
 func (m Movement) Validate() (Movement, error) {
-	if m.Price <= 0 {
-		return m, ErrInvalidPrice
-	}
 	return m, ValidateType(m.Type)
 }

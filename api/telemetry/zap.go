@@ -12,6 +12,10 @@ func Logger() *zap.Logger {
 	return instrumentation.Logger
 }
 
+func SQLLogger() *zap.Logger {
+	return instrumentation.SQL
+}
+
 // LoggerFromContext returns a logger from context if it exists,
 // and returns the standard instrumentation logger otherwise.
 func LoggerFromContext(ctx context.Context) *zap.Logger {

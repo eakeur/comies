@@ -18,10 +18,9 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) error {
 			type,
 			date,
 			quantity,
-			value,
 			agent_id
 		) values (
-			$1, $2, $3, $4, $5, $6, $7
+			$1, $2, $3, $4, $5, $6
 		)
 	`
 
@@ -31,7 +30,6 @@ func (a actions) Create(ctx context.Context, mov movement.Movement) error {
 		mov.Type,
 		mov.Date,
 		mov.Quantity,
-		mov.Price,
 		mov.AgentID,
 	)
 	if err != nil {

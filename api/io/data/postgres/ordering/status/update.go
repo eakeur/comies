@@ -8,7 +8,7 @@ import (
 
 func (a actions) Update(ctx context.Context, s status.Status) error {
 	const script = `
-		insert into status (
+		insert into statuses (
 			order_id,
 			occurred_at,
 			value

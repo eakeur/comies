@@ -6,7 +6,7 @@ import (
 
 func Write(wr http.ResponseWriter, r Response) (err error) {
 	code, header := r.Code, wr.Header()
-
+	wr.WriteHeader(code)
 	for k, v := range r.Header {
 		header.Set(k, v)
 	}
@@ -15,6 +15,5 @@ func Write(wr http.ResponseWriter, r Response) (err error) {
 		err = encodeJSON(wr, r.Data)
 	}
 
-	wr.WriteHeader(code)
 	return
 }

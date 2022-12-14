@@ -5,6 +5,8 @@ import (
 	"comies/core/ordering/order"
 	"comies/core/ordering/status"
 	"comies/core/types"
+	"comies/jobs/billing"
+	"comies/jobs/menu"
 	"context"
 	"time"
 
@@ -42,11 +44,18 @@ func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
 		return order.Order{}, err
 	}
 
+	bill := billing.BillCreation{
+		ReferenceID: o.ID,
+		Date:        conf.Time,
+		Items:       make([]billing.BillItem, len(conf.items)),
+	}
+
 	eg, ctx := errgroup.WithContext(ctx)
-	for _, item := range conf.items {
+	for i, item := range conf.items {
 		item := item
+		i := i
 		eg.Go(func() error {
-			price, err := w.getPrice(ctx, item.ProductID)
+			price, err := w.menu.GetProductLatestPriceByID(ctx, item.ProductID)
 			if err != nil {
 				return err
 			}
@@ -61,16 +70,27 @@ func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
 				return err
 			}
 
-			return w.dispatchProduct(ctx, types.Dispatcher{
+			bill.Items[i] = billing.BillItem{
+				ReferenceID: save.ID,
+				Credits:     save.Value,
+			}
+
+			return w.menu.DispatchProduct(ctx, menu.Dispatcher{
 				ProductID: save.ProductID,
 				Price:     save.Value,
 				AgentID:   save.ID,
 				Quantity:  save.Quantity,
+				Date:      conf.Time,
 			})
 		})
 	}
 
 	if err := eg.Wait(); err != nil {
+		return order.Order{}, err
+	}
+
+	_, err = w.billing.CreateBill(ctx, bill)
+	if err != nil {
 		return order.Order{}, err
 	}
 

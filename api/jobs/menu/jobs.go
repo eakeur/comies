@@ -31,6 +31,8 @@ type Jobs interface {
 
 	UpdateProduct(ctx context.Context, prd product.Product) error
 	UpdateProductPrice(ctx context.Context, productID types.ID, val types.Currency) error
+
+	DispatchProduct(ctx context.Context, d Dispatcher) error
 }
 
 type jobs struct {
@@ -41,20 +43,22 @@ type jobs struct {
 	createID    types.CreateID
 }
 
+type Deps struct {
+	Products    product.Actions
+	Ingredients ingredient.Actions
+	Movements   movement.Actions
+	Prices      price.Actions
+	IDCreator   types.CreateID
+}
+
 var _ Jobs = jobs{}
 
-func NewJobs(
-	products product.Actions,
-	ingredients ingredient.Actions,
-	movements movement.Actions,
-	prices price.Actions,
-	createID types.CreateID,
-) Jobs {
+func NewJobs(deps Deps) Jobs {
 	return jobs{
-		ingredients: ingredients,
-		products:    products,
-		movements:   movements,
-		prices:      prices,
-		createID:    createID,
+		ingredients: deps.Ingredients,
+		products:    deps.Products,
+		movements:   deps.Movements,
+		prices:      deps.Prices,
+		createID:    deps.IDCreator,
 	}
 }

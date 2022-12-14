@@ -13,7 +13,7 @@ func (a actions) ListHistory(ctx context.Context, orderID types.ID) ([]status.St
 			s.order_id,
 			s.occurred_at,
 			s.value
-		from status
+		from statuses
 		where order_id = $1
 	`
 
