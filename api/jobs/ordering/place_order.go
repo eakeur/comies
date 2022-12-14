@@ -44,33 +44,18 @@ func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
 		return order.Order{}, err
 	}
 
-	bill := billing.BillCreation{
-		ReferenceID: o.ID,
-		Date:        conf.Time,
-		Items:       make([]billing.BillItem, len(conf.items)),
-	}
-
+	billItems := make([]billing.BillItem, len(conf.items))
 	eg, ctx := errgroup.WithContext(ctx)
 	for i, item := range conf.items {
 		item := item
 		i := i
 		eg.Go(func() error {
-			price, err := w.menu.GetProductLatestPriceByID(ctx, item.ProductID)
+			save, err := w.createPricedItem(ctx, item)
 			if err != nil {
 				return err
 			}
 
-			save, err := item.WithValue(price).Validate()
-			if err != nil {
-				return err
-			}
-
-			err = w.items.Create(ctx, save)
-			if err != nil {
-				return err
-			}
-
-			bill.Items[i] = billing.BillItem{
+			billItems[i] = billing.BillItem{
 				ReferenceID: save.ID,
 				Credits:     save.Value,
 			}
@@ -89,23 +74,48 @@ func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
 		return order.Order{}, err
 	}
 
-	_, err = w.billing.CreateBill(ctx, bill)
+	eg.Go(func() error {
+		st, err := status.Status{OrderID: o.ID}.
+			WithOccurredAt(conf.Time).
+			WithValue(status.PreparingStatus).
+			Validate()
+		if err != nil {
+			return err
+		}
+
+		return w.statuses.Update(ctx, st)
+	})
+
+	return o, w.createOrderBill(ctx, o, billItems)
+}
+
+func (w jobs) createPricedItem(ctx context.Context, i item.Item) (item.Item, error) {
+	price, err := w.menu.GetProductLatestPriceByID(ctx, i.ProductID)
 	if err != nil {
-		return order.Order{}, err
+		return item.Item{}, err
 	}
 
-	st, err := status.Status{OrderID: o.ID}.
-		WithOccurredAt(conf.Time).
-		WithValue(status.PreparingStatus).
-		Validate()
+	save, err := i.WithValue(price).Validate()
 	if err != nil {
-		return order.Order{}, err
+		return item.Item{}, err
 	}
 
-	err = w.statuses.Update(ctx, st)
+	err = w.items.Create(ctx, save)
 	if err != nil {
-		return order.Order{}, err
+		return item.Item{}, err
 	}
 
-	return o, nil
+	return save, nil
+}
+
+func (w jobs) createOrderBill(ctx context.Context, o order.Order, items []billing.BillItem) error {
+	_, err := w.billing.CreateBill(ctx, billing.BillCreation{
+		ReferenceID: o.ID,
+		Date:        o.PlacedAt,
+		Items:       items,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
