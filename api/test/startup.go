@@ -1,10 +1,10 @@
 package test
 
 import (
+	"comies/api"
+	v1 "comies/api/handlers/v1"
+	"comies/api/middleware"
 	"comies/app"
-	"comies/io/http"
-	v1 "comies/io/http/handlers/v1"
-	"comies/io/http/middleware"
 	"comies/telemetry"
 	"comies/test/settings/postgres"
 	"fmt"
@@ -51,7 +51,7 @@ func createAPI(t *testing.T) string {
 		t.Fatal(err)
 	}
 
-	go http.Serve(lis, router, time.Second*30, time.Second*30)
+	go api.Serve(lis, router, time.Second*30, time.Second*30)
 
 	return fmt.Sprintf("http://%s", lis.Addr().String())
 }

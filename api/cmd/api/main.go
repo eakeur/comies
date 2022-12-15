@@ -1,12 +1,12 @@
 package main
 
 import (
+	"comies/api"
+	v1 "comies/api/handlers/v1"
+	"comies/api/middleware"
 	"comies/app"
 	"comies/config"
 	"comies/data/conn"
-	"comies/io/http"
-	v1 "comies/io/http/handlers/v1"
-	"comies/io/http/middleware"
 	"comies/telemetry"
 	"net"
 	"os"
@@ -78,6 +78,6 @@ func main() {
 		logger.Fatal("Could not listen to port", zap.Error(err), zap.String("address", cfg.Server.Address))
 	}
 
-	http.Serve(lis, router, time.Second*30, time.Second*30)
+	api.Serve(lis, router, time.Second*30, time.Second*30)
 
 }

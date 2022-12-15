@@ -2,10 +2,10 @@ package test
 
 import (
 	"bytes"
+	"comies/api/handlers/v1/menu/products"
 	"comies/core/ordering/item"
 	"comies/core/ordering/status"
 	"comies/core/types"
-	"comies/io/http/handlers/v1/menu/products"
 	"comies/jobs/ordering"
 	"encoding/json"
 	"fmt"
