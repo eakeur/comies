@@ -13,11 +13,11 @@ create table bills
 create table bill_items
 (
     id           bigint    not null,
-    bill_id      bigint    not null
+    bill_id      bigint    not null,
     date         timestamp not null,
     description  text      not null,
     credits      bigint    not null,
-    debts        bigint    not null
+    debts        bigint    not null,
     reference_id bigint    not null,
 
     primary key (id),

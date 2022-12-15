@@ -9,7 +9,6 @@ import (
 	"comies/io/http/middleware"
 	"comies/telemetry"
 	"fmt"
-	"math/rand"
 	"os"
 	"path"
 	"testing"
@@ -33,7 +32,7 @@ func startup(t *testing.T) {
 
 	pool := tests.NewDBConn(t)
 
-	snflake, err := snowflake.NewNode(int64(rand.Int()))
+	snflake, err := snowflake.NewNode(21)
 	if err != nil {
 		t.Fatalf("Could not create snowflake node: %v", err)
 	}
