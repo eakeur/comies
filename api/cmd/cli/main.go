@@ -2,7 +2,7 @@ package main
 
 import (
 	"comies/config"
-	"comies/io/data/postgres/conn"
+	"comies/io/data/conn"
 	"comies/telemetry"
 	"errors"
 	"os"

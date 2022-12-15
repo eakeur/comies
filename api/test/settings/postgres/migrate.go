@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"comies/io/data/postgres/conn/migrations"
+	"comies/io/data/conn/migrations"
 	"errors"
 	"fmt"
 	"net/http"

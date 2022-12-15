@@ -3,7 +3,7 @@ package main
 import (
 	"comies/app"
 	"comies/config"
-	"comies/io/data/postgres/conn"
+	"comies/io/data/conn"
 	"comies/io/http"
 	v1 "comies/io/http/handlers/v1"
 	"comies/io/http/middleware"
