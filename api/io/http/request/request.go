@@ -2,7 +2,7 @@ package request
 
 import (
 	"comies/core/types"
-	"comies/io/data/conn"
+	"comies/data/conn"
 	"context"
 	"encoding/json"
 	"net/http"

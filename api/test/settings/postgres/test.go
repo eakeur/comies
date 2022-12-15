@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"comies/config"
-	"comies/io/data/conn"
+	"comies/data/conn"
 	"context"
 	"testing"
 
