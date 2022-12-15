@@ -9,7 +9,6 @@ import (
 	v1 "comies/io/http/handlers/v1"
 	"comies/io/http/middleware"
 	"comies/telemetry"
-	"log"
 	"os"
 	"path"
 	"strconv"
@@ -55,19 +54,19 @@ func main() {
 
 	nodeNumber, err := strconv.Atoi(cfg.IDGeneration.NodeNumber)
 	if err != nil {
-		log.Fatalf("Could not parse id generation node number %v: %v", cfg.IDGeneration.NodeNumber, err)
+		logger.Fatal("Could not parse id generation node number", zap.String("node", cfg.IDGeneration.NodeNumber), zap.Error(err))
 	}
 
 	snflake, err := snowflake.NewNode(int64(nodeNumber))
 	if err != nil {
-		log.Fatalf("Could not create snowflake node: %v", err)
+		logger.Fatal("Could not create snowflake node", zap.Error(err))
 	}
 
 	var createID types.CreateID = func() types.ID {
 		return types.ID(snflake.Generate())
 	}
 
-	log.Println("Successfully created snowflake node")
+	logger.Info("Successfully created snowflake node")
 
 	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
 	v1.Serve(router, v1.Dependencies{

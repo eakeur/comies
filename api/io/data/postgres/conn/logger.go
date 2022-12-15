@@ -1,11 +1,17 @@
 package conn
 
-import "log"
+import (
+	"fmt"
 
-type logger struct{}
+	"go.uber.org/zap"
+)
+
+type logger struct {
+	log *zap.Logger
+}
 
 func (l logger) Printf(format string, v ...interface{}) {
-	log.Printf(format, v...)
+	l.log.Info(fmt.Sprintf(format, v...))
 }
 
 func (l logger) Verbose() bool {

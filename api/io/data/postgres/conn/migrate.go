@@ -1,6 +1,7 @@
 package conn
 
 import (
+	"comies/telemetry"
 	"embed"
 	"errors"
 	"fmt"
@@ -42,7 +43,9 @@ func Migrate(pool *pgxpool.Pool) error {
 		return fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
 	}
 
-	migration.Log = logger{}
+	migration.Log = logger{
+		log: telemetry.SQLLogger(),
+	}
 
 	if err != nil {
 		return err
@@ -88,7 +91,9 @@ func MigrationHandler(pool *pgxpool.Pool) (*migrate.Migrate, error) {
 		return nil, fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
 	}
 
-	migration.Log = logger{}
+	migration.Log = logger{
+		log: telemetry.SQLLogger(),
+	}
 
 	return migration, nil
 }
