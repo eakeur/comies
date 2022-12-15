@@ -7,7 +7,7 @@ create table bills
     name         varchar(200) not null,
     reference_id bigint       not null,
 
-    primary key (id),
+    primary key (id)
 );
 
 create table bill_items
