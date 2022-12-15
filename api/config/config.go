@@ -23,7 +23,7 @@ type Database struct {
 }
 
 type Server struct {
-	ListenPort string
+	Address string
 }
 
 type IDGeneration struct {

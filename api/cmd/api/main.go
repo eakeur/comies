@@ -8,7 +8,6 @@ import (
 	v1 "comies/io/http/handlers/v1"
 	"comies/io/http/middleware"
 	"comies/telemetry"
-	"fmt"
 	"net"
 	"os"
 	"path"
@@ -74,9 +73,9 @@ func main() {
 		TX:   middleware.TX(db),
 	})
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Server.ListenPort))
+	lis, err := net.Listen("tcp", cfg.Server.Address)
 	if err != nil {
-		logger.Fatal("Could not listen to port", zap.Error(err), zap.String("address", cfg.Server.ListenPort))
+		logger.Fatal("Could not listen to port", zap.Error(err), zap.String("address", cfg.Server.Address))
 	}
 
 	http.Serve(lis, router, time.Second*30, time.Second*30)
