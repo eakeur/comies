@@ -5,6 +5,7 @@ import (
 	"comies/io/http/send"
 	"comies/jobs/ordering"
 	"context"
+	"time"
 )
 
 func (h Handler) Place(ctx context.Context, r request.Request) send.Response {
@@ -13,6 +14,8 @@ func (h Handler) Place(ctx context.Context, r request.Request) send.Response {
 	if err != nil {
 		return send.JSONError(err)
 	}
+
+	order.Date = time.Now()
 
 	o, err := h.orders.PlaceOrder(ctx, order)
 	if err != nil {

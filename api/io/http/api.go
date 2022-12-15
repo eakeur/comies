@@ -4,6 +4,7 @@ import (
 	"comies/telemetry"
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,13 +14,12 @@ import (
 	"go.uber.org/zap"
 )
 
-func Serve(endpoint string, handler http.Handler, writeTimeout, readTimeout time.Duration) {
+func Serve(lis net.Listener, handler http.Handler, writeTimeout, readTimeout time.Duration) {
 	log := telemetry.Logger()
 
 	//nolint:gosec
 	srv := &http.Server{
 		Handler:      handler,
-		Addr:         endpoint,
 		WriteTimeout: writeTimeout,
 		ReadTimeout:  readTimeout,
 	}
@@ -42,8 +42,8 @@ func Serve(endpoint string, handler http.Handler, writeTimeout, readTimeout time
 		close(idleConnections)
 	}()
 
-	log.Info(fmt.Sprintf("Listening at %s", endpoint))
-	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	log.Info(fmt.Sprintf("Listening at %s", lis.Addr().String()))
+	if err := srv.Serve(lis); err != nil && err != http.ErrServerClosed {
 		log.Fatal("Listen and serve failed", zap.Error(err))
 	}
 

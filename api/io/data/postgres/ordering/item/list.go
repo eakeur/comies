@@ -34,7 +34,7 @@ func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error
 				&i.ID,
 				&i.OrderID,
 				&i.Status,
-				&i.Value,
+				&i.Price,
 				&i.ProductID,
 				&i.Quantity,
 				&i.Observations,

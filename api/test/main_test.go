@@ -1,11 +1,24 @@
 package test
 
 import (
-	"comies/io/data/postgres/tests"
+	"comies/test/settings"
 	"os"
 	"testing"
 )
 
 func TestMain(m *testing.M) {
-	os.Exit(tests.SetupTest(m))
+	docker, err := settings.NewPool()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	d, purge, err := settings.Postgres(docker)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	db = d
+	defer purge()
+
+	os.Exit(m.Run())
 }

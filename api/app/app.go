@@ -14,29 +14,40 @@ import (
 	"comies/jobs/billing"
 	"comies/jobs/menu"
 	"comies/jobs/ordering"
+
+	"github.com/bwmarrin/snowflake"
 )
 
-func NewApp(createID types.CreateID) App {
+type Deps struct {
+	Snowflake *snowflake.Node
+}
+
+func NewApp(deps Deps) App {
 	repos := repositories()
+
+	idCreator := func() types.ID {
+		return types.ID(deps.Snowflake.Generate())
+	}
 
 	menu := menu.NewJobs(menu.Deps{
 		Products:    repos.Menu.Products,
 		Ingredients: repos.Menu.Ingredients,
 		Movements:   repos.Menu.Movements,
 		Prices:      repos.Menu.Prices,
-		IDCreator:   createID,
+		IDCreator:   idCreator,
 	})
 
 	billing := billing.NewJobs(billing.Deps{
-		Bills: repos.Billing.Bill,
-		Items: repos.Billing.Item,
+		Bills:     repos.Billing.Bill,
+		Items:     repos.Billing.Item,
+		IDCreator: idCreator,
 	})
 
 	ordering := ordering.NewJobs(ordering.Deps{
 		Orders:    repos.Ordering.Orders,
 		Items:     repos.Ordering.Items,
 		Statuses:  repos.Ordering.Statuses,
-		IDCreator: createID,
+		IDCreator: idCreator,
 		Menu:      menu,
 		Billing:   billing,
 	})

@@ -14,7 +14,7 @@ func (a actions) Create(ctx context.Context, i item.Item) error {
 			reference_id,
 			credits,
 			debts,
-			description,
+			description
 		) values (
 			$1, $2, $3, $4, $5, $6
 		)

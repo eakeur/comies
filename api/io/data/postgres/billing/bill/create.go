@@ -12,7 +12,7 @@ func (a actions) Create(ctx context.Context, b bill.Bill) error {
 			id,
 			reference_id,
 			date,
-			description,
+			name
 		) values (
 			$1, $2, $3, $4
 		)

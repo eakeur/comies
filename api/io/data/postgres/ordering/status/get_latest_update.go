@@ -16,7 +16,7 @@ func (a actions) GetLatestUpdate(ctx context.Context, orderID types.ID) (status.
 		from
 			latest_statuses s
 		where
-			p.order_id = $1
+			s.order_id = $1
 	`
 
 	row, err := conn.QueryRowFromContext(ctx, script, orderID)

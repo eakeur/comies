@@ -15,7 +15,6 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 			p.name,
 			p.type,
 			p.cost_price,
-			p.sale_price,
 			p.sale_unit,
 			p.minimum_sale,
 			p.minimum_quantity,

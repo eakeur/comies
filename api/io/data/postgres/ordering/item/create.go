@@ -16,7 +16,7 @@ func (a actions) Create(ctx context.Context, i item.Item) error {
 			id,
 			order_id,
 			status,
-            value,
+            price,
 			product_id,
 			quantity,
 			observations
@@ -29,7 +29,7 @@ func (a actions) Create(ctx context.Context, i item.Item) error {
 		i.ID,
 		i.OrderID,
 		i.Status,
-		i.Value,
+		i.Price,
 		i.ProductID,
 		i.Quantity,
 		i.Observations,
