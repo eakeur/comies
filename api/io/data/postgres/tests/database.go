@@ -6,15 +6,16 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	"log"
 	"math"
 	"math/big"
 	"testing"
+
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Callback = func(ctx context.Context, t *testing.T)
 
-func NewTestDB(t *testing.T) func(tx bool, cbs ...Callback) context.Context {
+func NewDBConn(t *testing.T) *pgxpool.Pool {
 	t.Helper()
 
 	if Connection == nil {
@@ -47,16 +48,11 @@ func NewTestDB(t *testing.T) func(tx bool, cbs ...Callback) context.Context {
 		t.FailNow()
 	}
 
-	t.Cleanup(func() {
-		const script = `drop database %s`
-		pool.Close()
+	return pool
+}
 
-		_, err := Connection.Exec(ctx, fmt.Sprintf(script, name))
-		if err != nil {
-			log.Printf("Could not drop database for test %s: %v", test, err)
-		}
-	})
-
+func NewTestDB(t *testing.T) func(tx bool, cbs ...Callback) context.Context {
+	ctx, pool := context.Background(), NewDBConn(t)
 	return func(tx bool, cbs ...Callback) context.Context {
 		var db conn.Executer = pool
 		if tx {

@@ -14,8 +14,8 @@ type Telemetry struct {
 }
 
 var (
-	instrumentation *Telemetry
-	once            = sync.Once{}
+	instrumentation *Telemetry = &Telemetry{}
+	once                       = sync.Once{}
 )
 
 func New(logger *zap.Logger) *Telemetry {
@@ -27,6 +27,7 @@ func New(logger *zap.Logger) *Telemetry {
 func FakeInstrumentation() *Telemetry {
 	return &Telemetry{
 		Logger: NewLogger(os.Stdout, zapcore.DebugLevel),
+		SQL:    NewLogger(os.Stdout, zapcore.DebugLevel),
 	}
 }
 

@@ -5,7 +5,6 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -43,21 +42,18 @@ func Migrate(pool *pgxpool.Pool) error {
 		return fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
 	}
 
-	migration.Log = logger{
-		log: telemetry.SQLLogger(),
+	log := telemetry.SQLLogger()
+	if log != nil {
+		migration.Log = logger{
+			log: log,
+		}
 	}
 
 	if err != nil {
 		return err
 	}
 
-	defer func(migration *migrate.Migrate) {
-		err, _ := migration.Close()
-		if err != nil {
-			log.Printf("Error deferring migration resources: %v", err)
-		}
-
-	}(migration)
+	defer migration.Close()
 
 	if err != nil {
 		return fmt.Errorf("could not start migration: %w", err)
@@ -91,8 +87,11 @@ func MigrationHandler(pool *pgxpool.Pool) (*migrate.Migrate, error) {
 		return nil, fmt.Errorf("[migrations] failed to create migrate source instance: %w", err)
 	}
 
-	migration.Log = logger{
-		log: telemetry.SQLLogger(),
+	log := telemetry.SQLLogger()
+	if log != nil {
+		migration.Log = logger{
+			log: log,
+		}
 	}
 
 	return migration, nil

@@ -22,7 +22,10 @@ func Connect(c config.Database) (*pgxpool.Pool, error) {
 		return nil, err
 	}
 
-	pgxConfig.ConnConfig.Logger = zapadapter.NewLogger(telemetry.SQLLogger())
+	logger := telemetry.SQLLogger()
+	if logger != nil {
+		pgxConfig.ConnConfig.Logger = zapadapter.NewLogger(logger)
+	}
 
 	db, err := pgxpool.ConnectConfig(context.Background(), pgxConfig)
 	if err != nil {
