@@ -1,4 +1,4 @@
-package ingredients
+package menu
 
 import (
 	"comies/api/request"
@@ -7,19 +7,19 @@ import (
 	"net/http"
 )
 
-func (h Handler) Remove(ctx context.Context, r request.Request) send.Response {
+func (h Handler) RemoveItemIngredient(ctx context.Context, r request.Request) send.Response {
 
-	productID, err := r.IDParam("product_id")
+	productID, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	ingredientID, err := r.IDParam("ingredient_id")
+	ingredientID, err := r.IDParam(IngredientIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	err = h.ingredients.RemoveIngredient(ctx, productID, ingredientID)
+	err = h.menu.RemoveIngredient(ctx, productID, ingredientID)
 	if err != nil {
 		return send.FromError(err)
 	}

@@ -2,7 +2,7 @@ package test
 
 import (
 	"comies/api"
-	v1 "comies/api/handlers/v1"
+	"comies/api/handlers"
 	"comies/api/middleware"
 	"comies/app"
 	"comies/telemetry"
@@ -38,7 +38,7 @@ func createAPI(t *testing.T) string {
 	}
 
 	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
-	v1.Serve(router, v1.Dependencies{
+	handlers.Serve(router, handlers.Dependencies{
 		App: app.NewApp(app.Deps{
 			Snowflake: snflake,
 		}),

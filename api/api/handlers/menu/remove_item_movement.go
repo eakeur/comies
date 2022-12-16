@@ -1,4 +1,4 @@
-package movements
+package menu
 
 import (
 	"comies/api/request"
@@ -7,14 +7,14 @@ import (
 	"net/http"
 )
 
-func (h Handler) Remove(ctx context.Context, r request.Request) send.Response {
+func (h Handler) RemoveItemMovement(ctx context.Context, r request.Request) send.Response {
 
-	id, err := r.IDParam("id")
+	id, err := r.IDParam(MovementIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	err = h.movements.RemoveMovement(ctx, id)
+	err = h.menu.RemoveMovement(ctx, id)
 	if err != nil {
 		return send.FromError(err)
 	}

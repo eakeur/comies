@@ -1,6 +1,30 @@
-package products
+package menu
 
-import "comies/core/types"
+import (
+	"comies/core/types"
+	"time"
+)
+
+type Ingredient struct {
+	ProductID    types.ID       `json:"product_id"`
+	IngredientID types.ID       `json:"ingredient_id"`
+	Quantity     types.Quantity `json:"quantity"`
+	Optional     bool           `json:"optional"`
+}
+
+type Movement struct {
+	ID        types.ID       `json:"id"`
+	ProductID types.ID       `json:"product_id"`
+	AgentID   types.ID       `json:"agent_id"`
+	Type      types.Type     `json:"type"`
+	Date      time.Time      `json:"date"`
+	Quantity  types.Quantity `json:"quantity"`
+}
+
+type StockBalance struct {
+	// Balance is the amount stocked of this product
+	Balance types.Quantity `json:"balance"`
+}
 
 type Product struct {
 	// Code represents how the store's crew call this product internally
@@ -24,4 +48,10 @@ type Product struct {
 	MinimumQuantity types.Quantity `json:"minimum_quantity"`
 	// Location is a brief description of where this stock is located
 	Location string `json:"location"`
+}
+
+type ProducName struct {
+	// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
+	// shown in fiscal documents
+	Name string `json:"name"`
 }

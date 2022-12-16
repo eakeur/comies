@@ -1,4 +1,4 @@
-package movements
+package menu
 
 import (
 	"comies/api/request"
@@ -7,7 +7,7 @@ import (
 	"context"
 )
 
-// CreateMovement adds a movement to the store's stock.
+// CreateItemMovement adds a movement to the store's stock.
 //
 // @Summary     Creates movement
 // @Description Adds a movement to the store's stock
@@ -19,9 +19,9 @@ import (
 // @Failure     412         {object} rest.Response{error=rest.Error{}} "MOVEMENT_INVALID_PRODUCT_TYPE, PRODUCT_STOCK_EMPTY, PRODUCT_STOCK_FULL"
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/movements [POST]
-func (h Handler) Create(ctx context.Context, r request.Request) send.Response {
+func (h Handler) CreateItemMovement(ctx context.Context, r request.Request) send.Response {
 
-	productID, err := r.IDParam("product_id")
+	productID, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
@@ -32,7 +32,7 @@ func (h Handler) Create(ctx context.Context, r request.Request) send.Response {
 		return send.JSONError(err)
 	}
 
-	id, err := h.movements.CreateMovement(ctx, movement.Movement{
+	id, err := h.menu.CreateMovement(ctx, movement.Movement{
 		ProductID: productID,
 		AgentID:   m.AgentID,
 		Type:      m.Type,

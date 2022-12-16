@@ -1,4 +1,4 @@
-package products
+package menu
 
 import (
 	"comies/api/request"
@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// UpdateProduct updates a product to the store's menu.
+// UpdateItem updates a product to the store's menu.
 //
 // @Summary     Updates product
 // @Description updates a product to the store's menu.
@@ -21,9 +21,9 @@ import (
 // @Failure     422     {object} rest.Response{error=rest.Error{}} "PRODUCT_ZERO_SALE_QUANTITY, PRODUCT_ZERO_PRICE, PRODUCT_INVALID_CODE, PRODUCT_INVALID_NAME, PRODUCT_INVALID_TYPE"
 // @Failure     500     {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id} [PUT]
-func (h Handler) Update(ctx context.Context, r request.Request) send.Response {
+func (h Handler) UpdateItem(ctx context.Context, r request.Request) send.Response {
 
-	id, err := r.IDParam("product_id")
+	id, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
@@ -34,7 +34,7 @@ func (h Handler) Update(ctx context.Context, r request.Request) send.Response {
 		return send.JSONError(err)
 	}
 
-	err = h.products.UpdateProduct(ctx, product.Product{
+	err = h.menu.UpdateProduct(ctx, product.Product{
 		ID:              id,
 		Code:            p.Code,
 		Name:            p.Name,

@@ -1,4 +1,4 @@
-package products
+package menu
 
 import (
 	"comies/api/request"
@@ -19,13 +19,13 @@ import (
 // @Failure     400         {object} rest.Response{error=rest.Error{}} "INVALID_ID"
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id} [GET]
-func (h Handler) GetByID(ctx context.Context, r request.Request) send.Response {
-	id, err := r.IDParam("product_id")
+func (h Handler) GetItemByID(ctx context.Context, r request.Request) send.Response {
+	id, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	p, err := h.products.GetProductByID(ctx, id)
+	p, err := h.menu.GetProductByID(ctx, id)
 	if err != nil {
 		return send.FromError(err)
 	}

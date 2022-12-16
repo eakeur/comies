@@ -1,4 +1,4 @@
-package products
+package menu
 
 import (
 	"comies/api/request"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// GetProductNameByID fetches a product name by its ID or code.
+// GetItemNameByID fetches a product name by its ID or code.
 //
 // @Summary     Fetches a product
 // @Description Fetches a product name by its id.
@@ -18,13 +18,13 @@ import (
 // @Failure     400         {object} rest.Response{error=rest.Error{}} "INVALID_ID"
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/name [GET]
-func (h Handler) GetNameByID(ctx context.Context, r request.Request) send.Response {
-	id, err := r.IDParam("product_id")
+func (h Handler) GetItemNameByID(ctx context.Context, r request.Request) send.Response {
+	id, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	name, err := h.products.GetProductNameByID(ctx, id)
+	name, err := h.menu.GetProductNameByID(ctx, id)
 	if err != nil {
 		return send.FromError(err)
 	}

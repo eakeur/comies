@@ -1,4 +1,4 @@
-package products
+package menu
 
 import (
 	"comies/api/request"
@@ -8,9 +8,9 @@ import (
 	"context"
 )
 
-// CreateProduct adds a product to the store's menu.
+// CreateMenu adds a product to the store's menu.
 //
-// @Summary     Create product
+// @Summary     CreateMenu product
 // @Description Adds a product to the store's menu.
 // @Tags        Product
 // @Param       product body     CreateProductRequest true "The properties to define the product"
@@ -19,14 +19,14 @@ import (
 // @Failure     422     {object} rest.Response{error=rest.Error{}} "PRODUCT_ZERO_SALE_QUANTITY, PRODUCT_ZERO_PRICE, PRODUCT_INVALID_CODE, PRODUCT_INVALID_NAME, PRODUCT_INVALID_TYPE"
 // @Failure     500     {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [POST]
-func (h Handler) Create(ctx context.Context, r request.Request) send.Response {
+func (h Handler) CreateMenu(ctx context.Context, r request.Request) send.Response {
 	var p Product
 	err := r.JSONBody(&p)
 	if err != nil {
 		return send.JSONError(err)
 	}
 
-	id, err := h.products.CreateProduct(ctx, menu.ProductCreation{
+	id, err := h.menu.CreateProduct(ctx, menu.ProductCreation{
 		SalePrice: p.SalePrice,
 		Product: product.Product{
 			Code:            p.Code,

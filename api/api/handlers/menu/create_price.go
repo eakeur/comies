@@ -1,11 +1,12 @@
-package ingredients
+package menu
 
 import (
 	"comies/api/request"
 	"comies/api/send"
-	"comies/core/menu/ingredient"
+	"comies/core/types"
 	"context"
 	"net/http"
+	"strconv"
 )
 
 // CreateIngredient adds an ingredient relation to the store's menu.
@@ -20,30 +21,21 @@ import (
 // @Failure     412         {object} rest.Response{error=rest.Error{}} "INGREDIENT_INVALID_INGREDIENT_ID, INGREDIENT_INVALID_PRODUCT_ID, INGREDIENT_ZERO_QUANTITY, INGREDIENT_INVALID_PRODUCT_TYPE, INGREDIENT_INVALID_INGREDIENT_TYPE"
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/ingredients [POST]
-func (h Handler) Create(ctx context.Context, r request.Request) send.Response {
+func (h Handler) CreateItemPrice(ctx context.Context, r request.Request) send.Response {
 
-	var i Ingredient
-	err := r.JSONBody(&i)
-	if err != nil {
-		return send.JSONError(err)
-	}
-
-	productID, err := r.IDParam("product_id")
+	productID, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	ingredientID, err := r.IDParam("ingredient_id")
+	valueStr := r.Param(PriceParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	_, err = h.ingredients.CreateIngredient(ctx, ingredient.Ingredient{
-		ProductID:    productID,
-		IngredientID: ingredientID,
-		Quantity:     i.Quantity,
-		Optional:     i.Optional,
-	})
+	value, _ := strconv.Atoi(valueStr)
+
+	err = h.menu.UpdateProductPrice(ctx, productID, types.Currency(value))
 
 	if err != nil {
 		return send.FromError(err)

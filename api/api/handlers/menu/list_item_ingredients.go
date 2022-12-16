@@ -1,4 +1,4 @@
-package prices
+package menu
 
 import (
 	"comies/api/request"
@@ -16,13 +16,13 @@ import (
 // @Success     200         {object} rest.Response{data=[]Ingredient{}}
 // @Failure     500         {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products/{product_id}/ingredients [GET]
-func (h Handler) List(ctx context.Context, r request.Request) send.Response {
-	productID, err := r.IDParam("product_id")
+func (h Handler) ListItemIngredients(ctx context.Context, r request.Request) send.Response {
+	productID, err := r.IDParam(ItemIDParam)
 	if err != nil {
 		return send.IDError(err)
 	}
 
-	list, err := h.prices.ListPrices(ctx, productID)
+	list, err := h.menu.ListIngredients(ctx, productID)
 	if err != nil {
 		return send.FromError(err)
 	}

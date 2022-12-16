@@ -2,16 +2,16 @@ package test
 
 import (
 	"bytes"
-	"comies/api/handlers/v1/menu/movements"
-	"comies/api/handlers/v1/menu/products"
-	"comies/api/handlers/v1/ordering/orders"
-	"comies/core/ordering/status"
+	"comies/api/handlers/menu"
+	"comies/api/handlers/ordering/orders"
 	"comies/core/types"
 	"comies/jobs/ordering"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestOrderingAPI_PlaceOrder(t *testing.T) {
@@ -23,7 +23,7 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	t.Run("should create product", func(t *testing.T) {
 		var route = fmt.Sprintf("%s/api/v1/menu/products", addr)
 
-		prod, _ := json.Marshal(products.Product{
+		prod, _ := json.Marshal(menu.Product{
 			Code:            "COCA",
 			Name:            "Lata de Coca-Cola",
 			Type:            10,
@@ -40,9 +40,7 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if res.StatusCode != http.StatusCreated {
-			t.Fatalf("could not create product: status(%v)", res.StatusCode)
-		}
+		assert.Equal(t, http.StatusCreated, res.StatusCode)
 
 		productID, err = types.FromString(res.Header.Get("Location"))
 		if err != nil {
@@ -71,9 +69,7 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if res.StatusCode != http.StatusCreated {
-			t.Fatalf("could not create order: status(%v)", res.StatusCode)
-		}
+		assert.Equal(t, http.StatusCreated, res.StatusCode)
 
 		data := ordering.OrderSummary{}
 		err = json.NewDecoder(res.Body).Decode(&data)
@@ -87,49 +83,41 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	})
 
 	t.Run("should check if order is being prepared", func(t *testing.T) {
-		var route = fmt.Sprintf("%s/api/v1/ordering/orders/991222212?phone=true", addr)
+		const preparingStatus = 30
 
-		res, err := http.Get(route)
+		res, err := http.Get(fmt.Sprintf("%s/api/v1/ordering/orders/991222212?phone=true", addr))
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if res.StatusCode != http.StatusOK {
-			t.Fatalf("could not create order: status(%v)", res.StatusCode)
-		}
+		assert.Equal(t, http.StatusOK, res.StatusCode)
 
-		data := ordering.Status{}
+		data := map[string]interface{}{}
 		err = json.NewDecoder(res.Body).Decode(&data)
 		if err != nil {
 			t.Fatalf("could not parse order check response: %s", err)
 		}
 
-		if data.Status.Value != status.PreparingStatus {
-			t.Fatalf("order status is not as the expected: %v", data.Status)
-		}
+		assert.Equal(t, preparingStatus, data["value"], "order status is not as the expected: %v", data)
 	})
 
 	t.Run("should check if product left stock", func(t *testing.T) {
-		var route = fmt.Sprintf("%s/api/v1/menu/products/%s/movements/balance", addr, productID)
+		const expectedStock = -3
 
-		res, err := http.Get(route)
+		res, err := http.Get(fmt.Sprintf("%s/api/v1/menu/products/%s/movements/balance", addr, productID))
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if res.StatusCode != http.StatusOK {
-			t.Fatalf("could not get balance: status(%v)", res.StatusCode)
-		}
+		assert.Equal(t, http.StatusOK, res.StatusCode)
 
-		var data movements.GetProductBalanceResponse
+		data := map[string]interface{}{}
 		err = json.NewDecoder(res.Body).Decode(&data)
 		if err != nil {
 			t.Fatalf("could not parse balance response: %s", err)
 		}
 
-		if data.Balance != -3 {
-			t.Fatalf("product stock is not as the expected: %v", data.Balance)
-		}
+		assert.Equal(t, expectedStock, data["balance"], "product stock is not as the expected: %v", data)
 	})
 
 }

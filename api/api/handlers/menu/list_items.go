@@ -1,4 +1,4 @@
-package products
+package menu
 
 import (
 	"comies/api/request"
@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-// ListProducts fetches a product by its ID or code.
+// ListItems fetches a product by its ID or code.
 //
 // @Summary     Fetches a product
 // @Description Fetches a product by one of itd unique keys (id or code).
@@ -21,7 +21,7 @@ import (
 // @Success     200  {object} rest.Response{data=[]GetProductByKeyResponse{}}
 // @Failure     500  {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [GET]
-func (h Handler) List(ctx context.Context, r request.Request) send.Response {
+func (h Handler) ListItems(ctx context.Context, r request.Request) send.Response {
 	query := r.URL.Query()
 
 	values := query["types"]
@@ -38,7 +38,7 @@ func (h Handler) List(ctx context.Context, r request.Request) send.Response {
 		Types: ty,
 	}
 
-	list, err := h.products.ListProducts(ctx, filter)
+	list, err := h.menu.ListProducts(ctx, filter)
 	if err != nil {
 		return send.FromError(err)
 	}
