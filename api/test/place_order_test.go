@@ -21,7 +21,7 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 
 	var productID types.ID
 	t.Run("should create product", func(t *testing.T) {
-		var route = fmt.Sprintf("%s/api/v1/menu/products", addr)
+		var route = fmt.Sprintf("%s/api/v1/menu/items", addr)
 
 		prod, _ := json.Marshal(menu.Item{
 			Code:            "COCA",
@@ -83,7 +83,7 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	})
 
 	t.Run("should check if order is being prepared", func(t *testing.T) {
-		const preparingStatus = 30
+		const preparingStatus = 30.0
 
 		res, err := http.Get(fmt.Sprintf("%s/api/v1/ordering/orders/991222212?phone=true", addr))
 		if err != nil {
@@ -98,13 +98,13 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 			t.Fatalf("could not parse order check response: %s", err)
 		}
 
-		assert.Equal(t, preparingStatus, data["value"], "order status is not as the expected: %v", data)
+		assert.Equal(t, preparingStatus, data["Value"], "order status is not as the expected: %v", data)
 	})
 
 	t.Run("should check if product left stock", func(t *testing.T) {
-		const expectedStock = -3
+		const expectedStock = -3.0
 
-		res, err := http.Get(fmt.Sprintf("%s/api/v1/menu/products/%s/movements/balance", addr, productID))
+		res, err := http.Get(fmt.Sprintf("%s/api/v1/menu/items/%s/stock", addr, productID))
 		if err != nil {
 			t.Fatal(err)
 		}
