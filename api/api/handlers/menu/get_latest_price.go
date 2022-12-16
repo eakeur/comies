@@ -3,7 +3,6 @@ package menu
 import (
 	"comies/api/request"
 	"comies/api/send"
-	"comies/core/types"
 	"context"
 	"net/http"
 )
@@ -19,9 +18,5 @@ func (h Handler) GetLatestItemPrice(ctx context.Context, r request.Request) send
 		return send.FromError(err)
 	}
 
-	return send.Data(http.StatusOK, GetLatestPriceResponse{Value: cur})
-}
-
-type GetLatestPriceResponse struct {
-	Value types.Currency `json:"value"`
+	return send.Data(http.StatusOK, Price{Value: cur})
 }

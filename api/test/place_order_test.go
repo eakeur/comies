@@ -23,7 +23,7 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	t.Run("should create product", func(t *testing.T) {
 		var route = fmt.Sprintf("%s/api/v1/menu/products", addr)
 
-		prod, _ := json.Marshal(menu.Product{
+		prod, _ := json.Marshal(menu.Item{
 			Code:            "COCA",
 			Name:            "Lata de Coca-Cola",
 			Type:            10,

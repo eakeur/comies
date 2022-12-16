@@ -29,11 +29,5 @@ func (h Handler) GetItemNameByID(ctx context.Context, r request.Request) send.Re
 		return send.FromError(err)
 	}
 
-	return send.Data(http.StatusOK, GetProductNameResponse{Name: name})
-}
-
-type GetProductNameResponse struct {
-	// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
-	// shown in fiscal documents
-	Name string `json:"name"`
+	return send.Data(http.StatusOK, ItemName{Name: name})
 }

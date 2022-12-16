@@ -20,7 +20,7 @@ import (
 // @Failure     500     {object} rest.Response{error=rest.Error{}} "ERR_INTERNAL_SERVER_ERROR"
 // @Router      /menu/products [POST]
 func (h Handler) CreateMenu(ctx context.Context, r request.Request) send.Response {
-	var p Product
+	var p Item
 	err := r.JSONBody(&p)
 	if err != nil {
 		return send.JSONError(err)

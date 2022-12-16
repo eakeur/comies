@@ -30,7 +30,7 @@ func (h Handler) GetItemByID(ctx context.Context, r request.Request) send.Respon
 		return send.FromError(err)
 	}
 
-	return send.Data(http.StatusOK, Product{
+	return send.Data(http.StatusOK, Item{
 		Code:            p.Code,
 		Name:            p.Name,
 		Type:            p.Type,

@@ -26,7 +26,17 @@ type StockBalance struct {
 	Balance types.Quantity `json:"balance"`
 }
 
-type Product struct {
+type Price struct {
+	Value types.Currency `json:"value"`
+}
+
+type ItemName struct {
+	// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
+	// shown in fiscal documents
+	Name string `json:"name"`
+}
+
+type Item struct {
 	// Code represents how the store's crew call this product internally
 	Code string `json:"code"`
 	// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
@@ -48,10 +58,4 @@ type Product struct {
 	MinimumQuantity types.Quantity `json:"minimum_quantity"`
 	// Location is a brief description of where this stock is located
 	Location string `json:"location"`
-}
-
-type ProducName struct {
-	// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
-	// shown in fiscal documents
-	Name string `json:"name"`
 }
