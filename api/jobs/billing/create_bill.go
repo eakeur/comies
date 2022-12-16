@@ -24,7 +24,16 @@ type BillItem struct {
 	Description types.Text
 }
 
-func (j jobs) CreateBill(ctx context.Context, cr BillCreation) (types.ID, error) {
+type BillSummary struct {
+	ID  types.ID
+	Sum types.Amount
+}
+
+func (j jobs) CreateBill(ctx context.Context, cr BillCreation) (BillSummary, error) {
+
+	if len(cr.Items) == 0 {
+		return BillSummary{}, bill.ErrMustHaveItems
+	}
 
 	b, err := bill.Bill{ReferenceID: cr.ReferenceID}.
 		WithID(j.createID()).
@@ -32,50 +41,52 @@ func (j jobs) CreateBill(ctx context.Context, cr BillCreation) (types.ID, error)
 		WithName(cr.Name).
 		Validate()
 	if err != nil {
-		return 0, err
-	}
-
-	items := make([]item.Item, 0)
-	for _, it := range cr.Items {
-		id := j.createID()
-
-		save, err := item.Item{
-			ID:          id,
-			BillID:      b.ID,
-			ReferenceID: it.ReferenceID,
-			Description: it.Description,
-		}.
-			WithCredits(it.Credits).
-			WithDebts(it.Debts).
-			Validate()
-		if err != nil {
-			return 0, err
-		}
-
-		items = append(items, save)
-	}
-
-	if len(items) == 0 {
-		return 0, bill.ErrMustHaveItems
+		return BillSummary{}, err
 	}
 
 	err = j.bills.Create(ctx, b)
 	if err != nil {
-		return 0, err
+		return BillSummary{}, err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
-	for _, it := range items {
+	eg, cctx := errgroup.WithContext(ctx)
+	for _, it := range cr.Items {
 		it := it
 
 		eg.Go(func() error {
-			return j.items.Create(ctx, it)
+			save, err := item.Item{
+				ID:          j.createID(),
+				BillID:      b.ID,
+				ReferenceID: it.ReferenceID,
+				Description: it.Description,
+			}.
+				WithCredits(it.Credits).
+				WithDebts(it.Debts).
+				Validate()
+			if err != nil {
+				return err
+			}
+
+			return j.items.Create(cctx, save)
 		})
+
 	}
 
 	if err := eg.Wait(); err != nil {
-		return 0, err
+		return BillSummary{}, err
 	}
 
-	return b.ID, nil
+	sum, err := j.items.SumByBillID(ctx, b.ID)
+	if err != nil {
+		return BillSummary{}, err
+	}
+
+	return BillSummary{
+		ID: b.ID,
+		Sum: types.Amount{
+			Value:    sum,
+			Net:      sum,
+			Currency: "BRL",
+		},
+	}, nil
 }

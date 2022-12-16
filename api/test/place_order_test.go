@@ -3,7 +3,7 @@ package test
 import (
 	"bytes"
 	"comies/api/handlers/v1/menu/products"
-	"comies/core/ordering/item"
+	"comies/api/handlers/v1/ordering/orders"
 	"comies/core/ordering/status"
 	"comies/core/types"
 	"comies/jobs/ordering"
@@ -52,12 +52,12 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	t.Run("should create order", func(t *testing.T) {
 		var route = fmt.Sprintf("%s/api/v1/ordering/orders", addr)
 
-		ord, _ := json.Marshal(ordering.Order{
+		ord, _ := json.Marshal(orders.Ticket{
 			DeliveryType:    20,
 			CustomerName:    "Ashumundum Vissam",
 			CustomerPhone:   "991222212",
 			CustomerAddress: "My Home, 2022",
-			Items: []item.Item{
+			Items: []orders.TicketItem{
 				{
 					ProductID: productID,
 					Quantity:  3,
@@ -72,6 +72,16 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 
 		if res.StatusCode != http.StatusCreated {
 			t.Fatalf("could not create order: status(%v)", res.StatusCode)
+		}
+
+		data := ordering.OrderSummary{}
+		err = json.NewDecoder(res.Body).Decode(&data)
+		if err != nil {
+			t.Fatalf("could not parse place order response: %s", err)
+		}
+
+		if data.BillAmountDue.Net != 15 {
+			t.Errorf("order bill amount due is different from 15: got %d", data.BillAmountDue.Net)
 		}
 	})
 
