@@ -8,42 +8,28 @@ type Item struct {
 	ID          types.ID       `json:"id"`
 	BillID      types.ID       `json:"bill_id"`
 	ReferenceID types.ID       `json:"reference_id"`
-	Debts       types.Currency `json:"debts"`
-	Credits     types.Currency `json:"credits"`
-	Description types.Text     `json:"description"`
+	Name        string         `json:"name"`
+	Quantity    types.Quantity `json:"quantity"`
+	UnitPrice   types.Currency `json:"unit_price"`
+	Discounts   types.Currency `json:"discounts"`
 }
 
-func (c Item) WithID(id types.ID) Item {
-	c.ID = id
-	return c
-}
+func (i Item) Validate() (Item, error) {
 
-func (c Item) WithDescription(description types.Text) Item {
-	c.Description = description
-	return c
-}
-
-func (c Item) WithCredits(v types.Currency) Item {
-	c.Credits = v
-	if v < 0 {
-		c.Credits = v * -1
+	if err := i.BillID.Validate(); err != nil {
+		return i, err
 	}
 
-	return c
-}
-
-func (c Item) WithDebts(v types.Currency) Item {
-	c.Debts = v
-	if v > 0 {
-		c.Debts = v * -1
+	if err := i.ReferenceID.Validate(); err != nil {
+		return i, err
 	}
 
-	return c
-}
-
-func (c Item) Validate() (Item, error) {
-	if c.Credits < 0 || c.Debts > 0 || (c.Credits == 0 && c.Debts == 0) {
-		return c, ErrInvalidCreditsOrDebts
+	if i.Quantity < 0 {
+		return i, ErrInvalidQuantity
 	}
-	return c, nil
+
+	if i.UnitPrice < 0 {
+		return i, ErrInvalidUnitPrice
+	}
+	return i, nil
 }

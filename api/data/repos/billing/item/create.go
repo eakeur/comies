@@ -12,11 +12,12 @@ func (a actions) Create(ctx context.Context, i item.Item) error {
 			id,
 			bill_id,
 			reference_id,
-			credits,
-			debts,
-			description
+			name,
+			unit_price,
+			quantity,
+			discounts
 		) values (
-			$1, $2, $3, $4, $5, $6
+			$1, $2, $3, $4, $5, $6, $7
 		)
 	`
 
@@ -24,9 +25,10 @@ func (a actions) Create(ctx context.Context, i item.Item) error {
 		i.ID,
 		i.BillID,
 		i.ReferenceID,
-		i.Credits,
-		i.Debts,
-		i.Description,
+		i.Name,
+		i.UnitPrice,
+		i.Quantity,
+		i.Discounts,
 	)
 	if err != nil {
 		return err

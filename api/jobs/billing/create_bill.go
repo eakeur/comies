@@ -12,16 +12,17 @@ import (
 
 type BillCreation struct {
 	Date        time.Time
-	Name        types.Text
+	Name        string
 	ReferenceID types.ID
 	Items       []BillItem
 }
 
 type BillItem struct {
+	Name        string
 	ReferenceID types.ID
-	Debts       types.Currency
-	Credits     types.Currency
-	Description types.Text
+	UnitPrice   types.Currency
+	Quantity    types.Quantity
+	Discounts   types.Currency
 }
 
 type BillSummary struct {
@@ -38,7 +39,7 @@ func (j jobs) CreateBill(ctx context.Context, cr BillCreation) (BillSummary, err
 	b, err := bill.Bill{ReferenceID: cr.ReferenceID}.
 		WithID(j.createID()).
 		WithDate(cr.Date).
-		WithName(cr.Name).
+		WithName(types.Text(cr.Name)).
 		Validate()
 	if err != nil {
 		return BillSummary{}, err
@@ -58,11 +59,11 @@ func (j jobs) CreateBill(ctx context.Context, cr BillCreation) (BillSummary, err
 				ID:          j.createID(),
 				BillID:      b.ID,
 				ReferenceID: it.ReferenceID,
-				Description: it.Description,
-			}.
-				WithCredits(it.Credits).
-				WithDebts(it.Debts).
-				Validate()
+				Name:        it.Name,
+				UnitPrice:   it.UnitPrice,
+				Quantity:    it.Quantity,
+				Discounts:   it.Discounts,
+			}.Validate()
 			if err != nil {
 				return err
 			}
@@ -82,11 +83,7 @@ func (j jobs) CreateBill(ctx context.Context, cr BillCreation) (BillSummary, err
 	}
 
 	return BillSummary{
-		ID: b.ID,
-		Sum: types.Amount{
-			Value:    sum,
-			Net:      sum,
-			Currency: "BRL",
-		},
+		ID:  b.ID,
+		Sum: sum,
 	}, nil
 }

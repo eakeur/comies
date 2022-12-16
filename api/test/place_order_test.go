@@ -2,6 +2,7 @@ package test
 
 import (
 	"bytes"
+	"comies/api/handlers/v1/menu/movements"
 	"comies/api/handlers/v1/menu/products"
 	"comies/api/handlers/v1/ordering/orders"
 	"comies/core/ordering/status"
@@ -105,6 +106,29 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 
 		if data.Status.Value != status.PreparingStatus {
 			t.Fatalf("order status is not as the expected: %v", data.Status)
+		}
+	})
+
+	t.Run("should check if product left stock", func(t *testing.T) {
+		var route = fmt.Sprintf("%s/api/v1/menu/products/%s/movements/balance", addr, productID)
+
+		res, err := http.Get(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if res.StatusCode != http.StatusOK {
+			t.Fatalf("could not get balance: status(%v)", res.StatusCode)
+		}
+
+		var data movements.GetProductBalanceResponse
+		err = json.NewDecoder(res.Body).Decode(&data)
+		if err != nil {
+			t.Fatalf("could not parse balance response: %s", err)
+		}
+
+		if data.Balance != -3 {
+			t.Fatalf("product stock is not as the expected: %v", data.Balance)
 		}
 	})
 

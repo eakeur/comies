@@ -157,9 +157,10 @@ func (w jobs) createOrderBill(ctx context.Context, o order.Order, orderItems []i
 			name, err := w.menu.GetProductNameByID(cctx, it.ProductID)
 			if err == nil {
 				items[i] = billing.BillItem{
+					Name:        name,
 					ReferenceID: it.ProductID,
-					Credits:     it.Price * types.Currency(it.Quantity),
-					Description: types.Text(fmt.Sprintf("%d - %s", it.Quantity, name)),
+					Quantity:    it.Quantity,
+					UnitPrice:   it.Price,
 				}
 			}
 
@@ -172,7 +173,7 @@ func (w jobs) createOrderBill(ctx context.Context, o order.Order, orderItems []i
 	}
 
 	summ, err := w.billing.CreateBill(ctx, billing.BillCreation{
-		Name:        types.Text(fmt.Sprintf("Conta de %s", o.CustomerName)),
+		Name:        fmt.Sprintf("Conta de %s", o.CustomerName),
 		ReferenceID: o.ID,
 		Date:        o.PlacedAt,
 		Items:       items,

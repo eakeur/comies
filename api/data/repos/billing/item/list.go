@@ -13,9 +13,10 @@ func (a actions) List(ctx context.Context, filter item.Filter) ([]item.Item, err
 			i.id,
 			i.bill_id,
 			i.reference_id,
-			i.credits,
-			i.debts,
-			i.description
+			i.name,
+			i.unit_price,
+			i.quantity,
+			i.discounts
 		from
 			bill_items i
 		where
@@ -37,9 +38,10 @@ func (a actions) List(ctx context.Context, filter item.Filter) ([]item.Item, err
 				&m.ID,
 				&m.BillID,
 				&m.ReferenceID,
-				&m.Credits,
-				&m.Debts,
-				&m.Description,
+				&m.Name,
+				&m.UnitPrice,
+				&m.Quantity,
+				&m.Discounts,
 			)
 		},
 	)

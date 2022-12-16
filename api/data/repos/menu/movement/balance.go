@@ -11,13 +11,7 @@ import (
 func (a actions) Balance(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
 	const script = `
 		select
-			coalesce(sum(
-            case
-                when m.type = 10
-                    then m.quantity
-                    else  -1 * m.quantity
-                end
-            ), 0)
+			sum(m.quantity)
 		from
 			movements m
 		where
