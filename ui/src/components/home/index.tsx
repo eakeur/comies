@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { runAction } from "handlers/handler";
 import { MyOrders } from "./my-orders";
 import { HomeShortcutButton } from "./shortcut-button";
+import { OrderForm } from "components/product/order-form";
 
 export function Home() {
 
@@ -51,6 +52,7 @@ export function Home() {
 
       </Flex>
       <MyOrders />
+      <OrderForm/>
     </StyledMain>
   );
 }

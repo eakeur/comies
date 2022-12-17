@@ -48,14 +48,7 @@ export namespace Order {
   export const minuteDifference = (occurence: Date, base = new Date()) =>
     ((base.getTime() - occurence.getTime()) / 60000).toFixed(0);
 
-  export type CountByStatus = {
-    count: number;
-    status: number;
-  }[];
-
-  export const getStatusCount = (counts: CountByStatus = [], status: number) =>
-    counts.find((c) => c.status === status)?.count ?? 0;
-
+  export type CountByStatus = {count: number};
   export type CurrentStatus = {
     value: number;
     occurred_at: Date;
