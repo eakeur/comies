@@ -3527,6 +3527,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ngneat/falso@npm:^6.3.2":
+  version: 6.3.2
+  resolution: "@ngneat/falso@npm:6.3.2"
+  dependencies:
+    seedrandom: 3.0.5
+    uuid: 8.3.2
+  checksum: 2bbe0fd59d3b4c47a0b0f79880848106939b5c8ee1581bd514a40fc228346fdd44a6089a2e241f02db890507eda4114cb0bc0ff7c1e0ac21129d5a0dfe0c2058
+  languageName: node
+  linkType: hard
+
 "@nicolo-ribaudo/eslint-scope-5-internals@npm:5.1.1-v1":
   version: 5.1.1-v1
   resolution: "@nicolo-ribaudo/eslint-scope-5-internals@npm:5.1.1-v1"
@@ -3706,6 +3716,13 @@ __metadata:
   version: 1.1.0
   resolution: "@protobufjs/utf8@npm:1.1.0"
   checksum: f9bf3163d13aaa3b6f5e6fbf37a116e094ea021c0e1f2a7ccd0e12a29e2ce08dafba4e8b36e13f8ed7397e1591610ce880ed1289af4d66cf4ace8a36a9557278
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@remix-run/router@npm:1.1.0"
+  checksum: 18e28668c3cbb848ed5a82ce598d55304edecd737ee3c573f0d4f391f3ceca5818702c5078b613f5d98ce25aef5273a2aa6c26395b7790800e03d8ab7cf808ea
   languageName: node
   linkType: hard
 
@@ -6200,6 +6217,7 @@ __metadata:
     "@chakra-ui/react": ^2.3.1
     "@emotion/react": ^11.10.4
     "@emotion/styled": ^11.10.4
+    "@ngneat/falso": ^6.3.2
     "@testing-library/jest-dom": ^5.16.1
     "@testing-library/react": ^13.0.0
     "@testing-library/user-event": ^13.5.0
@@ -6218,9 +6236,11 @@ __metadata:
     react-dom: ^18.2.0
     react-hook-form: ^7.34.2
     react-query: ^3.39.2
+    react-router-dom: ^6.5.0
     react-scripts: 5.0.1
     styled-components: ^5.3.5
     typescript: ^4.4.2
+    use-debounce: ^9.0.2
     web-vitals: ^2.1.4
     workbox-background-sync: ^6.4.2
     workbox-broadcast-update: ^6.4.2
@@ -12918,6 +12938,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "react-router-dom@npm:6.5.0"
+  dependencies:
+    "@remix-run/router": 1.1.0
+    react-router: 6.5.0
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: b428d3cfd5d7c95caac6130f6814a619c82b26c2c1de49a7bcf6062f5d3fe873eb405cca0732440b961f34d87633951a65f682bece7f55096775e6a456dc7671
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.5.0":
+  version: 6.5.0
+  resolution: "react-router@npm:6.5.0"
+  dependencies:
+    "@remix-run/router": 1.1.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: f1f43361e3c7cfc04c92812362f36fb42609cc93ee6625afc18aff76a92534d1066261c0714d75b8f98b673933247eb743129c90babe684d6ad844574024ad07
+  languageName: node
+  linkType: hard
+
 "react-scripts@npm:5.0.1":
   version: 5.0.1
   resolution: "react-scripts@npm:5.0.1"
@@ -14827,6 +14871,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7913df383a5a6fcb399212eedefaac2e0c6f843555202d4e3010bac3848afe38ecaa3d0d6500ad1d936fbeffd637e6c517e68edb024af5e6beca7f27f3ce7b21
+  languageName: node
+  linkType: hard
+
+"use-debounce@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "use-debounce@npm:9.0.2"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: fb7d9a263e6d5e9d246118b90f11298156b7973aaff315d70bfeb154de5fb8c8bcdde3058da2f57d40a014eec6545c3e3a00cb4dbb2d9323adf2a169f8a492bb
   languageName: node
   linkType: hard
 

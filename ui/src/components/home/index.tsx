@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { runAction } from "handlers/handler";
 import { MyOrders } from "./my-orders";
 import { HomeShortcutButton } from "./shortcut-button";
-import { OrderForm } from "components/product/order-form";
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
+
+  const navigate = useNavigate();
 
   return (
     <StyledMain>
@@ -25,7 +27,7 @@ export function Home() {
             shortcut="Shift + A"
             icon="BuildQueueNew"
             color="#ef6c00"
-            onClick={() => runAction("add_order")}
+            onClick={() => navigate("place-order")}
           />
           <HomeShortcutButton
             name="Novo produto"
@@ -52,7 +54,6 @@ export function Home() {
 
       </Flex>
       <MyOrders />
-      <OrderForm/>
     </StyledMain>
   );
 }

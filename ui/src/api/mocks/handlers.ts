@@ -1,3 +1,4 @@
+import { randFood, randNumber } from "@ngneat/falso"
 import { rest } from "msw"
 
 
@@ -35,4 +36,18 @@ export const handlers = [
       ctx.status(200),
     )
   }),
+
+  rest.get("api/v1/menu/items", (req, res, ctx) => {
+    const code = req.url.searchParams.get("code") ?? ""
+    const len = () : number => 20 - code.length * 2 <= 0 ? 1 : 20 - code.length * 2
+
+    return res(
+      ctx.json(randFood({ length: len() }).map(f => ({
+        id: faker.rand(1000, 100000),
+        name: f,
+        sale_price: randNumber({ min: 500, max: 20000}),
+        current_stock: randNumber({ min: 0, max: 1000}),
+      })))      
+    )
+  })
 ]

@@ -1,49 +1,53 @@
-import { AddIcon, EditIcon, ExternalLinkIcon, RepeatIcon } from "@chakra-ui/icons";
-import { Accordion, AccordionItem, Input, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
+import { Accordion, AccordionItem, Flex, Text } from "@chakra-ui/react";
 import { listProducts } from "api/menu";
 import { Product } from "core/product";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { Control, useWatch } from "react-hook-form";
 import { useQuery } from "react-query";
 
+interface Props {
+    searchControl: Control,
+    onSelected: (p: Product) => any
+}
 
-export function OrderItemSearcher(){
 
-    const [search, setSearch] = useState("")
+export function OrderItemSearcher({searchControl, onSelected}: Props){
 
-    const {data:products, refetch, isLoading, isError} = useQuery('order-item-products', () => {
+    const search = useWatch({control: searchControl, name: "product_name", defaultValue: ""})
+
+    const {data:products, refetch} = useQuery('order-item-products', () => {
         return listProducts({
             types: [Product.outputType, Product.outputCompositeType],
             code: search,
             name: search
-        }).then((p) => {
-            console.log(p)
-            return p
         })
     }, {enabled: false})
 
-    useEffect(function(){
-        if (search.length >= 3) {
-            refetch()
-        }
+    useEffect(() => {
+        refetch()
     }, [search, refetch])
 
     return (
-        <div>
-            
-            <Input defaultValue={search} onChange={(ev) => setSearch(ev.target.value)}/>
+        <Accordion defaultIndex={[0]} allowMultiple>
             {
-                search.length >= 3 && 
-                <Accordion defaultIndex={[0]} allowMultiple>
-                    {
-                        products?.map(p => {
-                            return <AccordionItem key={p.id}>
-                                {p.name}
-                                <Text fontSize="large">R${p.sale_price?.toFixed(2)}</Text>
-                            </AccordionItem>
-                        })
-                    }
-              </Accordion>
+                products?.map(p => {
+                    return (
+                        <AccordionItem 
+                            key={p.id} 
+                            display="flex" 
+                            flexDirection="row"
+                            tabIndex={0}
+                            justifyContent="space-between"
+                            onClick={() => onSelected(p)}
+                            >
+                            <Text width="90%">{p.name}</Text>
+                            <Flex width="10%" justifyContent="left">
+                                <Text fontSize="large">R$ {p.sale_price?.toFixed(2)}</Text>
+                            </Flex>
+                        </AccordionItem>
+                    )
+                })
             }
-        </div>
+        </Accordion>
     )
 }

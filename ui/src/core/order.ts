@@ -48,6 +48,25 @@ export namespace Order {
   export const minuteDifference = (occurence: Date, base = new Date()) =>
     ((base.getTime() - occurence.getTime()) / 60000).toFixed(0);
 
+
+  export type Customer = {
+    customer_name: string;
+    customer_address: string;
+    customer_phone: string;
+  }
+
+  export type Item = {
+      product: {
+        id: string,
+        name: string,
+        code: string,
+        price: number,
+      },
+      quantity: number
+      discounts: number,
+      observations: string
+  }
+
   export type CountByStatus = {count: number};
   export type CurrentStatus = {
     value: number;

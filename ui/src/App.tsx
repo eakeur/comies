@@ -5,6 +5,20 @@ import { addAction } from './handlers/handler';
 import { useDrawer } from './hooks/drawer';
 import { ProductForm } from './components/product/product-form';
 import { Text } from '@chakra-ui/react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { PlaceOrder } from 'components/orders/place';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home/>,
+  },
+  {
+    path: "/place-order",
+    element: <PlaceOrder/>
+  }
+]);
+
 
 function App() {
   const shortcuts = useShortcuts()
@@ -23,7 +37,7 @@ function App() {
     })
   }, [shortcuts, drawer])
 
-  return <Home />
+  return <RouterProvider router={router}/>
 }
 
 export default App;
