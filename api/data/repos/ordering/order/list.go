@@ -38,7 +38,7 @@ func (a actions) List(ctx context.Context, filter order.Filter) ([]order.Order, 
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, o order.Order) error {
+		func(scan conn.Scan, o *order.Order) error {
 			return scan(
 				&o.ID,
 				&o.PlacedAt,

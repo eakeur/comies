@@ -33,7 +33,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 	}
 
 	q := query.NewQuery(script).
-		Where(filter.Code != "", "p.code like $%v", filter.Code+"%").And().
+		Where(filter.Code != "", "p.code like $%v", filter.Code+"%").Or().
 		Where(filter.Name != "", "p.name like $%v", "%"+filter.Name+"%").And().
 		Where(len(filter.Types) > 0, "p.type in (%v)", types...)
 
@@ -43,7 +43,7 @@ func (a actions) List(ctx context.Context, filter product.Filter) ([]product.Pro
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, p product.Product) error {
+		func(scan conn.Scan, p *product.Product) error {
 			return scan(
 				&p.ID,
 				&p.Code,

@@ -26,7 +26,7 @@ func (a actions) ListByProductID(ctx context.Context, productID types.ID) ([]ing
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, i ingredient.Ingredient) error {
+		func(scan conn.Scan, i *ingredient.Ingredient) error {
 			return scan(
 				&i.ProductID,
 				&i.IngredientID,

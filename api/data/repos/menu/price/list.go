@@ -24,7 +24,7 @@ func (a actions) List(ctx context.Context, targetID types.ID) ([]price.Price, er
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, p price.Price) error {
+		func(scan conn.Scan, p *price.Price) error {
 			return scan(
 				&p.ID,
 				&p.TargetID,

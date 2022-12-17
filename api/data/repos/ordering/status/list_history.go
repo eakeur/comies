@@ -23,7 +23,7 @@ func (a actions) ListHistory(ctx context.Context, orderID types.ID) ([]status.St
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, s status.Status) error {
+		func(scan conn.Scan, s *status.Status) error {
 			return scan(
 				&s.OrderID,
 				&s.OccurredAt,

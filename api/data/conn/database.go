@@ -69,13 +69,13 @@ func QueryFromContext(ctx context.Context, script string, parameters ...interfac
 	return tx.Query(ctx, script, parameters...)
 }
 
-func ScanRows[T any](r pgx.Rows, fn func(scan Scan, v T) error) ([]T, error) {
+func ScanRows[T any](r pgx.Rows, fn func(scan Scan, v *T) error) ([]T, error) {
 	arr := make([]T, 0)
 
 	for r.Next() {
 		var v T
 
-		if err := fn(r.Scan, v); err != nil {
+		if err := fn(r.Scan, &v); err != nil {
 			return nil, err
 		}
 

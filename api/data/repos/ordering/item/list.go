@@ -29,7 +29,7 @@ func (a actions) List(ctx context.Context, orderID types.ID) ([]item.Item, error
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, i item.Item) error {
+		func(scan conn.Scan, i *item.Item) error {
 			return rows.Scan(
 				&i.ID,
 				&i.OrderID,

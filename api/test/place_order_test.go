@@ -17,7 +17,7 @@ import (
 func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	t.Parallel()
 
-	addr := createAPI(t)
+	addr := "http://localhost:43545" //createAPI(t)
 
 	var productID types.ID
 	t.Run("should create product", func(t *testing.T) {

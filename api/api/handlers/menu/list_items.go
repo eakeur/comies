@@ -8,6 +8,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // ListItems fetches a product by its ID or code.
@@ -25,6 +26,10 @@ func (h Handler) ListItems(ctx context.Context, r request.Request) send.Response
 	query := r.URL.Query()
 
 	values := query["types"]
+
+	if len(values) == 1 {
+		values = strings.Split(values[0], ",")
+	}
 
 	ty := make([]types.Type, len(values))
 	for i, v := range values {

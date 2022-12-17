@@ -31,7 +31,7 @@ func (a actions) List(ctx context.Context, filter bill.Filter) ([]bill.Bill, err
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, m bill.Bill) error {
+		func(scan conn.Scan, m *bill.Bill) error {
 			return scan(
 				&m.ID,
 				&m.ReferenceID,

@@ -12,12 +12,15 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	cors "github.com/gorilla/handlers"
 )
 
 func main() {
@@ -64,7 +67,7 @@ func main() {
 
 	logger.Info("Successfully created snowflake node")
 
-	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
+	router := chi.NewRouter().With(middleware.Logging())
 	handlers.Serve(router, handlers.Dependencies{
 		App: app.NewApp(app.Deps{
 			Snowflake: snflake,
@@ -78,6 +81,12 @@ func main() {
 		logger.Fatal("Could not listen to port", zap.Error(err), zap.String("address", cfg.Server.Address))
 	}
 
-	api.Serve(lis, router, time.Second*30, time.Second*30)
+	api.Serve(lis, cors.CORS(
+		cors.AllowCredentials(),
+		cors.AllowedMethods([]string{"POST", "GET", "PUT", "DELETE", "OPTIONS"}),
+		cors.AllowedHeaders([]string{"Content-Type"}),
+		cors.AllowedOrigins(strings.Split(cfg.Server.CORSOrigins, ",")),
+		cors.MaxAge(3600),
+	)(router), time.Second*30, time.Second*30)
 
 }

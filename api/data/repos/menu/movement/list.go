@@ -36,7 +36,7 @@ func (a actions) List(ctx context.Context, filter movement.Filter) ([]movement.M
 	}
 
 	return conn.ScanRows(rows,
-		func(scan conn.Scan, m movement.Movement) error {
+		func(scan conn.Scan, m *movement.Movement) error {
 			return scan(
 				&m.ID,
 				&m.ProductID,

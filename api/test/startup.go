@@ -37,7 +37,7 @@ func createAPI(t *testing.T) string {
 		t.Fatalf("Could not create snowflake node: %v", err)
 	}
 
-	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
+	router := chi.NewRouter().With(middleware.CORS(""), middleware.Logging())
 	handlers.Serve(router, handlers.Dependencies{
 		App: app.NewApp(app.Deps{
 			Snowflake: snflake,
