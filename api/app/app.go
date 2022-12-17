@@ -2,41 +2,52 @@ package app
 
 import (
 	"comies/core/types"
-	"comies/io/data/postgres/billing/bill"
-	bill_item "comies/io/data/postgres/billing/item"
-	"comies/io/data/postgres/menu/ingredient"
-	"comies/io/data/postgres/menu/movement"
-	"comies/io/data/postgres/menu/price"
-	"comies/io/data/postgres/menu/product"
-	"comies/io/data/postgres/ordering/item"
-	"comies/io/data/postgres/ordering/order"
-	"comies/io/data/postgres/ordering/status"
+	"comies/data/repos/billing/bill"
+	bill_item "comies/data/repos/billing/item"
+	"comies/data/repos/menu/ingredient"
+	"comies/data/repos/menu/movement"
+	"comies/data/repos/menu/price"
+	"comies/data/repos/menu/product"
+	"comies/data/repos/ordering/item"
+	"comies/data/repos/ordering/order"
+	"comies/data/repos/ordering/status"
 	"comies/jobs/billing"
 	"comies/jobs/menu"
 	"comies/jobs/ordering"
+
+	"github.com/bwmarrin/snowflake"
 )
 
-func NewApp(createID types.CreateID) App {
+type Deps struct {
+	Snowflake *snowflake.Node
+}
+
+func NewApp(deps Deps) App {
 	repos := repositories()
+
+	idCreator := func() types.ID {
+		return types.ID(deps.Snowflake.Generate())
+	}
 
 	menu := menu.NewJobs(menu.Deps{
 		Products:    repos.Menu.Products,
 		Ingredients: repos.Menu.Ingredients,
 		Movements:   repos.Menu.Movements,
 		Prices:      repos.Menu.Prices,
-		IDCreator:   createID,
+		IDCreator:   idCreator,
 	})
 
 	billing := billing.NewJobs(billing.Deps{
-		Bills: repos.Billing.Bill,
-		Items: repos.Billing.Item,
+		Bills:     repos.Billing.Bill,
+		Items:     repos.Billing.Item,
+		IDCreator: idCreator,
 	})
 
 	ordering := ordering.NewJobs(ordering.Deps{
 		Orders:    repos.Ordering.Orders,
 		Items:     repos.Ordering.Items,
 		Statuses:  repos.Ordering.Statuses,
-		IDCreator: createID,
+		IDCreator: idCreator,
 		Menu:      menu,
 		Billing:   billing,
 	})

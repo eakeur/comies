@@ -9,7 +9,7 @@ import (
 
 //go:generate moq -fmt goimports -out workflow_mock.go . Jobs:WorkflowMock
 type Jobs interface {
-	CreateBill(ctx context.Context, b BillCreation) (types.ID, error)
+	CreateBill(ctx context.Context, b BillCreation) (BillSummary, error)
 }
 
 type jobs struct {

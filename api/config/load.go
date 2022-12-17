@@ -27,7 +27,8 @@ func Load() Config {
 			URL:      os.Getenv("DATABASE_URL"),
 		},
 		Server: Server{
-			ListenPort: os.Getenv("PORT"),
+			Address:     os.Getenv("SERVER_ADDRESS"),
+			CORSOrigins: os.Getenv("SERVER_CORS_ORIGINS"),
 		},
 		Logger: Logger{
 			Environment: os.Getenv("ENVIRONMENT"),

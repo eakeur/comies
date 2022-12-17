@@ -1,23 +1,26 @@
 package main
 
 import (
+	"comies/api"
+	"comies/api/handlers"
+	"comies/api/middleware"
 	"comies/app"
 	"comies/config"
-	"comies/core/types"
-	"comies/io/data/postgres/conn"
-	"comies/io/http"
-	v1 "comies/io/http/handlers/v1"
-	"comies/io/http/middleware"
+	"comies/data/conn"
 	"comies/telemetry"
+	"net"
 	"os"
 	"path"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	cors "github.com/gorilla/handlers"
 )
 
 func main() {
@@ -62,19 +65,28 @@ func main() {
 		logger.Fatal("Could not create snowflake node", zap.Error(err))
 	}
 
-	var createID types.CreateID = func() types.ID {
-		return types.ID(snflake.Generate())
-	}
-
 	logger.Info("Successfully created snowflake node")
 
-	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
-	v1.Serve(router, v1.Dependencies{
-		App:  app.NewApp(createID),
+	router := chi.NewRouter().With(middleware.Logging())
+	handlers.Serve(router, handlers.Dependencies{
+		App: app.NewApp(app.Deps{
+			Snowflake: snflake,
+		}),
 		Pool: middleware.Pool(db),
 		TX:   middleware.TX(db),
 	})
 
-	http.Serve(cfg.Server.ListenPort, router, time.Second*30, time.Second*30)
+	lis, err := net.Listen("tcp", cfg.Server.Address)
+	if err != nil {
+		logger.Fatal("Could not listen to port", zap.Error(err), zap.String("address", cfg.Server.Address))
+	}
+
+	api.Serve(lis, cors.CORS(
+		cors.AllowCredentials(),
+		cors.AllowedMethods([]string{"POST", "GET", "PUT", "DELETE", "OPTIONS"}),
+		cors.AllowedHeaders([]string{"Content-Type"}),
+		cors.AllowedOrigins(strings.Split(cfg.Server.CORSOrigins, ",")),
+		cors.MaxAge(3600),
+	)(router), time.Second*30, time.Second*30)
 
 }

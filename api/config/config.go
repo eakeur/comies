@@ -23,7 +23,8 @@ type Database struct {
 }
 
 type Server struct {
-	ListenPort string
+	Address     string
+	CORSOrigins string
 }
 
 type IDGeneration struct {

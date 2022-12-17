@@ -1,17 +1,15 @@
 package test
 
 import (
+	"comies/api"
+	"comies/api/handlers"
+	"comies/api/middleware"
 	"comies/app"
-	"comies/core/types"
-	"comies/io/data/postgres/tests"
-	"comies/io/http"
-	v1 "comies/io/http/handlers/v1"
-	"comies/io/http/middleware"
 	"comies/telemetry"
+	"comies/test/settings/postgres"
 	"fmt"
-	"math/rand"
+	"net"
 	"os"
-	"path"
 	"testing"
 	"time"
 
@@ -20,34 +18,40 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func startup(t *testing.T) {
+var db postgres.DatabaseContextBuilder
+
+func createAPI(t *testing.T) string {
 	t.Helper()
 
 	logger := telemetry.NewLogger(os.Stdout, zapcore.DebugLevel)
 
-	sqlLog, _ := os.Create(path.Join(os.TempDir(), fmt.Sprintf("%s_comies_sql_log_%d.log", t.Name(), time.Now().Nanosecond())))
 	telemetry.Register(&telemetry.Telemetry{
 		Logger: logger,
-		SQL:    telemetry.NewLogger(sqlLog, zapcore.DebugLevel),
+		SQL:    telemetry.NewLogger(os.Stdout, zapcore.WarnLevel),
 	})
 
-	pool := tests.NewDBConn(t)
+	pool := db.Connection(t)
 
-	snflake, err := snowflake.NewNode(int64(rand.Int()))
+	snflake, err := snowflake.NewNode(21)
 	if err != nil {
 		t.Fatalf("Could not create snowflake node: %v", err)
 	}
 
-	var createID types.CreateID = func() types.ID {
-		return types.ID(snflake.Generate())
-	}
-
-	router := chi.NewRouter().With(middleware.CORS(), middleware.Logging())
-	v1.Serve(router, v1.Dependencies{
-		App:  app.NewApp(createID),
+	router := chi.NewRouter().With(middleware.CORS(""), middleware.Logging())
+	handlers.Serve(router, handlers.Dependencies{
+		App: app.NewApp(app.Deps{
+			Snowflake: snflake,
+		}),
 		Pool: middleware.Pool(pool),
 		TX:   middleware.TX(pool),
 	})
 
-	http.Serve(":5051", router, time.Second*30, time.Second*30)
+	lis, err := net.Listen("tcp", "localhost:")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	go api.Serve(lis, router, time.Second*30, time.Second*30)
+
+	return fmt.Sprintf("http://%s", lis.Addr().String())
 }

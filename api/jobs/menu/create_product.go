@@ -33,5 +33,5 @@ func (w jobs) CreateProduct(ctx context.Context, p ProductCreation) (types.ID, e
 		return 0, err
 	}
 
-	return 0, w.prices.Create(ctx, pr)
+	return save.ID, w.prices.Create(ctx, pr)
 }

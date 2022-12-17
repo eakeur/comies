@@ -8,114 +8,179 @@ import (
 	"comies/jobs/billing"
 	"comies/jobs/menu"
 	"context"
+	"fmt"
 	"time"
 
 	"golang.org/x/sync/errgroup"
 )
 
-type Order struct {
-	items           []item.Item
+type Ticket struct {
 	DeliveryType    types.Type
 	Observations    string
 	CustomerName    string
 	CustomerPhone   string
 	CustomerAddress string
-	Time            time.Time
+	Date            time.Time
+	Items           []TicketItem
 }
 
-func (w jobs) PlaceOrder(ctx context.Context, conf Order) (order.Order, error) {
-	if len(conf.items) <= 0 {
-		return order.Order{}, order.ErrInvalidNumberOfItems
+type TicketItem struct {
+	ProductID    types.ID
+	Quantity     types.Quantity
+	Observations string
+}
+
+type OrderSummary struct {
+	Items         []item.Item  `json:"items"`
+	BillID        types.ID     `json:"bill_id"`
+	BillAmountDue types.Amount `json:"bill_amount_due"`
+	order.Order
+}
+
+func (w jobs) PlaceOrder(ctx context.Context, tk Ticket) (OrderSummary, error) {
+	if len(tk.Items) <= 0 {
+		return OrderSummary{}, order.ErrInvalidNumberOfItems
 	}
 
+	ord, err := w.createOrderFromTicket(ctx, tk)
+	if err != nil {
+		return OrderSummary{}, err
+	}
+
+	items, err := w.createOrderItems(ctx, ord, tk.Items)
+	if err != nil {
+		return OrderSummary{}, err
+	}
+
+	bill, err := w.createOrderBill(ctx, ord, items)
+	if err != nil {
+		return OrderSummary{}, err
+	}
+
+	st, err := status.Status{OrderID: ord.ID}.
+		WithOccurredAt(tk.Date).
+		WithValue(status.PreparingStatus).
+		Validate()
+	if err != nil {
+		return OrderSummary{}, err
+	}
+
+	if err := w.statuses.Update(ctx, st); err != nil {
+		return OrderSummary{}, err
+	}
+
+	return OrderSummary{
+		Items:         items,
+		BillID:        bill.ID,
+		BillAmountDue: bill.Sum,
+		Order:         ord,
+	}, nil
+}
+
+func (w jobs) createOrderFromTicket(ctx context.Context, tk Ticket) (order.Order, error) {
 	o, err := order.Order{}.
 		WithID(w.createID()).
-		WithPlacedAt(conf.Time).
-		WithDeliveryType(conf.DeliveryType).
-		WithCustomer(conf.CustomerName, conf.CustomerPhone, conf.CustomerAddress).
-		WithObservations(conf.Observations).
+		WithPlacedAt(tk.Date).
+		WithDeliveryType(tk.DeliveryType).
+		WithCustomer(tk.CustomerName, tk.CustomerPhone, tk.CustomerAddress).
+		WithObservations(tk.Observations).
 		Validate()
 	if err != nil {
 		return order.Order{}, err
 	}
 
-	err = w.orders.Create(ctx, o)
-	if err != nil {
-		return order.Order{}, err
-	}
+	return o, w.orders.Create(ctx, o)
+}
 
-	billItems := make([]billing.BillItem, len(conf.items))
+func (w jobs) createOrderItems(ctx context.Context, o order.Order, tki []TicketItem) ([]item.Item, error) {
 	eg, ctx := errgroup.WithContext(ctx)
-	for i, item := range conf.items {
-		item := item
+	items := make([]item.Item, len(tki))
+
+	for i, it := range tki {
+		it := it
 		i := i
+
 		eg.Go(func() error {
-			save, err := w.createPricedItem(ctx, item)
+			price, err := w.menu.GetProductLatestPriceByID(ctx, it.ProductID)
 			if err != nil {
 				return err
 			}
 
-			billItems[i] = billing.BillItem{
-				ReferenceID: save.ID,
-				Credits:     save.Value,
+			save, err := item.Item{
+				ProductID:    it.ProductID,
+				Quantity:     it.Quantity,
+				Observations: it.Observations,
+			}.
+				WithID(w.createID()).
+				WithOrderID(o.ID).
+				WithValue(price).
+				WithStatus(item.PreparingItemStatus).
+				Validate()
+			if err != nil {
+				return err
 			}
+
+			err = w.items.Create(ctx, save)
+			if err != nil {
+				return err
+			}
+
+			items[i] = save
 
 			return w.menu.DispatchProduct(ctx, menu.Dispatcher{
 				ProductID: save.ProductID,
-				Price:     save.Value,
+				Price:     save.Price,
 				AgentID:   save.ID,
 				Quantity:  save.Quantity,
-				Date:      conf.Time,
+				Date:      o.PlacedAt,
 			})
 		})
 	}
 
 	if err := eg.Wait(); err != nil {
-		return order.Order{}, err
+		return nil, err
 	}
 
-	eg.Go(func() error {
-		st, err := status.Status{OrderID: o.ID}.
-			WithOccurredAt(conf.Time).
-			WithValue(status.PreparingStatus).
-			Validate()
-		if err != nil {
+	return items, nil
+}
+
+func (w jobs) createOrderBill(ctx context.Context, o order.Order, orderItems []item.Item) (billing.BillSummary, error) {
+
+	eg, cctx := errgroup.WithContext(ctx)
+	items := make([]billing.BillItem, len(orderItems))
+
+	for i, it := range orderItems {
+		it := it
+		i := i
+
+		eg.Go(func() error {
+			name, err := w.menu.GetProductNameByID(cctx, it.ProductID)
+			if err == nil {
+				items[i] = billing.BillItem{
+					Name:        name,
+					ReferenceID: it.ProductID,
+					Quantity:    it.Quantity,
+					UnitPrice:   it.Price,
+				}
+			}
+
 			return err
-		}
-
-		return w.statuses.Update(ctx, st)
-	})
-
-	return o, w.createOrderBill(ctx, o, billItems)
-}
-
-func (w jobs) createPricedItem(ctx context.Context, i item.Item) (item.Item, error) {
-	price, err := w.menu.GetProductLatestPriceByID(ctx, i.ProductID)
-	if err != nil {
-		return item.Item{}, err
+		})
 	}
 
-	save, err := i.WithValue(price).Validate()
-	if err != nil {
-		return item.Item{}, err
+	if err := eg.Wait(); err != nil {
+		return billing.BillSummary{}, err
 	}
 
-	err = w.items.Create(ctx, save)
-	if err != nil {
-		return item.Item{}, err
-	}
-
-	return save, nil
-}
-
-func (w jobs) createOrderBill(ctx context.Context, o order.Order, items []billing.BillItem) error {
-	_, err := w.billing.CreateBill(ctx, billing.BillCreation{
+	summ, err := w.billing.CreateBill(ctx, billing.BillCreation{
+		Name:        fmt.Sprintf("Conta de %s", o.CustomerName),
 		ReferenceID: o.ID,
 		Date:        o.PlacedAt,
 		Items:       items,
 	})
 	if err != nil {
-		return err
+		return billing.BillSummary{}, err
 	}
-	return nil
+
+	return summ, nil
 }

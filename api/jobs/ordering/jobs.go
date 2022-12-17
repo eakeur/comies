@@ -13,7 +13,7 @@ import (
 var _ Jobs = jobs{}
 
 type Jobs interface {
-	PlaceOrder(ctx context.Context, o Order) (order.Order, error)
+	PlaceOrder(ctx context.Context, o Ticket) (OrderSummary, error)
 	CancelOrder(ctx context.Context, id types.ID) error
 
 	ListOrders(ctx context.Context, f order.Filter) ([]order.Order, error)
