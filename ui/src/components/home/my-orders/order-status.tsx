@@ -1,12 +1,12 @@
 import { Flex, SkeletonText, Text, useToast } from "@chakra-ui/react";
 import { getOrderCountByStatus } from "api/ordering";
 import { Icon } from "components/shared/Icon";
-import { Order } from "core/order";
 import { useQuery } from "react-query";
 import { darken } from "polished";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { ListShowUpAnimation } from "components/animations/animations";
+import { OrderStatusRenderingData } from "components/shared/rendering";
 
 export function OrderCountByStatus({ status }: { status: number }) {
 
@@ -30,7 +30,7 @@ export function OrderCountByStatus({ status }: { status: number }) {
     }
   });
 
-  const { icon, color, name } = Order.StatusData[status];
+  const { icon, color, name } = OrderStatusRenderingData[status];
 
   return (
     <StatusCountBanner

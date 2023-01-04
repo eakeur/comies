@@ -37,7 +37,7 @@ export const handlers = [
     )
   }),
 
-  rest.get("api/v1/menu/items", (req, res, ctx) => {
+  rest.get("api/v1/menu/items/saleable", (req, res, ctx) => {
     const code = req.url.searchParams.get("code") ?? ""
     const len = () : number => 20 - code.length * 2 <= 0 ? 1 : 20 - code.length * 2
 
@@ -45,8 +45,9 @@ export const handlers = [
       ctx.json(randFood({ length: len() }).map(f => ({
         id: faker.rand(1000, 100000),
         name: f,
-        sale_price: randNumber({ min: 500, max: 20000}),
-        current_stock: randNumber({ min: 0, max: 1000}),
+        code: f.toUpperCase().split(" ").at(0)?.substring(0, f.split(" ").at(0)?.length ?? 0 <= 6 ? undefined : 6),
+        price: randNumber({ min: 500, max: 15000}),
+        stock: randNumber({ min: 0, max: 1000}),
       })))      
     )
   })

@@ -1,77 +1,68 @@
-export interface Order {}
+export namespace Ordering {
 
-export namespace Order {
-  export const pendingStatus = 1;
-  export const preparingStatus = 2;
-  export const waitingTakeoutStatus = 3;
-  export const waitingDeliveryStatus = 4;
-  export const deliveringStatus = 5;
+  export enum OrderStatus {
+    pending = 1,
+    preparing = 2,
+    waitingTakeout = 3,
+    waitingDelivery = 4,
+    delivering = 5,
+  }
 
-  export const statuses = [
-    pendingStatus,
-    preparingStatus,
-    waitingTakeoutStatus,
-    waitingDeliveryStatus,
-    deliveringStatus,
-  ] as const;
+  export enum DeliveryType {
+    takeout = 10,
+    delivery = 20,
+  }
 
-  export const StatusData: {
-    readonly [key: number]: { name: string; icon: string; color: string };
-  } = {
-    [pendingStatus]: {
-      icon: "Clock",
-      color: "#90a4ae",
-      name: "Pendente",
-    },
-    [preparingStatus]: {
-      icon: "EatDrink",
-      color: "#ffb74d",
-      name: "Preparando",
-    },
-    [waitingTakeoutStatus]: {
-      icon: "OfficeStoreLogo",
-      color: "#4dd0e1",
-      name: "Pra retirar",
-    },
-    [waitingDeliveryStatus]: {
-      icon: "Assign",
-      color: "#e57373",
-      name: "Pra entregar",
-    },
-    [deliveringStatus]: {
-      icon: "DeliveryTruck",
-      color: "#81c784",
-      name: "Entregando",
-    },
-  } as const;
-
-  export const minuteDifference = (occurence: Date, base = new Date()) =>
-    ((base.getTime() - occurence.getTime()) / 60000).toFixed(0);
-
-
-  export type Customer = {
+  export type Order = {
+    id: string;
+    placed_at: Date;
     customer_name: string;
     customer_address: string;
     customer_phone: string;
+    delivery_type: DeliveryType;
+    observations: string;
   }
 
-  export type Item = {
-      product: {
-        id: string,
-        name: string,
-        code: string,
-        price: number,
-      },
-      quantity: number
-      discounts: number,
-      observations: string
+  export type Ticket = {
+    customer_name: string;
+    customer_address: string;
+    customer_phone: string;
+    delivery_type: DeliveryType;
+    observations: string;
   }
 
-  export type CountByStatus = {count: number};
+  export type SaleableItem = {
+    id: string,
+    name: string,
+    code: string,
+    price: number,
+    stock: number,
+  }
+
+  export type TicketItem = {
+    saleable: SaleableItem,
+    quantity: number;
+    observations: string;
+  }
+
+  export type CountByStatus = {
+    count: number
+  };
+
   export type CurrentStatus = {
     value: number;
     occurred_at: Date;
     order_id: string;
     customer_name?: string;
   };
+
+  export const minuteDifference = (occurence: Date, base = new Date()) =>
+    ((base.getTime() - occurence.getTime()) / 60000).toFixed(0);
+
+
+  export const saleableItemToTicketItem = (saleable: SaleableItem) => ({
+    quantity: 1,
+    observations: "",
+    saleable,
+  })
 }

@@ -1,9 +1,9 @@
-import { Order } from "core/order"
+import { Ordering } from "core/order"
 import API from "api"
 import axios from "axios"
 
 export function getOrderCountByStatus(status?: number) {
-    return axios.get<Order.CountByStatus>(
+    return axios.get<Ordering.CountByStatus>(
         API.ordering.getOrderCountByStatus
             .params("status", status?.toString() ?? '')
             .toString()
@@ -11,14 +11,22 @@ export function getOrderCountByStatus(status?: number) {
 }
 
 export function getOrderStatusByCustomerPhone(phone: string) {
-    return axios.get<Order.CurrentStatus>(
+    return axios.get<Ordering.CurrentStatus>(
         API.ordering.getOrderStatusByCustomerPhone
             .params("customer_phone", phone)
             .toString()
     )
     .then((res) => res.data)
-    .then<Order.CurrentStatus>((res) => ({
+    .then<Ordering.CurrentStatus>((res) => ({
         ...res,
         occurred_at: new Date(res.occurred_at)
     }))
+}
+
+export function listSaleableItems(name: string) {
+    return axios.get<Ordering.SaleableItem[]>(
+        API.ordering.listSaleableItems
+            .query({code: name, name: name})
+            .toString(),
+    ).then(r => r.data)
 }

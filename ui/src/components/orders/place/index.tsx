@@ -1,80 +1,130 @@
 import {
-  Box,
   Button,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  UnorderedList,
   Text,
+  Flex,
+  FormHelperText,
+  Stack,
+  Textarea,
 } from "@chakra-ui/react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { CustomerForm } from "components/orders/place/customer-form";
-import { ItemSearch } from "./item-search-form";
-import { useState } from "react";
-import { Order } from "core/order";
-import { ItemForm } from "./item-form";
-import { AnimatePresence } from "framer-motion";
-
-const StyledForm = styled.form`
-  & > div {
-    margin-bottom: 30px;
-  }
-`;
+import { useSaleableItemsSearch, useTicketItems } from "./hook";
+import { TicketItem } from "./saleable-item";
+import { SearchResult } from "./search-result";
 
 export function PlaceOrder() {
-  const [items, setItems] = useState<Order.Item[]>([])
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const form = useForm();
+  const { data, search, setSearch } = useSaleableItemsSearch()
+
+  const items = useTicketItems()
+
+  const { register, control } = useForm();
+
+  const nextRef = useRef(null);
 
   return (
-    <StyledMain>
-      <StyledForm>
+    <form>
+      <Box marginBottom="20px">
+        <Text fontSize="x-large">Cliente</Text>
+        <Stack id="customer-data" direction="column">
+          <FormControl id="customer_name">
+            <FormLabel fontSize="sm">Nome</FormLabel>
+            <Input {...register("customer_name")} autoFocus={true}/>
+            <FormHelperText></FormHelperText>
+          </FormControl>
+          <FormControl id="customer_phone">
+            <FormLabel fontSize="sm">Telefone</FormLabel>
+            <Input {...register("customer_phone")} />
+            <FormHelperText>Necessário em caso de entrega</FormHelperText>
+          </FormControl>
+          <FormControl id="customer_address">
+            <FormLabel fontSize="sm">Endereço</FormLabel>
+            <Input {...register("customer_address")} />
+            <FormHelperText>Necessário em caso de entrega</FormHelperText>
+          </FormControl>
+        </Stack>
+      </Box>
 
-        <CustomerForm form={form} />
-
-        <Box>
-          <Text fontSize="x-large">Itens</Text>
-          <div>
-            <AnimatePresence>
+      {
+        items.list.length > 0 ?
+          <Box overflowY="auto" marginBottom="20px">
             {
-              items.map((it, i) => {
+              items.list.map((it, i) => {
                 return (
-                  <ItemForm
-                    key={i}
-                    item={it}
-                    onRemove={() => setItems(items.filter((_, idx) => i !== idx))} />
+                  <TicketItem key={i} item={it} onSave={(it) => items.setItem(it, i)} onRemove={() => items.removeItem(i)} />
                 )
               })
             }
-            </AnimatePresence>
-          </div>
+          </Box> :
+          <Flex alignSelf="center" justifyContent="center" marginBottom="20px">
+            <Text>Adicione pelo menos um item ao pedido</Text>
+          </Flex>
+      }
 
+      <Box marginBottom="20px">
+        <Button onFocus={onOpen} onClick={onOpen} w="100%">Adicionar itens</Button>
+        <Drawer
+          isOpen={isOpen}
+          placement='left'
+          size="md"
+          onClose={onClose}
+          finalFocusRef={nextRef}
+        >
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton onClick={onClose} />
+            <DrawerHeader>
+              <FormControl paddingBlockEnd={5}>
+                <FormLabel fontSize="sm">Pesquisar items</FormLabel>
+                <Input autoFocus={true} defaultValue={search} onChange={(ev) => setSearch(ev.target.value)} />
+              </FormControl>
+            </DrawerHeader>
 
-          <ItemSearch onSelect={(it) => {
-            const existing = items.findIndex(item => it.product.id === item.product.id)
+            <DrawerBody>
+              <UnorderedList>
+                {
+                  data?.map((prod, i) => <SearchResult
+                    key={i}
+                    saleable={prod}
+                    onAdd={items.addItem} />)
+                }
+              </UnorderedList>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Box>
 
-            if (existing === -1)
-              return setItems(items.concat(it))
+      <Box marginBottom="20px">
+        <Text fontSize="x-large">Detalhes</Text>
+        <Stack id="order-detail" direction="column">
+          <FormControl id="observations">
+            <FormLabel fontSize="sm">Observações</FormLabel>
+            <Textarea {...register("customer_address")} ref={nextRef} />
+          </FormControl>
+        </Stack>
+      </Box>
 
-            const actual = items[existing]
-            setItems([
-              ...items.slice(0, existing),
-              {
-                ...actual,
-                quantity: actual.quantity + it.quantity
-              },
-              ...items.slice(existing + 1),
-            ])
-          }} />
-        </Box>
-
-        <Button width="100%" colorScheme="green" type="submit">
-          Salvar
-        </Button>
-      </StyledForm>
-    </StyledMain>
+      <Button width="100%" colorScheme="green" type="submit">
+        Confirmar pedido
+      </Button>
+    </form>
   );
 }
 
-
-
 const StyledMain = styled.main`
-  padding: 20px;
+
 `;

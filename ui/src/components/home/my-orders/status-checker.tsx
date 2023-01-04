@@ -2,11 +2,12 @@ import { useQuery } from "react-query";
 import { Box, Button, Flex, Input, InputGroup, InputLeftElement, InputRightElement, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
 import { darken } from "polished";
 import styled from "styled-components";
-import { Order } from "core/order";
+import { Ordering } from "core/order";
 import { getOrderStatusByCustomerPhone } from "api/ordering";
 import { Icon } from "../../shared/Icon";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
+import { OrderStatusRenderingData } from "components/shared/rendering";
 
 export function OrderStatusChecker() {
 
@@ -23,7 +24,7 @@ export function OrderStatusChecker() {
   }, [phone, refetch])
 
 
-  const status = Order.StatusData[data?.value ?? Order.pendingStatus];
+  const status = OrderStatusRenderingData[data?.value ?? Ordering.OrderStatus.pending];
 
   if (isError) {
     return (
@@ -107,7 +108,7 @@ export function OrderStatusChecker() {
                 })}
               </Text>
               <Text fontSize="2xs" justifySelf="flex-end">
-                há {Order.minuteDifference(data!.occurred_at)} minutos
+                há {Ordering.minuteDifference(data!.occurred_at)} minutos
               </Text>
             </Flex>
           </Flex>

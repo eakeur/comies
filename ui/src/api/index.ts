@@ -72,6 +72,7 @@ namespace API {
     export const ordering = {
         getOrderCountByStatus: new URL(`${orderingV1}/orders?statuscount={status}`),
         getOrderStatusByCustomerPhone: new URL(`${orderingV1}/orders/{customer_phone}?phone=true`),
+        listSaleableItems: new URL(`${menuV1}/items/saleable`),
     } as const
 }
 

@@ -35,6 +35,19 @@ function App() {
         })
       }
     })
+
+    addAction({
+      name:"add_order", 
+      handler: () => {
+        drawer({
+          header: <Text as="h1">Novo pedido</Text>,
+          body: <PlaceOrder/>,
+          options: {
+            size: "xl"
+          }
+        })
+      }
+    })
   }, [shortcuts, drawer])
 
   return <RouterProvider router={router}/>
