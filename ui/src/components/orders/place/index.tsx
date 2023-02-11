@@ -20,6 +20,7 @@ import {
   RadioGroup,
   Radio,
 } from "@chakra-ui/react";
+import { Price } from "components/shared/price";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useSaleableItemsSearch, useTicketItems } from "./hook";
@@ -129,6 +130,13 @@ export function PlaceOrder() {
           </RadioGroup>
         </Stack>
       </Box>
+
+      <Flex justifyContent="end" marginBottom="20px">
+        <Box>
+          <Text fontSize="xs">Total</Text>
+          <Price value={items.list.map(i => i.quantity * i.saleable.price).reduce((prev, cur) => prev + cur, 0)} />
+        </Box>
+      </Flex>
 
       <Button width="100%" colorScheme="green" type="submit">
         Confirmar pedido
