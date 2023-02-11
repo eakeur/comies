@@ -17,10 +17,11 @@ import {
   FormHelperText,
   Stack,
   Textarea,
+  RadioGroup,
+  Radio,
 } from "@chakra-ui/react";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
-import styled from "styled-components";
 import { useSaleableItemsSearch, useTicketItems } from "./hook";
 import { TicketItem } from "./saleable-item";
 import { SearchResult } from "./search-result";
@@ -32,7 +33,7 @@ export function PlaceOrder() {
 
   const items = useTicketItems()
 
-  const { register, control } = useForm();
+  const { register } = useForm();
 
   const nextRef = useRef(null);
 
@@ -43,7 +44,7 @@ export function PlaceOrder() {
         <Stack id="customer-data" direction="column">
           <FormControl id="customer_name">
             <FormLabel fontSize="sm">Nome</FormLabel>
-            <Input {...register("customer_name")} autoFocus={true}/>
+            <Input {...register("customer_name")} autoFocus={true} />
             <FormHelperText></FormHelperText>
           </FormControl>
           <FormControl id="customer_phone">
@@ -115,6 +116,17 @@ export function PlaceOrder() {
             <FormLabel fontSize="sm">Observações</FormLabel>
             <Textarea {...register("customer_address")} ref={nextRef} />
           </FormControl>
+          <RadioGroup defaultValue='2'>
+            <FormLabel fontSize="sm">Forma de entrega</FormLabel>
+            <Stack spacing={5} direction='row'>
+              <Radio colorScheme='red' value='1'>
+                Retirada
+              </Radio>
+              <Radio colorScheme='green' value='2'>
+                Entrega
+              </Radio>
+            </Stack>
+          </RadioGroup>
         </Stack>
       </Box>
 
@@ -124,7 +136,3 @@ export function PlaceOrder() {
     </form>
   );
 }
-
-const StyledMain = styled.main`
-
-`;

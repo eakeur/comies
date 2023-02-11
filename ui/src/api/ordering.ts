@@ -25,8 +25,8 @@ export function getOrderStatusByCustomerPhone(phone: string) {
 
 export function listSaleableItems(name: string) {
     return axios.get<Ordering.SaleableItem[]>(
-        API.ordering.listSaleableItems
-            .query({code: name, name: name})
+        API.menu.listProducts
+            .query({identifier: name, saleable: true})
             .toString(),
     ).then(r => r.data)
 }

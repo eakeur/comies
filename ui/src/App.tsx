@@ -13,10 +13,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home/>,
   },
-  {
-    path: "/place-order",
-    element: <PlaceOrder/>
-  }
 ]);
 
 
