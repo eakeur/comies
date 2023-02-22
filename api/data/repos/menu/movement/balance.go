@@ -8,20 +8,15 @@ import (
 	"context"
 )
 
-func (a actions) Balance(ctx context.Context, filter movement.Filter) (types.Quantity, error) {
+func (a actions) Balance(ctx context.Context, filter movement.Filter) (qt types.Quantity, err error) {
 	const script = `
-		select
-			coalesce(sum(m.quantity), 0)
-		from
-			movements m
-		where
-			%query%
+		select coalesce(sum(quantity),0) from movements where %query%
 	`
 
 	q, err := query.NewQuery(script).
-		Where(!filter.InitialDate.IsZero(), "m.date >= $%v", filter.InitialDate).And().
-		Where(!filter.FinalDate.IsZero(), "m.date <= $%v", filter.FinalDate).And().
-		OnlyWhere(filter.ProductID != 0, "m.product_id = $%v", filter.ProductID)
+		Where(!filter.InitialDate.IsZero(), "date >= $%v", filter.InitialDate).And().
+		Where(!filter.FinalDate.IsZero(), "date <= $%v", filter.FinalDate).And().
+		OnlyWhere(filter.ProductID != 0, "product_id = $%v", filter.ProductID)
 	if err != nil {
 		return 0, err
 	}
@@ -31,6 +26,5 @@ func (a actions) Balance(ctx context.Context, filter movement.Filter) (types.Qua
 		return 0, err
 	}
 
-	var quantity types.Quantity
-	return quantity, row.Scan(&quantity)
+	return qt, row.Scan(&qt)
 }

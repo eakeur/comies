@@ -2,6 +2,7 @@ package movement
 
 import (
 	"comies/core/menu/movement"
+	"comies/data/conn"
 	"comies/test/settings/postgres"
 	"context"
 	"testing"
@@ -29,6 +30,50 @@ func TestBalance(t *testing.T) {
 			checkErr:     assert.NoError,
 			before: func(ctx context.Context, t *testing.T) {
 
+			},
+			args: args{
+				filter: movement.Filter{
+					ProductID: 838737463,
+				},
+			},
+		},
+		{
+			name:         "should return 30 as balance",
+			checkBalance: assert.Zero,
+			checkErr:     assert.NoError,
+			before: func(ctx context.Context, t *testing.T) {
+				const script = `
+					insert into products (
+						id,
+						code,
+						name,
+						type,
+						cost_price,
+						sale_unit,
+						minimum_sale,
+						minimum_quantity,
+						maximum_quantity,
+						location
+					) values (
+						1, "cod", "nam", 10, 2, 'un', 1, 1, 10, ""
+					);
+
+					insert into movements (
+						id,
+						product_id,
+						type,
+						date,
+						quantity,
+						agent_id
+					) values (
+						1, 1, 2, now(), 30, 1
+					);
+				`
+
+				_, err := conn.ExecFromContext(ctx, script)
+				if err != nil {
+					t.Fatal(err)
+				}
 			},
 			args: args{
 				filter: movement.Filter{
