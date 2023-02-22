@@ -2,6 +2,7 @@ package menu
 
 import (
 	"comies/core/types"
+	"comies/jobs/menu"
 	"time"
 )
 
@@ -59,3 +60,5 @@ type Item struct {
 	// Location is a brief description of where this stock is located
 	Location string `json:"location"`
 }
+
+type SaleableItem = menu.Saleable

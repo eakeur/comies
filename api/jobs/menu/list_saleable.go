@@ -10,11 +10,17 @@ import (
 )
 
 type Saleable struct {
-	ID    types.ID
-	Code  string
-	Name  string
-	Stock types.Quantity
-	Price types.Currency
+	// ID identifies the item
+	ID types.ID `json:"id"`
+	// Code represents how the store's crew call this product internally
+	Code string `json:"code"`
+	// Name is the official name of the product, not exactly the name that the customer sees, but indeed the name
+	// shown in fiscal documents
+	Name string `json:"name"`
+	// Price is... the price
+	Price types.Currency `json:"price"`
+	// Stock is the quantity this product has in stock
+	Stock types.Quantity `json:"stock"`
 }
 
 func (w jobs) ListSaleable(ctx context.Context, identifier string) ([]Saleable, error) {

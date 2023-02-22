@@ -2,6 +2,7 @@ package movement
 
 import (
 	"comies/core/menu/movement"
+	"comies/core/types"
 	"comies/data/conn"
 	"comies/test/settings/postgres"
 	"context"
@@ -35,16 +36,18 @@ func TestBalance(t *testing.T) {
 			},
 		},
 		{
-			name:         "should return 30 as balance",
-			checkBalance: assert.Zero,
-			checkErr:     assert.NoError,
+			name: "should return 30 as balance",
+			checkBalance: func(t assert.TestingT, bal interface{}, args ...interface{}) bool {
+				return assert.Equal(t, types.Quantity(30), bal, args)
+			},
+			checkErr: assert.NoError,
 			args: args{
 				filter: movement.Filter{
 					ProductID: 838737463,
 				},
 			},
 			before: func(ctx context.Context, t *testing.T) {
-				const script = `
+				_, err := conn.ExecFromContext(ctx, `
 					insert into products (
 						id,
 						code,
@@ -57,22 +60,16 @@ func TestBalance(t *testing.T) {
 						maximum_quantity,
 						location
 					) values (
-						1, 'cod', 'name', 10, 2, 'un', 1, 1, 10, ''
+						838737463, 'cod', 'name', 10, 2, 'un', 1, 1, 10, ''
 					);
 
 					insert into movements (
-						id,
-						product_id,
-						type,
-						date,
-						quantity,
-						agent_id
-					) values (
-						1, 1, 2, now(), 30, 1
-					);
-				`
-
-				_, err := conn.ExecFromContext(ctx, script)
+						id, product_id, type, date, quantity, agent_id
+					) values 
+						(1, 838737463, 2, now(), 30, 1),
+						(2, 838737463, 2, now(), 30, 1),
+						(3, 838737463, 2, now(), -30, 1);
+				`)
 				if err != nil {
 					t.Fatal(err)
 				}

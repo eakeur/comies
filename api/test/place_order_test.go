@@ -56,19 +56,20 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		assert.Equal(t, http.StatusOK, res.StatusCode)
+		if assert.Equal(t, http.StatusOK, res.StatusCode) {
+			data := []menu.SaleableItem{}
+			err = json.NewDecoder(res.Body).Decode(&data)
+			if err != nil {
+				t.Fatalf("could not parse items list response: %s", err)
+			}
 
-		data := map[string]interface{}{}
-		err = json.NewDecoder(res.Body).Decode(&data)
-		if err != nil {
-			t.Fatalf("could not parse items list response: %s", err)
+			if assert.Equal(t, 1, len(data), "list length should have one item only") {
+				assert.Equal(t, productID, data[0].ID, "product id from list should be equal the created one")
+				assert.Equal(t, types.Currency(5), data[0].Price, "product price from list should be equal the created one")
+				assert.Equal(t, types.Quantity(0), data[0].Stock, "product stock from list should be equal the created one")
+			}
 		}
 
-		if assert.Equal(t, 1, len(data), "list length should have one item only") {
-			assert.Equal(t, productID, data["ID"], "product id from list should be equal the created one")
-			assert.Equal(t, 5, data["Price"], "product price from list should be equal the created one")
-			assert.Equal(t, 0, data["Stock"], "product stock from list should be equal the created one")
-		}
 	})
 
 	t.Run("should create order", func(t *testing.T) {
