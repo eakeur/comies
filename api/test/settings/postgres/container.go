@@ -73,7 +73,7 @@ func Startup(d *dockertest.Resource) (DatabaseContextBuilder, error) {
 		return nil, err
 	}
 
-	conn.Close(ctx)
+	conn.Close()
 
 	conn, err = useConnection(url(port, database))
 	if err != nil {

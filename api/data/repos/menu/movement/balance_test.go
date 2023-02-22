@@ -28,9 +28,6 @@ func TestBalance(t *testing.T) {
 			name:         "should return 0 as balance",
 			checkBalance: assert.Zero,
 			checkErr:     assert.NoError,
-			before: func(ctx context.Context, t *testing.T) {
-
-			},
 			args: args{
 				filter: movement.Filter{
 					ProductID: 838737463,
@@ -41,6 +38,11 @@ func TestBalance(t *testing.T) {
 			name:         "should return 30 as balance",
 			checkBalance: assert.Zero,
 			checkErr:     assert.NoError,
+			args: args{
+				filter: movement.Filter{
+					ProductID: 838737463,
+				},
+			},
 			before: func(ctx context.Context, t *testing.T) {
 				const script = `
 					insert into products (
@@ -55,7 +57,7 @@ func TestBalance(t *testing.T) {
 						maximum_quantity,
 						location
 					) values (
-						1, "cod", "nam", 10, 2, 'un', 1, 1, 10, ""
+						1, 'cod', 'name', 10, 2, 'un', 1, 1, 10, ''
 					);
 
 					insert into movements (
@@ -74,11 +76,6 @@ func TestBalance(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-			},
-			args: args{
-				filter: movement.Filter{
-					ProductID: 838737463,
-				},
 			},
 		},
 	} {

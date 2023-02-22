@@ -6,7 +6,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -14,7 +13,7 @@ type DatabaseContextBuilder func(t *testing.T, useTX bool, callbacks ...Callback
 
 type Callback = func(ctx context.Context, t *testing.T)
 
-func builder(c *pgx.Conn, port, templateName string) DatabaseContextBuilder {
+func builder(c *pgxpool.Pool, port, templateName string) DatabaseContextBuilder {
 	return func(t *testing.T, useTX bool, callbacks ...Callback) context.Context {
 		t.Helper()
 

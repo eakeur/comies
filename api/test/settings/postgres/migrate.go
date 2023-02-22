@@ -9,15 +9,15 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/httpfs"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/jackc/pgx/v4/stdlib"
 )
 
 const migration = "."
 
-func mig(pool *pgx.Conn) error {
+func mig(pool *pgxpool.Pool) error {
 
-	cfg := pool.Config()
+	cfg := pool.Config().ConnConfig
 
 	driver, err := postgres.WithInstance(stdlib.OpenDB(*cfg), &postgres.Config{
 		DatabaseName: cfg.Database,

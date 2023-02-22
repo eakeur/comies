@@ -8,7 +8,7 @@ import (
 	"math/big"
 
 	"github.com/jackc/pgconn"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type executor interface {
@@ -19,10 +19,10 @@ func url(port string, database string) string {
 	return fmt.Sprintf(dockerPostgresURL, port, database)
 }
 
-func useConnection(url string) (*pgx.Conn, error) {
+func useConnection(url string) (*pgxpool.Pool, error) {
 	ctx := context.Background()
 
-	pg, err := pgx.Connect(ctx, url)
+	pg, err := pgxpool.Connect(ctx, url)
 	if err != nil {
 		return nil, err
 	}
