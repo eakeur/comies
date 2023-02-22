@@ -5,7 +5,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { ListShowUpAnimation } from "components/animations/animations";
-import { Order } from "core/order";
+import { Ordering } from "core/order";
 import { motion } from "framer-motion";
 import { OrderStatusChecker } from "./status-checker";
 import { OrderCountByStatus } from "./order-status";
@@ -57,11 +57,11 @@ export function MyOrders() {
 }
 
 const statuses = [
-    Order.pendingStatus,
-    Order.preparingStatus,
-    Order.waitingTakeoutStatus,
-    Order.waitingDeliveryStatus,
-    Order.deliveringStatus,
+    Ordering.OrderStatus.pending,
+    Ordering.OrderStatus.preparing,
+    Ordering.OrderStatus.waitingTakeout,
+    Ordering.OrderStatus.waitingDelivery,
+    Ordering.OrderStatus.delivering,
 ];
 
 const StatusOverview = motion(Flex);

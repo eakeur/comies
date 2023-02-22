@@ -13,6 +13,7 @@ export function DrawerProvider({children}: {children: React.ReactNode}){
         <Context.Provider value={setDrawer}>
             {children}
             <Drawer 
+                size={drawer?.options?.size}
                 isOpen={drawer?.body !== undefined ?? false} 
                 placement={window.innerWidth < 820 ? "bottom" : drawer?.options?.placement as any} 
                 onClose={onClose} 

@@ -77,4 +77,10 @@ export namespace Product {
 
     return product;
   }
+
+  export interface Filter {
+    types?: number[]
+    code?: string
+    name?: string
+  }
 }

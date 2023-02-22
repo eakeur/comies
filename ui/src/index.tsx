@@ -11,7 +11,13 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const query = new QueryClient()
+const query = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false
+    }
+  }
+})
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./api/mocks/browser')

@@ -5,6 +5,7 @@ type Drawer = {
     body?: JSX.Element,
     footer?: JSX.Element,
     options?: {
+        size?: string, 
         placement?: string 
         onClose?: () => void,
         finalFocusRef?: React.RefObject<any>

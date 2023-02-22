@@ -87,16 +87,25 @@ export function ProductForm() {
             type="number"
           />
         </FormControl>
-        <FormControl id="sale_unit" w={["100%", null, "33%"]}>
-          <FormLabel fontSize="sm">Unidade</FormLabel>
-          <Select {...control.register("sale_unit")}>
-            <option value={Product.gram}></option>
-            <option value={Product.kilogram}></option>
-            <option value={Product.milligram}></option>
-            <option value={Product.unit}></option>
-          </Select>
+        
+        <FormControl id="minimum_sale" w={["100%", null, "33%"]}>
+          <FormLabel fontSize="sm">Mínimo</FormLabel>
+          <Input
+            {...control.register("minimum_sale", { valueAsNumber: true })}
+            step="1"
+            type="number"
+          />
         </FormControl>
       </Stack>
+      <FormControl id="sale_unit" w={["100%"]}>
+          <FormLabel fontSize="sm">Unidade</FormLabel>
+          <Select {...control.register("sale_unit")}>
+            <option value={Product.gram}>grama</option>
+            <option value={Product.kilogram}>quilograma</option>
+            <option value={Product.milligram}>miligrama</option>
+            <option value={Product.unit}>unidade</option>
+          </Select>
+        </FormControl>
 
       <Text>Estoque</Text>
       <Stack id="naming-section" direction={["column", null, "row"]}>

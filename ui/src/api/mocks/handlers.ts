@@ -1,3 +1,4 @@
+import { randFood, randNumber } from "@ngneat/falso"
 import { rest } from "msw"
 
 
@@ -31,8 +32,40 @@ export const handlers = [
 
     return res(
       ctx.delay(faker.rand(0, 2000)),
-      ctx.json({count: faker.rand(0, 15)}),
+      ctx.json({ count: faker.rand(0, 15) }),
       ctx.status(200),
     )
   }),
+
+  rest.get("api/v1/menu/items", (req, res, ctx) => {
+    const code = req.url.searchParams.get("code") ?? ""
+
+    const saleable = req.url.searchParams.get("saleable") ?? ""
+
+    const len = (): number => 20 - code.length * 2 <= 0 ? 1 : 20 - code.length * 2
+
+    if (saleable === "true") {
+      return res(
+        ctx.json(randFood({ length: len() }).map(f => ({
+          id: faker.rand(1000, 100000),
+          name: f,
+          code: f.toUpperCase().split(" ").at(0)?.substring(0, f.split(" ").at(0)?.length ?? 0 <= 6 ? undefined : 6),
+          price: randNumber({ min: 500, max: 15000 }),
+          stock: randNumber({ min: 0, max: 1000 }),
+        })))
+      )
+    }
+
+
+
+    return res(
+      ctx.json(randFood({ length: len() }).map(f => ({
+        id: faker.rand(1000, 100000),
+        name: f,
+        code: f.toUpperCase().split(" ").at(0)?.substring(0, f.split(" ").at(0)?.length ?? 0 <= 6 ? undefined : 6),
+        price: randNumber({ min: 500, max: 15000 }),
+        stock: randNumber({ min: 0, max: 1000 }),
+      })))
+    )
+  })
 ]
