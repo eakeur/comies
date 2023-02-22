@@ -25,6 +25,15 @@ import (
 func (h Handler) ListItems(ctx context.Context, r request.Request) send.Response {
 	query := r.URL.Query()
 
+	if query.Get("saleable") == "true" {
+		list, err := h.menu.ListSaleable(ctx, query.Get("identifier"))
+		if err != nil {
+			return send.FromError(err)
+		}
+
+		return send.Data(http.StatusOK, list)
+	}
+
 	values := query["types"]
 
 	if len(values) == 1 {

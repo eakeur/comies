@@ -17,7 +17,7 @@ import (
 func TestOrderingAPI_PlaceOrder(t *testing.T) {
 	t.Parallel()
 
-	addr := "http://localhost:43545" //createAPI(t)
+	addr := createAPI(t)
 
 	var productID types.ID
 	t.Run("should create product", func(t *testing.T) {
@@ -45,6 +45,29 @@ func TestOrderingAPI_PlaceOrder(t *testing.T) {
 		productID, err = types.FromString(res.Header.Get("Location"))
 		if err != nil {
 			t.Fatalf("could not retrieve product id from header: %v", err)
+		}
+	})
+
+	t.Run("should list saleable items", func(t *testing.T) {
+		var route = fmt.Sprintf("%s/api/v1/menu/items?saleable=true&identifier=COCA", addr)
+
+		res, err := http.Get(route)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, http.StatusOK, res.StatusCode)
+
+		data := map[string]interface{}{}
+		err = json.NewDecoder(res.Body).Decode(&data)
+		if err != nil {
+			t.Fatalf("could not parse items list response: %s", err)
+		}
+
+		if assert.Equal(t, 1, len(data), "list length should have one item only") {
+			assert.Equal(t, productID, data["ID"], "product id from list should be equal the created one")
+			assert.Equal(t, 5, data["Price"], "product price from list should be equal the created one")
+			assert.Equal(t, 0, data["Stock"], "product stock from list should be equal the created one")
 		}
 	})
 

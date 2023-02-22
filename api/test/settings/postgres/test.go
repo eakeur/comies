@@ -50,12 +50,16 @@ func builder(c *pgx.Conn, port, templateName string) DatabaseContextBuilder {
 
 		l := len(callbacks)
 		if l > 0 {
-			callbacks[0](ctx, t)
+			if callbacks[0] != nil {
+				callbacks[0](ctx, t)
+			}
 		}
 
 		if l > 1 {
 			t.Cleanup(func() {
-				callbacks[1](ctx, t)
+				if callbacks[1] != nil {
+					callbacks[1](ctx, t)
+				}
 			})
 		}
 
